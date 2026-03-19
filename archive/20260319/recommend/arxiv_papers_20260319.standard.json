@@ -1,0 +1,540 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-03-19T19:42:21.657310+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 35,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2603.14704v1",
+      "title": "Chain-of-Trajectories: Unlocking the Intrinsic Generative Optimality of Diffusion Models via Graph-Theoretic Planning",
+      "abstract": "Diffusion models operate in a reflexive System 1 mode, constrained by a fixed, content-agnostic sampling schedule. This rigidity arises from the curse of state dimensionality, where the combinatorial explosion of possible states in the high-dimensional noise manifold renders explicit trajectory planning intractable and leads to systematic computational misallocation. To address this, we introduce Chain-of-Trajectories (CoTj), a train-free framework enabling System 2 deliberative planning. Central to CoTj is Diffusion DNA, a low-dimensional signature that quantifies per-stage denoising difficulty and serves as a proxy for the high-dimensional state space, allowing us to reformulate sampling as graph planning on a directed acyclic graph. Through a Predict-Plan-Execute paradigm, CoTj dynamically allocates computational effort to the most challenging generative phases. Experiments across multiple generative models demonstrate that CoTj discovers context-aware trajectories, improving output quality and stability while reducing redundant computation. This work establishes a new foundation for resource-aware, planning-based diffusion modeling. The code is available at https://github.com/UnicomAI/CoTj.",
+      "authors": [
+        "Ping Chen",
+        "Xiang Liu",
+        "Xingpeng Zhang",
+        "Fei Shen",
+        "Xun Gong",
+        "Zhaoxiang Liu",
+        "Zezhou Chen",
+        "Huan Hu",
+        "Kai Wang",
+        "Shiguo Lian"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CV",
+        "stat.ML"
+      ],
+      "published": "2026-03-16T01:28:51+00:00",
+      "link": "https://arxiv.org/pdf/2603.14704v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "quantifies per-stage denoising difficulty in diffusion models for trajectory planning",
+      "llm_evidence_cn": "量化扩散模型轨迹规划中每阶段的去噪难度",
+      "llm_evidence": "量化扩散模型轨迹规划中每阶段的去噪难度",
+      "canonical_evidence": "量化扩散模型轨迹规划中每阶段的去噪难度",
+      "llm_tldr_en": "CoTj uses Diffusion DNA to quantify denoising difficulty and optimize diffusion sampling via graph planning.",
+      "llm_tldr_cn": "CoTj利用扩散DNA量化去噪难度，并通过图规划优化扩散采样过程。",
+      "llm_tldr": "CoTj利用扩散DNA量化去噪难度，并通过图规划优化扩散采样过程。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2603.17834v1",
+      "title": "Generative Control as Optimization: Time Unconditional Flow Matching for Adaptive and Robust Robotic Control",
+      "abstract": "Diffusion models and flow matching have become a cornerstone of robotic imitation learning, yet they suffer from a structural inefficiency where inference is often bound to a fixed integration schedule that is agnostic to state complexity. This paradigm forces the policy to expend the same computational budget on trivial motions as it does on complex tasks. We introduce Generative Control as Optimization (GeCO), a time-unconditional framework that transforms action synthesis from trajectory integration into iterative optimization. GeCO learns a stationary velocity field in the action-sequence space where expert behaviors form stable attractors. Consequently, test-time inference becomes an adaptive process that allocates computation based on convergence--exiting early for simple states while refining longer for difficult ones. Furthermore, this stationary geometry yields an intrinsic, training-free safety signal, as the field norm at the optimized action serves as a robust out-of-distribution (OOD) detector, remaining low for in-distribution states while significantly increasing for anomalies. We validate GeCO on standard simulation benchmarks and demonstrate seamless scaling to pi0-series Vision-Language-Action (VLA) models. As a plug-and-play replacement for standard flow-matching heads, GeCO improves success rates and efficiency with an optimization-native mechanism for safe deployment. Video and code can be found at https://hrh6666.github.io/GeCO/",
+      "authors": [
+        "Zunzhe Zhang",
+        "Runhan Huang",
+        "Yicheng Liu",
+        "Shaoting Zhu",
+        "Linzhan Mou",
+        "Hang Zhao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-03-18T15:27:17+00:00",
+      "link": "https://arxiv.org/pdf/2603.17834v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "diffusion models for trajectory integration and robotic action synthesis",
+      "llm_evidence_cn": "用于轨迹积分和机器人动作合成的扩散模型",
+      "llm_evidence": "用于轨迹积分和机器人动作合成的扩散模型",
+      "canonical_evidence": "用于轨迹积分和机器人动作合成的扩散模型",
+      "llm_tldr_en": "Transforms diffusion-based action synthesis into an adaptive optimization process for robotic control.",
+      "llm_tldr_cn": "将基于扩散模型的动作合成转化为自适应优化过程，提升机器人控制效率。",
+      "llm_tldr": "将基于扩散模型的动作合成转化为自适应优化过程，提升机器人控制效率。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2603.10572v1",
+      "title": "Safety-critical Control Under Partial Observability: Reach-Avoid POMDP meets Belief Space Control",
+      "abstract": "Partially Observable Markov Decision Processes (POMDPs) provide a principled framework for robot decision-making under uncertainty. Solving reach-avoid POMDPs, however, requires coordinating three distinct behaviors: goal reaching, safety, and active information gathering to reduce uncertainty. Existing online POMDP solvers attempt to address all three within a single belief tree search, but this unified approach struggles with the conflicting time scales inherent to these objectives. We propose a layered, certificate-based control architecture that operates directly in belief space, decoupling goal reaching, information gathering, and safety into modular components. We introduce Belief Control Lyapunov Functions (BCLFs) that formalize information gathering as a Lyapunov convergence problem in belief space, and show how they can be learned via reinforcement learning. For safety, we develop Belief Control Barrier Functions (BCBFs) that leverage conformal prediction to provide probabilistic safety guarantees over finite horizons. The resulting control synthesis reduces to lightweight quadratic programs solvable in real time, even for non-Gaussian belief representations with dimension $>10^4$. Experiments in simulation and on a space-robotics platform demonstrate real-time performance and improved safety and task success compared to state-of-the-art constrained POMDP solvers.",
+      "authors": [
+        "Matti Vahs",
+        "Joris Verhagen",
+        "Jana Tumova"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-11T09:25:41+00:00",
+      "link": "https://arxiv.org/pdf/2603.10572v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "decoupling goal reaching and safety to reduce uncertainty in POMDPs",
+      "llm_evidence_cn": "在POMDP中解耦目标达成与安全性以减少不确定性",
+      "llm_evidence": "在POMDP中解耦目标达成与安全性以减少不确定性",
+      "canonical_evidence": "在POMDP中解耦目标达成与安全性以减少不确定性",
+      "llm_tldr_en": "Proposes a layered control architecture to decouple objectives and manage uncertainty in robot decision-making.",
+      "llm_tldr_cn": "提出了一种分层控制架构，在机器人决策中解耦目标并管理不确定性。",
+      "llm_tldr": "提出了一种分层控制架构，在机器人决策中解耦目标并管理不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "modeling aleatoric uncertainty in autonomous driving scenarios",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.11335v1",
+      "title": "ADMM-based Continuous Trajectory Optimization in Graphs of Convex Sets",
+      "abstract": "This paper presents a numerical solver for computing continuous trajectories in non-convex environments. Our approach relies on a customized implementation of the Alternating Direction Method of Multipliers (ADMM) built upon two key components: First, we parameterize trajectories as polynomials, allowing the primal update to be computed in closed form as a minimum-control-effort problem. Second, we introduce the concept of a spatio-temporal allocation graph based on a mixed-integer formulation and pose the slack update as a shortest-path search. The combination of these ingredients results in a solver with several distinct advantages over the state of the art. By jointly optimizing over both discrete spatial and continuous temporal domains, our method accesses a larger search space than existing decoupled approaches, enabling the discovery of superior trajectories. Additionally, the solver's structural robustness ensures reliable convergence from naive initializations, removing the bottleneck of complex warm starting in non-convex environments.",
+      "authors": [
+        "Lukas Pries",
+        "Jon Arrizabalaga",
+        "Zachary Manchester",
+        "Markus Ryll"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-11T22:02:52+00:00",
+      "link": "https://arxiv.org/pdf/2603.11335v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "continuous trajectory optimization in non-convex environments",
+      "llm_evidence_cn": "非凸环境下的连续轨迹优化",
+      "llm_evidence": "非凸环境下的连续轨迹优化",
+      "canonical_evidence": "非凸环境下的连续轨迹优化",
+      "llm_tldr_en": "Presents an ADMM-based solver for continuous trajectory optimization by jointly optimizing spatial and temporal domains.",
+      "llm_tldr_cn": "提出了一种基于ADMM的求解器，通过联合优化空间和时间域来进行连续轨迹优化。",
+      "llm_tldr": "提出了一种基于ADMM的求解器，通过联合优化空间和时间域来进行连续轨迹优化。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.11041v1",
+      "title": "DynVLA: Learning World Dynamics for Action Reasoning in Autonomous Driving",
+      "abstract": "We propose DynVLA, a driving VLA model that introduces a new CoT paradigm termed Dynamics CoT. DynVLA forecasts compact world dynamics before action generation, enabling more informed and physically grounded decision-making. To obtain compact dynamics representations, DynVLA introduces a Dynamics Tokenizer that compresses future evolution into a small set of dynamics tokens. Considering the rich environment dynamics in interaction-intensive driving scenarios, DynVLA decouples ego-centric and environment-centric dynamics, yielding more accurate world dynamics modeling. We then train DynVLA to generate dynamics tokens before actions through SFT and RFT, improving decision quality while maintaining latency-efficient inference. Compared to Textual CoT, which lacks fine-grained spatiotemporal understanding, and Visual CoT, which introduces substantial redundancy due to dense image prediction, Dynamics CoT captures the evolution of the world in a compact, interpretable, and efficient form. Extensive experiments on NAVSIM, Bench2Drive, and a large-scale in-house dataset demonstrate that DynVLA consistently outperforms Textual CoT and Visual CoT methods, validating the effectiveness and practical value of Dynamics CoT.",
+      "authors": [
+        "Shuyao Shang",
+        "Bing Zhan",
+        "Yunfei Yan",
+        "Yuqi Wang",
+        "Yingyan Li",
+        "Yasong An",
+        "Xiaoman Wang",
+        "Jierui Liu",
+        "Lu Hou",
+        "Lue Fan",
+        "Zhaoxiang Zhang",
+        "Tieniu Tan"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-03-11T17:59:31+00:00",
+      "link": "https://arxiv.org/pdf/2603.11041v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "world dynamics for action reasoning in autonomous driving",
+      "llm_evidence_cn": "自动驾驶动作推理的世界动力学",
+      "llm_evidence": "自动驾驶动作推理的世界动力学",
+      "canonical_evidence": "自动驾驶动作推理的世界动力学",
+      "llm_tldr_en": "Introduces DynVLA to forecast world dynamics for physically grounded decision-making in autonomous driving.",
+      "llm_tldr_cn": "引入DynVLA预测世界动力学，以实现自动驾驶中基于物理的决策。",
+      "llm_tldr": "引入DynVLA预测世界动力学，以实现自动驾驶中基于物理的决策。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.11509v1",
+      "title": "Manifold-Optimal Guidance: A Unified Riemannian Control View of Diffusion Guidance",
+      "abstract": "Classifier-Free Guidance (CFG) serves as the de facto control mechanism for conditional diffusion, yet high guidance scales notoriously induce oversaturation, texture artifacts, and structural collapse. We attribute this failure to a geometric mismatch: standard CFG performs Euclidean extrapolation in ambient space, inadvertently driving sampling trajectories off the high-density data manifold. To resolve this, we present Manifold-Optimal Guidance (MOG), a framework that reformulates guidance as a local optimal control problem. MOG yields a closed-form, geometry-aware Riemannian update that corrects off-manifold drift without requiring retraining. Leveraging this perspective, we further introduce Auto-MOG, a dynamic energy-balancing schedule that adaptively calibrates guidance strength, effectively eliminating the need for manual hyperparameter tuning. Extensive validation demonstrates that MOG yields superior fidelity and alignment compared to baselines, with virtually no added computational overhead.",
+      "authors": [
+        "Zexi Jia",
+        "Pengcheng Luo",
+        "Zhengyao Fang",
+        "Jinchao Zhang",
+        "Jie Zhou"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-12T03:51:32+00:00",
+      "link": "https://arxiv.org/pdf/2603.11509v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Geometric control and manifold-optimal guidance for diffusion sampling",
+      "llm_evidence_cn": "扩散采样的几何控制和流形最优引导",
+      "llm_evidence": "扩散采样的几何控制和流形最优引导",
+      "canonical_evidence": "扩散采样的几何控制和流形最优引导",
+      "llm_tldr_en": "Reformulates diffusion guidance as a Riemannian optimal control problem to prevent sampling drift and artifacts.",
+      "llm_tldr_cn": "将扩散引导重新表述为黎曼最优控制问题，以防止采样偏移和伪影。",
+      "llm_tldr": "将扩散引导重新表述为黎曼最优控制问题，以防止采样偏移和伪影。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "c",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.11041v2",
+      "title": "DynVLA: Learning World Dynamics for Action Reasoning in Autonomous Driving",
+      "abstract": "We propose DynVLA, a driving VLA model that introduces a new CoT paradigm termed Dynamics CoT. DynVLA forecasts compact world dynamics before action generation, enabling more informed and physically grounded decision-making. To obtain compact dynamics representations, DynVLA introduces a Dynamics Tokenizer that compresses future evolution into a small set of dynamics tokens. Considering the rich environment dynamics in interaction-intensive driving scenarios, DynVLA decouples ego-centric and environment-centric dynamics, yielding more accurate world dynamics modeling. We then train DynVLA to generate dynamics tokens before actions through SFT and RFT, improving decision quality while maintaining latency-efficient inference. Compared to Textual CoT, which lacks fine-grained spatiotemporal understanding, and Visual CoT, which introduces substantial redundancy due to dense image prediction, Dynamics CoT captures the evolution of the world in a compact, interpretable, and efficient form. Extensive experiments on NAVSIM, Bench2Drive, and a large-scale in-house dataset demonstrate that DynVLA consistently outperforms Textual CoT and Visual CoT methods, validating the effectiveness and practical value of Dynamics CoT. Project Page: https://yaoyao-jpg.github.io/dynvla.",
+      "authors": [
+        "Shuyao Shang",
+        "Bing Zhan",
+        "Yunfei Yan",
+        "Yuqi Wang",
+        "Yingyan Li",
+        "Yasong An",
+        "Xiaoman Wang",
+        "Jierui Liu",
+        "Lu Hou",
+        "Lue Fan",
+        "Zhaoxiang Zhang",
+        "Tieniu Tan"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-03-11T17:59:31+00:00",
+      "link": "https://arxiv.org/pdf/2603.11041v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "decouples ego-centric and environment-centric dynamics for action reasoning in autonomous driving",
+      "llm_evidence_cn": "在自动驾驶动作推理中解耦自我中心和环境中心动力学",
+      "llm_evidence": "在自动驾驶动作推理中解耦自我中心和环境中心动力学",
+      "canonical_evidence": "在自动驾驶动作推理中解耦自我中心和环境中心动力学",
+      "llm_tldr_en": "DynVLA improves autonomous driving by decoupling ego and environment dynamics for grounded decision-making.",
+      "llm_tldr_cn": "DynVLA通过解耦自我与环境动力学，实现了更具物理依据的自动驾驶决策。",
+      "llm_tldr": "DynVLA通过解耦自我与环境动力学，实现了更具物理依据的自动驾驶决策。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.11649v1",
+      "title": "A Hybrid Neural-Assisted Unscented Kalman Filter for Unmanned Ground Vehicle Navigation",
+      "abstract": "Modern autonomous navigation for unmanned ground vehicles relies on different estimators to fuse inertial sensors and GNSS measurements. However, the constant noise covariance matrices often struggle to account for dynamic real-world conditions. In this work we propose a hybrid estimation framework that bridges classical state estimation foundations with modern deep learning approaches. Instead of altering the fundamental unscented Kalman filter equations, a dedicated deep neural network is developed to predict the process and measurement noise uncertainty directly from raw inertial and GNSS measurements. We present a sim2real approach, with training performed only on simulative data. In this manner, we offer perfect ground truth data and relieves the burden of extensive data recordings. To evaluate our proposed approach and examine its generalization capabilities, we employed a 160-minutes test set from three datasets each with different types of vehicles (off-road vehicle, passenger car, and mobile robot), inertial sensors, road surface, and environmental conditions. We demonstrate across the three datasets a position improvement of $12.7\\%$ compared to the adaptive model-based approach. Thus, offering a scalable and a more robust solution for unmanned ground vehicles navigation tasks.",
+      "authors": [
+        "Gal Versano",
+        "Itzik Klein"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-12T08:20:26+00:00",
+      "link": "https://arxiv.org/pdf/2603.11649v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "predicting noise uncertainty for ground vehicle navigation",
+      "llm_evidence_cn": "预测地面车辆导航的噪声不确定性",
+      "llm_evidence": "预测地面车辆导航的噪声不确定性",
+      "canonical_evidence": "预测地面车辆导航的噪声不确定性",
+      "llm_tldr_en": "Uses neural networks to predict process and measurement noise uncertainty for UGV navigation filters.",
+      "llm_tldr_cn": "使用神经网络预测无人地面车辆导航滤波器的过程和测量噪声不确定性。",
+      "llm_tldr": "使用神经网络预测无人地面车辆导航滤波器的过程和测量噪声不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "modeling aleatoric uncertainty in autonomous driving scenarios",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.12607v1",
+      "title": "CarPLAN: Context-Adaptive and Robust Planning with Dynamic Scene Awareness for Autonomous Driving",
+      "abstract": "Imitation learning (IL) is widely used for motion planning in autonomous driving due to its data efficiency and access to real-world driving data. For safe and robust real-world driving, IL-based planning requires capturing the complex driving contexts inherent in real-world data and enabling context-adaptive decision-making, rather than relying solely on expert trajectory imitation. In this paper, we propose CarPLAN, a novel IL-based motion planning framework that explicitly enhances driving context understanding and enables adaptive planning across diverse traffic scenarios. Our contributions are twofold: We introduce Displacement-Aware Predictive Encoding (DPE) to improve the model's spatial awareness by predicting future displacement vectors between the Autonomous Vehicle (AV) and surrounding scene elements. This allows the planner to account for relational spacing when generating trajectories. In addition to the standard imitation loss, we incorporate an augmented loss term that captures displacement prediction errors, ensuring planning decisions consider relative distances from other agents. To improve the model's ability to handle diverse driving contexts, we propose Context-Adaptive Multi-Expert Decoder (CMD), which leverages the Mixture of Experts (MoE) framework. CMD dynamically selects the most suitable expert decoders based on scene structure at each Transformer layer, enabling adaptive and context-aware planning in dynamic environments. We evaluate CarPLAN on the nuPlan benchmark and demonstrate state-of-the-art performance across all closed-loop simulation metrics. In particular, CarPLAN exhibits robust performance on challenging scenarios such as Test14-Hard, validating its effectiveness in complex driving conditions. Additional experiments on the Waymax benchmark further demonstrate its generalization capability across different benchmark settings.",
+      "authors": [
+        "Junyong Yun",
+        "Jungho Kim",
+        "ByungHyun Lee",
+        "Dongyoung Lee",
+        "Sehwan Choi",
+        "Seunghyeop Nam",
+        "Kichun Jo",
+        "Jun Won Choi"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-03-13T03:22:32+00:00",
+      "link": "https://arxiv.org/pdf/2603.12607v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "motion planning framework for autonomous driving",
+      "llm_evidence_cn": "自动驾驶运动规划框架",
+      "llm_evidence": "自动驾驶运动规划框架",
+      "canonical_evidence": "自动驾驶运动规划框架",
+      "llm_tldr_en": "Proposes CarPLAN, an imitation learning framework for context-adaptive motion planning in autonomous driving.",
+      "llm_tldr_cn": "提出CarPLAN，一种用于自动驾驶中上下文自适应运动规划的模仿学习框架。",
+      "llm_tldr": "提出CarPLAN，一种用于自动驾驶中上下文自适应运动规划的模仿学习框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.11658v1",
+      "title": "Coupling Tensor Trains with Graph of Convex Sets: Effective Compression, Exploration, and Planning in the C-Space",
+      "abstract": "We present TANGO (Tensor ANd Graph Optimization), a novel motion planning framework that integrates tensor-based compression with structured graph optimization to enable efficient and scalable trajectory generation. While optimization-based planners such as the Graph of Convex Sets (GCS) offer powerful tools for generating smooth, optimal trajectories, they typically rely on a predefined convex characterization of the high-dimensional configuration space-a requirement that is often intractable for general robotic tasks. TANGO builds further by using Tensor Train decomposition to approximate the feasible configuration space in a compressed form, enabling rapid discovery and estimation of task-relevant regions. These regions are then embedded into a GCS-like structure, allowing for geometry-aware motion planning that respects both system constraints and environmental complexity. By coupling tensor-based compression with structured graph reasoning, TANGO enables efficient, geometry-aware motion planning and lays the groundwork for more expressive and scalable representations of configuration space in future robotic systems. Rigorous simulation studies on planar and real robots reinforce our claims of effective compression and higher quality trajectories.",
+      "authors": [
+        "Gerhard Reinerth",
+        "Riddhiman Laha",
+        "Marcello Romano"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-12T08:28:06+00:00",
+      "link": "https://arxiv.org/pdf/2603.11658v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "motion planning framework for scalable trajectory generation",
+      "llm_evidence_cn": "用于可扩展轨迹生成的运动规划框架",
+      "llm_evidence": "用于可扩展轨迹生成的运动规划框架",
+      "canonical_evidence": "用于可扩展轨迹生成的运动规划框架",
+      "llm_tldr_en": "Integrates tensor compression with graph optimization for efficient robotic trajectory generation and planning.",
+      "llm_tldr_cn": "将张量压缩与图优化相结合，实现高效的机器人轨迹生成与规划。",
+      "llm_tldr": "将张量压缩与图优化相结合，实现高效的机器人轨迹生成与规划。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.12806v1",
+      "title": "FLUX: Accelerating Cross-Embodiment Generative Navigation Policies via Rectified Flow and Static-to-Dynamic Learning",
+      "abstract": "Autonomous navigation requires a broad spectrum of skills, from static goal-reaching to dynamic social traversal, yet evaluation remains fragmented across disparate protocols. We introduce DynBench, a dynamic navigation benchmark featuring physically valid crowd simulation. Combined with existing static protocols, it supports comprehensive evaluation across six fundamental navigation tasks. Within this framework, we propose FLUX, the first flow-based unified navigation policy. By linearizing probability flow, FLUX replaces iterative denoising with straight-line trajectories, improving per-step inference efficiency by 47% over prior flow-based methods and 29% over diffusion-based ones. Following a static-to-dynamic curriculum, FLUX initially establishes geometric priors and is subsequently refined through reinforcement learning in dynamic social environments. This regime not only strengthens socially-aware navigation but also enhances static task robustness by capturing recovery behaviors through stochastic action distributions. FLUX achieves state-of-the-art performance across all tasks and demonstrates zero-shot sim-to-real transfer on wheeled, quadrupedal, and humanoid platforms without any fine-tuning.",
+      "authors": [
+        "Zeying Gong",
+        "Yangyi Zhong",
+        "Yiyi Ding",
+        "Tianshuai Hu",
+        "Guoyang Zhao",
+        "Lingdong Kong",
+        "Rong Li",
+        "Jiadi You",
+        "Junwei Liang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-13T09:10:01+00:00",
+      "link": "https://arxiv.org/pdf/2603.12806v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "flow-based unified navigation policy for autonomous navigation",
+      "llm_evidence_cn": "用于自主导航的流式统一导航策略",
+      "llm_evidence": "用于自主导航的流式统一导航策略",
+      "canonical_evidence": "用于自主导航的流式统一导航策略",
+      "llm_tldr_en": "Introduces FLUX, a flow-based policy for efficient cross-embodiment navigation across diverse tasks.",
+      "llm_tldr_cn": "提出FLUX，一种基于流的统一导航策略，提升了跨机器人形态的导航效率。",
+      "llm_tldr": "提出FLUX，一种基于流的统一导航策略，提升了跨机器人形态的导航效率。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.11984v1",
+      "title": "Ada3Drift: Adaptive Training-Time Drifting for One-Step 3D Visuomotor Robotic Manipulation",
+      "abstract": "Diffusion-based visuomotor policies effectively capture multimodal action distributions through iterative denoising, but their high inference latency limits real-time robotic control. Recent flow matching and consistency-based methods achieve single-step generation, yet sacrifice the ability to preserve distinct action modes, collapsing multimodal behaviors into averaged, often physically infeasible trajectories. We observe that the compute budget asymmetry in robotics (offline training vs.\\ real-time inference) naturally motivates recovering this multimodal fidelity by shifting iterative refinement from inference time to training time. Building on this insight, we propose Ada3Drift, which learns a training-time drifting field that attracts predicted actions toward expert demonstration modes while repelling them from other generated samples, enabling high-fidelity single-step generation (1 NFE) from 3D point cloud observations. To handle the few-shot robotic regime, Ada3Drift further introduces a sigmoid-scheduled loss transition from coarse distribution learning to mode-sharpening refinement, and multi-scale field aggregation that captures action modes at varying spatial granularities. Experiments on three simulation benchmarks (Adroit, Meta-World, and RoboTwin) and real-world robotic manipulation tasks demonstrate that Ada3Drift achieves state-of-the-art performance while requiring $10\\times$ fewer function evaluations than diffusion-based alternatives.",
+      "authors": [
+        "Chongyang Xu",
+        "Yixian Zou",
+        "Ziliang Feng",
+        "Fanman Meng",
+        "Shuaicheng Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-12T14:36:53+00:00",
+      "link": "https://arxiv.org/pdf/2603.11984v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion-based policies for multimodal action distributions in robotics",
+      "llm_evidence_cn": "机器人中用于多模态动作分布的扩散策略",
+      "llm_evidence": "机器人中用于多模态动作分布的扩散策略",
+      "canonical_evidence": "机器人中用于多模态动作分布的扩散策略",
+      "llm_tldr_en": "Ada3Drift enables one-step robotic manipulation while preserving multimodal behavior via training-time drifting.",
+      "llm_tldr_cn": "Ada3Drift通过训练时漂移场实现单步机器人操控，并保留多模态行为特征。",
+      "llm_tldr": "Ada3Drift通过训练时漂移场实现单步机器人操控，并保留多模态行为特征。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.12864v1",
+      "title": "Composing Driving Worlds through Disentangled Control for Adversarial Scenario Generation",
+      "abstract": "A major challenge in autonomous driving is the \"long tail\" of safety-critical edge cases, which often emerge from unusual combinations of common traffic elements. Synthesizing these scenarios is crucial, yet current controllable generative models provide incomplete or entangled guidance, preventing the independent manipulation of scene structure, object identity, and ego actions. We introduce CompoSIA, a compositional driving video simulator that disentangles these traffic factors, enabling fine-grained control over diverse adversarial driving scenarios. To support controllable identity replacement of scene elements, we propose a noise-level identity injection, allowing pose-agnostic identity generation across diverse element poses, all from a single reference image. Furthermore, a hierarchical dual-branch action control mechanism is introduced to improve action controllability. Such disentangled control enables adversarial scenario synthesis-systematically combining safe elements into dangerous configurations that entangled generators cannot produce. Extensive comparisons demonstrate superior controllable generation quality over state-of-the-art baselines, with a 17% improvement in FVD for identity editing and reductions of 30% and 47% in rotation and translation errors for action control. Furthermore, downstream stress-testing reveals substantial planner failures: across editing modalities, the average collision rate of 3s increases by 173%.",
+      "authors": [
+        "Yifan Zhan",
+        "Zhengqing Chen",
+        "Qingjie Wang",
+        "Zhuo He",
+        "Muyao Niu",
+        "Xiaoyang Guo",
+        "Wei Yin",
+        "Weiqiang Ren",
+        "Qian Zhang",
+        "Yinqiang Zheng"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-13T10:10:21+00:00",
+      "link": "https://arxiv.org/pdf/2603.12864v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Disentangled control and factor decoupling in driving scenario generation",
+      "llm_evidence_cn": "驾驶场景生成中的解耦控制和因素解耦",
+      "llm_evidence": "驾驶场景生成中的解耦控制和因素解耦",
+      "canonical_evidence": "驾驶场景生成中的解耦控制和因素解耦",
+      "llm_tldr_en": "Proposes CompoSIA to disentangle scene structure, identity, and ego actions in autonomous driving simulation.",
+      "llm_tldr_cn": "提出CompoSIA，在自动驾驶模拟中解耦场景结构、身份和自身行为。",
+      "llm_tldr": "提出CompoSIA，在自动驾驶模拟中解耦场景结构、身份和自身行为。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty decoupling in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
