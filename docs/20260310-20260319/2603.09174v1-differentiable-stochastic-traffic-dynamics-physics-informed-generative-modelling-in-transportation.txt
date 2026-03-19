@@ -1,0 +1,841 @@
+Title: Differentiable Stochastic Traffic Dynamics: Physics-Informed Generative Modelling in Transportation
+
+URL Source: https://arxiv.org/pdf/2603.09174v1
+
+Published Time: Wed, 11 Mar 2026 00:31:28 GMT
+
+Number of Pages: 29
+
+Markdown Content:
+# Differentiable Stochastic Traffic Dynamics: Physics-Informed Generative Modelling in Transportation 
+
+Wuping Xin 
+
+Caliper Corporation 
+
+March 2026 
+
+© 2026 Wuping Xin. Licensed under CC BY-NC-ND 4.0. 
+
+Abstract 
+
+Macroscopic traffic flow is stochastic, but the physics-informed deep learning methods currently used in transportation literature embed deterministic PDEs and produce point-valued outputs; the stochasticity of the governing dynamics plays no role in the learned representation. This work develops a framework in which the physics constraint itself is distributional and directly derived from stochastic traffic-flow dynamics. Starting from an Ito-type Lighthill-Whitham-Richards model with Brownian forcing, we derive a one-point forward equation for the marginal traffic density at each spatial location. The spatial coupling induced by the conservation law appears as an explicit conditional drift term, which makes the closure requirement transparent. Based on this formulation, we derive an equivalent deterministic Probability Flow ODE that is pointwise evaluable and differentiable once a closure is specified. Incorporating this as a physics constraint, we then propose a score network with an advection-closure module, trainable by denoising score matching together with a Fokker-Planck residual loss. The resulting model targets a data-conditioned density distribution, from which point estimates, credible intervals, and congestion-risk measures can be computed. The framework provides a basis for distributional traffic-state estimation and for stochastic fundamental–diagram analysis in a physics-informed generative setting. 1
+
+Keywords: stochastic LWR dynamics, Fokker–Planck equation, probability flow ODE, con-ditional drift closure, score matching, physics-informed deep learning, automatic differentia-tion, distributional traffic state estimation, stochastic fundamental diagram 
+
+> 1
+
+The present version focuses on theoretical derivation and methodological formulation; empirical validation is deferred to a subsequent revision. 
+
+1
+
+> arXiv:2603.09174v1 [eess.SY] 10 Mar 2026
+
+# 1 Introduction 
+
+1.1 The disconnect between stochastic traffic physics and deep learning 
+
+Macroscopic traffic flow has been understood as a stochastic phenomenon for decades. Day-to-day variability in driver behaviour, vehicle composition, weather, and minor incidents produces persistent randomness in the density–speed–flow relationship (Sumalee et al., 2011; Jabari and Liu, 2012; Li et al., 2012). Stochastic extensions of the Lighthill–Whitham–Richards (LWR) model (Lighthill and Whitham, 1955; Richards, 1956) have been developed to capture this variability, including random-parameter formulations (Fan et al., 2023, 2024), stochastic cell transmission models (Sumalee et al., 2011), and models based on random time headways (Jabari and Liu, 2012). In parallel, deep learning has transformed traffic analysis. Physics-informed neural networks (PINNs) embed deterministic traffic models into neural network training losses and have shown strong data efficiency in traffic state estimation (Shi et al., 2021; Mo et al., 2021; Huang et al., 2022). Score-based generative models (Song and Ermon, 2019; Song et al., 2021) have demon-strated the ability to learn and sample from complex probability distributions across domains from image synthesis to molecular design. These two lines of work have largely developed separately. Stochastic traffic models are for-mulated as stochastic PDEs that require sampling-based solvers (e.g., Monte Carlo simulation with thousands of realisations), while neural network training requires differentiable operations that can be backpropagated through. No existing stochastic traffic model produces a physics constraint that is compatible with the automatic differentiation pipelines of modern deep learn-ing. Recent work has applied generic diffusion and score-based generative models to traffic state estimation, but these approaches borrow the probability-flow machinery from image syn-thesis and treat it as a black-box generative tool; the traffic physics plays no structural role in the diffusion process itself. As a consequence, the learned distributions are not constrained by conservation-law dynamics, and the link between the generative model and the underlying stochastic traffic physics remains loose. Here we begin with a stochastic traffic-flow model and derive the corresponding distributional dynamics directly. Rather than importing a generic diffusion model and adding traffic constraints afterward, we derive the learning framework from the stochastic traffic model itself, introducing closure and neural components only where they are needed for computation. 
+
+1.2 The core obstacle and our resolution 
+
+The difficulty in combining stochastic traffic models with deep learning is not only computational but also mathematical. Consider the standard approach: one writes down a stochastic PDE for traffic density, and one would like to derive an equation governing how the probability distribution 
+
+of density evolves over time. If such an equation existed and were deterministic, it could be evaluated pointwise and differentiated via automatic differentiation, making it directly usable as a physics constraint in a neural network. The obstacle is that for conservation-law–based traffic models like LWR, this distributional equation is not self-contained. The local density evolution at any point 𝑥 depends on the spatial gradient 𝜕 𝑥 𝜌 , which couples the probability distribution at 𝑥 to the distributions at neighbouring locations. This spatial coupling has historically prevented the derivation of a closed, tractable evolution equation for the one-point density distribution, and is the fundamental reason why stochastic LWR dynamics have not been connected to distributional deep learning. We address this obstacle through three steps. First, we formulate an Itô-type stochastic LWR model with dynamic Brownian forcing and derive the exact one-point Fokker–Planck equation under a smooth-solution regime, writing the spatially coupled drift as an explicit conditional expectation rather than hiding it in notation. Second, we make the required closure transparent 2and provide tractable options, enabling the construction of an equivalent deterministic Proba-bility Flow ODE. Third, we show that, once the closure is specified, this Probability Flow ODE is pointwise evaluable and fully compatible with automatic differentiation, so it can serve as a direct, computable distributional physics constraint within a score-based neural network. Within the smooth-solution regime, the resulting one-point forward representation of stochas-tic conservation-law traffic dynamics becomes compatible with gradient-based deep learning once a closure is specified. This closes the gap between stochastic traffic modelling and distributional learning in a form that can be used directly in training. 
+
+1.3 Significance beyond a single application 
+
+The implications of deriving the generative structure from the traffic physics, rather than bor-rowing it from a generic framework, extend well beyond any single application. We highlight three. 
+
+Distributional traffic state estimation. Existing methods, from extended Kalman filters (Wang et al., 2008, 2009) to PIDL (Shi et al., 2021), produce point estimates of traffic density. Uncertainty quantification, when attempted, is post-hoc and not grounded in the governing physics. Our framework targets a distributional estimate 𝑝 𝜃 (^ 𝜌 ; 𝑥, 𝑡 ), trained on the available observations 𝒪 , from which point estimates, credible intervals, and congestion-risk measures follow directly, with the estimate itself trained to approximately satisfy the one-point stochastic traffic physics. 
+
+Stochastic fundamental diagram. The well-documented scatter in empirical flow–density measurements, both at the link level and in the network-level macroscopic fundamental diagram (MFD) (Geroliminis and Daganzo, 2008; Mazloumian et al., 2010), has lacked a principled stochastic characterisation. Because our framework produces the full density distribution at each location, it naturally introduces a link-level stochastic fundamental diagram. At the network level, spatial aggregation of the distributional dynamics suggests a corresponding MFD, in which part of the observed scatter may be interpreted as a consequence of the underlying Brownian forcing rather than unexplained noise. 
+
+Physics-informed generative modelling for traffic. More broadly, by showing that a stochastic conservation law can be converted into a differentiable probability flow, this work suggests an architectural pattern for physics-informed generative models in transportation. The same mathematical machinery, comprising an exact forward equation, a conditional drift clo-sure, and a probability flow ODE, can in principle be extended to second-order models (e.g., ARZ), multi-class traffic, and other conservation-law systems in transportation science. This work shows how stochastic traffic-flow theory can be formulated as a trainable distributional estimation framework. 
+
+1.4 Contributions 
+
+The contributions are ordered so that each one supports the next. The generative structure in this framework is not borrowed from a generic diffusion model; it is derived from the stochastic traffic physics. 1. Stochastic LWR model with dynamic Brownian forcing (Section 3). We formulate an Itô-type stochastic LWR equation driven by finite-dimensional Brownian motion with density-dependent, spatially structured noise, generalising the random-parameter SLWR of Fan et al. (2023, 2024) from static parametric variability to dynamic stochastic forcing. This is the physical foundation from which the entire generative structure emerges. 32. Exact one-point Fokker–Planck equation and Probability Flow ODE (Sections 4 and 5). We derive the exact forward equation for the one-point marginal density with an explicit conditional drift, make the required closure transparent, and construct the equiva-lent deterministic Probability Flow ODE that is compatible with automatic differentiation. The probability flow is not an externally imposed denoising process; it is the deterministic equivalent of the stochastic conservation-law dynamics. This is the theoretical result that enables the proposed deep learning integration. 3. Physics-informed score-matching architecture (Section 6). We formulate a learning architecture pairing a score network with an auxiliary advection-closure module, trainable via denoising score matching and a Fokker–Planck residual loss. Because the physics resid-ual is derived from the stochastic traffic model rather than from a generic diffusion prior, the learned distributional estimate is constrained by conservation-law dynamics. Previous transportation deep-learning formulations have rarely used a stochastic conservation-law distributional equation as the governing physics constraint (they used a deterministic PDE residual). 
+
+1.5 Paper organisation 
+
+The remainder of the paper is organised as follows. Section 2 reviews the literature on stochas-tic traffic modelling, traffic state estimation, physics-informed neural networks, and score-based generative modelling, and positions the present work relative to the closest prior studies. Sec-tion 3 formulates the Itô-type SLWR model and states the standing assumptions. Section 4 derives the exact one-point Fokker–Planck equation with complete proofs. Section 5 derives the equivalent probability flow ODE, establishes well-posedness, and provides physical interpre-tation of its three constituent terms. Section 6 presents the physics-informed score matching architecture, including the score network, the advection-closure module, the loss function, train-ing algorithm, and inference procedure. Section 7 discusses practical implications, limitations, extensions to the stochastic fundamental diagram at both link and network levels, and outlines the numerical validation programme currently underway. Section 8 concludes. 
+
+# 2 Literature Review 
+
+We organise the review along four threads: stochastic traffic flow modelling, traffic state esti-mation, physics-informed machine learning, and score-based generative modelling, all of which converge in the present work. Each subsection concludes with an explicit identification of the gap addressed by this paper. 
+
+2.1 Stochastic macroscopic traffic flow modelling 
+
+The deterministic LWR model (Lighthill and Whitham, 1955; Richards, 1956) is the foundational first-order macroscopic traffic flow model. Formulated as a scalar hyperbolic conservation law, it captures kinematic shock and rarefaction waves but treats all traffic variables as ensemble av-erages (Prigogine and Herman, 1971). Second-order extensions, including the Payne–Whitham model (Payne, 1971; Whitham, 1974) and the Aw–Rascle–Zhang (ARZ) model (Aw and Ras-cle, 2000; Zhang, 2002), introduce a momentum equation that can reproduce non-equilibrium phenomena such as stop-and-go waves. The generic second-order modelling (GSOM) frame-work of Lebacque et al. (2007) unifies many such models by coupling the LWR conservation law with dynamics of driver-specific attributes. Despite their descriptive power, these models are deterministic and cannot capture stochastic variability inherent in real traffic. 4Kinetic theory and the Prigogine–Herman programme. A distinct tradition of mod-elling traffic stochasticity originates from the kinetic theory of Prigogine and Herman (1971), later refined by Paveri-Fontana (1975) and surveyed by Klar and Wegener (1996). In this framework, the fundamental object is a velocity distribution function 𝑓 (𝑥, 𝑣, 𝑡 ), defined as the probability density of finding a vehicle at position 𝑥 with speed 𝑣 at time 𝑡 . Its evolution is governed by a Boltzmann-type integro-differential equation that accounts for vehicle interactions (acceleration, deceleration, and passing). The macroscopic LWR model can be recovered as the zeroth-moment closure of the kinetic equation, by integrating out the velocity variable. The Prigogine–Herman framework shares a conceptual affinity with the present work: both govern a probability density that evolves according to a physically derived equation. However, the two frameworks operate in fundamentally different spaces and serve different purposes. In kinetic theory, the probability is distributed over the speed variable 𝑣 and describes the hetero-geneity of vehicle speeds within a traffic stream at a given location; the stochasticity arises from vehicle-to-vehicle interactions at the mesoscopic scale. In our framework, the probability is dis-tributed over the macroscopic density variable ^𝜌 and quantifies the uncertainty in the aggregate traffic state itself; the stochasticity is generated by exogenous Brownian forcing on the conserva-tion law at the macroscopic scale. The governing equation in kinetic theory is a Boltzmann-type equation in (𝑥, 𝑣, 𝑡 )-space, whereas ours is a Fokker–Planck equation in (^ 𝜌, 𝑥, 𝑡 )-space. Perhaps most importantly, the purpose of kinetic theory is to derive macroscopic traffic models from microscopic principles, whereas our purpose is to estimate macroscopic traffic states from sparse sensor data, using the probability distribution as the vehicle for uncertainty quantification. Incorporating stochasticity into macroscopic traffic models has been pursued along several directions. 
+
+Randomised fundamental diagrams and noise-augmented models. Li et al. (2012) modified the speed–density function by including a random noise term and developed an ex-tended LWR model based on these random fundamental relationships. Ngoduy (2011) intro-duced stochastic fundamental diagrams in a multiclass first-order setting. Sumalee et al. (2011) proposed a stochastic cell transmission model (SCTM) using a zero-mean Gaussian random process to form a probabilistic density. Boel and Mihaylova (2006) developed a compositional stochastic model for real-time freeway simulation. A common criticism of these approaches is that adding noise terms directly to a deterministic equation can produce negative densities and lead to mean dynamics inconsistent with the deterministic counterpart (Jabari and Liu, 2012). 
+
+Stochastic models with explicit physical attribution. To address the consistency is-sue, Jabari and Liu (2012) developed a cell-transmission-based stochastic model in which the source of randomness is the uncertainty inherent in driver gap choice, represented by random state-dependent vehicle time headways. Jabari et al. (2014) subsequently derived probabilistic macroscopic traffic flow relations from Newell’s simplified car-following model, treating time headways and spacings as random variables. Martínez and Jin (2020) introduced heteroge-neous (vehicle-dependent) jam densities to formulate a stochastic LWR model in Lagrangian coordinates. 
+
+Random-parameter SLWR models. Fan et al. (2023) proposed a stochastic LWR (SLWR) model that randomises the free-flow speed 𝑢 𝑓 (𝜔 ) to represent driver heterogeneity, while hold-ing each individual driver’s behaviour constant along the road. The model is formulated as a conservation law parameterised by 𝑢 𝑓 (𝜔 ); once 𝜔 is sampled, the equation reduces to a fully deterministic PDE. The dynamically bi-orthogonal (DyBO) method, based on Karhunen–Loève expansion and Hermite polynomial representation of the stochastic basis, was applied to solve the model with approximately 5000 × speedup over the Monte Carlo method. Fan et al. (2024) 5extended this framework to nonlinear speed–density relationships (e.g., Drake’s exponential model) by embedding a Taylor series expansion technique within the DyBO formulation. The Fan–Du framework provides a physically well-motivated and computationally efficient approach to stochastic traffic modelling. However, the scope of stochasticity it captures is in-herently limited by the static-parameter formulation. First, because 𝑢 𝑓 (𝜔 ) is time-invariant, dynamic perturbations (weather changes, incidents, sensor noise) occurring during the traffic process lie outside the model’s scope. Second, the absence of a Brownian forcing term means that no Itô correction arises, there is no diffusion in density space, and no Fokker–Planck equa-tion governs the probability distribution of density. Ensemble statistics (mean and standard deviation) are computed by integrating over the static parameter distribution rather than by solving a distributional evolution equation. The present work extends the Fan–Du framework by introducing dynamic Brownian forcing, thereby enabling the Fokker–Planck and probability flow ODE machinery developed in Sections 4 and 5. This extension is consequential because the Fokker–Planck equation provides an exact one-point density-space evolution law at each location, with the unresolved spatial coupling isolated in a conditional drift coefficient. The associated probability flow ODE then furnishes a deterministic transport representation that can be embedded as a physics constraint in a transportation state-estimation model. 
+
+Itô-type stochastic conservation laws. In the broader PDE literature, stochastic conser-vation laws driven by Brownian motion have been studied extensively for well-posedness. Kim (2003) established existence for a stochastic scalar conservation law. Debussche and Vovelle (2010) proved existence and uniqueness of kinetic solutions. Hofmanová (2013) treated degen-erate parabolic SPDEs using kinetic formulations. Chen et al. (2012) studied well-posedness of stochastic conservation laws with spatially inhomogeneous flux. These works provide the math-ematical foundation for Itô-type stochastic LWR models but do not address estimation from data or machine learning integration. 
+
+Gap addressed. We are not aware of prior work that formulates an Itô-type stochastic LWR model with density-dependent, spatially structured Brownian noise and links it to a data-driven estimation framework. Our model extends the Fan–Du random-parameter SLWR (the latter being obtained when the noise coefficients 𝜎 𝑘 are set to zero and a separate random parameter-isation of the flux is introduced) while enabling the derivation of a Fokker–Planck equation and probability flow ODE. 
+
+2.2 Traffic state estimation 
+
+Traffic state estimation (TSE) reconstructs spatio-temporal traffic variables from sparse sensor data. Seo et al. (2017) provided a comprehensive survey categorising TSE methods as model-driven, data-driven, and hybrid. 
+
+Model-driven methods. Classical approaches apply Kalman filtering and its variants on top of macroscopic traffic models. Wang and Papageorgiou (2005) developed an extended Kalman filter (EKF) for the METANET model. Wang et al. (2008) demonstrated real-data testing of an adaptive EKF with the second-order model, and Wang et al. (2009) proposed an adaptive freeway traffic state estimator. Di et al. (2010) combined EKF with GPS data for arterial density estimation. Seo and Bayen (2017) developed an ARZ-based data fusion method. These methods are principled but depend heavily on the accuracy of the underlying deterministic model and on Gaussian assumptions that may not hold in congested regimes. Particle filters (Mihaylova et al., 2007) relax the Gaussian assumption but incur substantially higher computational cost. 6Data-driven methods. Neural networks (Zheng et al., 2019), convolutional and recurrent architectures (Ma et al., 2017; Wu et al., 2018), and Gaussian processes (Rodrigues et al., 2019) have been applied to TSE and short-term traffic prediction. Adeli and Ghosh-Dastidar (2004) used wavelet-based neural networks for freeway work zone modelling, and Ghosh-Dastidar and Adeli (2006) developed neural network-wavelet microsimulation models. Deep learning methods can capture complex spatio-temporal patterns but require large training datasets, offer no guarantees of physical consistency, and may produce density fields that violate conservation laws. 
+
+Hybrid methods: physics-informed deep learning (PIDL). Shi et al. (2021) introduced a PIDL framework that encodes the Greenshields-based ARZ model into a physics-informed neu-ral network (PINN) to regularise a data-driven estimation network. The architecture consists of a physics-uninformed neural network (PUNN) mapping (𝑥, 𝑡 ) to (^ 𝜌, ^𝑢 ), and a PINN computing PDE residuals ( ^𝑓 1, ^𝑓 2) as regularisation. The loss function combines data discrepancy (MSE on observations) and physical discrepancy (MSE on PDE residuals at auxiliary collocation points). Tested on the NGSIM US-101 dataset with both loop detector and probe vehicle configura-tions, PIDL outperformed pure neural networks and EKF in both estimation accuracy and data efficiency. The framework also demonstrated the ability to discover unknown model parame-ters ( 𝜌 max , 𝑢 max , 𝜏 ) simultaneously with state estimation. Subsequent work applied PIDL with data-fitted flux functions (Fan and Seibold, 2013) and extended the approach to network-level estimation. 
+
+Gap addressed. All existing TSE methods, including PIDL, produce point estimates of traf-fic states. Uncertainty quantification, when present, is applied post-hoc through techniques such as Monte Carlo dropout or ensemble methods, which are not grounded in the underlying traffic physics. Our framework produces a data-conditioned distributional estimate trained to approximately satisfy the one-point Fokker–Planck equation as a physics regulariser, providing physically grounded uncertainty quantification as a structural feature rather than a post-hoc addition. 
+
+2.3 Physics-informed neural networks 
+
+Physics-informed neural networks (PINNs) embed differential equations into the loss function of neural networks, enabling the solution of both forward and inverse problems for PDEs with limited data. The foundational work of Raissi et al. (2019) demonstrated the approach across fluid mechanics, quantum mechanics, and reaction-diffusion systems. PINNs have since been applied in heat transfer (Cai et al., 2021), materials science, and geophysics. In transportation, beyond the PIDL work of Shi et al. (2021), PINNs have been used for car-following model calibration (Mo et al., 2021), traffic flow forecasting with conservation law constraints (Huang et al., 2022), fundamental diagram estimation, and network-level traffic modelling. Nicodemus et al. (2022) applied PINNs to the Aw–Rascle–Zhang model for for-ward simulation. Lu et al. (2023) developed a differentiable programming framework for joint traffic state and queue profile estimation on layered computational graphs, demonstrating that representing deterministic traffic flow PDEs on a computational graph enables efficient gradi-ent computation via automatic differentiation for traffic estimation. All of these approaches, however, embed deterministic PDEs and produce deterministic, point-valued outputs. Several extensions have been proposed for uncertainty quantification. Yang et al. (2021) developed Bayesian PINNs (B-PINNs) that place priors on network weights and perform approximate Bayesian inference, capturing epistemic uncertainty. Ensemble PINNs aggregate predictions from multiple independently trained networks. Zhang et al. (2019) used latent-variable models within the PINN framework. However, these approaches treat uncertainty as a property of the 7network (epistemic), not as an intrinsic feature of the physical system (aleatoric). The distinc-tion is fundamental: epistemic uncertainty can in principle be reduced with more data, whereas aleatoric uncertainty arises from the stochastic nature of the governing dynamics and persists regardless of data volume. 
+
+Gap addressed. Our framework embeds a stochastic PDE (through its equivalent Fokker– Planck equation) into the PINN loss. The uncertainty in the output distribution is therefore aleatoric: it arises from the stochastic dynamics of traffic flow itself, and is governed by the physics, not by network parameter uncertainty. This represents a qualitatively different approach to UQ in physics-informed learning. 
+
+2.4 Score-based generative modelling and probability flow ODEs 
+
+Score-based generative models learn the score function ∇x log 𝑝 𝑡 (x) of a time-dependent data distribution and use it to generate samples via stochastic differential equations (SDEs) or the equivalent deterministic probability flow ODE. Song and Ermon (2019) introduced score match-ing with Langevin dynamics for generative modelling, and Ho et al. (2020) developed denoising diffusion probabilistic models (DDPMs). The unifying framework of Song et al. (2021) estab-lished that for any Itô SDE with drift f (x, 𝑡 ) and diffusion 𝑔 (𝑡 ), there exists a deterministic ODE, the probability flow ODE, whose marginal distributions match those of the SDE at every time. In the notation of Song et al. (2021), this ODE reads 
+
+dx =[︀ f (x, 𝑡 ) − 12 𝑔 (𝑡 )2∇x log 𝑝 𝑡 (x)]︀ d𝑡. (1) This SDE/ODE equivalence has become the theoretical backbone of modern diffusion models and has found applications in image generation (Dhariwal and Nichol, 2021), molecular design, audio synthesis, and scientific computing. In the mathematical community, probability flow ODEs have been connected to optimal transport theory. The Benamou–Brenier formula (Benamou and Brenier, 2000) characterises the optimal transport map as the velocity field minimising kinetic energy subject to the conti-nuity equation constraint. Flow matching (Lipman et al., 2023; Albergo et al., 2023) directly parameterises conditional vector fields along interpolation paths between noise and data. Recti-fied flow (Liu et al., 2023) iteratively straightens transport paths to enable few-step generation. Schrödinger bridges (De Bortoli et al., 2021; Chen et al., 2022) generalise optimal transport to the stochastic setting by finding the most likely diffusion process connecting two marginal distributions. 
+
+Neural ODEs and continuous normalising flows. A closely related development is the neural ODE framework of Chen et al. (2018), which parameterises the dynamics of a hidden state by a neural network and solves the resulting ODE with adaptive solvers, enabling back-propagation through the dynamics via the adjoint method. When the neural ODE is interpreted as a transport map acting on probability densities, one obtains a continuous normalising flow 
+
+(CNF): a learned velocity field whose flow pushes a simple base distribution to a complex target, with the log-density evolving via the instantaneous change-of-variables formula 𝜕 𝑡 log 𝑝 = −∇· 𝑣 𝜃 
+
+(Chen et al., 2018; Grathwohl et al., 2019). CNFs are structurally analogous to the probability flow ODE (1): both define a deterministic ODE whose flow transports probability mass. The difference is that in CNFs the velocity field is a free neural network, whereas in score-based models it is constrained by the score of the evolving density. Our framework shares the CNF perspective—the closed PF-ODE (23) is a continuity equation with a velocity field comprising a physics-derived drift closure and a learned score—but differs in two respects: (i) the velocity field is not freely parameterised but is structurally constrained by the stochastic conservation-law physics, and (ii) the evolution variable is not a latent code but the physical traffic density 
+
+^𝜌 , with spatial location 𝑥 entering as an external parameter. 8Despite this mathematical maturity, probability flow ODEs have not been applied to traffic state estimation. The principal obstacle is that the standard theory assumes a purely parabolic diffusion process, whereas traffic dynamics are governed by hyperbolic conservation laws. The drift in the traffic setting contains 𝜕 𝑥 𝑓 (𝜌 ), a spatial derivative of the flux function, which intro-duces characteristic wave propagation absent in the standard setting. 
+
+Gap addressed. We derive a probability flow ODE for a stochastic conservation law, in which parabolic evolution in density space is parameterised by physical location with the hyperbolic traffic physics retained implicitly through a conditional drift closure. Prior transportation stud-ies have not combined an exact one-point forward equation, explicit conditional-drift closure, and probability-flow representation into a score-based physics residual for stochastic traffic es-timation. 
+
+2.5 The macroscopic fundamental diagram and its stochastic variability 
+
+The idea that a well-defined relationship exists between aggregate flow and aggregate density at the macroscopic level has been present in traffic flow theory for decades, with roots in the kinetic theory of Prigogine and Herman (1971) and early treatments of two-fluid models. The concept was reinvigorated at the network level by Geroliminis and Daganzo (2008), who provided large-scale empirical evidence for a reproducible network-level MFD using detector data from Yokohama, Japan. Since then, the network MFD has been adopted as a tool for perimeter control, congestion pricing, and regional traffic monitoring. A persistent feature of the empirical MFD is scatter : at the same average density, different realisations of traffic produce different aggregate flows. Mazloumian et al. (2010) showed that this scatter is largely explained by the spatial variability of vehicle densities across the network. Leclercq et al. (2014) compared estimation methods and confirmed the sensitivity of the MFD shape to the spatial distribution of congestion. Ambühl et al. (2023) connected congestion propagation patterns to MFD hysteresis using percolation theory. Despite the empirical recognition that MFD scatter is not random noise but a systematic consequence of spatial heterogeneity, no principled stochastic framework currently exists for the MFD. Existing treatments either fit statistical models (e.g., variance as a function of ¯𝜌 ) without physical grounding, or simulate scatter via microsimulation without connecting it to macro-scopic stochastic dynamics. The framework developed in this paper provides the mathematical machinery to fill this gap: the spatially structured Brownian forcing in the Itô-type SLWR generates precisely the kind of spatial density heterogeneity that drives MFD scatter, and the Fokker–Planck equation can in principle be aggregated to yield a distributional evolution law at the network level. We elaborate on this extension direction in Section 7. 
+
+2.6 Summary of research gaps and contributions 
+
+The foregoing review reveals three interrelated gaps in the literature that this paper addresses. 
+
+Gap 1: The absence of a distributional evolution equation for macroscopic traffic density. Stochastic traffic flow models fall into two categories. On the one hand, random-parameter models such as the Fan–Du SLWR (Fan et al., 2023, 2024) treat uncertainty as static parametric variability: once the random parameter is drawn, the system is deterministic, and no equation governs how the probability distribution of density evolves in time. On the other hand, the Prigogine–Herman kinetic theory (Prigogine and Herman, 1971; Paveri-Fontana, 1975) does provide a distributional evolution equation (the Boltzmann equation for the speed distribution), but it operates at the mesoscopic scale and in speed space, not at the macroscopic scale in density space. Meanwhile, Itô-type stochastic conservation laws have been studied in the PDE theory 9community (Kim, 2003; Debussche and Vovelle, 2010; Hofmanová, 2013), but purely for well-posedness; they have never been connected to traffic estimation or machine learning. This paper addresses that gap by formulating an Itô-type stochastic LWR model and deriving the Fokker– Planck equation that governs the one-point marginal density of traffic density (Section 4). This equation provides an exact one-point forward law for the macroscopic traffic-density distribution under dynamic stochastic forcing, together with a clear statement of the closure required for computation. 
+
+Gap 2: The lack of a deterministic equivalent that can serve as a physics con-straint in neural networks. Even if a stochastic traffic model were available, embedding it directly into a physics-informed neural network would be impractical: stochastic PDEs require sampling-based solvers (e.g., Monte Carlo), which are incompatible with the backpropagation-based training of neural networks. The probability flow ODE, introduced by Song et al. (2021) in the context of generative modelling, provides a deterministic ODE whose marginal distributions match those of the original SDE, making it amenable to PINN-style residual evaluation via auto-matic differentiation. However, the existing theory assumes purely parabolic diffusion processes and does not apply to hyperbolic conservation laws. Here the probability-flow construction is adapted to the exact one-point forward equation derived from a stochastic conservation law, yielding a probability flow ODE (Section 5) in which the density-space evolution is parabolic while the hyperbolic traffic physics is retained implicitly through a conditional drift closure. Once the closure is specified, the resulting ODE can be evaluated pointwise and differentiated through a neural network, enabling distributional physics constraints that were previously inac-cessible. 
+
+Gap 3: Traffic state estimation methods produce point estimates without physically grounded uncertainty quantification. All existing TSE methods (model-driven (Wang et al., 2008), data-driven (Zheng et al., 2019), and hybrid (Shi et al., 2021)) output a single best estimate of traffic density and velocity. Uncertainty quantification, when attempted, is applied post-hoc through techniques such as Monte Carlo dropout, ensemble methods, or Bayesian neural network approximations (Yang et al., 2021). These approaches capture epistemic uncertainty (arising from limited data or model capacity) but not aleatoric uncertainty (arising from the intrinsic stochasticity of traffic dynamics). Moreover, the resulting uncertainty estimates are not required to satisfy any traffic physics. We address this gap by designing a physics-informed score matching framework (Section 6) in which the probability flow ODE serves as a distributional physics constraint during training. The output is a distributional estimate 𝑝 𝜃 (^ 𝜌 ; 𝑥, 𝑡 ), trained to approximately satisfy the Fokker–Planck equation. Point estimates, credible intervals, and risk metrics (e.g., the probability that density exceeds a congestion threshold) are derived as functionals of this estimate. 
+
+Relation among the three contributions. The three contributions are linked. The Itô-type SLWR model (Contribution 1) yields a Fokker–Planck equation that is absent from the static-parameter formulation of Fan et al. The probability flow ODE (Contribution 2) converts that equation into a deterministic form compatible with neural network training, while keeping the drift closure explicit. The physics-informed score-matching method (Contribution 3) then uses the resulting probability flow ODE as a distributional regulariser for data-conditioned distributional estimation from sparse sensor data. Table 1 provides a dimension-by-dimension comparison with the two closest prior works. 10 Table 1: Positioning of the proposed framework relative to the closest prior works. 
+
+Fan–Du SLWR 
+
+> CACIE 2023; Trans. B 2024
+
+Shi–Di PIDL 
+
+> AAAI 2021
+
+This paper 
+
+Stochastic model Random-parameter PDE None (det. ARZ) Itô SPDE Distributional eq. None N/A Fokker–Planck Physics in learn-ing Forward solver Det. PDE residual PF-ODE residual Output Mean & std Point estimate Full 𝑝 𝜃 (^ 𝜌 ; 𝑥, 𝑡 )
+
+UQ mechanism Parametric Post-hoc only Intrinsic (score) Dynamic noise No No Yes ( d𝑊 𝑡 )Sensor data fusion Not designed Core capability Core capability 
+
+# 3 Model Formulation 
+
+3.1 Probability space and spatial domain 
+
+Let (Ω , ℱ, {ℱ 𝑡 }𝑡 ≥0, P) be a complete filtered probability space satisfying the usual conditions (right-continuity and completeness). Fix a bounded highway segment 𝒟 = [0 , 𝐿 ] ⊂ R and a time horizon 𝑇 > 0. Write 𝑄 𝑇 := 𝒟 × (0 , 𝑇 ]. Let {𝑊 𝑘 𝑡 }𝐾 𝑘 =1 be 𝐾 mutually independent standard (ℱ𝑡 )-Brownian motions. 
+
+3.2 The Itô-type stochastic LWR model 
+
+Definition 3.1 (Itô-type SLWR with finite-dimensional noise) . The stochastic Lighthill–Whitham– Richards (SLWR) equation reads 
+
+d𝜌 (𝑥, 𝑡 ) = −𝜕 𝑥 𝑓 (︀ 𝜌 (𝑥, 𝑡 ))︀ d𝑡 +
+
+> 𝐾
+
+∑︁ 
+
+> 𝑘 =1
+
+𝜎 𝑘 (︀ 𝜌 (𝑥, 𝑡 ))︀ 𝑒 𝑘 (𝑥 ) d 𝑊 𝑘 𝑡 , (𝑥, 𝑡 ) ∈ 𝑄 𝑇 , (2) with initial data 𝜌 (𝑥, 0) = 𝜌 0(𝑥 ) and boundary conditions on 𝜕 𝒟 appropriate for the traffic scenario. 
+
+Remark 3.2 (On the form of the stochastic forcing) . The noise in (2) enters as a source-type forcing rather than in divergence form. Consequently, pathwise conservation of the total ve-hicle count ∫︀ 𝒟 𝜌 d𝑥 is not preserved: integrating (2) over 𝒟 yields a stochastic fluctuation ∑︀ 
+
+> 𝑘
+
+(∫︀ 𝜎 𝑘 (𝜌 ) 𝑒 𝑘 (𝑥 ) d 𝑥 ) d 𝑊 𝑘 𝑡 in addition to the boundary flux. Physically, this formulation rep-resents exogenous random perturbations—demand fluctuations, incidents, weather-induced ca-pacity changes, and on/off-ramp variability—that act as local sources and sinks of density on a bounded segment. Such perturbations are ubiquitous in real freeway corridors. At the level of expected mass, integrating over 𝒟 and taking expectations yields 𝜕 𝑡 ∫︀ 𝒟 E[𝜌 ] d 𝑥 = −E[𝑓 (𝜌 )] |𝜕 𝒟 
+
+under appropriate integrability conditions, so the mean mass balance retains the conservation-law structure up to boundary flux. The endpoint vanishing condition 𝜎 𝑘 (0) = 𝜎 𝑘 (𝜌 max ) = 0 
+
+(Assumption 2(i)) ensures that the noise intensity vanishes at the physical density bounds; state-space invariance of the interval [0 , 𝜌 max ] is imposed directly via Assumption 4(iii) rather than derived from the endpoint condition alone. An alternative formulation placing the noise inside the spatial divergence, d𝜌 = −𝜕 𝑥 [𝑓 (𝜌 ) d 𝑡 +∑︀ 𝑘 𝜎 𝑘 (𝜌 ) 𝑒 𝑘 (𝑥 ) d 𝑊 𝑘 𝑡 ], would preserve pathwise conservation but introduces a fundamentally different SPDE whose analysis requires separate treatment. We adopt the source-type formulation here because it yields a tractable one-point forward equation with standard Itô calculus, while the resulting non-conservation is physically interpretable and bounded by the noise amplitude. 11 The model components are governed by five standing assumptions. 
+
+Assumption 1 (Flux function) . 𝑓 ∈ 𝐶 2([0 , 𝜌 max ]) with 𝑓 (𝜌 ) = 𝜌 𝑣 (𝜌 ), where 𝑣 : [0 , 𝜌 max ] →
+
+[0 , 𝑢 𝑓 ] is a decreasing speed–density relation satisfying 𝑣 (0) = 𝑢 𝑓 > 0 and 𝑣 (𝜌 max ) = 0 . The flux is concave: 𝑓 ′′ (𝜌 ) ≤ 0 on [0 , 𝜌 max ] with 𝑓 ′′ (𝜌 ) < 0 for a.e. 𝜌 .
+
+Remark 3.3 (Generality of the flux) . Assumption 1 is satisfied by smooth concave fundamental diagrams, including Greenshields ( 𝑓 (𝜌 ) = 𝑢 𝑓 𝜌 (1 −𝜌/𝜌 max )) and Drake ( 𝑓 (𝜌 ) = 𝑢 𝑓 𝜌 exp( −𝜌 2/(2 𝑘 2 
+
+> 𝑜
+
+)) ,cf. Fan et al., 2024). Piecewise-linear models such as the triangular fundamental diagram do not satisfy the 𝐶 2 requirement; extending the theory to piecewise-smooth flux functions would require a separate treatment. 
+
+Assumption 2 (Noise structure) . For each 𝑘 = 1 , . . . , 𝐾 :(i) 𝜎 𝑘 ∈ 𝐶 3([0 , 𝜌 max ]) with 𝜎 𝑘 (0) = 𝜎 𝑘 (𝜌 max ) = 0 ;(ii) 𝑒 𝑘 ∈ 𝐶 3(𝒟 ) are deterministic spatial basis functions; (iii) (Non-degeneracy) Σ2(𝜌, 𝑥 ) := ∑︀ 𝐾 𝑘 =1 𝜎 𝑘 (𝜌 )2𝑒 𝑘 (𝑥 )2 > 0 for all (𝜌, 𝑥 ) ∈ (0 , 𝜌 max ) × 𝒟 .
+
+Remark 3.4 (Regularity of the noise coefficients) . The 𝐶 3 regularity in Assumption 2(i)–(ii) is stronger than what is needed for the Fokker–Planck derivation alone (which requires only 
+
+𝐶 2). The additional derivative is needed in the score-form residual (29): the term 𝜕 2^𝜌 𝑣 𝜃,𝜑 in-volves 𝜕 3^𝜌 Σ2 through the expansion of the probability-flow velocity. In practice, typical noise parameterisations such as 𝜎 𝑘 (𝜌 ) = 𝛼 𝑘 𝜌 (𝜌 max − 𝜌 ) are 𝐶 ∞, so this requirement is not restrictive. 
+
+Assumption 3 (Initial data) . 𝜌 0 ∈ 𝐶 1(𝒟 ) with 0 < 𝜌 0(𝑥 ) < 𝜌 max for all 𝑥 ∈ 𝒟 .
+
+Assumption 4 (Regularity regime) . The solution 𝜌 (·, ·) of (2) satisfies: (i) for each 𝑡 , the map 𝑥 ↦ → 𝜌 (𝑥, 𝑡 ) is in 𝐶 1(𝒟 ) P-a.s.; (ii) for each 𝑥 , the process 𝑡 ↦ → 𝜌 (𝑥, 𝑡 ) is a continuous semimartingale; (iii) 0 < 𝜌 (𝑥, 𝑡 ) < 𝜌 max for all (𝑥, 𝑡 ) ∈ 𝑄 𝑇 , P-a.s. (no shock formation during 
+
+[0 , 𝑇 ]). 
+
+Remark 3.5 (Practical scope of Assumption 4) . This assumption is satisfied on the entire estima-tion horizon for sub-critical (free-flow) traffic states with smooth initial data, and for arbitrary smooth initial data over sufficiently short time intervals before the first shock forms. For traffic scenarios that include shocks, the viscous regularisation discussed in Theorem 5.7 below provides a systematic extension in which Assumption 4 holds globally (Section 5). 
+
+Assumption 5 (Existence of a smooth marginal density) . For each (𝑥, 𝑡 ) ∈ 𝑄 𝑇 , the random variable 𝜌 (𝑥, 𝑡 ) possesses a probability density 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ) with respect to Lebesgue measure on 
+
+(0 , 𝜌 max ), and 𝑝 ∈ 𝐶 2,1,1((0 , 𝜌 max ) × 𝑄 𝑇 ).
+
+Remark 3.6 (On Assumption 5) . The existence of a smooth marginal density for finite-dimensional SDEs with non-degenerate diffusion is motivated by Malliavin-calculus techniques. In the present setting, where the pointwise process 𝑌 𝑥 𝑡 inherits its noise from a spatially projected finite-dimensional Brownian motion, the non-degeneracy condition in Assumption 2(iii) suggests that a smooth one-point density should exist, but verifying this for the full SPDE point-evaluation requires care that goes beyond standard finite-dimensional results. We therefore impose As-sumption 5 directly rather than deriving it. 
+
+3.3 Aggregate diffusion coefficient 
+
+Define the aggregate diffusion coefficient 
+
+𝐷 (𝜌, 𝑥 ) := 12
+
+> 𝐾 ∑︁
+> 𝑘 =1 [︀
+
+𝜎 𝑘 (𝜌 ) 𝑒 𝑘 (𝑥 )]︀ 2 = 12 Σ2(𝜌, 𝑥 ). (3) 12 3.4 Distinction from the Fan–Du random-parameter SLWR 
+
+The SLWR of Fan et al. (2023, 2024) reads 𝜕 𝑡 𝑘 + 𝜕 𝑥 [𝑘 𝑣 (𝑘 ; 𝑢 𝑓 (𝜔 ))] = 0 where 𝑢 𝑓 (𝜔 ) is a time-invariant, spatially homogeneous random parameter. Once 𝜔 is sampled, the equation is deter-ministic. Key structural differences: (a) Equation (2) contains Brownian motion d𝑊 𝑘 𝑡 ; Fan–Du does not. (b) No Fokker–Planck equation arises in the Fan–Du framework (no diffusion mechanism in density space). (c) Setting 𝜎 𝑘 ≡ 0 in (2) reduces it to a deterministic conservation law; with a separate random-parameter specification of the flux 𝑓 (𝜌 ; 𝑢 𝑓 (𝜔 )) , this connects to the Fan–Du for-mulation. Our model extends that framework by introducing dynamic Brownian forcing. 
+
+3.5 Summary of notation 
+
+For the reader’s convenience, Table 2 collects the principal symbols used in the mathematical development (Sections 4 to 6). 
+
+# 4 The Fokker–Planck Equation 
+
+4.1 Pointwise semimartingale and conditional drift 
+
+At each fixed spatial location 𝑥 ∈ 𝒟 , define the scalar process 
+
+𝑌 𝑥 𝑡 := 𝜌 (𝑥, 𝑡 ).
+
+Under Assumption 4, 𝑌 𝑥 𝑡 is a continuous semimartingale and satisfies 
+
+d𝑌 𝑥 𝑡 = 𝛽 𝑥 𝑡 d𝑡 +
+
+> 𝐾 ∑︁
+> 𝑘 =1
+
+𝜎 𝑘 (𝑌 𝑥 𝑡 ) 𝑒 𝑘 (𝑥 ) d 𝑊 𝑘 𝑡 , (4) with pathwise drift 
+
+𝛽 𝑥 𝑡 := −𝑓 ′(𝑌 𝑥 𝑡 ) 𝜕 𝑥 𝜌 (𝑥, 𝑡 ). (5) The dependence on 𝜕 𝑥 𝜌 shows that the pointwise process is not closed when viewed in isolation. In transportation terms, the local stochastic density evolution still carries unresolved information about the upstream and downstream traffic state through the conservation-law gradient. The correct one-point forward equation therefore involves a conditional drift coefficient rather than the raw pathwise drift. 
+
+Definition 4.1 (Conditional drift coefficient) . For (^ 𝜌, 𝑥, 𝑡 ) ∈ (0 , 𝜌 max ) × 𝑄 𝑇 , define 
+
+𝑏 (^ 𝜌, 𝑥, 𝑡 ) := E[𝛽 𝑥 𝑡 | 𝑌 𝑥 𝑡 = ^ 𝜌 ] = E[︀ −𝑓 ′(𝜌 (𝑥, 𝑡 )) 𝜕 𝑥 𝜌 (𝑥, 𝑡 ) | 𝜌 (𝑥, 𝑡 ) = ^ 𝜌 ]︀ . (6) 
+
+Remark 4.2 (Transportation interpretation) . The coefficient 𝑏 (^ 𝜌, 𝑥, 𝑡 ) is the one-point imprint of the LWR advection term. It is exact, but it is not closed at the one-point level unless it is approximated, modelled, or learned. 
+
+4.2 Statement and proof 
+
+Proposition 4.3 (Exact one-point Fokker–Planck equation) . Suppose Assumptions 1–5 hold and that the conditional drift coefficient 𝑏 in (6) is measurable and locally bounded. Then, for each fixed 𝑥 ∈ 𝒟 , the one-point marginal density 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ) of 𝑌 𝑥 𝑡 = 𝜌 (𝑥, 𝑡 ) satisfies 
+
+𝜕 𝑡 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ) = −𝜕 ^𝜌 [𝑏 (^ 𝜌, 𝑥, 𝑡 ) 𝑝 (^ 𝜌 ; 𝑥, 𝑡 )] + 12 𝜕 2^𝜌 [︁ Σ2(^ 𝜌, 𝑥 ) 𝑝 (^ 𝜌 ; 𝑥, 𝑡 )]︁ , (7) 13 with initial condition 
+
+𝑝 (^ 𝜌 ; 𝑥, 0) = 𝛿 (^ 𝜌 − 𝜌 0(𝑥 )) , (8) 
+
+understood in the distributional sense (equivalently, one may begin from a mollified initial law 
+
+𝛿 𝜖 (^ 𝜌 − 𝜌 0(𝑥 )) and let 𝜖 ↓ 0), and zero probability-flux boundary condition 
+
+𝐽 (^ 𝜌 ; 𝑥, 𝑡 ) := 𝑏 (^ 𝜌, 𝑥, 𝑡 ) 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ) − 12 𝜕 ^𝜌 [︁ Σ2(^ 𝜌, 𝑥 ) 𝑝 (^ 𝜌 ; 𝑥, 𝑡 )]︁ = 0 , ^𝜌 ∈ { 0, 𝜌 max }. (9) 
+
+Proof. Fix 𝑥 ∈ 𝒟 and let 𝑌 𝑡 := 𝑌 𝑥 𝑡 . For any test function 𝜙 ∈ 𝐶 2 
+
+> 𝑐
+
+((0 , 𝜌 max )) , Itô’s formula applied to (4) yields 
+
+d𝜙 (𝑌 𝑡 ) = 𝜙 ′(𝑌 𝑡 ) 𝛽 𝑡 d𝑡 + 12 𝜙 ′′ (𝑌 𝑡 ) Σ 2(𝑌 𝑡 , 𝑥 ) d 𝑡 + 𝜙 ′(𝑌 𝑡 )
+
+> 𝐾
+
+∑︁ 
+
+> 𝑘 =1
+
+𝜎 𝑘 (𝑌 𝑡 )𝑒 𝑘 (𝑥 ) d 𝑊 𝑘 𝑡 . (10) Taking expectations and using the martingale property of the stochastic integral, 
+
+dd𝑡 E[𝜙 (𝑌 𝑡 )] = E[︂ 𝜙 ′(𝑌 𝑡 )𝛽 𝑡 + 12 𝜙 ′′ (𝑌 𝑡 )Σ 2(𝑌 𝑡 , 𝑥 )]︂ . (11) By conditioning on 𝑌 𝑡 and using Definition 4.1, 
+
+E[𝜙 ′(𝑌 𝑡 )𝛽 𝑡 ] = E[︀ E[︀ 𝜙 ′(𝑌 𝑡 )𝛽 𝑡 | 𝑌 𝑡 ]︀]︀ = E[︀ 𝜙 ′(𝑌 𝑡 ) E[𝛽 𝑡 | 𝑌 𝑡 ]]︀ 
+
+=∫︁ 
+
+> 𝜌 max
+> 0
+
+𝜙 ′(^ 𝜌 ) 𝑏 (^ 𝜌, 𝑥, 𝑡 ) 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ) d^ 𝜌, (12) and similarly 
+
+E[︂ 12 𝜙 ′′ (𝑌 𝑡 )Σ 2(𝑌 𝑡 , 𝑥 )]︂ = 12∫︁ 
+
+> 𝜌 max
+> 0
+
+𝜙 ′′ (^ 𝜌 ) Σ 2(^ 𝜌, 𝑥 ) 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ) d^ 𝜌. (13) Therefore, ∫︁ 
+
+> 𝜌 max
+> 0
+
+𝜙 (^ 𝜌 ) 𝜕 𝑡 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ) d^ 𝜌 =∫︁ 
+
+> 𝜌 max
+> 0
+
+𝜙 ′(^ 𝜌 ) 𝑏 (^ 𝜌, 𝑥, 𝑡 ) 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ) d^ 𝜌 + 12∫︁ 
+
+> 𝜌 max
+> 0
+
+𝜙 ′′ (^ 𝜌 ) Σ 2(^ 𝜌, 𝑥 ) 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ) d^ 𝜌. 
+
+(14) Integrating by parts in ^𝜌 gives ∫︁ 
+
+> 𝜌 max
+> 0
+
+𝜙 𝜕 𝑡 𝑝 d^ 𝜌 =∫︁ 
+
+> 𝜌 max
+> 0
+
+𝜙 [︂ −𝜕 ^𝜌 (𝑏𝑝 ) + 12 𝜕 2^𝜌 (Σ 2𝑝 )]︂ d^ 𝜌. 
+
+Since this holds for all 𝜙 ∈ 𝐶 2 
+
+> 𝑐
+
+((0 , 𝜌 max )) , (7) follows in the distributional sense; the assumed regularity upgrades it to the classical form. The zero-flux condition (9) expresses conservation of total probability on [0 , 𝜌 max ].
+
+Remark 4.4 (On the regularity of the conditional drift) . The hypothesis that 𝑏 (^ 𝜌, 𝑥, 𝑡 ) is mea-surable and locally bounded is a non-trivial regularity condition on the joint law of the SPDE solution. The pathwise drift 𝛽 𝑥 𝑡 = −𝑓 ′(𝜌 (𝑥, 𝑡 )) 𝜕 𝑥 𝜌 (𝑥, 𝑡 ) involves the spatial gradient 𝜕 𝑥 𝜌 , which is itself a random field. The conditional expectation 𝑏 (^ 𝜌, 𝑥, 𝑡 ) = E[−𝑓 ′(𝜌 ) 𝜕 𝑥 𝜌 | 𝜌 (𝑥, 𝑡 ) = ^ 𝜌 ] inte-grates over all spatial-gradient configurations consistent with the local density equalling ^𝜌 ; its boundedness therefore depends on the joint distribution of (𝜌, 𝜕 𝑥 𝜌 ). Under the smooth-regime Assumption 4, 𝜕 𝑥 𝜌 is bounded pathwise and the conditional expectation inherits local bound-edness. Verifying this condition from first principles in broader regimes would require detailed regularity estimates on the SPDE that lie outside the scope of this paper. 
+
+Remark 4.5 (Scope of the one-point equation) . Equation (7) is a one-point forward equation parametrised by physical location 𝑥 . It is not, by itself, a closed PDE in (^ 𝜌, 𝑥, 𝑡 ) with hyperbolic transport in 𝑥 . The conservation-law structure enters through the conditional drift coefficient 
+
+𝑏 (^ 𝜌, 𝑥, 𝑡 ), which carries the unresolved spatial coupling. 14 Remark 4.6 (Practical closure for transportation methodology) . To obtain a computable surro-gate for traffic state estimation, one may introduce a closure of the form 
+
+𝑏 (^ 𝜌, 𝑥, 𝑡 ) ≈ 𝑏 𝜑 (^ 𝜌, 𝑥, 𝑡 ), (15) with either a direct auxiliary drift model 𝑏 𝜑 or a structured closure such as 
+
+𝑏 𝜑 (^ 𝜌, 𝑥, 𝑡 ) = −𝑓 ′(^ 𝜌 ) 𝑚 𝜑 (^ 𝜌, 𝑥, 𝑡 ). (16) A narrower mean-field approximation is 
+
+𝑏 𝜑 (^ 𝜌, 𝑥, 𝑡 ) = −𝑓 ′(^ 𝜌 ) 𝜕 𝑥 ¯𝜌 𝜑 (𝑥, 𝑡 ), (17) where ¯𝜌 𝜑 is an auxiliary mean-state model. In the present paper, this is best described as a transportation-oriented closure assumption rather than part of the exact theorem. 
+
+# 5 The Probability Flow ODE 
+
+5.1 Reformulation as a continuity equation 
+
+Lemma 5.1 (Continuity equation form of the one-point FPE) . Assume 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ) > 0 on 
+
+(0 , 𝜌 max ) × 𝑄 𝑇 and define the score 
+
+𝑠 (^ 𝜌 ; 𝑥, 𝑡 ) := 𝜕 ^𝜌 log 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ). (18) 
+
+Then equation (7) is equivalent to 
+
+𝜕 𝑡 𝑝 + 𝜕 ^𝜌 [︀ 𝑣 PF (^ 𝜌, 𝑥, 𝑡 ) 𝑝 ]︀ = 0 , (19) 
+
+with probability-flow velocity 
+
+𝑣 PF (^ 𝜌, 𝑥, 𝑡 ) = 𝑏 (^ 𝜌, 𝑥, 𝑡 ) − 12 𝜕 ^𝜌 Σ2(^ 𝜌, 𝑥 ) − 12 Σ2(^ 𝜌, 𝑥 )𝜕 ^𝜌 log 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ). (20) 
+
+Proof. Starting from (7), use the product rule: 
+
+12 𝜕 2^𝜌 [Σ 2𝑝 ] = 12 𝜕 ^𝜌 [︁ (𝜕 ^𝜌 Σ2) 𝑝 + Σ 2𝜕 ^𝜌 𝑝 ]︁ 
+
+= 12 𝜕 ^𝜌 [︁(︀ 𝜕 ^𝜌 Σ2 + Σ 2𝜕 ^𝜌 log 𝑝 )︀ 𝑝 ]︁ . (21) Substituting this identity into (7) yields 
+
+𝜕 𝑡 𝑝 = −𝜕 ^𝜌 [︁(︁ 𝑏 − 12 𝜕 ^𝜌 Σ2 − 12 Σ2𝜕 ^𝜌 log 𝑝 )︁ 𝑝 ]︁ ,
+
+which is exactly (19). 
+
+5.2 Statement and proof 
+
+Proposition 5.2 (Probability-flow representation of the one-point marginals) . Under the as-sumptions of Lemma 5.1, and provided that 𝑣 PF is locally Lipschitz in ^𝜌 on (0 , 𝜌 max ) (see The-orem 5.5 for sufficient conditions), the following holds. Fix any 𝑡 0 > 0 at which the one-point marginal 𝑝 (·; 𝑥, 𝑡 0) is absolutely continuous with 𝑝 > 0 on (0 , 𝜌 max ). Then the deterministic ODE 
+
+d^ 𝜌 
+
+d𝑡 = 𝑏 (^ 𝜌, 𝑥, 𝑡 )
+
+⏟ ⏞
+
+> (I) conditional advection
+
+− 12 𝜕 ^𝜌 Σ2(^ 𝜌, 𝑥 )
+
+⏟ ⏞
+
+> (II) Itô drift
+
+− 12 Σ2(^ 𝜌, 𝑥 )𝜕 ^𝜌 log 𝑝 (^ 𝜌 ; 𝑥, 𝑡 )
+
+⏟ ⏞
+
+> (III) score
+
+, (22) 
+
+transports 𝑝 (·; 𝑥, 𝑡 0) forward: if ^𝜌 (𝑡 0) ∼ 𝑝 (·; 𝑥, 𝑡 0), then ^𝜌 (𝑡 ) ∼ 𝑝 (·; 𝑥, 𝑡 ) for all 𝑡 ∈ [𝑡 0, 𝑇 ]. With a computable closure 𝑏 𝜑 , the practical transportation-model counterpart is 
+
+d^ 𝜌 
+
+d𝑡 = 𝑏 𝜑 (^ 𝜌, 𝑥, 𝑡 ) − 12 𝜕 ^𝜌 Σ2(^ 𝜌, 𝑥 ) − 12 Σ2(^ 𝜌, 𝑥 )𝜕 ^𝜌 log 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ). (23) 15 Proof. For 𝑡 ≥ 𝑡 0, the one-point law 𝑝 (·; 𝑥, 𝑡 ) is absolutely continuous and positive on (0 , 𝜌 max ) by assumption, so 𝑣 PF is well-defined. Equation (19) is the Liouville equation associated with the velocity field (20). Under the Lipschitz regularity assumed above (established in Theorem 5.5(i)– (ii)), the characteristic flow is well-defined and pushes forward 𝑝 (·; 𝑥, 𝑡 0) to 𝑝 (·; 𝑥, 𝑡 ) for each 
+
+𝑡 ∈ [𝑡 0, 𝑇 ]. Equation (23) is the computable transportation surrogate obtained when the exact conditional drift 𝑏 is replaced by a closure model 𝑏 𝜑 .
+
+Remark 5.3 (Initial time) . The FPE initial condition (8) is a delta mass, which is measure-valued rather than absolutely continuous. A deterministic transport equation cannot spread a point mass into a smooth density, so the PF-ODE representation applies strictly for 𝑡 > 0, once the parabolic diffusion has already spread the law into a smooth positive density. In practice, one may equivalently formulate the PF-ODE from a mollified initial law 𝑝 𝜖 (^ 𝜌 ; 𝑥, 0) = 𝛿 𝜖 (^ 𝜌 − 𝜌 0(𝑥 )) 
+
+and consider the limit 𝜖 ↓ 0; this is consistent with the mollified initial condition used in the boundary-condition loss ℒBC of the training algorithm (Section 6.4). 
+
+5.3 Physical decomposition 
+
+The three terms in (22) have distinct transportation interpretations. 
+
+Term (I): Conditional advection. The coefficient 𝑏 (^ 𝜌, 𝑥, 𝑡 ) is the one-point imprint of the LWR transport term. It is not a free drift; it is the conditional expectation of the pathwise advection −𝑓 ′(𝜌 )𝜕 𝑥 𝜌 given that the local density equals ^𝜌 .
+
+Term (II): Noise-induced drift (Itô correction). This term is induced by state-dependent diffusion. If the diffusion intensity is strongest near capacity, it systematically redistributes probability away from the most noise-sensitive density range. 
+
+Term (III): Score-driven correction. This term is the deterministic correction that converts stochastic spreading into an equivalent probability-flow transport. In the learning architecture, it is the component represented by the score network. 
+
+Remark 5.4 (Contrast with PIDL) . In the PIDL framework of Shi et al. (2021), the PINN residual enforces that a single trajectory satisfies a deterministic traffic-flow model. Here, the residual operates at the distributional level and requires both a score representation and a transportation closure for the unresolved advection term. 
+
+5.4 Well-posedness 
+
+Proposition 5.5 (Interior well-posedness and boundary compatibility) . Assume that 𝑏 ∈ 𝐶 1((0 , 𝜌 max )×
+
+𝑄 𝑇 ), Σ2 ∈ 𝐶 2([0 , 𝜌 max ] × 𝒟 ), and 𝑝 ∈ 𝐶 2,1,1((0 , 𝜌 max ) × 𝑄 𝑇 ) with 𝑝 > 0 on the interior. Then: 
+
+(i) On every compact interval 𝐼 𝜀 = [ 𝜀, 𝜌 max − 𝜀 ], the score 𝑠 = 𝜕 ^𝜌 log 𝑝 and the velocity 𝑣 PF 
+
+are bounded and locally Lipschitz in ^𝜌 .
+
+(ii) For every initial value ^𝜌 (0) ∈ 𝐼 𝜀 , ODE (22) has a unique solution up to the first exit time from 𝐼 𝜀 .
+
+(iii) If, in addition, the boundary compatibility conditions 
+
+lim inf  
+
+> ^𝜌 ↓0
+
+𝑣 PF (^ 𝜌, 𝑥, 𝑡 ) ≥ 0, lim sup 
+
+> ^𝜌 ↑𝜌 max
+
+𝑣 PF (^ 𝜌, 𝑥, 𝑡 ) ≤ 0, (24) 
+
+hold for all (𝑥, 𝑡 ) ∈ 𝑄 𝑇 , then the interval [0 , 𝜌 max ] is forward invariant and the solution exists on [0 , 𝑇 ].Proof. Part (i) follows from the assumed smoothness of 𝑏 , Σ2, and 𝑝 , together with positivity of 𝑝 on the interior. Part (ii) is a direct application of the Picard–Lindelöf theorem. Part (iii) follows from the inward-pointing boundary condition in (24). 16 Remark 5.6 (Scope of the well-posedness statement) . The well-posedness statement established here is local to the interior state space, together with compatibility at the physical boundaries. A global result does not follow from 𝑓 ′(0) > 0 and 𝑓 ′(𝜌 max ) < 0 alone, since these conditions do not determine the sign of the conditional drift at the boundaries. 
+
+Remark 5.7 (Shock regime: analysis and practical considerations) . When Assumption 4 fails and shocks form, the pointwise conditional drift 𝑏 (^ 𝜌, 𝑥, 𝑡 ) = E[−𝑓 ′(𝜌 )𝜕 𝑥 𝜌 | 𝜌 (𝑥, 𝑡 ) = ^ 𝜌 ] involves 
+
+𝜕 𝑥 𝜌 , which diverges at the shock location. This is the principal theoretical limitation of the smooth-regime theory. We discuss the issue along four dimensions. 
+
+(i) Methodological intuition for the score near shocks. Under the smooth-regime assumptions, the Fokker–Planck equation (7) is parabolic in ^𝜌 , and the score 𝑠 = 𝜕 ^𝜌 log 𝑝 is bounded on the interior. When shocks form and the conditional drift 𝑏 becomes singular, the smooth-regime assumptions no longer hold, and we cannot formally guarantee that the score remains bounded without additional regularity analysis (e.g., under viscous regularisation). However, the following heuristic is plausible: since diffusion acts in the ^𝜌 -direction and the singularity is in the 𝑥 -direction (through 𝜕 𝑥 𝜌 ), the density-space smoothing from the Brownian forcing may preserve score regularity even when the spatial field is discontinuous. Rigorous verification of this expectation is deferred to future work. 
+
+(ii) Distributional structure near shocks. Near a shockwave, the density 𝜌 (𝑥, 𝑡 ) transitions rapidly between an upstream state 𝜌 − and a downstream state 𝜌 +. The one-point distribution 
+
+𝑝 (^ 𝜌 ; 𝑥, 𝑡 ) at a location traversed by the shock is expected to become bimodal, with mass concen-trated near both 𝜌 − and 𝜌 +. This is precisely the kind of non-Gaussian distributional structure that our framework is designed to capture and that point-estimate methods cannot represent. 
+
+(iii) Learned closure as a regularised surrogate. In the proposed architecture (Section 6), the conditional drift is not evaluated analytically but is represented by the learned closure module 
+
+𝑏 𝜑 (^ 𝜌, 𝑥, 𝑡 ). In practice, the neural closure can act as a regularised surrogate in shock-affected regimes, but this should be interpreted as an approximation heuristic rather than a consequence of the present theory. The physics loss ℒPF penalises the FPE residual at collocation points; near shocks, the residual will typically be larger, and the learned closure adapts subject to the network’s smoothness prior. This is analogous to how PINNs for deterministic conservation laws often behave in practice: the network solution approximates a viscous regularisation without explicitly introducing artificial viscosity. 
+
+(iv) Formal regularisation strategies. For applications requiring stronger theoretical guaran-tees, two strategies are available: (R1) Viscous regularisation : augmenting the SLWR dynam-ics with a second-order viscous term, i.e., replacing −𝜕 𝑥 𝑓 (𝜌 ) with −𝜕 𝑥 𝑓 (𝜌 ) + 𝜖 𝜕 𝑥𝑥 𝜌 for small 
+
+𝜖 > 0, restores Assumption 4 globally, and the entire theory (FPE, PF-ODE, well-posedness) applies without modification. The resulting solutions converge to the entropy solution as 𝜖 ↓ 0.(R2) Weak-form FPE : interpreting the one-point forward equation in the distributional sense, possibly using kinetic formulations in the spirit of Debussche and Vovelle (2010), would extend the theory to discontinuous density fields. This is a substantial mathematical undertaking that we defer to future work. 
+
+# 6 Physics-Informed Score Matching 
+
+This section presents the complete estimation framework. The architecture mirrors the two-component structure of the PIDL framework (Shi et al., 2021), comprising an estimation net-work coupled with a physics evaluator, but operates at the distributional level rather than the trajectory level. 
+
+6.1 Problem statement 
+
+Sparse observations are collected from traffic sensors: 17 • Loop detectors at fixed locations {𝑥 ℓ}𝑁 𝐿  
+
+> ℓ=1
+
+providing density 𝜌 obs (𝑥 ℓ, 𝑡 𝑖 ) and/or speed 
+
+𝑢 obs (𝑥 ℓ, 𝑡 𝑖 ) at discrete times. 
+
+• Probe vehicles traversing the segment along trajectories {(𝑥 𝑗 (𝜏 ), 𝜏 )}, providing speed measurements 𝑢 obs (𝑥 𝑗 (𝜏 ), 𝜏 ).The goal is to produce a data-conditioned distributional estimate 𝑝 𝜃 (^ 𝜌 ; 𝑥, 𝑡 ) for all (𝑥, 𝑡 ) ∈
+
+𝑄 𝑇 that is (i) anchored to the available observations 𝒪 via denoising score matching, and (ii) regularised by the one-point Fokker–Planck equation (7), which encodes the stochastic traffic physics as a structural prior. 
+
+Remark 6.1 (Nature of the distributional target) . The distribution 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ) derived in Section 4 is the forward stochastic law : the one-point marginal of the density field under the Brownian forcing across realisations. In practice, the estimation problem typically involves a single real-isation observed through sparse sensors, and the object of operational interest is the posterior 
+
+𝑝 (^ 𝜌 ; 𝑥, 𝑡 | 𝒪 )—the distribution of the latent traffic state conditioned on one set of observations. These two objects are distinct. The present framework uses the forward law’s Fokker–Planck equation as a physics-informed structural prior that regularises a score network trained on the available observations via DSM. The resulting estimate 𝑝 𝜃 (^ 𝜌 ; 𝑥, 𝑡 ) is therefore best interpreted as an instance-specific approximation: a distributional fit for the observed scenario whose struc-ture is constrained by, but not identical to, the forward stochastic law. This is analogous to how a deterministic PINN produces a solution consistent with observations and the PDE, with-out requiring the PDE to be the full posterior model. A fully Bayesian formulation—in which 
+
+𝑝 (^ 𝜌 ; 𝑥, 𝑡 | 𝒪 ) is derived as a posterior through filtering or variational inference with the stochastic LWR as the prior process—would provide a more rigorous statistical foundation but is beyond the scope of this paper. 
+
+6.2 Score network 
+
+Definition 6.2 (Score network) . The score network is a neural network 𝑠 𝜃 : (0 , 𝜌 max ) × 𝒟 × 
+
+[0 , 𝑇 ] → R that approximates the score function: 
+
+𝑠 𝜃 (^ 𝜌 ; 𝑥, 𝑡 ) ≈ 𝜕 ^𝜌 log 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ). (25) The input is a triplet (^ 𝜌, 𝑥, 𝑡 ) where ^𝜌 ∈ (0 , 𝜌 max ) is a query point in density space and 
+
+(𝑥, 𝑡 ) specifies the spatio-temporal location. The output is a scalar 𝑠 𝜃 ∈ R. The architecture is a fully-connected feedforward network with 𝐿 hidden layers of width 𝐻 and tanh activation. Sinusoidal positional encoding is applied to (𝑥, 𝑡 ):
+
+𝛾 (𝑧 ) = (︀ sin(2 0𝜋𝑧 ), cos(2 0𝜋𝑧 ), . . . , sin(2 𝑀 −1𝜋𝑧 ), cos(2 𝑀 −1𝜋𝑧 ))︀ , (26) yielding an effective input dimension of 1 + 2 × 2𝑀 .
+
+Remark 6.3 (Scalar score) . Since the stochastic forcing in (2) produces diffusion only in the ^𝜌 -direction, the Fokker–Planck equation is parabolic in ^𝜌 alone and the score is a scalar function. This substantially reduces the required network capacity compared to multi-dimensional score networks used in image generation (Song et al., 2021). 
+
+6.3 Physics residual evaluator 
+
+The exact one-point theory in Sections 4 and 5 shows that the physics residual cannot be built from the score network alone: one must also specify a transportation closure for the unresolved advection term. Accordingly, we introduce an auxiliary advection-closure module 𝑏 𝜑 (^ 𝜌, 𝑥, 𝑡 ), or equivalently a structured closure of the form 𝑏 𝜑 (^ 𝜌, 𝑥, 𝑡 ) = −𝑓 ′(^ 𝜌 )𝑚 𝜑 (^ 𝜌, 𝑥, 𝑡 ). Define the closed probability-flow velocity 
+
+𝑣 𝜃,𝜑 (^ 𝜌, 𝑥, 𝑡 ) := 𝑏 𝜑 (^ 𝜌, 𝑥, 𝑡 ) − 12 𝜕 ^𝜌 Σ2(^ 𝜌, 𝑥 ) − 12 Σ2(^ 𝜌, 𝑥 ) 𝑠 𝜃 (^ 𝜌 ; 𝑥, 𝑡 ). (27) 18 From the continuity equation 𝜕 𝑡 𝑝 + 𝜕 ^𝜌 (𝑣 𝜃,𝜑 𝑝 ) = 0 , one has 
+
+𝜕 𝑡 log 𝑝 = −𝜕 ^𝜌 𝑣 𝜃,𝜑 − 𝑣 𝜃,𝜑 𝜕 ^𝜌 log 𝑝. (28) Differentiating with respect to ^𝜌 and substituting 𝑠 𝜃 ≈ 𝜕 ^𝜌 log 𝑝 yields the score-form forward-equation residual 
+
+ℛ𝜃,𝜑 (^ 𝜌, 𝑥, 𝑡 ) := 𝜕 𝑡 𝑠 𝜃 + 𝑣 𝜃,𝜑 𝜕 ^𝜌 𝑠 𝜃 + ( 𝜕 ^𝜌 𝑣 𝜃,𝜑 ) 𝑠 𝜃 + 𝜕 2^𝜌 𝑣 𝜃,𝜑 . (29) All terms are computable by automatic differentiation. This is the distributional analogue of the deterministic PDE residual in the PIDL framework, but now framed as a transportation closure plus score representation. 
+
+6.4 Loss function 
+
+The joint training loss has three components: 
+
+ℒ(𝜃, 𝜑 ) = ℒSM (𝜃 ) + 𝜆 ℒPF (𝜃, 𝜑 ) + 𝜆 BC ℒBC (𝜃, 𝜑 ) (30) 
+
+6.4.1 Score matching loss ℒSM 
+
+We employ denoising score matching (DSM; Vincent, 2011), adapted to the traffic setting. At sensor locations where 𝜌 obs  
+
+> 𝑖
+
+is observed, we perturb each observation with known noise and match the score of the perturbed distribution. For each observation at (𝑥 𝑖 , 𝑡 𝑖 ):1. Draw 𝜖 ∼ 𝒩 (0 , 1) and form ˜𝜌 𝑖 = 𝜌 obs  
+
+> 𝑖
+
++ 𝜎 DSM 𝜖 .2. The score of the Gaussian perturbation kernel 𝑞 𝜎 (˜ 𝜌 | 𝜌 obs ) = 𝒩 (˜ 𝜌 ; 𝜌 obs , 𝜎 2
+
+> DSM
+
+) is −𝜖/𝜎 DSM .The DSM loss is: 
+
+ℒSM (𝜃 ) = 1
+
+𝑁 obs 
+
+> 𝑁 obs
+
+∑︁ 
+
+> 𝑖 =1
+
+E𝜖 ∼𝒩 (0 ,1) [︁⃒⃒ 𝑠 𝜃 (˜ 𝜌 𝑖 ; 𝑥 𝑖 , 𝑡 𝑖 ) + 𝜖/𝜎 DSM ⃒⃒ 2]︁ . (31) Following Song and Ermon (2019), we use multiple noise scales {𝜎 (𝑙 )
+
+> DSM
+
+}𝑁 𝜎  
+
+> 𝑙 =1
+
+in geometric progres-sion to capture both global structure and local precision, with annealing weights 𝑤 𝑙 ∝ (𝜎 (𝑙 ))2.Since the density domain (0 , 𝜌 max ) is bounded, Gaussian perturbations at larger noise scales can produce samples ˜𝜌 𝑖 outside the physical range. The DSM target −𝜖/𝜎 DSM in (31) is exact only for the unconstrained Gaussian perturbation kernel. On the bounded domain, clipping, reflection, or truncation changes the perturbation law and therefore changes the target score. In practical implementations, a boundary-aware perturbation kernel with its correspondingly adjusted score target should be used when boundary effects are non-negligible; at the smallest noise scales in a multi-scale DSM schedule, boundary effects are typically negligible provided the observations lie well within (0 , 𝜌 max ).When only speed 𝑢 obs is available (e.g., from probe vehicles), we exploit the fundamental diagram 𝑢 = 𝑣 (𝜌 ) to convert to density: 𝜌 obs = 𝑣 −1(𝑢 obs ).
+
+Remark 6.4 (Regularisation of the score from sparse observations) . In standard generative mod-elling, DSM learns a score from independent samples drawn from the target distribution. In the traffic setting, sensor observations at a given (𝑥, 𝑡 ) typically come from a single realisation of the traffic field, not from repeated independent draws of 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ). The inverse problem is nevertheless regularised by two complementary information sources: (i) the DSM loss anchors the score at observed sensor locations across different (𝑥 𝑖 , 𝑡 𝑖 ), effectively pooling information across space and time, and (ii) the physics loss ℒPF enforces the Fokker–Planck equation at collocation points throughout the (^ 𝜌, 𝑥, 𝑡 ) domain, propagating distributional constraints from 19 observed to unobserved regions via the conservation-law dynamics. Multi-scale DSM with noise annealing further regularises the score at scales not directly resolved by the sparse observations. We note that this regularisation argument is methodological rather than a formal identifiability theorem; in particular, the interplay between the learned score 𝑠 𝜃 and the learned closure 𝑏 𝜑 
+
+introduces flexibility that may require additional structural constraints in practice. To mitigate this flexibility, the structured closure 𝑏 𝜑 (^ 𝜌, 𝑥, 𝑡 ) = −𝑓 ′(^ 𝜌 ) 𝑚 𝜑 (^ 𝜌, 𝑥, 𝑡 ) provides a significant reduction in degrees of freedom: the known characteristic-speed factor 𝑓 ′(^ 𝜌 ) is im-posed analytically, and only the conditional-gradient surrogate 𝑚 𝜑 is learned. This factorisation ensures that 𝑏 𝜑 has the correct sign structure (advecting in the characteristic direction) and that in the zero-noise limit ( 𝜎 𝑘 → 0), the closure is designed to recover the deterministic LWR dynamics, since the intended target 𝑚 𝜑 → 𝜕 𝑥 𝜌 reduces the equation to the classical LWR form. The narrower mean-field variant 𝑏 𝜑 = −𝑓 ′(^ 𝜌 ) 𝜕 𝑥 ¯𝜌 𝜑 (𝑥, 𝑡 ) constrains the closure further to depend on a single auxiliary mean-state field, reducing the learnable component to a function of (𝑥, 𝑡 )
+
+alone and eliminating the ^𝜌 -dependence of the gradient surrogate entirely. These progressively restrictive structures provide a hierarchy of inductive biases that trade off expressiveness against identifiability; the appropriate level can be selected based on data availability and validated via the ablation studies. 
+
+6.4.2 Physics loss ℒPF 
+
+A set of collocation points 𝒞 = {(^ 𝜌 𝑗 , 𝑥 𝑗 , 𝑡 𝑗 )}𝑁 𝐶  
+
+> 𝑗 =1
+
+is sampled from (0 , 𝜌 max ) × 𝒟 × [0 , 𝑇 ] via Latin hypercube sampling. The physics loss is: 
+
+ℒPF (𝜃, 𝜑 ) = 1
+
+𝑁 𝐶 𝑁 𝐶 ∑︁ 
+
+> 𝑗 =1 ⃒⃒
+
+ℛ𝜃,𝜑 (^ 𝜌 𝑗 , 𝑥 𝑗 , 𝑡 𝑗 )⃒⃒ 2. (32) A key structural difference from standard PINN implementations is that collocation occurs in the three-dimensional domain (^ 𝜌, 𝑥, 𝑡 ) rather than in (𝑥, 𝑡 ) alone, reflecting the additional density-space dimension of the Fokker–Planck equation. 
+
+6.4.3 Boundary condition loss ℒBC 
+
+This term enforces the zero-flux boundary condition 𝐽 (^ 𝜌 ; 𝑥, 𝑡 ) = 0 at ^𝜌 ∈ { 0, 𝜌 max } together with the initial condition 𝑝 (^ 𝜌 ; 𝑥, 0) = 𝛿 𝜖 (^ 𝜌 − 𝜌 0(𝑥 )) , where 𝛿 𝜖 is a mollified delta function. The density 
+
+𝑝 𝜃 is reconstructed from the score via numerical quadrature: 𝑝 𝜃 (^ 𝜌 ; 𝑥, 𝑡 ) ∝ exp (︀∫︀ ^𝜌 𝜌 * 𝑠 𝜃 (𝜌 ′; 𝑥, 𝑡 ) d 𝜌 ′)︀ ,where 𝜌 * ∈ (0 , 𝜌 max ) is an arbitrary reference density. The corresponding boundary-flux surro-gate is 𝐽 𝜃,𝜑 = 𝑏 𝜑 𝑝 𝜃 − 12 𝜕 ^𝜌 (Σ 2𝑝 𝜃 ).
+
+6.5 Training algorithm 
+
+The hyperparameter 𝜆 is balanced adaptively using neural tangent kernel (NTK) rescaling (Wang et al., 2022), ensuring that the gradient magnitudes of ℒSM and 𝜆 ℒPF remain of com-parable order. When the noise structure (𝜎 𝑘 , 𝑒 𝑘 ) is unknown, these parameters are encoded as trainable variables in the physics evaluator and optimised jointly with (𝜃, 𝜑 ). In this case, the parameterisation of 𝜎 𝑘 must be constrained to enforce the endpoint vanishing conditions 
+
+𝜎 𝑘 (0) = 𝜎 𝑘 (𝜌 max ) = 0 and the interior positivity required by Assumption 2; for example, one may write 𝜎 𝑘 (𝜌 ) = 𝜌 (𝜌 max − 𝜌 ) ˜ 𝜎 𝑘 (𝜌 ) with ˜𝜎 𝑘 unconstrained. 
+
+6.6 Inference 
+
+Once 𝑠 𝜃 * (and, when used, 𝑏 𝜑 * ) is trained, the distributional estimate at any query point (𝑥 *, 𝑡 *)
+
+is recovered via: 
+
+log 𝑝 𝜃 * (^ 𝜌 ; 𝑥 *, 𝑡 *) = ∫︁ 
+
+> ^𝜌 𝜌 *
+
+𝑠 𝜃 * (𝜌 ′; 𝑥 *, 𝑡 *) d 𝜌 ′ + 𝐶 (𝑥 *, 𝑡 *), (33) 20 Algorithm 1 Joint Score Matching + Physics-Informed Training 
+
+Require: Observations 𝒪 ; model parameters (𝑓, 𝜎 𝑘 , 𝑒 𝑘 , 𝐾 ); hyperparameters 
+
+(𝜆, 𝜆 BC , 𝜎 DSM , 𝐿, 𝐻, 𝑀 ); learning rate 𝜂 ; batch sizes (𝐵 obs , 𝐵 𝐶 , 𝐵 𝐵 ).
+
+Ensure: Trained score network 𝑠 𝜃 * and closure module 𝑏 𝜑 * . 
+
+> 1:
+
+Initialise 𝜃 and 𝜑 (Xavier initialisation).  
+
+> 2:
+
+for epoch = 1 , 2, . . . , 𝑁 warm do  
+
+> 3:
+
+Sample 𝐵 obs observations; draw 𝜖 ∼ 𝒩 (0 , 𝐼 ); compute ℒSM . 
+
+> 4:
+
+Sample 𝐵 𝐶 collocation points via Latin hypercube in (0 , 𝜌 max ) × 𝒟 × [0 , 𝑇 ]. 
+
+> 5:
+
+Evaluate 𝑠 𝜃 , 𝑏 𝜑 , and the required derivatives 𝜕 ^𝜌 𝑠 𝜃 , 𝜕 2^𝜌 𝑠 𝜃 , 𝜕 𝑡 𝑠 𝜃 , 𝜕 ^𝜌 𝑏 𝜑 , 𝜕 2^𝜌 𝑏 𝜑 via automatic differentiation.  
+
+> 6:
+
+Compute ℛ𝜃,𝜑 at each collocation point; compute ℒPF . 
+
+> 7:
+
+Sample 𝐵 𝐵 boundary points; compute ℒBC . 
+
+> 8:
+
+ℒ ← ℒ SM + 𝜆 ℒPF + 𝜆 BC ℒBC . 
+
+> 9:
+
+Update (𝜃, 𝜑 ) ← (𝜃, 𝜑 ) − 𝜂 ∇(𝜃,𝜑 )ℒ (Adam optimiser with cosine learning rate decay).  
+
+> 10:
+
+end for  
+
+> 11:
+
+Fine-tune via L-BFGS until |Δℒ| < 10 −6.where 𝜌 * ∈ (0 , 𝜌 max ) is an arbitrary reference density and 𝐶 (𝑥 *, 𝑡 *) is the log-normalisation constant determined by the unit total mass requirement ∫︀ 𝜌 max  
+
+> 0
+
+𝑝 𝜃 * (^ 𝜌 ; 𝑥 *, 𝑡 *) d^ 𝜌 = 1 , evaluated by Gauss–Legendre quadrature with 𝑁 𝑄 = 100 nodes on [0 , 𝜌 max ]. From 𝑝 𝜃 * , the following summary statistics are computed: Conditional mean: ¯𝜌 (𝑥 *, 𝑡 *) = ∫︀ 𝜌 max  
+
+> 0
+
+^𝜌 𝑝 𝜃 * d^ 𝜌, (34) Conditional std: 𝜎 𝜌 =[︀∫︀ (^ 𝜌 − ¯𝜌 )2𝑝 𝜃 * d^ 𝜌 ]︀ 1/2, (35) 95% credible interval: [𝜌 0.025 , 𝜌 0.975 ]. (36) Quadrature-based density recovery is the primary inference route. In principle, the closed PF-ODE (23) could also be used for sample generation by evolving an ensemble of initial conditions drawn from a mollified initial law; the design of such a sampling procedure is left to the numerical implementation. 
+
+6.7 Structural comparison with PIDL 
+
+Figure 1 illustrates the architectural correspondence between the PIDL framework of Shi et al. (2021) and the proposed method. 
+
+PUNN 
+
+(𝑥, 𝑡 ) → (^ 𝜌, ^𝑢 )
+
+PINN ARZ residual 
+
+Point estimate 
+
+> PIDL (Shi et al., 2021)
+
+Score Net 
+
+(^ 𝜌, 𝑥, 𝑡 ) → 𝑠 𝜃 
+
+FPE Residual 
+
+ℛ𝜃,𝜑 
+
+𝑝 𝜃 (^ 𝜌 ; 𝑥, 𝑡 )
+
+> This paper
+
+Figure 1: Architectural comparison between PIDL and the proposed framework. Both share a two-component structure (estimation network + physics evaluator), but the proposed framework operates at the distributional level: the network learns a score function, the physics evaluator regularises via the Fokker–Planck equation, and the output is a data-conditioned distributional estimate. Table 3 provides a component-level comparison. 21 7 Discussion and Future Work 
+
+We derive the exact one-point Fokker–Planck equation for the Ito-type stochastic LWR model and propose a physics-informed score-based learning architecture for the resulting problem. This section discusses the practical significance of the framework, its computational characteristics, current limitations, possible extensions to stochastic fundamental diagrams at the link and network levels, and the planned empirical validation. 
+
+7.1 Practical implications 
+
+The distributional output enables risk-aware traffic management. The probability that density exceeds a critical threshold 𝜌 𝑐 (e.g., the onset of congestion) can be computed as ∫︀ 𝜌 max  
+
+> 𝜌 𝑐
+
+𝑝 𝜃 (^ 𝜌 ; 𝑥, 𝑡 ) d^ 𝜌 .This quantity directly informs variable speed limit decisions and congestion pricing with quan-tified confidence levels, which is not achievable with point-estimate methods. 
+
+7.2 Computational considerations 
+
+The proposed architecture adds computational overhead relative to standard PIDL due to the three-dimensional collocation in (^ 𝜌, 𝑥, 𝑡 ) and multi-scale DSM. However, inference is efficient: evaluating 𝑝 𝜃 at a single (𝑥, 𝑡 ) requires 𝑁 𝑄 forward passes ( ∼100 ), which is trivially parallelisable. Compared with a Monte Carlo forward solver, the proposed method solves an inverse estimation problem from sparse data, whereas Monte Carlo addresses the forward simulation problem. Concrete runtime comparisons will be reported with the numerical experiments. 
+
+7.3 Extension to the stochastic fundamental diagram 
+
+An important next step is to extend the proposed framework to the stochastic fundamental diagram at both the link and network levels. 
+
+Link-level stochastic fundamental diagram. At a single link or detector location 𝑥 , the classical fundamental diagram 𝑞 = 𝑓 (𝜌 ) is a deterministic curve. Under the Itô-type SLWR, the density at location 𝑥 is a random variable with distribution 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ) governed by the Fokker– Planck equation. The corresponding flow distribution is obtained via the change of variables formula. Since standard concave fundamental diagrams are not globally invertible on [0 , 𝜌 max ]
+
+(sub-capacity flows correspond to two density branches), the flow density is computed as a sum over preimages: 𝑝 (^ 𝑞 ; 𝑥, 𝑡 ) = ∑︀ 𝑗 : 𝑓 (𝜌 𝑗 )=^ 𝑞 𝑝 (𝜌 𝑗 ; 𝑥, 𝑡 )/|𝑓 ′(𝜌 𝑗 )|, or more generally through any functional E[𝑔 (𝑓 (𝜌 )) | 𝜌 (𝑥, 𝑡 ) = ^ 𝜌 ]. The scatter observed in empirical flow-density measurements at a fixed detector is then a direct manifestation of the stochastic forcing: the width and shape of 𝑝 (^ 𝑞 ; 𝑥, 𝑡 ) at a given mean density are determined by the noise parameters 𝜎 𝑘 and 𝑒 𝑘 (𝑥 ). This provides a link-level stochastic fundamental diagram as a naturally derived quantity. The joint distribution of (𝜌, 𝑞 ) at a fixed location, or equivalently the marginal flow distribution 𝑝 (^ 𝑞 ; 𝑥, 𝑡 )
+
+obtained by pushforward, characterises day-to-day flow variability and is a quantity of direct operational value for reliability-based traffic management. (Note that under a deterministic flux relation 𝑞 = 𝑓 (𝜌 ), conditioning on exact ^𝜌 makes 𝑞 deterministic; the meaningful stochastic objects are the marginal and joint distributions, or bin-conditioned empirical relations.) 
+
+Network-level stochastic macroscopic fundamental diagram. While the concept of a macroscopic flow–density relationship has long been known in traffic theory, the network-level MFD, as characterised empirically by Geroliminis and Daganzo (2008) and others, exhibits a well-defined but scattered relationship between the network-average flow ¯𝑞 and network-average density ¯𝜌 . This scatter has been attributed primarily to the spatial heterogeneity of the density distribution within the region (Mazloumian et al., 2010; Leclercq et al., 2014; Ambühl et al., 22 2023). The noise structure ∑︀ 𝑘 𝜎 𝑘 (𝜌 ) 𝑒 𝑘 (𝑥 ) d 𝑊 𝑘 𝑡 generates precisely the kind of spatially hetero-geneous density perturbations that have been identified as the source of network MFD scatter. A natural concern is whether the shock-regime limitation of the pointwise FPE (Theorem 5.7) undermines the network-level extension. While spatial averaging improves regularity (the MFD variables ¯𝜌 (𝑡 ) = 1  
+
+> |𝒜| ∫︀ 𝒜
+
+𝜌 (𝑥, 𝑡 ) d 𝑥 and ¯𝑞 (𝑡 ) = 1  
+
+> |𝒜| ∫︀ 𝒜
+
+𝑓 (𝜌 (𝑥, 𝑡 )) d 𝑥 are continuous in time even when the density field contains shocks), deriving a closed, low-dimensional stochastic evolution for (¯ 𝜌, ¯𝑞 ) raises its own closure challenges that are distinct from the pointwise case. We therefore present the following research avenues as conjectural extension paths rather than consequences secured by the present theory: (i) derivation of a network-level forward equation for 𝑝 (¯ 𝑞, ¯𝜌 ; 𝑡 )
+
+via spatial aggregation of the link-level stochastic dynamics; (ii) estimation of the distribution 
+
+𝑝 (¯ 𝑞 | ¯𝜌 ; 𝑡 ) via the probability flow ODE framework; and (iii) physics-informed score matching at the network level with an aggregated forward equation as the physics constraint. These extensions would connect the stochastic traffic flow modelling tradition to the funda-mental diagram literature at both scales: the link-level stochastic FD follows from the present framework, while the network-level stochastic MFD remains an open problem for which the current work provides a plausible mathematical starting point. 
+
+7.4 Limitations 
+
+Several limitations should be acknowledged. First, the well-posedness results (Theorem 5.5) re-quire the smooth-solution regime (Assumption 4); extending the theory to entropy solutions in the presence of shocks remains an open mathematical problem. Second, the one-point marginal FPE does not capture spatial correlations in the density field; extension to multi-point marginals or richer spatial closure models would provide more complete distributional information. Third, the current framework addresses the first-order LWR model; extension to second-order mod-els (e.g., ARZ) would enable joint density–velocity distributional estimation. Fourth, online adaptive retraining as new sensor data arrive would further enhance practical applicability. 
+
+Future empirical validation. Empirical validation is deferred to a subsequent revision. We plan to validate the framework first on synthetic data generated from Monte Carlo realisations of the stochastic LWR model, where the inferred one-point density distributions can be compared directly with the reference stochastic solution. We will then compare the method on real traffic data against deterministic PIDL baselines to evaluate the practical value of distributional, rather than purely pointwise, traffic state estimation. Performance will be assessed in terms of point accuracy, calibration, and distributional quality. 
+
+# 8 Conclusion 
+
+This paper develops a theoretical foundation for a physics-informed deep learning framework for distributional traffic state estimation under stochastic LWR dynamics. Its main contributions include: First, it formulates an Itô-type stochastic LWR model with finite-dimensional Brownian noise and density-dependent diffusion, extending random-parameter stochastic LWR models from static parametric uncertainty to dynamic stochastic forcing over the estimation horizon. Second, it derives the Fokker–Planck equation for the one-point marginal density as an exact forward equation with an explicit conditional drift term. It also derives the corresponding probability flow ODE, yielding a deterministic transport representation that can serve as a distributional physics constraint in a neural network once a closure is specified. Third, it proposes a distributional estimation framework: a score network paired with an auxiliary advection-closure module, trained via denoising score matching and a Fokker–Planck 23 residual loss. The architecture targets the one-point distributional estimate of traffic density, from which point estimates, credible intervals, and congestion-risk metrics can be derived. At the link level, the one-point distribution 𝑝 (^ 𝜌 ; 𝑥, 𝑡 ) yields a stochastic fundamental dia-gram in which the scatter in empirical flow-density measurements is a direct consequence of the Brownian forcing. At the network level, the framework suggests a conjectural pathway toward a stochastic macroscopic fundamental diagram, though deriving a closed network-level forward equation raises additional closure challenges that remain open. More broadly, the idea of embedding stochastic conservation law physics at the distributional level into deep learning architectures may find application beyond traffic, in any domain where hyperbolic PDEs govern uncertain dynamics observed through sparse measurements. The main point is not simply that score-based learning is applied to traffic estimation, but that the generative structure is derived from stochastic traffic-flow physics, with closure and learning components introduced only to obtain a trainable method. More broadly, the paper shows how stochastic traffic-flow theory can be cast as a trainable distributional estimation framework, providing a physics-grounded al-ternative to purely pointwise traffic-state estimation and to generic diffusion models that ignore conservation-law structure. 
+
+# References 
+
+Adeli, H., Ghosh-Dastidar, S., 2004. Mesoscopic-wavelet freeway work zone flow and congestion feature extraction model. J. Transp. Eng. 130(1), 94–103. Albergo, M.S., Boffi, N.M., Vanden-Eijnden, E., 2023. Stochastic interpolants: A unifying frame-work for flows and diffusions. arXiv:2303.08797 .Ambühl, L., Loder, A., Bliemer, M.C.J., Menendez, M., Axhausen, K.W., 2023. Understanding congestion propagation by combining percolation theory with the macroscopic fundamental diagram. Commun. Phys. 6, 26. Aw, A., Rascle, M., 2000. Resurrection of “second order” models of traffic flow. SIAM J. Appl. Math. 60(3), 916–938. Benamou, J.-D., Brenier, Y., 2000. A computational fluid mechanics solution to the Monge– Kantorovich mass transfer problem. Numer. Math. 84(3), 375–393. Boel, R., Mihaylova, L., 2006. A compositional stochastic model for real time freeway traffic simulation. Transp. Res. B 40(4), 319–334. Cai, S., Mao, Z., Wang, Z., Yin, M., Karniadakis, G.E., 2021. Physics-informed neural networks (PINNs) for fluid mechanics: A review. Acta Mech. Sin. 37(12), 1727–1738. Chen, G.-Q., Ding, Q., Karlsen, K.H., 2012. On nonlinear stochastic balance laws. Arch. Ration. Mech. Anal. 204(3), 707–743. Chen, R.T.Q., Rubanova, Y., Bettencourt, J., Duvenaud, D., 2018. Neural ordinary differential equations. NeurIPS .Chen, T., Liu, G.-H., Theodorou, E.A., 2022. Likelihood training of Schrödinger bridge using forward-backward SDEs theory. ICLR .De Bortoli, V., Thornton, J., Heng, J., Doucet, A., 2021. Diffusion Schrödinger bridge with applications to score-based generative modeling. NeurIPS .Debussche, A., Vovelle, J., 2010. Scalar conservation laws with stochastic forcing. J. Funct. Anal. 
+
+259(4), 1014–1042. 24 Dhariwal, P., Nichol, A., 2021. Diffusion models beat GANs on image synthesis. NeurIPS .Di, X., Liu, H.X., Davis, G.A., 2010. Hybrid extended Kalman filtering approach for traffic density estimation along signalized arterials. Transp. Res. Rec. 2188(1), 165–173. Fan, S., Seibold, B., 2013. Data-fitted first-order traffic models and their second-order general-izations. Transp. Res. Rec. 2391(1), 32–43. Fan, T., Wong, S.C., Zhang, Z., Du, J., 2023. A dynamically bi-orthogonal solution method for a stochastic LWR traffic flow model. Comput.-Aided Civ. Infrastruct. Eng. 38, 1447–1461. Fan, T., Wong, S.C., Zhang, Z., Du, J., 2024. Stochastic LWR traffic flow model for nonlinear speed–density relationships. Transportmetrica B 12(1), 2419402. Geroliminis, N., Daganzo, C.F., 2008. Existence of urban-scale macroscopic fundamental dia-grams: Some experimental findings. Transp. Res. B 42(9), 759–770. Ghosh-Dastidar, S., Adeli, H., 2006. Neural network-wavelet microsimulation model for delay and queue length estimation at freeway work zones. J. Transp. Eng. 132(4), 331–341. Grathwohl, W., Chen, R.T.Q., Bettencourt, J., Sutskever, I., Duvenaud, D., 2019. FFJORD: Free-form continuous dynamics for scalable reversible generative models. ICLR .Ho, J., Jain, A., Abbeel, P., 2020. Denoising diffusion probabilistic models. NeurIPS .Hofmanová, M., 2013. Degenerate parabolic stochastic partial differential equations. Stoch. Pro-cess. Appl. 123(12), 4294–4336. Huang, K., Di, X., Du, Q., Chen, X., 2022. A physics-informed deep learning approach for traffic state estimation. IEEE Trans. ITS 23(8), 11107–11120. Jabari, S.E., Liu, H.X., 2012. A stochastic model of traffic flow: Theoretical foundations. Transp. Res. B 46(1), 156–174. Jabari, S.E., Zheng, J., Liu, H.X., 2014. A probabilistic stationary speed–density relation based on Newell’s simplified car-following model. Transp. Res. B 68, 205–223. Kim, J.U., 2003. On a stochastic scalar conservation law. Indiana Univ. Math. J. 52(1), 227–256. Klar, A., Wegener, R., 1996. Enskog-like kinetic models for vehicular traffic. J. Stat. Phys. 
+
+87(1–2), 91–114. Lebacque, J.-P., Mammar, S., Haj-Salem, H., 2007. Generic second order traffic flow modelling. 
+
+Transp. Traffic Theory 2007 , 755–776. Leclercq, L., Chiabaut, N., Trinquier, B., 2014. Macroscopic fundamental diagrams: A cross-comparison of estimation methods. Transp. Res. B 62, 1–12. Li, J., Chen, Q.-Y., Wang, H., Ni, D., 2012. Analysis of LWR model with fundamental diagram subject to uncertainties. Transportmetrica 8(6), 387–405. Lighthill, M.J., Whitham, G.B., 1955. On kinematic waves. II. Proc. R. Soc. Lond. A 229, 317–345. Lipman, Y., Chen, R.T.Q., Ben-Hamu, H., Nickel, M., Le, M., 2023. Flow matching for genera-tive modeling. ICLR .Liu, X., Gong, C., Liu, Q., 2023. Flow straight and fast: Learning to generate and transfer data with rectified flow. ICLR .25 Lu, J., Li, C., Wu, X.B., Zhou, X.S., 2023. Physics-informed neural networks for integrated traffic state and queue profile estimation: A differentiable programming approach on layered computational graphs. Transp. Res. C 153, 104224. Ma, X., Dai, Z., He, Z., Ma, J., Wang, Y., Wang, Y., 2017. Learning traffic as images: A deep convolutional neural network for large-scale transportation network speed prediction. Sensors 
+
+17(4), 818. Martínez, I., Jin, W.L., 2020. Stochastic LWR model with heterogeneous vehicles. Transp. Res. Procedia 47, 155–162. Mazloumian, A., Geroliminis, N., Helbing, D., 2010. The spatial variability of vehicle densities as determinant of urban network capacity. Phil. Trans. R. Soc. A 368(1928), 4627–4647. Mihaylova, L., Boel, R., Hegyi, A., 2007. Freeway traffic estimation within particle filtering framework. Automatica 43(2), 290–300. Mo, Z., Shi, R., Di, X., 2021. A physics-informed deep learning paradigm for car-following models. Transp. Res. C 130, 103305. Ngoduy, D., 2011. Multiclass first-order traffic model using stochastic fundamental diagrams. 
+
+Transportmetrica 7(2), 111–125. Nicodemus, T., Knöller, B., Unger, B., 2022. Physics-informed neural networks for the Aw– Rascle–Zhang traffic model. arXiv:2209.11461 .Paveri-Fontana, S.L., 1975. On Boltzmann-like treatments for traffic flow: A critical review of the basic model and an alternative proposal for dilute traffic analysis. Transp. Res. 9(4), 225–235. Payne, H.J., 1971. Models of freeway traffic and control. Math. Models Public Syst. , 51–61. Prigogine, I., Herman, R., 1971. Kinetic Theory of Vehicular Traffic . Elsevier. Raissi, M., Perdikaris, P., Karniadakis, G.E., 2019. Physics-informed neural networks. J. Com-put. Phys. 378, 686–707. Richards, P.I., 1956. Shock waves on the highway. Oper. Res. 4(1), 42–51. Rodrigues, F., Henrickson, K., Pereira, F.C., 2019. Multi-output Gaussian processes for crowd-sourced traffic data imputation. IEEE Trans. ITS 20(2), 594–603. Seo, T., Bayen, A.M., 2017. Traffic state estimation method with efficient data fusion based on the Aw–Rascle–Zhang model. IEEE ITSC , 1–6. Seo, T., Bayen, A.M., Kusakabe, T., Asakura, Y., 2017. Traffic state estimation on highway: A comprehensive survey. Annu. Rev. Control 43, 128–151. Shi, R., Mo, Z., Di, X., 2021. Physics-informed deep learning for traffic state estimation. AAAI 
+
+35, 540–547. Song, Y., Ermon, S., 2019. Generative modeling by estimating gradients of the data distribution. 
+
+NeurIPS .Song, Y., Sohl-Dickstein, J., Kingma, D.P., Kumar, A., Ermon, S., Poole, B., 2021. Score-based generative modeling through stochastic differential equations. ICLR .Sumalee, A., Zhong, R.X., Pan, T.L., Szeto, W.Y., 2011. Stochastic cell transmission model. 
+
+Transp. Res. B 45(3), 507–533. 26 Villani, C., 2009. Optimal Transport: Old and New . Springer. Vincent, P., 2011. A connection between score matching and denoising autoencoders. Neural Comput. 23(7), 1661–1674. Wang, Y., Papageorgiou, M., 2005. Real-time freeway traffic state estimation based on extended Kalman filter: A general approach. Transp. Res. B 39(2), 141–167. Wang, Y., Papageorgiou, M., Messmer, A., 2008. Real-time freeway traffic state estimation based on EKF: Adaptive capabilities and real data testing. Transp. Res. A 42(10), 1340–1358. Wang, Y., Papageorgiou, M., Messmer, A., Coppola, P., Tzimitsi, A., Nuzzolo, A., 2009. An adaptive freeway traffic state estimator. Automatica 45(1), 10–24. Wang, S., Yu, X., Perdikaris, P., 2022. When and why PINNs fail to train: A neural tangent kernel perspective. J. Comput. Phys. 449, 110768. Whitham, G.B., 1974. Linear and Nonlinear Waves . Wiley. Wu, Y., Tan, H., Qin, L., Ran, B., Jiang, Z., 2018. A hybrid deep learning based traffic flow prediction method and its understanding. Transp. Res. C 90, 166–180. Yang, L., Meng, X., Karniadakis, G.E., 2021. B-PINNs: Bayesian physics-informed neural net-works. J. Comput. Phys. 425, 109913. Zhang, H.M., 2002. A non-equilibrium traffic model devoid of gas-like behavior. Transp. Res. B 
+
+36(3), 275–290. Zhang, D., Lu, L., Guo, L., Karniadakis, G.E., 2019. Quantifying total uncertainty in physics-informed neural networks for solving forward and inverse stochastic problems. J. Comput. Phys. 397, 108850. Zheng, Z., Yang, Y., Liu, J., Dai, H.-N., Zhang, Y., 2019. Deep and embedded learning approach for traffic flow prediction. IEEE Trans. ITS 20(10), 3927–3939. 27 Table 2: Summary of notation. 
+
+Symbol Description 
+
+Domain and probability space 
+
+𝒟 = [0 , 𝐿 ] Highway segment 
+
+𝑄 𝑇 = 𝒟 × (0 , 𝑇 ] Spatio-temporal domain 
+
+(Ω , ℱ, {ℱ 𝑡 }, P) Filtered probability space 
+
+𝑊 𝑘 𝑡 (𝑘 = 1 , . . . , 𝐾 ) Independent standard Brownian motions 
+
+Traffic variables and flux 
+
+𝜌 (𝑥, 𝑡 ) Traffic density (random field) 
+
+^𝜌 Density-space coordinate (deterministic query variable) 
+
+𝜌 max Jam density 
+
+𝜌 0(𝑥 ) Initial density profile 
+
+𝑓 (𝜌 ) = 𝜌 𝑣 (𝜌 ) Flux function (fundamental diagram) 
+
+𝑣 (𝜌 ) Speed–density relation 
+
+𝑢 𝑓 Free-flow speed 
+
+Noise structure 
+
+𝜎 𝑘 (𝜌 ) Density-dependent noise intensity (mode 𝑘 )
+
+𝑒 𝑘 (𝑥 ) Spatial basis function (mode 𝑘 )
+
+Σ2(𝜌, 𝑥 ) Aggregate diffusion: ∑︀ 𝑘 𝜎 𝑘 (𝜌 )2𝑒 𝑘 (𝑥 )2
+
+𝐷 (𝜌, 𝑥 ) Half-diffusion: 12 Σ2(𝜌, 𝑥 )
+
+Pointwise process and drift 
+
+𝑌 𝑥 𝑡 Pointwise process: 𝜌 (𝑥, 𝑡 ) at fixed 𝑥 𝛽 𝑥 𝑡 Pathwise drift: −𝑓 ′(𝑌 𝑥 𝑡 ) 𝜕 𝑥 𝜌 (𝑥, 𝑡 )
+
+𝑏 (^ 𝜌, 𝑥, 𝑡 ) Conditional drift: E[𝛽 𝑥 𝑡 | 𝑌 𝑥 𝑡 = ^ 𝜌 ]
+
+𝑏 𝜑 (^ 𝜌, 𝑥, 𝑡 ) Learned advection-closure module 
+
+Distributional quantities 
+
+𝑝 (^ 𝜌 ; 𝑥, 𝑡 ) One-point marginal density of 𝜌 (𝑥, 𝑡 )
+
+𝑠 (^ 𝜌 ; 𝑥, 𝑡 ) Score function: 𝜕 ^𝜌 log 𝑝 𝐽 (^ 𝜌 ; 𝑥, 𝑡 ) Probability flux at density-space boundary 
+
+𝑣 PF Probability-flow velocity (exact) 
+
+Learning architecture 
+
+𝑠 𝜃 Score network (parameters 𝜃 )
+
+𝑣 𝜃,𝜑 Closed probability-flow velocity 
+
+ℛ𝜃,𝜑 Score-form FPE residual 
+
+𝑝 𝜃 Reconstructed distributional estimate 
+
+ℒSM , ℒPF , ℒBC Score matching, physics, and boundary losses 
+
+𝜆, 𝜆 BC Loss weighting hyperparameters 
+
+𝜎 DSM DSM perturbation noise scale 
+
+𝜌 * Reference density for quadrature integration 
+
+28 Table 3: Component-level comparison between PIDL and the proposed framework. 
+
+Component PIDL This paper 
+
+Network input (𝑥, 𝑡 ) (^ 𝜌, 𝑥, 𝑡 )
+
+Network output (^ 𝜌, ^𝑢 ) point values 𝑠 𝜃 (score, scalar) Physics evaluator ARZ residual ( ^𝑓 1, ^𝑓 2) FPE residual ℛ𝜃,𝜑 
+
+Data loss ∑︀ |^𝜌 − 𝜌 obs |2 DSM: ∑︀ |𝑠 𝜃 + 𝜖/𝜎 |2
+
+Physics loss ∑︀ | ^𝑓 1|2 + | ^𝑓 2|2∑︀ |ℛ 𝜃,𝜑 |2
+
+Collocation domain (𝑥, 𝑡 ), 2D (^ 𝜌, 𝑥, 𝑡 ), 3D Output Single ^𝜌 (𝑥, 𝑡 ) Full 𝑝 𝜃 (^ 𝜌 ; 𝑥, 𝑡 )
+
+UQ None (built-in) Credible intervals from 𝑝 
+
+29

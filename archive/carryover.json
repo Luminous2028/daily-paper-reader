@@ -1,6 +1,88 @@
 {
-  "generated_at": "2026-03-19T03:09:37.249642+00:00",
+  "generated_at": "2026-03-19T03:27:20.655529+00:00",
   "updated_date": "20260310-20260319",
   "carryover_days": 9,
-  "items": []
+  "items": [
+    {
+      "id": "2603.14948v1",
+      "title": "Bridging Scene Generation and Planning: Driving with World Model via Unifying Vision and Motion Representation",
+      "abstract": "End-to-end autonomous driving aims to generate safe and plausible planning policies from raw sensor input. Driving world models have shown great potential in learning rich representations by predicting the future evolution of a driving scene. However, existing driving world models primarily focus on visual scene representation, and motion representation is not explicitly designed to be planner-shared and inheritable, leaving a schism between the optimization of visual scene generation and the requirements of precise motion planning. We present WorldDrive, a holistic framework that couples scene generation and real-time planning via unifying vision and motion representation. We first introduce a Trajectory-aware Driving World Model, which conditions on a trajectory vocabulary to enforce consistency between visual dynamics and motion intentions, enabling the generation of diverse and plausible future scenes conditioned on a specific trajectory. We transfer the vision and motion encoders to a downstream Multi-modal Planner, ensuring the driving policy operates on mature representations pre-optimized by scene generation. A simple interaction between motion representation, visual representation, and ego status can generate high-quality, multi-modal trajectories. Furthermore, to exploit the world model's foresight, we propose a Future-aware Rewarder, which distills future latent representation from the frozen world model to evaluate and select optimal trajectories in real-time. Extensive experiments on the NAVSIM, NAVSIM-v2, and nuScenes benchmarks demonstrate that WorldDrive achieves leading planning performance among vision-only methods while maintaining high-fidelity action-controlled video generation capabilities, providing strong evidence for the effectiveness of unifying vision and motion representation for robust autonomous driving.",
+      "authors": [
+        "Xingtai Gui",
+        "Meijie Zhang",
+        "Tianyi Yan",
+        "Wencheng Han",
+        "Jiahao Gong",
+        "Feiyang Tan",
+        "Cheng-zhong Xu",
+        "Jianbing Shen"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-16T07:59:39+00:00",
+      "link": "https://arxiv.org/pdf/2603.14948v1",
+      "tags": [
+        "keyword:diffusion&uncertainty",
+        "query:diffusion&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "unifying vision and motion representation for autonomous driving trajectory generation",
+      "llm_evidence_cn": "统一自动驾驶轨迹生成的视觉与运动表示",
+      "llm_evidence": "统一自动驾驶轨迹生成的视觉与运动表示",
+      "canonical_evidence": "统一自动驾驶轨迹生成的视觉与运动表示",
+      "llm_tldr_en": "WorldDrive couples scene generation and real-time planning via unified representations in a world model framework.",
+      "llm_tldr_cn": "WorldDrive框架通过统一视觉与运动表示，将场景生成与实时规划相结合。",
+      "llm_tldr": "WorldDrive框架通过统一视觉与运动表示，将场景生成与实时规划相结合。",
+      "llm_tags": [
+        "query:diffusion-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "carryover_cache",
+      "paper_id": "2603.14948v1",
+      "carry_days": 1
+    },
+    {
+      "id": "2603.16368v1",
+      "title": "Encoding Predictability and Legibility for Style-Conditioned Diffusion Policy",
+      "abstract": "Striking a balance between efficiency and transparent motion is a core challenge in human-robot collaboration, as highly expressive movements often incur unnecessary time and energy costs. In collaborative environments, legibility allows a human observer a better understanding of the robot's actions, increasing safety and trust. However, these behaviors result in sub-optimal and exaggerated trajectories that are redundant in low-ambiguity scenarios where the robot's goal is already obvious. To address this trade-off, we propose Style-Conditioned Diffusion Policy (SCDP), a modular framework that constrains the trajectory generation of a pre-trained diffusion model toward either legibility or efficiency based on the environment's configuration. Our method utilizes a post-training pipeline that freezes the base policy and trains a lightweight scene encoder and conditioning predictor to modulate the diffusion process. At inference time, an ambiguity detection module activates the appropriate conditioning, prioritizing expressive motion only for ambiguous goals and reverting to efficient paths otherwise. We evaluate SCDP on manipulation and navigation tasks, and results show that it enhances legibility in ambiguous settings while preserving optimal efficiency when legibility is unnecessary, all without retraining the base policy.",
+      "authors": [
+        "Adrien Jacquet Crétides",
+        "Mouad Abrini",
+        "Hamed Rahimi",
+        "Mohamed Chetouani"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-03-17T10:55:44+00:00",
+      "link": "https://arxiv.org/pdf/2603.16368v1",
+      "tags": [
+        "keyword:diffusion&uncertainty",
+        "query:diffusion&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "style-conditioned diffusion policy for trajectory generation",
+      "llm_evidence_cn": "用于轨迹生成的样式条件扩散策略",
+      "llm_evidence": "用于轨迹生成的样式条件扩散策略",
+      "canonical_evidence": "用于轨迹生成的样式条件扩散策略",
+      "llm_tldr_en": "A modular framework that constrains diffusion-based trajectory generation for legibility and efficiency.",
+      "llm_tldr_cn": "一种模块化框架，可约束扩散模型的轨迹生成，以平衡动作的可读性与效率。",
+      "llm_tldr": "一种模块化框架，可约束扩散模型的轨迹生成，以平衡动作的可读性与效率。",
+      "llm_tags": [
+        "query:diffusion-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "carryover_cache",
+      "paper_id": "2603.16368v1",
+      "carry_days": 1
+    }
+  ]
 }
