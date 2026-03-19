@@ -25,3 +25,48 @@ subscriptions:
     stage: A
     diff_threshold_pct: 15
   keyword_recall_mode: or
+  intent_profiles:
+    - tag: diffusion&uncertainty
+      description: 自动驾驶轨迹生成中利用扩散模型进行不确定性解耦、量化、追溯的论文检索
+      enabled: true
+      keywords:
+        - keyword: planning
+          keyword_cn: ''
+          query: p
+        - keyword: trajectory generation
+          keyword_cn: 轨迹生成
+          query: trajectory generation and path planning
+        - keyword: autonomous driving
+          keyword_cn: 自动驾驶
+          query: autonomous driving motion planning and prediction
+        - keyword: diffusion model
+          keyword_cn: 扩散模型
+          query: diffusion models for trajectory generation in autonomous driving
+        - keyword: aleatoric uncertainty
+          keyword_cn: 偶然不确定性
+          query: modeling aleatoric uncertainty in autonomous driving scenarios
+        - keyword: epistemic uncertainty
+          keyword_cn: 认知不确定性
+          query: estimating epistemic uncertainty in neural motion planners
+      intent_queries:
+        - query: diffusion models for uncertainty decoupling in autonomous driving trajectory generation
+          query_cn: 自动驾驶轨迹生成中用于不确定性解耦的扩散模型
+          enabled: true
+          source: manual
+          note: ''
+        - query: quantifying and tracing uncertainty in diffusion based motion planning
+          query_cn: 基于扩散模型的运动规划中不确定性的量化与追溯
+          enabled: true
+          source: manual
+          note: ''
+        - query: aleatoric and epistemic uncertainty decomposition in diffusion trajectory models
+          query_cn: 扩散轨迹模型中的偶然与认知不确定性分解
+          enabled: true
+          source: manual
+          note: ''
+        - query: diffusion models for uncertainty estimation in autonomous driving trajectory generation
+          query_cn: 用于自动驾驶轨迹生成中不确定性估计的扩散模型
+          enabled: true
+          source: manual
+          note: ''
+      updated_at: '2026-03-19T03:22:33.640Z'
