@@ -1,0 +1,662 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-03-20T19:23:44.813843+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 6,
+    "deep_cap": 6,
+    "deep_selected": 6,
+    "quick_candidates": 29,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2603.14294v1",
+      "title": "Seeking Physics in Diffusion Noise",
+      "abstract": "Do video diffusion models encode signals predictive of physical plausibility? We probe intermediate denoising representations of a pretrained Diffusion Transformer (DiT) and find that physically plausible and implausible videos are partially separable in mid-layer feature space across noise levels. This separability cannot be fully attributed to visual quality or generator identity, suggesting recoverable physics-related cues in frozen DiT features. Leveraging this observation, we introduce progressive trajectory selection, an inference-time strategy that scores parallel denoising trajectories at a few intermediate checkpoints using a lightweight physics verifier trained on frozen features, and prunes low-scoring candidates early. Extensive experiments on PhyGenBench demonstrate that our method improves physical consistency while reducing inference cost, achieving comparable results to Best-of-K sampling with substantially fewer denoising steps.",
+      "authors": [
+        "Chujun Tang",
+        "Lei Zhong",
+        "Fangqiang Ding"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-03-15T09:13:23+00:00",
+      "link": "https://arxiv.org/pdf/2603.14294v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "scoring and pruning denoising trajectories in diffusion models",
+      "llm_evidence_cn": "扩散模型中去噪轨迹的评分与剪枝",
+      "llm_evidence": "扩散模型中去噪轨迹的评分与剪枝",
+      "canonical_evidence": "扩散模型中去噪轨迹的评分与剪枝",
+      "llm_tldr_en": "Uses physics-related cues in diffusion noise to score and select plausible trajectories during inference.",
+      "llm_tldr_cn": "利用扩散噪声中的物理线索在推理过程中对合理的轨迹进行评分和选择。",
+      "llm_tldr": "利用扩散噪声中的物理线索在推理过程中对合理的轨迹进行评分和选择。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2603.15771v1",
+      "title": "CorrectionPlanner: Self-Correction Planner with Reinforcement Learning in Autonomous Driving",
+      "abstract": "Autonomous driving requires safe planning, but most learning-based planners lack explicit self-correction ability: once an unsafe action is proposed, there is no mechanism to correct it. Thus, we propose CorrectionPlanner, an autoregressive planner with self-correction that models planning as motion-token generation within a propose, evaluate, and correct loop. At each planning step, the policy proposes an action, namely a motion token, and a learned collision critic predicts whether it will induce a collision within a short horizon. If the critic predicts a collision, we retain the sequence of historical unsafe motion tokens as a self-correction trace, generate the next motion token conditioned on it, and repeat this process until a safe motion token is proposed or the safety criterion is met. This self-correction trace, consisting of all unsafe motion tokens, represents the planner's correction process in motion-token space, analogous to a reasoning trace in language models. We train the planner with imitation learning followed by model-based reinforcement learning using rollouts from a pretrained world model that realistically models agents' reactive behaviors. Closed-loop evaluations show that CorrectionPlanner reduces collision rate by over 20% on Waymax and achieves state-of-the-art planning scores on nuPlan.",
+      "authors": [
+        "Yihong Guo",
+        "Dongqiangzi Ye",
+        "Sijia Chen",
+        "Anqi Liu",
+        "Xianming Liu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-03-16T18:03:21+00:00",
+      "link": "https://arxiv.org/pdf/2603.15771v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "autoregressive motion planning and collision prediction in autonomous driving",
+      "llm_evidence_cn": "自动驾驶中的自回归运动规划与碰撞预测",
+      "llm_evidence": "自动驾驶中的自回归运动规划与碰撞预测",
+      "canonical_evidence": "自动驾驶中的自回归运动规划与碰撞预测",
+      "llm_tldr_en": "Introduces CorrectionPlanner, an autoregressive model with a self-correction loop for safe autonomous driving.",
+      "llm_tldr_cn": "引入CorrectionPlanner，一种具有自纠错循环的自回归自动驾驶规划模型。",
+      "llm_tldr": "引入CorrectionPlanner，一种具有自纠错循环的自回归自动驾驶规划模型。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2603.17802v1",
+      "title": "An HMDP-MPC Decision-making Framework with Adaptive Safety Margins and Hysteresis for Autonomous Driving",
+      "abstract": "This paper presents a unified decision-making framework that integrates Hybrid Markov Decision Processes (HMDPs) with Model Predictive Control (MPC), augmented by velocity-dependent safety margins and a prediction-aware hysteresis mechanism. Both the ego and surrounding vehicles are modeled as HMDPs, allowing discrete maneuver transition and kinematic evolution to be jointly considered within the MPC optimization. Safety margins derived from the Intelligent Driver Model (IDM) adapt to traffic context but vary with speed, which can cause oscillatory decisions and velocity fluctuations. To mitigate this, we propose a frozen-release hysteresis mechanism with distinct trigger and release thresholds, effectively enlarging the reaction buffer and suppressing oscillations. Decision continuity is further safeguarded by a two-layer recovery scheme: a global bounded relaxation tied to IDM margins and a deterministic fallback policy. The framework is evaluated through a case study, an ablation against a no-hysteresis baseline, and largescale randomized experiments across 18 traffic settings. Across 8,050 trials, it achieves a collision rate of only 0.05%, with 98.77% of decisions resolved by nominal MPC and minimal reliance on relaxation or fallback. These results demonstrate the robustness and adaptability of the proposed decision-making framework in heterogeneous traffic conditions.",
+      "authors": [
+        "Siyuan Li",
+        "Chengyuan Liu",
+        "Wen-Hua Chen"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-03-18T14:55:58+00:00",
+      "link": "https://arxiv.org/pdf/2603.17802v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "autonomous driving decision-making and motion planning framework",
+      "llm_evidence_cn": "自动驾驶决策与运动规划框架",
+      "llm_evidence": "自动驾驶决策与运动规划框架",
+      "canonical_evidence": "自动驾驶决策与运动规划框架",
+      "llm_tldr_en": "Integrates HMDP with MPC for autonomous driving with adaptive safety margins and hysteresis mechanisms.",
+      "llm_tldr_cn": "结合混合马尔可夫决策过程与模型预测控制，为自动驾驶提供具有自适应安全裕度的决策框架。",
+      "llm_tldr": "结合混合马尔可夫决策过程与模型预测控制，为自动驾驶提供具有自适应安全裕度的决策框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2603.18396v1",
+      "title": "RE-SAC: Disentangling aleatoric and epistemic risks in bus fleet control: A stable and robust ensemble DRL approach",
+      "abstract": "Bus holding control is challenging due to stochastic traffic and passenger demand. While deep reinforcement learning (DRL) shows promise, standard actor-critic algorithms suffer from Q-value instability in volatile environments. A key source of this instability is the conflation of two distinct uncertainties: aleatoric uncertainty (irreducible noise) and epistemic uncertainty (data insufficiency). Treating these as a single risk leads to value underestimation in noisy states, causing catastrophic policy collapse. We propose a robust ensemble soft actor-critic (RE-SAC) framework to explicitly disentangle these uncertainties. RE-SAC applies Integral Probability Metric (IPM)-based weight regularization to the critic network to hedge against aleatoric risk, providing a smooth analytical lower bound for the robust Bellman operator without expensive inner-loop perturbations. To address epistemic risk, a diversified Q-ensemble penalizes overconfident value estimates in sparsely covered regions. This dual mechanism prevents the ensemble variance from misidentifying noise as a data gap, a failure mode identified in our ablation study. Experiments in a realistic bidirectional bus corridor simulation demonstrate that RE-SAC achieves the highest cumulative reward (approx. -0.4e6) compared to vanilla SAC (-0.55e6). Mahalanobis rareness analysis confirms that RE-SAC reduces Oracle Q-value estimation error by up to 62% in rare out-of-distribution states (MAE of 1647 vs. 4343), demonstrating superior robustness under high traffic variability.",
+      "authors": [
+        "Yifan Zhang",
+        "Liang Zheng"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-03-19T01:37:45+00:00",
+      "link": "https://arxiv.org/pdf/2603.18396v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Disentangling aleatoric and epistemic risks in stochastic environments",
+      "llm_evidence_cn": "在随机环境中解耦偶然和认知风险",
+      "llm_evidence": "在随机环境中解耦偶然和认知风险",
+      "canonical_evidence": "在随机环境中解耦偶然和认知风险",
+      "llm_tldr_en": "RE-SAC explicitly disentangles aleatoric and epistemic uncertainties to improve DRL stability in volatile traffic.",
+      "llm_tldr_cn": "RE-SAC 显式解耦偶然和认知不确定性，提升了强化学习在波动交通环境中的稳定性。",
+      "llm_tldr": "RE-SAC 显式解耦偶然和认知不确定性，提升了强化学习在波动交通环境中的稳定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "aleatoric and epistemic uncertainty decomposition in diffusion trajectory models",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2603.18792v1",
+      "title": "Rethinking Uncertainty Quantification and Entanglement in Image Segmentation",
+      "abstract": "Uncertainty quantification (UQ) is crucial in safety-critical applications such as medical image segmentation. Total uncertainty is typically decomposed into data-related aleatoric uncertainty (AU) and model-related epistemic uncertainty (EU). Many methods exist for modeling AU (such as Probabilistic UNet, Diffusion) and EU (such as ensembles, MC Dropout), but it is unclear how they interact when combined. Additionally, recent work has revealed substantial entanglement between AU and EU, undermining the interpretability and practical usefulness of the decomposition. We present a comprehensive empirical study covering a broad range of AU-EU model combinations, propose a metric to quantify uncertainty entanglement, and evaluate both across downstream UQ tasks. For out-of-distribution detection, ensembles exhibit consistently lower entanglement and superior performance. For ambiguity modeling and calibration the best models are dataset-dependent, with softmax/SSN-based methods performing well and Probabilistic UNets being less entangled. A softmax ensemble fares remarkably well on all tasks. Finally, we analyze potential sources of uncertainty entanglement and outline directions for mitigating this effect.",
+      "authors": [
+        "Jakob Lønborg Christensen",
+        "Vedrana Andersen Dahl",
+        "Morten Rieger Hannemose",
+        "Anders Bjorholm Dahl",
+        "Christian F. Baumgartner"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-19T11:43:26+00:00",
+      "link": "https://arxiv.org/pdf/2603.18792v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "aleatoric and epistemic uncertainty decomposition using diffusion",
+      "llm_evidence_cn": "利用扩散模型进行偶然和认知不确定性分解",
+      "llm_evidence": "利用扩散模型进行偶然和认知不确定性分解",
+      "canonical_evidence": "利用扩散模型进行偶然和认知不确定性分解",
+      "llm_tldr_en": "Studies the entanglement of aleatoric and epistemic uncertainty in diffusion-based models.",
+      "llm_tldr_cn": "研究了基于扩散的模型中偶然不确定性和认知不确定性的纠缠问题。",
+      "llm_tldr": "研究了基于扩散的模型中偶然不确定性和认知不确定性的纠缠问题。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "aleatoric and epistemic uncertainty decomposition in diffusion trajectory models",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2603.19227v1",
+      "title": "Bridging Semantic and Kinematic Conditions with Diffusion-based Discrete Motion Tokenizer",
+      "abstract": "Prior motion generation largely follows two paradigms: continuous diffusion models that excel at kinematic control, and discrete token-based generators that are effective for semantic conditioning. To combine their strengths, we propose a three-stage framework comprising condition feature extraction (Perception), discrete token generation (Planning), and diffusion-based motion synthesis (Control). Central to this framework is MoTok, a diffusion-based discrete motion tokenizer that decouples semantic abstraction from fine-grained reconstruction by delegating motion recovery to a diffusion decoder, enabling compact single-layer tokens while preserving motion fidelity. For kinematic conditions, coarse constraints guide token generation during planning, while fine-grained constraints are enforced during control through diffusion-based optimization. This design prevents kinematic details from disrupting semantic token planning. On HumanML3D, our method significantly improves controllability and fidelity over MaskControl while using only one-sixth of the tokens, reducing trajectory error from 0.72 cm to 0.08 cm and FID from 0.083 to 0.029. Unlike prior methods that degrade under stronger kinematic constraints, ours improves fidelity, reducing FID from 0.033 to 0.014.",
+      "authors": [
+        "Chenyang Gu",
+        "Mingyuan Zhang",
+        "Haozhe Xie",
+        "Zhongang Cai",
+        "Lei Yang",
+        "Ziwei Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-19T17:59:51+00:00",
+      "link": "https://arxiv.org/pdf/2603.19227v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "diffusion-based motion synthesis and decoupling semantic abstraction from reconstruction",
+      "llm_evidence_cn": "基于扩散的运动合成以及语义抽象与重建的解耦",
+      "llm_evidence": "基于扩散的运动合成以及语义抽象与重建的解耦",
+      "canonical_evidence": "基于扩散的运动合成以及语义抽象与重建的解耦",
+      "llm_tldr_en": "Proposes a diffusion-based framework that decouples semantic and kinematic conditions for motion generation.",
+      "llm_tldr_cn": "提出一种基于扩散的模型框架，将运动生成的语义和运动学条件进行解耦。",
+      "llm_tldr": "提出一种基于扩散的模型框架，将运动生成的语义和运动学条件进行解耦。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2603.13136v1",
+      "title": "Unifying Decision Making and Trajectory Planning in Automated Driving through Time-Varying Potential Fields",
+      "abstract": "This paper proposes a unified decision making and local trajectory planning framework based on Time-Varying Artificial Potential Fields (TVAPFs). The TVAPF explicitly models the predicted motion via bounded uncertainty of dynamic obstacles over the planning horizon, using information from perception and V2X sources when available. TVAPFs are embedded into a finite horizon optimal control problem that jointly selects the driving maneuver and computes a feasible, collision free trajectory. The effectiveness and real-time suitability of the approach are demonstrated through a simulation test in a multi-actor scenario with real road topology, highlighting the advantages of the unified TVAPF-based formulation.",
+      "authors": [
+        "David Costa",
+        "Francesco Cerrito",
+        "Massimo Canale",
+        "Carlo Novara"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "math.OC"
+      ],
+      "published": "2026-03-13T16:26:58+00:00",
+      "link": "https://arxiv.org/pdf/2603.13136v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "trajectory planning with bounded uncertainty of dynamic obstacles",
+      "llm_evidence_cn": "考虑动态障碍物有界不确定性的轨迹规划",
+      "llm_evidence": "考虑动态障碍物有界不确定性的轨迹规划",
+      "canonical_evidence": "考虑动态障碍物有界不确定性的轨迹规划",
+      "llm_tldr_en": "Unifies decision making and trajectory planning using time-varying potential fields and obstacle uncertainty.",
+      "llm_tldr_cn": "利用时变势场和障碍物不确定性统一了自动驾驶的决策与轨迹规划。",
+      "llm_tldr": "利用时变势场和障碍物不确定性统一了自动驾驶的决策与轨迹规划。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.12480v1",
+      "title": "One-Step Flow Policy: Self-Distillation for Fast Visuomotor Policies",
+      "abstract": "Generative flow and diffusion models provide the continuous, multimodal action distributions needed for high-precision robotic policies. However, their reliance on iterative sampling introduces severe inference latency, degrading control frequency and harming performance in time-sensitive manipulation. To address this problem, we propose the One-Step Flow Policy (OFP), a from-scratch self-distillation framework for high-fidelity, single-step action generation without a pre-trained teacher. OFP unifies a self-consistency loss to enforce coherent transport across time intervals, and a self-guided regularization to sharpen predictions toward high-density expert modes. In addition, a warm-start mechanism leverages temporal action correlations to minimize the generative transport distance. Evaluations across 56 diverse simulated manipulation tasks demonstrate that a one-step OFP achieves state-of-the-art results, outperforming 100-step diffusion and flow policies while accelerating action generation by over $100\\times$. We further integrate OFP into the $π_{0.5}$ model on RoboTwin 2.0, where one-step OFP surpasses the original 10-step policy. These results establish OFP as a practical, scalable solution for highly accurate and low-latency robot control.",
+      "authors": [
+        "Shaolong Li",
+        "Lichao Sun",
+        "Yongchao Chen"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-03-12T21:58:12+00:00",
+      "link": "https://arxiv.org/pdf/2603.12480v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "generative flow and diffusion models for high-precision robotic policies",
+      "llm_evidence_cn": "用于高精度机器人策略的生成流和扩散模型",
+      "llm_evidence": "用于高精度机器人策略的生成流和扩散模型",
+      "canonical_evidence": "用于高精度机器人策略的生成流和扩散模型",
+      "llm_tldr_en": "Introduces a one-step flow policy for fast action generation in robotics, reducing inference latency.",
+      "llm_tldr_cn": "引入单步流策略以实现机器人快速动作生成，降低了推理延迟。",
+      "llm_tldr": "引入单步流策略以实现机器人快速动作生成，降低了推理延迟。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.14497v2",
+      "title": "WorldVLM: Combining World Model Forecasting and Vision-Language Reasoning",
+      "abstract": "Autonomous driving systems depend on on models that can reason about high-level scene contexts and accurately predict the dynamics of their surrounding environment. Vision- Language Models (VLMs) have recently emerged as promising tools for decision-making and scene understanding, offering strong capabilities in contextual reasoning. However, their limited spatial comprehension constrains their effectiveness as end-to-end driving models. World Models (WM) internalize environmental dynamics to predict future scene evolution. Recently explored as ego-motion predictors and foundation models for autonomous driving, they represent a promising direction for addressing key challenges in the field, particularly enhancing generalization while maintaining dynamic prediction. To leverage the complementary strengths of context-based decision making and prediction, we propose WorldVLM: A hybrid architecture that unifies VLMs and WMs. In our design, the high-level VLM generates behavior commands to guide the driving WM, enabling interpretable and context-aware actions. We evaluate conditioning strategies and provide insights into the hybrid design challenges.",
+      "authors": [
+        "Stefan Englmeier",
+        "Katharina Winter",
+        "Fabian B. Flohr"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-03-15T17:26:59+00:00",
+      "link": "https://arxiv.org/pdf/2603.14497v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "world models for forecasting and ego-motion prediction in autonomous driving",
+      "llm_evidence_cn": "用于自动驾驶预测和自车运动预测的世界模型",
+      "llm_evidence": "用于自动驾驶预测和自车运动预测的世界模型",
+      "canonical_evidence": "用于自动驾驶预测和自车运动预测的世界模型",
+      "llm_tldr_en": "Combines World Models and VLMs to enhance environmental forecasting and decision-making in autonomous driving.",
+      "llm_tldr_cn": "结合世界模型与VLM，增强自动驾驶中的环境预测与决策能力。",
+      "llm_tldr": "结合世界模型与VLM，增强自动驾驶中的环境预测与决策能力。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.12635v1",
+      "title": "Adaptive Diffusion Posterior Sampling for Data and Model Fusion of Complex Nonlinear Dynamical Systems",
+      "abstract": "High-fidelity numerical simulations of chaotic, high dimensional nonlinear dynamical systems are computationally expensive, necessitating the development of efficient surrogate models. Most surrogate models for such systems are deterministic, for example when neural operators are involved. However, deterministic models often fail to capture the intrinsic distributional uncertainty of chaotic systems. This work presents a surrogate modeling formulation that leverages generative machine learning, where a deep learning diffusion model is used to probabilistically forecast turbulent flows over long horizons. We introduce a multi-step autoregressive diffusion objective that significantly enhances long-rollout stability compared to standard single-step training. To handle complex, unstructured geometries, we utilize a multi-scale graph transformer architecture incorporating diffusion preconditioning and voxel-grid pooling. More importantly, our modeling framework provides a unified platform that also predicts spatiotemporally important locations for sensor placement, either via uncertainty estimates or through an error-estimation module. Finally, the observations of the ground truth state at these dynamically varying sensor locations are assimilated using diffusion posterior sampling requiring no retraining of the surrogate model. We present our methodology on two-dimensional homogeneous and isotropic turbulence and for a flow over a backwards-facing step, demonstrating its utility in forecasting, adaptive sensor placement, and data assimilation for high dimensional chaotic systems.",
+      "authors": [
+        "Dibyajyoti Chakraborty",
+        "Hojin Kim",
+        "Romit Maulik"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "nlin.CD",
+        "physics.flu-dyn"
+      ],
+      "published": "2026-03-13T04:11:37+00:00",
+      "link": "https://arxiv.org/pdf/2603.12635v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion model for capturing intrinsic distributional uncertainty",
+      "llm_evidence_cn": "用于捕获内在分布不确定性的扩散模型",
+      "llm_evidence": "用于捕获内在分布不确定性的扩散模型",
+      "canonical_evidence": "用于捕获内在分布不确定性的扩散模型",
+      "llm_tldr_en": "Uses diffusion models to forecast complex dynamical systems while capturing intrinsic distributional uncertainty.",
+      "llm_tldr_cn": "利用扩散模型预测复杂动力系统，同时捕获内在的分布不确定性。",
+      "llm_tldr": "利用扩散模型预测复杂动力系统，同时捕获内在的分布不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "modeling aleatoric uncertainty in autonomous driving scenarios",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.14739v1",
+      "title": "TrajMamba: An Ego-Motion-Guided Mamba Model for Pedestrian Trajectory Prediction from an Egocentric Perspective",
+      "abstract": "Future trajectory prediction of a tracked pedestrian from an egocentric perspective is a key task in areas such as autonomous driving and robot navigation. The challenge of this task lies in the complex dynamic relative motion between the ego-camera and the tracked pedestrian. To address this challenge, we propose an ego-motion-guided trajectory prediction network based on the Mamba model. Firstly, two Mamba models are used as encoders to extract pedestrian motion and ego-motion features from pedestrian movement and ego-vehicle movement, respectively. Then, an ego-motion guided Mamba decoder that explicitly models the relative motion between the pedestrian and the vehicle by integrating pedestrian motion features as historical context with ego-motion features as guiding cues to capture decoded features. Finally, the future trajectory is generated from the decoded features corresponding to the future timestamps. Extensive experiments demonstrate the effectiveness of the proposed model, which achieves state-of-the-art performance on the PIE and JAAD datasets.",
+      "authors": [
+        "Yusheng Peng",
+        "Gaofeng Zhang",
+        "Liping Zheng"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-03-16T02:28:45+00:00",
+      "link": "https://arxiv.org/pdf/2603.14739v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "pedestrian trajectory prediction from an egocentric perspective in autonomous driving",
+      "llm_evidence_cn": "自动驾驶中基于第一人称视角的行人轨迹预测",
+      "llm_evidence": "自动驾驶中基于第一人称视角的行人轨迹预测",
+      "canonical_evidence": "自动驾驶中基于第一人称视角的行人轨迹预测",
+      "llm_tldr_en": "Uses a Mamba-based model to predict pedestrian trajectories by modeling relative ego-motion.",
+      "llm_tldr_cn": "利用Mamba模型通过建模相对自车运动来预测行人轨迹。",
+      "llm_tldr": "利用Mamba模型通过建模相对自车运动来预测行人轨迹。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.13228v1",
+      "title": "PhysMoDPO: Physically-Plausible Humanoid Motion with Preference Optimization",
+      "abstract": "Recent progress in text-conditioned human motion generation has been largely driven by diffusion models trained on large-scale human motion data. Building on this progress, recent methods attempt to transfer such models for character animation and real robot control by applying a Whole-Body Controller (WBC) that converts diffusion-generated motions into executable trajectories. While WBC trajectories become compliant with physics, they may expose substantial deviations from original motion. To address this issue, we here propose PhysMoDPO, a Direct Preference Optimization framework. Unlike prior work that relies on hand-crafted physics-aware heuristics such as foot-sliding penalties, we integrate WBC into our training pipeline and optimize diffusion model such that the output of WBC becomes compliant both with physics and original text instructions. To train PhysMoDPO we deploy physics-based and task-specific rewards and use them to assign preference to synthesized trajectories. Our extensive experiments on text-to-motion and spatial control tasks demonstrate consistent improvements of PhysMoDPO in both physical realism and task-related metrics on simulated robots. Moreover, we demonstrate that PhysMoDPO results in significant improvements when applied to zero-shot motion transfer in simulation and for real-world deployment on a G1 humanoid robot.",
+      "authors": [
+        "Yangsong Zhang",
+        "Anujith Muraleedharan",
+        "Rikhat Akizhanov",
+        "Abdul Ahad Butt",
+        "Gül Varol",
+        "Pascal Fua",
+        "Fabio Pizzati",
+        "Ivan Laptev"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-03-13T17:59:59+00:00",
+      "link": "https://arxiv.org/pdf/2603.13228v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion-generated motions converted into executable trajectories",
+      "llm_evidence_cn": "将扩散生成的动作转换为可执行轨迹",
+      "llm_evidence": "将扩散生成的动作转换为可执行轨迹",
+      "canonical_evidence": "将扩散生成的动作转换为可执行轨迹",
+      "llm_tldr_en": "Optimizes diffusion-based humanoid motion generation using preference optimization for physical plausibility.",
+      "llm_tldr_cn": "利用偏好优化改进基于扩散的人形机器人运动生成，确保生成的轨迹符合物理约束。",
+      "llm_tldr": "利用偏好优化改进基于扩散的人形机器人运动生成，确保生成的轨迹符合物理约束。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.14868v1",
+      "title": "Free Final Time Adaptive Mesh Covariance Steering via Sequential Convex Programming",
+      "abstract": "In this paper we develop a sequential convex programming (SCP) framework for free-final-time covariance steering of nonlinear stochastic differential equations (SDEs) subject to both additive and multiplicative diffusion. We cast the free-final-time objective through a time-normalization and introduce per-interval time-dilation variables that induce an adaptive discretization mesh, enabling the simultaneous optimization of the control policy and the temporal grid. A central difficulty is that, under multiplicative noise, accurate covariance propagation within SCP requires retaining the first-order diffusion linearization and its coupling with time dilation. We therefore derive the exact local linear stochastic model (preserving the multiplicative structure) and introduce a tractable discretization that maintains the associated diffusion terms, after which each SCP subproblem is solved via conic/semidefinite covariance-steering relaxations with terminal moment constraints and state/control chance constraints. Numerical experiments on a nonlinear double-integrator with drag and velocity-dependent diffusion validate free-final-time minimization through adaptive time allocation and improved covariance accuracy relative to frozen-diffusion linearizations.",
+      "authors": [
+        "Joshua Pilipovsky"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "eess.SY"
+      ],
+      "published": "2026-03-16T06:12:42+00:00",
+      "link": "https://arxiv.org/pdf/2603.14868v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "covariance steering of nonlinear SDEs with additive and multiplicative diffusion",
+      "llm_evidence_cn": "具有加性和乘性扩散的非线性SDE的协方差控制",
+      "llm_evidence": "具有加性和乘性扩散的非线性SDE的协方差控制",
+      "canonical_evidence": "具有加性和乘性扩散的非线性SDE的协方差控制",
+      "llm_tldr_en": "Develops a framework for steering state covariance in stochastic systems, relevant to uncertainty quantification.",
+      "llm_tldr_cn": "开发了随机系统中状态协方差引导框架，与不确定性量化相关。",
+      "llm_tldr": "开发了随机系统中状态协方差引导框架，与不确定性量化相关。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.13228v2",
+      "title": "PhysMoDPO: Physically-Plausible Humanoid Motion with Preference Optimization",
+      "abstract": "Recent progress in text-conditioned human motion generation has been largely driven by diffusion models trained on large-scale human motion data. Building on this progress, recent methods attempt to transfer such models for character animation and real robot control by applying a Whole-Body Controller (WBC) that converts diffusion-generated motions into executable trajectories. While WBC trajectories become compliant with physics, they may expose substantial deviations from original motion. To address this issue, we here propose PhysMoDPO, a Direct Preference Optimization framework. Unlike prior work that relies on hand-crafted physics-aware heuristics such as foot-sliding penalties, we integrate WBC into our training pipeline and optimize diffusion model such that the output of WBC becomes compliant both with physics and original text instructions. To train PhysMoDPO we deploy physics-based and task-specific rewards and use them to assign preference to synthesized trajectories. Our extensive experiments on text-to-motion and spatial control tasks demonstrate consistent improvements of PhysMoDPO in both physical realism and task-related metrics on simulated robots. Moreover, we demonstrate that PhysMoDPO results in significant improvements when applied to zero-shot motion transfer in simulation and for real-world deployment on a G1 humanoid robot.",
+      "authors": [
+        "Yangsong Zhang",
+        "Anujith Muraleedharan",
+        "Rikhat Akizhanov",
+        "Abdul Ahad Butt",
+        "Gül Varol",
+        "Pascal Fua",
+        "Fabio Pizzati",
+        "Ivan Laptev"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-03-13T17:59:59+00:00",
+      "link": "https://arxiv.org/pdf/2603.13228v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion-generated motions into executable trajectories",
+      "llm_evidence_cn": "扩散生成的运动转化为可执行轨迹",
+      "llm_evidence": "扩散生成的运动转化为可执行轨迹",
+      "canonical_evidence": "扩散生成的运动转化为可执行轨迹",
+      "llm_tldr_en": "Optimizes diffusion-based humanoid motion generation for physical plausibility using preference optimization.",
+      "llm_tldr_cn": "利用偏好优化改进基于扩散模型的人形机器人运动生成，确保物理合理性。",
+      "llm_tldr": "利用偏好优化改进基于扩散模型的人形机器人运动生成，确保物理合理性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.15009v1",
+      "title": "TrajFlow: Nation-wide Pseudo GPS Trajectory Generation with Flow Matching Models",
+      "abstract": "The importance of mobile phone GPS trajectory data is widely recognized across many fields, yet the use of real data is often hindered by privacy concerns, limited accessibility, and high acquisition costs. As a result, generating pseudo-GPS trajectory data has become an active area of research. Recent diffusion-based approaches have achieved strong fidelity but remain limited in spatial scale (small urban areas), transportation-mode diversity, and efficiency (requiring numerous sampling steps). To address these challenges, we introduce TrajFlow, which to the best of our knowledge is the first flow-matching-based generative model for GPS trajectory generation. TrajFlow leverages the flow-matching paradigm to improve robustness and efficiency across multiple geospatial scales, and incorporates a trajectory harmonization and reconstruction strategy to jointly address scalability, diversity, and efficiency. Using a nationwide mobile phone GPS dataset with millions of trajectories across Japan, we show that TrajFlow or its variants consistently outperform diffusion-based and deep generative baselines at urban, metropolitan, and nationwide levels. As the first nationwide, multi-scale GPS trajectory generation model, TrajFlow demonstrates strong potential to support inter-region urban planning, traffic management, and disaster response, thereby advancing the resilience and intelligence of future mobility systems.",
+      "authors": [
+        "Peiran Li",
+        "Jiawei Wang",
+        "Haoran Zhang",
+        "Xiaodan Shi",
+        "Noboru Koshizuka",
+        "Chihiro Shimizu",
+        "Renhe Jiang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CY"
+      ],
+      "published": "2026-03-16T09:15:13+00:00",
+      "link": "https://arxiv.org/pdf/2603.15009v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "generative model for GPS trajectory generation",
+      "llm_evidence_cn": "用于GPS轨迹生成的生成模型",
+      "llm_evidence": "用于GPS轨迹生成的生成模型",
+      "canonical_evidence": "用于GPS轨迹生成的生成模型",
+      "llm_tldr_en": "Introduces TrajFlow, a flow-matching model for large-scale pseudo-GPS trajectory generation.",
+      "llm_tldr_cn": "介绍了TrajFlow，一种用于大规模伪GPS轨迹生成的流匹配模型。",
+      "llm_tldr": "介绍了TrajFlow，一种用于大规模伪GPS轨迹生成的流匹配模型。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.13419v1",
+      "title": "Diffusion Models Generalize but Not in the Way You Might Think",
+      "abstract": "Standard evaluation metrics suggest that Denoising Diffusion Models based on U-Net or Transformer architectures generalize well in practice. However, as it can be shown that an optimal Diffusion Model fully memorizes the training data, the model error determines generalization. Here, we show that although sufficiently large denoiser models show increasing memorization of the training set with increasing training time, the resulting denoising trajectories do not follow this trend. Our experiments indicate that the reason for this observation is rooted in the fact that overfitting occurs at intermediate noise levels, but the distribution of noisy training data at these noise levels has little overlap with denoising trajectories during inference. To gain more insight, we make use of a 2D toy diffusion model to show that overfitting at intermediate noise levels is largely determined by model error and the density of the data support. While the optimal denoising flow field localizes sharply around training samples, sufficient model error or dense support on the data manifold suppresses exact recall, yielding a smooth, generalizing flow field. To further support our results, we investigate how several factors, such as training time, model size, dataset size, condition granularity, and diffusion guidance, influence generalization behavior.",
+      "authors": [
+        "Tim Kaiser",
+        "Markus Kollmann"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-12T21:02:17+00:00",
+      "link": "https://arxiv.org/pdf/2603.13419v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "analysis of denoising trajectories and generalization in diffusion models",
+      "llm_evidence_cn": "扩散模型中去噪轨迹与泛化能力的分析",
+      "llm_evidence": "扩散模型中去噪轨迹与泛化能力的分析",
+      "canonical_evidence": "扩散模型中去噪轨迹与泛化能力的分析",
+      "llm_tldr_en": "Analyzes how diffusion models generalize and the behavior of denoising trajectories during inference.",
+      "llm_tldr_cn": "分析了扩散模型的泛化方式以及推理过程中去噪轨迹的行为。",
+      "llm_tldr": "分析了扩散模型的泛化方式以及推理过程中去噪轨迹的行为。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.15132v1",
+      "title": "WiT: Waypoint Diffusion Transformers via Trajectory Conflict Navigation",
+      "abstract": "While recent Flow Matching models avoid the reconstruction bottlenecks of latent autoencoders by operating directly in pixel space, the lack of semantic continuity in the pixel manifold severely intertwines optimal transport paths. This induces severe trajectory conflicts near intersections, yielding sub-optimal solutions. Rather than bypassing this issue via information-lossy latent representations, we directly untangle the pixel-space trajectories by proposing Waypoint Diffusion Transformers (WiT). WiT factorizes the continuous vector field via intermediate semantic waypoints projected from pre-trained vision models. It effectively disentangles the generation trajectories by breaking the optimal transport into prior-to-waypoint and waypoint-to-pixel segments. Specifically, during the iterative denoising process, a lightweight generator dynamically infers these intermediate waypoints from the current noisy state. They then continuously condition the primary diffusion transformer via the Just-Pixel AdaLN mechanism, steering the evolution towards the next state, ultimately yielding the final RGB pixels. Evaluated on ImageNet 256x256, WiT beats strong pixel-space baselines, accelerating JiT training convergence by 2.2x. Code will be publicly released at https://github.com/hainuo-wang/WiT.git.",
+      "authors": [
+        "Hainuo Wang",
+        "Mingjia Li",
+        "Xiaojie Guo"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-16T11:25:09+00:00",
+      "link": "https://arxiv.org/pdf/2603.15132v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Diffusion transformers for trajectory disentanglement",
+      "llm_evidence_cn": "用于轨迹解耦的扩散 Transformer",
+      "llm_evidence": "用于轨迹解耦的扩散 Transformer",
+      "canonical_evidence": "用于轨迹解耦的扩散 Transformer",
+      "llm_tldr_en": "WiT uses semantic waypoints to disentangle generation trajectories in pixel-space diffusion models.",
+      "llm_tldr_cn": "WiT 通过语义路标解耦像素空间扩散模型中的生成轨迹，减少路径冲突。",
+      "llm_tldr": "WiT 通过语义路标解耦像素空间扩散模型中的生成轨迹，减少路径冲突。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
