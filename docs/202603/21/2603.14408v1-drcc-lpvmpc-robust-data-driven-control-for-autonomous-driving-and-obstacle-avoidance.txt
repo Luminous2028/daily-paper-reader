@@ -1,0 +1,1793 @@
+Title: DRCC-LPVMPC: Robust Data-Driven Control for Autonomous Driving and Obstacle Avoidance
+
+URL Source: https://arxiv.org/pdf/2603.14408v1
+
+Published Time: Tue, 17 Mar 2026 05:19:33 GMT
+
+Number of Pages: 16
+
+Markdown Content:
+> 1
+
+# DRCC-LPVMPC: Robust Data-Driven Control for Autonomous Driving and Obstacle Avoidance 
+
+Shiming Fang, Xilin Li, Changzhi Wu, and Kaiyan Yu, Member, IEEE 
+
+Abstract —Safety in obstacle avoidance is critical for au-tonomous driving. While model predictive control (MPC) is widely used, simplified prediction models such as linearized or single-track vehicle models introduce discrepancies between predicted and actual behavior that can compromise safety. This paper proposes a distributionally robust chance-constrained linear parameter-varying MPC (DRCC-LPVMPC) framework that explicitly accounts for such discrepancies. The single-track vehicle dynamics are represented in a quasi-linear parameter-varying (quasi-LPV) form, with model mismatches treated as additive uncertainties of unknown distribution. By constructing chance constraints from finite sampled data and employing a Wasserstein ambiguity set, the proposed method avoids restrictive assumptions on boundedness or Gaussian distributions. The resulting DRCC problem is reformulated as tractable convex constraints and solved in real time using a quadratic program-ming solver. Recursive feasibility of the approach is formally established. Simulation and real-world experiments demonstrate that DRCC-LPVMPC maintains safer obstacle clearance and more reliable tracking than conventional nonlinear MPC and LPVMPC controllers under significant uncertainties. 
+
+Index Terms —Distributionally robust chance-constrained problem, model predictive control, linear parameter varying models, vehicle dynamics uncertainty. 
+
+I. I NTRODUCTION 
+
+# SAFETY is a critical challenge in autonomous driving, particularly in dynamic scenarios such as collision avoid-ance, which involve complex vehicle models and unpredictable disturbances. Model predictive control (MPC) has become a popular framework because it explicitly handles system and input constraints while benefiting from advances in machine learning and computation [1], [2]. Its use in autonomous driving has been widely studied [3], [4], motivated by the growing demand for AI-based safe control architectures. Dynamic vehicle models capture lateral dynamics better than simple kinematic models, but discrepancies between even detailed four-wheel models and real vehicle behavior remain problematic in high-speed driving. Single-track models (STMs), which approximate four-wheel dynamics as a bicycle model, strike a balance between fidelity and computational 
+
+The work was supported in part by the National Science Foundation (NSF) under Award CMMI 2146056 (K. Yu). ( Corresponding author: Kaiyan Yu ). S. Fang and K. Yu are with the Department of Mechanical Engi-neering, Binghamton University, Binghamton, NY 13902 USA (email: sfang10@binghamton.edu; kyu@binghamton.edu). X. Li is with the De-partment of Mechanical and Aerospace Engineering, Syracuse University, Syracuse, NY 13244 (e-mail: xli428@syr.edu). C. Wu is with the National Center for Applied Mathematics, Chongqing Normal University, Chongqing, 401331, China (e-mail: changzhiwu@gzhu.edu.cn). Source codes are available at https://github.com/Binghamton-ACSR-Lab/DRCCLPVMPC. 
+
+cost. Nonlinear MPC (NMPC) is often applied for such mod-els, but its high computational burden and feasibility issues in real-time obstacle avoidance remain challenging [5]. In MPC-based obstacle avoidance, obstacles are often sim-plified into geometric shapes to keep constraints tractable. However, safety requires more than collision avoidance alone: a vehicle should begin adjusting its trajectory smoothly once an obstacle is detected, instead of executing abrupt turns or hard braking when the obstacle is already near. To enable smoother maneuvers, bounding-box methods in the Tangent-Normal-Binormal (TNB) frame have been explored [6]. To address these challenges, a common approach is to use re-linearization methods to simplify nonlinear dynam-ics. Accordingly, this paper adopts a quasi-linear parameter-varying (quasi-LPV) approach [7] to linearize the dynamics and constraints of the nonlinear vehicle model. LPV modeling represents nonlinear systems in a linear time-varying frame-work by approximating the nonlinear model with adaptive linear representations. In quasi-LPV, the scheduling parameter vector is defined as a function of selected system states and inputs, ensuring system matrices are updated dynamically. By converting NMPC into a linear formulation, LPV-based MPC (LPVMPC) reduces complexity to solving a quadratic program (QP), while still adapting the model matrices online. LPVMPC has demonstrated strong performance in tasks such as racing [8] and path following [9], yet challenges persist in predicting scheduling parameters and ensuring robustness. quasi-LPV-MPC methods have also been extended to UAVs: [10] applied a 12-state model for quadrotor tracking, and [11] incorporated obstacle avoidance and stability constraints for fixed-wing UAVs. These studies highlight the versatility of quasi-LPV modeling but remain limited to simulation, without addressing uncertainty or real-time feasibility. While iterative quasi-LPV-MPC schemes can converge to nonlinear dynamics with sufficient iterations [12], real-time implementation is impractical under fast sampling or complex tasks. Even with convergence, the bicycle model remains an approximation of the unknown full dynamics. To enable real-time control without iterative refinement, we adopt a pragmatic strategy: scheduling parameters at each step are taken from the previous optimal solution [5], reducing computation time but introducing model mismatch and sensor noise. These uncertainties can compromise safety by producing trajectories close to obstacle boundaries. The concern of disturbances further motivates robust MPC (RMPC). For instance, [13] proposed Tube-RMPC for road-tire adhesion uncertainty, and [14] designed robust feedback laws via convex constraints. However, these methods often 
+
+> arXiv:2603.14408v1 [eess.SY] 15 Mar 2026 2
+
+yield conservative solutions due to overestimated uncertainty bounds. To reduce conservatism, distributionally robust op-timization (DRO) has emerged as a promising alternative. Recent work has demonstrated DRO’s capability to manage uncertainties in motion planning and control [15], as well as robotics [16], though nonlinear and nonconvex formulations still hinder real-time applications. Building on DRO, recent studies have extended robust opti-mization to distributionally robust chance-constrained (DRCC) problems in autonomous robotics. For instance, [16] ensured safe navigation in crowded environments via risk metrics and DRCC-based safe-corridor constraints to handle perception uncertainty, while [17] integrated Gaussian Process regres-sion with DRO for robust motion control under unknown obstacle dynamics. In [18], chance-constrained Gaussian belief space planning enabled real-time, uncertainty-aware motion planning. More recent efforts have combined DRCC with MPC, such as data-driven DRCC-MPC for adaptive cruise control [19], DRCC-based safe-corridor trajectory optimiza-tion [20], and Wasserstein DRCC-MPC for collision avoid-ance [21]. However, most retain nonlinear models and noncon-vex constraints, leading to high computational cost and limited real-time applicability. A primary challenge in solving DRCC problems is therefore tractability. Data-driven approaches provide efficient DRCC solutions when uncertainty distributions are unknown, often using Wasserstein ambiguity sets [22]. For example, [23] inte-grates Wasserstein-ball ambiguity sets into power-flow chance constraints, [24] leverages Bayesian intervals for finite-sample guarantees, [25] employs moment-based sets for efficiency, and [26] applies DRO to multi-agent systems under chance constraints. While LPVMPC has been widely applied to trajectory track-ing, most schemes assume known disturbance models and are not robust to distributional ambiguity [27]. Conversely, DRCC provides safety guarantees under distributional uncertainty but has rarely been integrated into LPV-based vehicle control. To the best of our knowledge, this work is the first to combine data-driven DRCC with LPVMPC, enabling robust control under probabilistic safety constraints learned from sample data and filling an important gap in autonomous driving research. This paper introduces a novel framework, DRCC-LPVMPC, for autonomous vehicle control under uncertainty. The method accounts for discrepancies between simplified linearized mod-els and real vehicle dynamics, as well as additive distur-bances from sensors and localization. We adopt a data-driven strategy: discrepancies between measured sensor states and quasi-LPV predictions are used to generate empirical disturbance samples, forming ambiguity sets for the DRCC formulation. These ambiguity sets constrain the Wasserstein distance between empirical and true distributions, yielding an infinite-dimensional DRCC problem. This can be refor-mulated as finite-dimensional convex constraints resembling conditional-value-at-risk (CVaR) constraints with right-hand uncertainty [28], solvable efficiently with a QP solver. The full framework is outlined in Fig. 1. Numerical and experimental results demonstrate that DRCC-LPVMPC improves robustness and safety in obstacle avoidance compared with NMPC and  
+
+> Fig. 1. Overview of the derivation and design process of DRCC-LPVMPC, highlighting the transition from the nonlinear vehicle model to the quasi-LPV representation with additive uncertainties, and the formulation of the chance-constrained problem using the right-hand CVaR constraint.
+
+standard LPVMPC, especially in multi-obstacle scenarios with significant uncertainties. The main contributions of this paper are 1) the develop-ment of DRCC-LPVMPC, a data-driven LPVMPC framework that enhances safety and robustness in autonomous driving by explicitly accounting for model uncertainties and addi-tive disturbances, achieving real-time performance via QP-based optimization. 2) Vehicle dynamics are represented in a quasi-LPV form derived from a simplified STM, with model discrepancy and sensor noise captured as sampled additive uncertainties, enabling efficient real-time control without full nonlinear models. 3) The method’s recursive feasibility is formally established, and simulations demonstrate larger ob-stacle clearances and more reliable tracking than NMPC and LPVMPC under significant uncertainties, without assuming bounded or Gaussian distributions. 4) Real-world experiments further validate the approach, demonstrating robust obstacle avoidance where LPVMPC cannot avoid obstacles. This paper is organized as follows: Section II presents the quasi-LPV vehicle dynamics model. Section III intro-duces the linearized obstacle avoidance and LPVMPC for-mulation. Section IV develops the finite-dimensional DRCC constraints and the DRCC-LPVMPC formulation with recur-sive feasibility. Section V details the nonlinear dynamics and the experimental setup for LPVMPC, DRCC-LPVMPC, and NMPC. Section VI compares NMPC, LPVMPC, and DRCC-LPVMPC, highlighting DRCC-LPVMPC’s enhanced safety and feasibility. Section VII presents real-world results on a 1:5 scaled vehicle, demonstrating robust obstacle avoidance. Section VIII concludes with key findings and future directions. II. N ONLINEAR DYNAMICS AND LPV M ODELING 
+
+A. Notations 
+
+The symbol In denotes an n by n identity matrix. The symbol Z≥0 represents the set of nonnegative integers and 
+
+Z>0 represents the positive integer set. The symbol Ri×j
+
+represents a real matrix with ith rows and jth columns. Given an integer n, we let [n] := {1, 2, . . . , n }. The symbol 
+
+enk ∈ R1×n represents an elementary vector where only the 
+
+kth element is equal to one. We let ˜w := ( ˜ w1, . . . , ˜wN )
+
+denote the set distribution of the unknown disturbance and 
+
+ˆwj := ( ˆ w1 
+
+> j
+
+, . . . , ˆwNj ), j ∈ [J] denote the jth set of sampled data. We further denote ˜ekw := [ 01×6, ˜wk]⊤, k ∈ [N ] and 
+
+ˆekwj := [ 01×6, ˆwkj ]⊤, j ∈ [J], k ∈ [N ] as the elementary disturbance vectors. ∥ · ∥ represents the norm operator. 3TABLE I N OTATION FOR S TATE AND INPUT V ARIABLES ( , )Fig. 2. STM configuration. 
+
+We denote Rr as the reference trajectory and define a TNB frame based on it. In this frame, the coordinate along the tangential direction of Rr is denoted as T , while the coordinate perpendicular to T is represented as Λ. S is defined as the arc-length traveled along Rr from the starting point to the current position [T, Λ] . The tangential angle at a given point along Rr is represented by θ. Transformation functions Γr,
+
+ΓT 
+
+> in
+
+, ΓS
+
+> in
+
+, and Γθ 
+
+> in
+
+map points in the TNB frame to Cartesian coordinates, T , S, and θ, respectively. Detailed discussions of these notations and their roles appear in Sections III-A and V-A, with additional symbols explained as introduced. 
+
+B. Nonlinear Vehicle Model 
+
+In this paper, we adopt STM within the quasi-LPV frame-work, as illustrated in Fig. 2, and account for model discrep-ancies through an unknown-distributed uncertainty term. This approach enables computationally efficient predictive control while addressing uncertainties in both the linearized dynamics and additive disturbances, ensuring robust obstacle avoidance in autonomous driving. Following [29], the vehicle state vector z at time step k
+
+is defined as zk = [ xk, y k, φ k, v xk , v yk , ω k], representing the position, orientation, linear velocities, and yaw rate of the vehicle’s center of gravity. The control input vector u consists of the steering angle and acceleration, given by uk = [ δk, a ck ],as summarized in Table I. The slip angle at the front tire αf
+
+and the rear tire αr are calculated as: 
+
+αf = δ − lf ω + vy
+
+vx
+
+, αr = lr ω − vy
+
+vx
+
+. (1) The front and rear lateral forces Ff y and Fry are calculated based on the cornering stiffness Cαf and Cαr : Ff y = Cαf αf
+
+and Fry = Cαr αr . The longitudinal force acting on the rear wheel, Frx , is given by: Frx = ma c, where m is the vehicle mass. Thus, the continuous differential equations governing the vehicle dynamics, represented as ˙zk = f (zk, uk), are formulated as follows: 
+
+˙xk = vxk cos φk − vyk sin φk,
+
+˙yk = vxk sin φk + vyk cos φk,
+
+˙φk = ωk,
+
+˙vxk = 1
+
+m (Frx k − Ff y k sin δk + mv yk ωk),
+
+˙vyk = 1
+
+m (Fry k + Ff y k cos δk − mv xk ωk),
+
+˙ωk = 1
+
+Iz
+
+(Ff y k lf cos δk − Fry k lr ),
+
+(2) where lf and lr denote the distances from the center of gravity to the front and rear axles, respectively, and Iz is the vehicle’s yaw moment of inertia. Before presenting the LPV reformulation, we note that the system is considered in a discrete-time setting, with sampling time ∆t, such that the nonlinear dynamics evolve as zk+1 =
+
+zk + f (zk, uk)∆ t, k ∈ Z≥0.
+
+C. Quasi-LPV Model 
+
+To formulate the quasi-LPV model used in LPVMPC based on Eq. (2), we first define the scheduling parameter vector as 
+
+pk = [ vxk , v yk , δ k, φ k]. Using this scheduling parameter, the quasi-LPV representation of Eq. (2) is expressed as: 
+
+˙zk = ˆA(pk)zk + ˆB(pk)uk, k ∈ Z≥0, (3) where ˆA ∈ R6×6 and ˆB ∈ R6×2. The state transition matrix 
+
+ˆA is given by: 
+
+ˆA(pk) := 
+
+
+
+0 0 0 cos φk − sin φk 00 0 0 sin φk cos φk 00 0 0 0 0 10 0 0 0 ˆa45 k ˆa46 k
+
+0 0 0 0 ˆa55 k ˆa56 k
+
+0 0 0 0 ˆa65 k ˆa66 k
+
+
+
+> 6×6
+
+To simplify the representations, we denote: 
+
+βf := Cαf 
+
+m , βr := Cαr 
+
+m , γf := Cαf lf
+
+Iz
+
+, γr := Cαr lr
+
+Iz
+
+,
+
+and the elements in ˆA are given as: 
+
+ˆa45 k := βf
+
+sin δk
+
+vxk
+
+, ˆa46 k := βf
+
+lf sin δk
+
+vxk
+
++ vyk ,
+
+ˆa55 k := −βr
+
+1
+
+vxk
+
+− βf
+
+cos δk
+
+vxk
+
+,
+
+ˆa56 k := βr
+
+lr
+
+vxk
+
+− βf
+
+lf cos δk
+
+vxk
+
+− vxk ,
+
+ˆa65 k := γr
+
+1
+
+vxk
+
+− γf
+
+cos δk
+
+vxk
+
+, ˆa66 k := −γf
+
+lf cos δk
+
+vxk
+
+− γr
+
+lr
+
+vxk
+
+.
+
+The input matrix ˆB is: 
+
+ˆB(pk) := 
+
+"0 0 0 ˆb41 k
+
+ˆb51 k
+
+ˆb61 k
+
+0 0 0 1 0 0
+
+#⊤
+
+> 6×2
+
+and the elements in ˆB are ˆb41 k := −βf sin δk, ˆb51 k := 
+
+βf cos δk, and ˆb61 k := γf cos δk. Based on [7], this formu-lation ensures that the system matrices ˆA and ˆB depend only on the scheduling parameter vector pk. The next state zk+1 
+
+can be obtained using the Euler method as follows: 
+
+zk+1 = zk + ˙ zk∆t
+
+= zk + ( ˆA(pk)zk + ˆB(pk)uk)∆ t
+
+= ( I6 + ˆA(pk)∆ t)zk + ˆB(pk)∆ tuk
+
+= A(pk)zk + B(pk)uk,
+
+(4) where A(pk) = I6 + ˆA(pk)∆ t and B(pk) = ˆB(pk)∆ t are the discrete-time quasi-LPV system matrices. For simplicity, we denote these matrices as Ak and Bk for the remainder of this work. 4
+
+D. Quasi-LPV Model with Uncertainties 
+
+Based on [30], the formulations in Eq. (1) and the computa-tions for Ff y and Fry are intentionally simplified to facilitate subsequent linearization steps. While these simplifications yield a reasonable approximation, they inevitably introduce some inaccuracies into the model. Even a complete four-wheel vehicle model cannot fully capture the complexities of real-world vehicle behavior, and employing an overly detailed model dramatically increases computational costs, thus rendering real-time control impractical. Although the quasi-LPV method allows for efficient linearization and faster solutions via quadratic programming (outperforming NMPC in computational speed), it remains insufficient for addressing the combined challenges posed by complex vehicle dynamics and measurement noise in physical experiments. Consequently, we adopt a STM that strikes a balanced trade-off between accuracy and computational efficiency, making it more suitable for real-time autonomous driving applications. Additionally, the scheduling parameter vector required for the quasi-LPV formulation is not directly accessible because it contains the steering input δk, which is the decision variable to be computed by the MPC optimization. Therefore, the schedul-ing parameter cannot be evaluated before solving the opti-mization problem. To address this issue, we adopt a common quasi-LPV MPC implementation strategy and approximate the scheduling parameter using the previously optimized solution, i.e., pi|k ≈ p⋆i−1|k+1 where pi|k is the predicted scheduling parameter vector for the ith iteration at time step k, and 
+
+p⋆i−1|k+1 is the optimal scheduling parameter vector from the 
+
+(i − 1) th iteration at time step k + 1 . This approximation has demonstrated promising results in scenarios where estimation errors are minimal [6]. However, in obstacle avoidance scenarios, these estimation errors can become critical, as inaccuracies are amplified. When combined with additive measurement errors, such uncertainties can cause the actual vehicle path, determined by the predicted control inputs, to deviate, potentially intersecting with obsta-cles and leading to collisions. As discussed previously, both the quasi-LPV estimated STM and more complex four-wheel models introduce discrepancies relative to the intractable real vehicle model and observed mea-surements. These discrepancies ultimately manifest as distur-bances in the vehicle state. We denote this state disturbance at time step k as ξk = [ ξxk , ξ yk , ξ ψk , ξ vxk , ξ vyk , ξ ωk ]⊤ ∈ R6×1.After obtaining the quasi-LPV model, the real-world state at time step k + 1 , zk+1 , can be represented by modifying Eq. (4) to include the disturbance ξk:
+
+zk+1 = Akzk + Bkuk + ξk, k ∈ Z≥0. (5) Now we reformulate Eq. (5) as follows: 
+
+zk+1 = Akzk + Bkuk + ξk
+
+= Ak(Ak−1zk−1 + Bk−1uk−1 + ξk−1) + ξk
+
+= Ak(Ak−1(Ak−2(· · · (A0z0 + B0u0 + ξ0) + B1u1+
+
+ξ1) + · · · ) + Bk−1uk−1 + ξk−1) + Bkuk + ξk
+
+= Ek 
+
+> 0
+
+z0 + Ek 
+
+> 1
+
+B0u0 + · · · + EkkBk−1uk−1 + Bkuk+
+
+Ek 
+
+> 1
+
+ξ0 + · · · + Ekkξk−1 + ξk,
+
+where Ekj = Qki=j Ai represents the product operation, i.e., 
+
+Qki=j Ai = AkAk−1 . . . Aj and Ekk = Ak. Then we can write Eq. (5) in matrix form as follows: 
+
+zk+1 = Ek 
+
+> 0
+
+, Ek 
+
+> 1
+
+B0, · · · , EkkBk−1, Bk
+
+  z0, u0, · · · , uk
+
+⊤
+
++ Ek 
+
+> 1
+
+, Ek 
+
+> 2
+
+, · · · , Ekk, I6
+
+  ξ⊤ 
+
+> 0
+
+, ξ⊤ 
+
+> 1
+
+, · · · , ξ⊤
+
+> k
+
+⊤ .
+
+Considering that each iteration includes N + 1 steps, in-cluding the initial state, i.e., k ∈ {0, 1, . . . , N }, we de-note the overall predicted states in the horizon as Y =[z⊤ 
+
+> 1
+
+, z⊤ 
+
+> 2
+
+, . . . , z⊤ 
+
+> N
+
+]⊤ ∈ R6N ×1 and rewrite the overall decision variables as a combination of the initial state and controls: 
+
+X = [ z⊤ 
+
+> 0
+
+, u⊤ 
+
+> 0
+
+, . . . , u⊤ 
+
+> N−1
+
+]⊤ ∈ R(6+2 N )×1. We can calculate 
+
+Y as follows: 
+
+Y = LN X + HN ηN , (6) where 
+
+LN =                             
+
+> 
+> E00B006×2· · · · · · 06×2
+> E10E11B0B106×2· · · 06×2
+> ............. . ....
+> EN−10EN−11B0EN−12B1· · · EN−1
+> N−1BN−2BN−1
+> 
+
+(7) and 
+
+HN =                        
+
+> 
+> I606×6· · · · · · 06×6
+> E11I606×6· · · 06×6
+> E21E22I6· · · 06×6
+> .......... . ....
+> EN−11EN−12· · · EN−1
+> N−1I6
+> 
+
+(8) 
+
+LN , HN , and ηN are the equivalent quasi-LPV system matrices, where LN ∈ R6N ×(6+2 N ) and HN ∈ R6N ×6N .The unknown disturbance vector is defined as ηN =[ξ⊤ 
+
+> 0
+
+, ξ1⊤, . . . , ξ⊤ 
+
+> N−1
+
+]⊤ ∈ R6N ×1. Eq. (6) shows that dis-turbances propagate and accumulate over prediction steps, underscoring the need for robust control. A sufficiently small sampling time ∆t ensures accurate quasi-LPV discretization, numerical stability, and avoids overly conservative disturbance amplification in HN .We further represent a specific time step state by introducing a matrix Dk, where Dk ∈ R6×6N :
+
+Dk = [ 06×6, . . . , 06×6
+
+| {z }
+
+> k−1
+
+, I6, 06×6, . . . , 06×6
+
+| {z } 
+
+> N−k
+
+],
+
+and then it gives: 
+
+zk = Dk(LN X + HN ηN )= DkLN X + DkHN ηN , k ∈ { 1, 2, . . . , N }. (9) It is worth noting that the pure quasi-LPV model, i.e., zk =
+
+DkLN X, cannot perfectly represent the real vehicle dynamics due to several sources of modeling discrepancy. As discussed earlier, three main sources of uncertainty are considered in this work: (1) The nonlinear STM dynamics are governed by Eq. (2), where the slip angles are computed as 
+
+αf = δ − arctan 
+
+ ωl f + vy
+
+vx
+
+
+
+, αr = arctan 
+
+ ωl r − vy
+
+vx
+
+
+
+.
+
+(10) 5
+
+The corresponding lateral tire forces follow the nonlinear Pacejka model 
+
+Ff y = Df sin ( Cf arctan( Bf αf )) ,Fry = Dr sin ( Cr arctan( Br αr )) , (11) where Bi, Ci, and Di (i = f, r ) are the Pacejka tire coeffi-cients. Eq. (10) and Eq. (11) provide a more accurate descrip-tion of tire dynamics, while the quasi-LPV model instead uses the linear cornering-stiffness approximation in Eq. (1). This linearization introduces the first source of discrepancy between the quasi-LPV model and the nonlinear STM dynamics, and further differences relative to the real vehicle (e.g., a four-wheel model). (2) The quasi-LPV model relies on a scheduling parameter vector at the current time step to compute the system matrices. Since this parameter includes the control variable δk,which is only available after solving the MPC optimization, it must be approximated using the previously solved decision variable. This introduces additional approximation error. (3) Practical implementations involve additive disturbances aris-ing from localization inaccuracies, sensor noise, and other measurement errors. These discrepancies accumulate over time and introduce uncertainties in the predicted vehicle behavior. In this work, they are captured by the additive disturbance term ξk in Eq. (9), which compensates for the modeling gap between the quasi-LPV model and the actual system. Because the true distribution of ξk is generally unknown, we construct a data-driven ambiguity set using collected disturbance samples and incorporate it into the proposed DRCC controller, which is a key contribution of this paper. In the next section, we build on Eq. (9) to represent the obstacle avoidance constraints in a linearized form. III. O BSTACLE AVOIDANCE VIA LINEAR FORM OF 
+
+CONSTRAINTS 
+
+For the tracking problem, we enforce obstacle avoidance at the local control stage rather than during global path plan-ning. This design choice mirrors realistic operational scenarios where many obstacles are not accessible to a global planner and are only detected online via local sensors. Therefore, to ensure that the controller maintains safety and addresses these uncertainties, we assume in both numerical and real-world experiments that obstacle positions are initially unknown to the global planner and their exact locations are provided solely by external sensors during execution. Given this necessity for real-time, local avoidance, we must use an efficient method. For NMPC-based obstacle avoidance problems, one common approach assumes that other vehicles are represented by ellipses [31]. This assumption allows defin-ing the obstacle avoidance constraints as: (xobs − xk)2/r 2 
+
+> x
+
++(yobs − yk)2/r 2 
+
+> y
+
+≥ 1, where the obstacle is represented as an ellipse with center coordinates [xobs , y obs ] and axes rx and 
+
+ry . This kind of approach to constructing obstacle constraints involves representing obstacles with predefined geometric shapes and constraining the geometric relationship between vehicle position [xk, y k] and the refined objects. While this method provides a reasonable description of obstacle avoid-ance, it introduces nonlinear constraints that are incompatible with QP. Furthermore, these nonlinear constraints increase the optimization problem’s complexity and computational costs. In more complex scenarios, an excessive number of such constraints can make the NMPC problem infeasible. Several studies [5], [6] have addressed this issue by lineariz-ing obstacle constraints into a generalized linear inequality form (e.g., half-space constraints). This paper adopts a similar approach and leverages the advantages of frame conversion between the TNB frame along the tracking reference [32] and the Cartesian frame during the process of determining the local reference path. In this section, we focus on deriving the linear form of the obstacle avoidance constraint and formulate the LPVMPC in a general form that will be used in the subsequent sections. 
+
+A. Linear Form of Obstacle Avoidance Constraints 
+
+We first analyze the obstacles in the TNB frame along the tracking reference. Based on theories such as GoalNet [33] and DAC [34], we model the reference raceline Rr in the path-relative TNB frame and denote the conversion between two frames as function [x, y ] = Γ r(T, Λ) , where T is the tangential axis along the track, and Λ is the perpendicular axis to T in the TNB frame, it is obvious that Λ = 0 if the point is on Rr . Fig. 2 illustrates the definition of obstacle constraints. For each obstacle, a bounding box is defined with its center aligned to the direction of the projected point on 
+
+Rr. To minimize errors in estimating the scheduling parameter vector, two triangular regions are introduced at the front and rear of the bounding box, forming a trapezoidal safety region with four vertices, denoted as [Tj , Λj ], where j ∈ { 0, A, B, 1}
+
+as illustrated in Fig. 2. The points A and B correspond to two of the bounding box vertices. The Cartesian coordinates of the safety region’s vertices are computed as [xj , y j ] = Γ r(Tj , Λj ),
+
+j ∈ { 0, A, B, 1}. Given a reference point T ref  
+
+> k
+
+within the safety region, we define its coordinates as [T ref  
+
+> k
+
+, Λref  
+
+> k
+
+] instead of using the [T ref  
+
+> k
+
+, 0] , ensuring it positions along the hypotenuse of the triangular portion of the safety region. The corresponding Λref 
+
+> k
+
+is directly obtained from the vertex coordinates based on the following triangular geometry: 
+
+Λref  
+
+> k
+
+=
+
+  
+
+> Tk−T0
+> Ta−T0
+
+Λa, T ref  
+
+> k
+
+∈ [T0, T A],
+
+Λa + Tk −Ta 
+
+> Tb−Ta
+
+(Λ b − Λa), T ref  
+
+> k
+
+∈ (TA, T B ), 
+
+> T1−Tk
+> T1−Tb
+
+Λb, T ref  
+
+> k
+
+∈ [TB , T 1].
+
+(12) The Cartesian coordinates can then be obtained as follows: 
+
+[xref  
+
+> k
+
+, y ref  
+
+> k
+
+] = Γ r(T ref  
+
+> k
+
+, Λref  
+
+> k
+
+). (13) The tangential angle θref  
+
+> k
+
+at the point [xref  
+
+> k
+
+, y ref  
+
+> k
+
+] can be calculated by: 
+
+θref  
+
+> k
+
+=
+
+(θtr  
+
+> k
+
++ θ0, T ref  
+
+> k
+
+∈ [T0, T A],θtr  
+
+> k
+
+− θ1, T ref  
+
+> k
+
+∈ [TB , T 1], (14) where θ0 and θ1 are the vertex angles shown in Fig. 2. Thus, for a given reference point [xref  
+
+> k
+
+, y ref  
+
+> k
+
+] from Eq. (13) and the tangential angle from Eq. (14), the equation of the corresponding tangent line hk can be obtained, as shown in Fig. 3. Here, [xtr  
+
+> i
+
+, y tr  
+
+> i
+
+] = Γ r(T ref  
+
+> i
+
+, 0) denotes the original 6Obstacle 
+
+> TNB
+
+𝑅 r
+
+𝑅 r             
+
+> Cartesian
+> 𝑇
+> 𝑁
+> 𝑥
+> 𝑦
+> 𝑇 0,𝛬 0
+> 𝑇 A,𝛬 A𝑇 B,𝛬 B
+> 𝑥 1,𝑦 1
+> 𝑥 A,𝑦 A
+> 𝑥 0,𝑦 0
+> 𝑥 B,𝑦 B
+> 𝑇 1,𝛬 1
+> 𝑇 𝑘
+> ref ,𝛬 𝑘
+> ref
+> 𝑥 𝑘
+> ref ,𝑦 𝑘
+> ref
+> 𝜃 0𝜃 1
+> Obstacle
+> Fig. 2. Safety region defined in the TNB frame and converted back to the Cartesian frame.
+
+𝑅 𝑟  𝑥 𝑖    
+
+> tr ,𝑦 𝑖
+> tr
+> 𝑥 𝑖
+> ref ,𝑦 𝑖
+> ref
+> 𝑥 𝑗
+> ref ,𝑦 𝑗
+> ref
+
+ℎ𝑖 
+
+ℎ𝑗 
+
+Obstacle              
+
+> Fig. 3. Tangent line of the obstacle avoidance constraints at time steps i
+> and j, where hiand hjrepresent the safe region boundary tangent lines at
+> [xref
+> i, y ref
+> i]and [xref
+> j, y ref
+> j], respectively.
+
+reference point where Λ is zero, while [xref  
+
+> k
+
+, y ref  
+
+> k
+
+] represents the shifted reference point with the same T ref but an updated 
+
+Λref , obtained using Eq. (12). Ideally, the feasible region for 
+
+[xk, y k] should lie outside the safety region. Depending on the required vehicle maneuver to avoid obstacles, the constraint is formulated as: 
+
+hk =
+
+(akxk + bkyk − ck ≥ 0, Left Turn ,akxk + bkyk − ck ≤ 0, Right Turn , (15) where ak, bk, and ck are the coefficients of the tangent line. The decision on which side the vehicle should take to bypass obstacles can be determined by topology-based planners, such as [35], and is beyond the scope of this work. 
+
+B. LPVMPC 
+
+In the case of pure LPVMPC, where no disturbance is considered, the state at the kth time step, based on Eq. (9), is given by: 
+
+zk = DkLN X, k ∈ { 1, 2, . . . , N }. (16) By introducing the vector dk = [ ak, b k, 0, 0, 0, 0] , we can reformulate Eq. (15) using Eq. (16), leading to: 
+
+hk =
+
+(dkDkLN X − ck ≥ 0, Left Turn ,
+
+−dkDkLN X − (−ck) ≥ 0, Right Turn . (17) Besides obstacle avoidance, all linear constraints can be expressed in the form of Eq. (17) by appropriately selecting 
+
+dk and ck. For instance, the maximum velocity constraint can be represented by setting dk = [0 , 0, 0, 1, 0, 0] and ck = vxmax ,etc. Assuming there are Q types of constraints in total, the LPVMPC formulation can be written as: 
+
+min 
+
+> X
+> N
+
+X
+
+> k=1
+
+{Pk[( e60DkLN X − xref  
+
+> k
+
+)2 + ( e61DkLN X − yref  
+
+> k
+
+)2]}
+
+s.t. dikDkLN X − cik ≥ 0, k ∈ [N ], i ∈ [Q], · · · (18) where Pk represents the tracking weights at the kth time step, and ‘ . . . ’ denotes additional constraints, such as control input limits, initial conditions, and other system-specific restrictions. 
+
+xref  
+
+> k
+
+and yref  
+
+> k
+
+are obtained based on Eq. (13). Near obstacles, we select Λref  
+
+> k
+
+using Eq. (12) as the shifted distance to the track. When no obstacles are present, we set Λref  
+
+> k
+
+= 0 .IV. DRCC-LPVMPC This section presents the DRCC-LPVMPC formulation, incorporating the linearized obstacle constraints derived earlier and accounting for additive uncertainty to improve robustness. 
+
+A. CVaR Reformulation 
+
+Eq. (18) gives a form of hard constraint. When considering uncertainty with Eq. (9), the constraint is modified as: 
+
+dikDkLN X +dikDkHN ηN −cik ≥ 0, k ∈ [N ], i ∈ [Q] (19) we denote ˜ηN as the unknown distribution of the uncertainty and denote ˜wki = −dikDkHN ˜ηN as the refined distribution of the uncertainty for the ith type of constraint at the kth time step. Since we have already converted the Q types of constraints into the same form as Eq. (19), for simplicity, we will omit the index i for the remainder of this section and only focus on obstacle avoidance constraint, i.e., dik = dk =[ak, b k, 0, 0, 0, 0] , cik = ck, and ˜wki = ˜wk. Thus, Eq. (19) simplifies to: dkDkLN X − ck ≥ ˜wk, k ∈ [N ].The DRCC requires that constraints hold with probability at least 1 − ϵ for all distributions P within the ambiguity set P,also called the “Wasserstein ambiguity set”. Here, ϵ ∈ (0 , 1) is a specified risk tolerance. Formally, for the decision variable 
+
+X, the DRCC is expressed as 
+
+inf  
+
+> P∈P
+
+P{dkDkLN X − ck ≥ ˜wk, ∀k ∈ [N ]} ≥ 1 − ϵ, (20) where P represents a joint probability distribution from a family P. As shown in [36], P defines the Wasserstein distance between the true and the empirical state distributions, which ensures the true distribution is recovered as the sample size approaches infinity. Eq. (20) represents an infinite-dimensional constraint because it requires the safety constraint to hold for all probability distributions within the ambiguity set. Such constraints cannot be solved directly. Therefore, the DRCC constraint is reformulated using a CVaR representation, which converts it into a finite-dimensional convex constraint that can be efficiently solved while preserving the desired probabilistic safety guarantee. Equivalently, this can be written as 
+
+sup 
+
+> P∈P
+
+P(dkDkLN X − ck < ˜wk, ∃k ∈ [N ]) ≤ ϵ. (21) The probabilities can be expressed in terms of expectations: 
+
+P(dkDkLN X − ck < ˜wk, ∃k ∈ [N ]) = EP[I(dkDkLN X −7
+
+ck < ˜wk, ∃k ∈ [N ])] , where the indicator function I(·) can be written as: 
+
+I(dkDkLN X − ck < ˜wk, ∃k ∈ [N ]) =
+
+(1, dkDkLN X − ck < ˜wk,
+
+0, otherwise .
+
+This shows that Eq. (20) and Eq. (21) are both bounded and upper semi-continuous. Assume a total of J ∈ Z>0 samples are drawn from the true distribution P∞. Following Theorem 1 in [37] and Theorem 1 in [38], the left side of Eq. (21) is equivalent to 
+
+min  
+
+> λk≥0
+
+{λkσ − 1
+
+N
+
+X
+
+> j∈[J]
+
+inf  
+
+> ˜w
+
+[λk∥ ˜w − ˆwj ∥− 
+
+I(dkDkLN X − ck < ˜wk, ∃k ∈ [N ])] }, (22) where ˆwj , j ∈ [J], represents the jth set of refined sampled disturbance, as mentioned in the notation. λk and σ are dimensionless variables. Specifically, λk > 0 is introduced to support the reformulation of the DRCC, while σ > 0 denotes the Wasserstein radius of P.According to [28], starting from Eq. (22), we first examine the infinite part: inf ˜w[λk∥ ˜w − ˆwj ∥ − I(dkDkLN X − ck <
+
+˜wk, ∃k ∈ [N ])] , which is equivalent to 
+
+min { min   
+
+> k∈[N]
+
+inf      
+
+> dkDkLNX−ck<˜wk
+
+[λk∥ ˜w − ˆwj ∥ − 1] , 0}. (23) Now, we denote 
+
+f (X, ˆwj ) = min { min   
+
+> k∈[N]
+
+max {dkDkLN X − ck − ˆwkj , 0}, 0},
+
+and use the fact that 
+
+inf      
+
+> dkDkLNX−ck<˜wk
+
+∥ ˜w− ˆwj ∥ = max {dkDkLN X−ck− ˆwkj , 0}.
+
+(24) We obtain the following result: 
+
+Theorem 1. The DRCC problem in Eq. (20) is equivalent to 
+
+λkσ − ϵ ≤ 1
+
+N
+
+X
+
+> j∈[J]
+
+min {λkf (X, ˆwj ) − 1, 0}.
+
+Proof: See Appendix A. Based on Theorem 1, let γk = 1 
+
+> λk
+
+, the feasible region of DRCC, denoted as XD , then becomes: 
+
+XD =
+
+X ∈ R6+2 N :
+
+σ − ϵγ k ≤ 1
+
+N
+
+X
+
+> j∈[J]
+
+min {f (X, ˆwj ) − γk , 0},γk ≥ 0, ∀k ∈ [N ],
+
+
+
+(25) 
+
+which is equivalent to 
+
+σ − ϵγ k − 1
+
+N
+
+X
+
+> j∈[J]
+
+max {− f (X, ˆwj ) + γk, 0} ≤ 0.
+
+Let ϖk = −γk, then 
+
+σϵ + ϖk − 1
+
+N ϵ 
+
+X
+
+> j∈[J]
+
+max {− f (X, ˆwj ) − ϖk, 0} ≤ 0,CVaR 1−𝜖 −𝑓 𝑋 , ෥𝑤 VaR 1−𝜖 −𝑓 𝑋 , ෥𝑤 
+
+0.1 
+
+0.2 
+
+0
+
+-12  -10  -8 -6 -4 -2 0 2 4 6 8 10  12      
+
+> Fig. 4. Depiction of CVaR for a function with an unknown distribution (illustrated as Gaussian for convenience). The Value-at-Risk (VaR) represents the threshold below which a specified percentage ( ϵ) of the distribution lies, while CVaR accounts for the average loss beyond this threshold, effectively capturing tail risk. The shaded region accounts for ϵ×100% of the mass of the unknown distribution.
+
+which can be written as: 
+
+σϵ + min 
+
+> ϖk
+
+{ϖk + 1
+
+N ϵ 
+
+X
+
+> j∈[J]
+
+max {− f (X, ˆwj ) − ϖk, 0}} ≤ 0.
+
+(26) Note the definition of CVaR is: CVaR 1−ϵ[−f (X, ˜w)] = min 
+
+> ϖk
+
+{ϖk + 1
+
+ϵ EP ˜w[−f (X, ˜w)−ϖk]t}.
+
+Thus, Eq. (26) can be written in the following CVaR form: 
+
+XD = {X ∈ R6+2 N : σϵ + CVaR 1−ϵ[−f (X, ˜w)] ≤ 0}, (27) and the concept of CVaR is illustrated in Fig. 4, where 
+
+−f (X, ˜w) is the function and ϵ refers to the risk tolerance. 
+
+B. Mixed-Integer Program Reformulation 
+
+Based on the CVaR formulation, this section derives the mixed-integer reformulation of the constraints to ensure tractability while maintaining robustness. 
+
+Theorem 2. The constraints in Eq. (25) 
+
+σ − ϵγ k ≤ 1
+
+N
+
+X
+
+> j∈[J]
+
+min {f (X, ˆwj ) − γk, 0}, (28a) 
+
+γk ≥ 0, (28b) 
+
+is equivalent to ∀j ∈ [J], ∀k ∈ [N ],
+
+σ − ϵγ k ≤ 1
+
+N
+
+X
+
+> j∈[J]
+
+qkj , (29a) 
+
+qkj + γk ≤ max {dkDkLN X − ck − ˆwkj , 0}, (29b) 
+
+qkj ≤ 0, γk ≥ 0.
+
+Proof: See Appendix B. Based on [28], Eq. (20) can be written as 
+
+inf  
+
+> P∈P
+
+P{ ¯Bk(X)X + ¯bk ≥ a(X)⊤ ˜ew, ∀k ∈ [N ]} ≥ 1 − ϵ, 
+
+where ¯Bk(X) := dkDkLN , ¯bk := −ck, and a(X)⊤ := e77.This implies the DRCC problem with right-hand uncertainty, where all the elements of a(X) are zero except for the last element, which equals one. From this we can deduce the following corollary: 
+
+Corollary 1. The set XD is mixed-integer representable by introducing a sufficiently large set of numbers Mj ∈ R+, j ∈
+
+[J], i.e.: 
+
+max   
+
+> k∈[N]
+
+max 
+
+> X∈XD
+
+{| dk Dk LN X − ck − ˆwkj |} ≤ Mj , ∀j ∈ [J], ∀k ∈ [N ].
+
+(30) 8 
+
+> Fig. 5. Summary of the conversion process from infinite-dimensional DRCC to convex constraints using a data-driven approach.
+
+The mixed-integer representation of XD is: for all j ∈ [J] and 
+
+∀k ∈ [N ],                                            
+
+> σ−ϵγ k≤1
+> N
+> X
+> j∈[J]
+> qkj,qkj+γk≤skj,(31a)
+> skj≤dkDkLNX−ck−ˆwkj+Mj(1 −rkj),(31b)
+> skj≤Mjrkj,(31c)
+> γk≥0,qkj≤0,skj≥0,rkj∈ { 0,1},
+
+Proof: See Appendix C. 
+
+Remark 1. In contrast to the DRO framework, which opti-mizes the “worst-case” distribution over all possible distribu-tions in P, the proposed approach seeks the “worst-case” ro-bust control with respect to the probability distribution inferred from sampled data. This is the sense in which our method is “data-driven distributionally robust”. Furthermore, Eq. (31) 
+
+reformulates the infinite chance constraints in Eq. (20) into first-order constraints by introducing dimensionless variables 
+
+qkj , γk, skj , and rkj . This reformulation enables the problem to be cast as a QP, making it more tractable for computation. 
+
+Fig. 5 shows an overall summary of how the infinite-dimensional DRCC is converted into convex constraints. The data-driven method leverages a sampled data set ˆwj to rep-resent an empirical distribution that satisfies the Wasserstein ambiguity set P, providing a computational trade-off. 
+
+C. Terminal Constraints 
+
+Before introducing the terminal constraints, we define the expected state along the horizon as ¯zt+k = EP{zt+k}, k =0, 1, ..., N, where P ∈ P is defined in Eq. (20). Assuming the disturbances of the ambiguity set P satisfy EP{ξt+k} = 06,the expected system dynamics in Eq. (5) become: 
+
+¯zt+k+1 = At+k ¯zt+k + Bt+kut+k. (32) In a more compact form, this is: ¯zt+1 = At ¯zt + Btut.
+
+Terminal constraints are critical for guaranteeing system stability and performance in MPC [39]. Typically, for an autonomous system whose configuration satisfies det( At)̸ =0, where det( ·) denotes the determinant of a matrix, the following terminal constraints are imposed on the nominal state: ¯zt+N ∈ ZT , where ZT is a positive invariant set satisfying 
+
+At ¯z ∈ Z T , ∀z ∈ Z T . (33) Based on Eq. (30), the system constraints along the horizon are reformulated in terms of expected states as 
+
+dk ¯zk − ck ≤ Mj , ∀j ∈ [J], ∀k ∈ [N ], (34) where dk is defined in Eq. (19). In addition, for all z ∈ Z 
+
+and j ∈ [J], the following condition must hold: 
+
+d¯z ≤ Mj − c. (35) 
+
+Remark 2. Eq. (32) is derived by assuming that the ex-pectation of the system disturbance is zero. This is a com-mon assumption in DRCC problems, e.g., [40], even when disturbances are unbounded. In our proposed approach, if the disturbance expectation is not zero, Eq. (35) can still be satisfied by appropriately shifting the values of Mj . As shown in the proof of Theorem 3, both Eq. (33) and Eq. (35) are essential to guarantee the recursive feasibility of the proposed method. D. MPC Formulation and Recursive Feasibility 
+
+After obtaining Eq. (31), we can now formulate the DRCC-LPVMPC as follows: 
+
+min 
+
+> X
+> N
+
+X
+
+> k=1
+
+{Pk[( e60DkLN X − xref  
+
+> k
+
+)2 + ( e61DkLN X − yref  
+
+> k
+
+)2]+ ρk
+
+X
+
+> j∈[J]
+
+(qkj + γk)}
+
+s.t. Eq. (31) , ∀i ∈ [Q], ∀j ∈ [J], ∀k ∈ [N ], · · · (36) where Pk and ρk denote the weights for the tracking and DRCC penalties, respectively. The DRCC penalty is added to tighten the constraints and prevent suboptimal solutions. Without this penalty term, the condition qkj + γk ≤ skj could be trivially satisfied by selecting a sufficiently small qkj + γk.The “ . . . ” represents other hard constraints that do not need to be converted into DRCC form, such as the range of control inputs, initial conditions, etc. 
+
+Theorem 3. If there exists a feasible solution at time t = 0 
+
+and the determinant of the system matrix det( Ak)̸ = 0 , then DRCC-LPVMPC is recursively feasible. Proof: See Appendix D. The proof shows that given feasibility at time t, a feasible sequence at t+1 can be constructed using the previous optimal control sequence and terminal constraints. By verifying that both system and terminal constraints are satisfied, we conclude that DRCC-LPVMPC is recursively feasible. After reformulation, Eq. (36) leads to a re-linearized QP scheme that is essentially equivalent to the real-time iteration (RTI) method in [41]. In that method, a multiple-shooting technique is used to discretize the nonlinear continuous-time optimal control problem, an exponential map is applied as the integrator, and only the first sequential QP step is computed at each sampling instant. Hence, the convergence properties of both Eq. (18) and Eq. (36) follow directly from the known RTI convergence guarantees [42]. 
+
+Remark 3. det( Ak) can be calculated based on the vehicle’s specifications and the preset state and control limits. For example, in the numerical experiments below, Ak defined in Eq. (4) is positive definite as calculated using the data in Table II and Table IV. This ensures that the state predictions remain within the same invariant set. 9
+
+E. Discussion on Tuning Parameters 
+
+In practice, σ, ϵ, and ρ are tuning parameters that balance feasibility, conservatism, and robustness. The Wasserstein ra-dius σ determines how tight or loose the ambiguity set is rela-tive to the empirical distribution: smaller values yield solutions closer to the empirical data but may reduce feasibility, while larger values enlarge the set and provide greater robustness at the cost of conservatism. The risk tolerance ϵ specifies the acceptable probability of constraint violation, with smaller values enforcing stricter constraint satisfaction but shrinking the feasible region. Finally, the penalty weight ρ regulates how conservatively chance constraints are enforced by enlarging safety margins; higher values prevent overly optimistic or degenerate solutions and ensure more meaningful and reliable performance. V. N UMERICAL EXPERIMENT SETUP 
+
+To evaluate the performance of the proposed DRCC-LPVMPC, we conducted numerical simulations comparing DRCC-LPVMPC, LPVMPC, and NMPC for a racing-track trajectory-tracking task. All controllers were tested under identical vehicle, environment, and reference configurations. Two conditions were considered: undisturbed and disturbed. In the undisturbed condition, the experiments assumed the current model deviation was zero in LPVMPC, and DRCC-LPVMPC relied only on historical sample data calculated by model deviation, i.e., the measurement errors are zero. In the disturbed condition, measurement errors are no longer assumed to be zero and are introduced using random dis-turbances to reflect the real-world scenarios. All simulations were performed on a 12th-generation Intel(R) i7-12700K CPU with 32 GB RAM, and QP problems were solved using the ProxQP solver [43]. All simulations use the same 1:43 scaled testbed, shown in Fig. 7 from [44], with the green curve representing the reference raceline for tracking, generated using B-splines from the parameterized track centerline. The positions of obstacles (black boxes) are unknown to the vehicle from the start, and safety regions (Section III-A) shown as black dashed lines. Both LPVMPC and DRCC-LPVMPC in this work utilize the same 1:43 scaled Autonomous RC Racing (ORCA) platform from ETH Z¨ urich. The vehicle configuration is listed in Table II. 
+
+A. LPVMPC Experiment Strategy 
+
+As discussed in Section III-A, this work calculates the local reference path in each iteration by converting between the TNB frame and the Cartesian frame. The points on Rr are represented by the following features: [T, Λ, θ, S ], where T
+
+and Λ are defined in Section III-A, θ is the tangential direction at each point, and S is the travel distance along Rr up to the current point. Assume the horizon (maximum number of time steps) for each iteration is N . Given the reference raceline 
+
+Rr, we denote ΓT 
+
+> in
+
+, ΓS
+
+> in
+
+, and Γθ 
+
+> in
+
+as its transform functions for calculating T , S, and θ, respectively. The local reference points 
+
+[xref , y ref ] can be obtained using Algorithm 1. Algorithm 1 begins by calculating the initial position’s T0
+
+and S0 from [x0, y 0] (line 1). It then iteratively computes the longitudinal velocity and distance, as well as T ref (line 2-3). Next, Λref is determined based on Eq. (12) (lines 4-5). Finally, the Cartesian coordinates of the local reference [xref , y ref ] and 
+
+θref are calculated using the obtained [T ref , Λref ] (line 6). In the racing track scenario of this work, in addition to obstacle avoidance, it is also necessary to ensure the vehicle stays within the track boundaries. A common approach is to assume that the vehicle runs within a corridor, where both the upper and lower boundaries of the corridor can be formulated using a method similar to the one discussed in Section III-A. For more details, we refer the reader to [44]. In this work, we denote the upper and lower corridor boundary constraints, along with the obstacle avoidance constraints, as follows: 
+
+duk DkLN X − cuk ≥ 0, ∀k ∈ [N ], (37a) 
+
+dlkDkLN X − clk ≥ 0, ∀k ∈ [N ], (37b) 
+
+dokDkLN X − cok ≥ 0, ∀k ∈ [N ], (37c) where duk , cuk , dlk, and clk are the coefficients of the upper and lower tangential lines, respectively, and dok, cok are the coefficients defined by Eq. (17). We can further represent the initial constraint as follows: 
+
+d0X = z0, (38) where d0 = [ 11×6, 01×2N ] ∈ R1×(6+2 N ). Then, the LPVMPC in Eq. (18) can be written as follows: 
+
+min 
+
+> X
+> N
+
+X
+
+> k=1
+
+{Pk[( e60DkLN X − xref  
+
+> k
+
+)2 + ( e61DkLN X − yref  
+
+> k
+
+)2]}
+
+s.t. Eq. (37) Eq. (38) , X ∈ X , u ∈ U . (39)                                             
+
+> TABLE II DYNAMIC MODEL PARAMETERS OF THE 1:43 SCALED ORCA CAR
+> Parameter Value Parameter Value
+> lf0.029 m Cαr 2.24
+> lr0.033 m vxmin 1.2 m/s
+> m0.041 kg vxmax 1.5 m/s
+> lw0.03 m vymin -0.5 m/s
+> Iz27 .8×10 −6kg·m 2vymax 0.5 m/s
+> Bf2.579 ωmin -20.94 rad/s
+> Cf1.2 ωmax 20.94 rad/s
+> Df0.192 acmin -0.4 m/s 2
+> Br3.3852 acmax 0.4 m/s 2
+> Cr1.2691 δmin -0.59 rad
+> Dr0.1737 δmax 0.59 rad
+> Cαf 1.78
+
+Algorithm 1: Local Reference Calculation 
+
+Input : Rr, [x0, y 0, v x0 ], N
+
+Output: [xref , y ref , θ ref , v ref  
+
+> x
+
+] 
+
+> 1
+
+T0 ← ΓT 
+
+> in
+
+(x0, y 0), S0 ← ΓS
+
+> in
+
+(T0)
+
+for k = 1 to N + 1 do  
+
+> 2
+
+vref  
+
+> xk
+
+← min( vxk−1 + acmax ∆t, v xmax ) 
+
+> 3
+
+Sref  
+
+> k
+
+← Sk−1 + vref  
+
+> xk
+
+∆t, T ref  
+
+> k
+
+← ΓT 
+
+> r
+
+(Sref ) 
+
+> 4
+
+if T ref  
+
+> k
+
+∈ [T0, T 1] then Λref  
+
+> k
+
+← Eq. (12)  
+
+> 5
+
+else Λref  
+
+> k
+
+← 0 
+
+> 6
+
+[xref  
+
+> k
+
+, y ref  
+
+> k
+
+] ← Γr(T ref  
+
+> k
+
+, Λref  
+
+> k
+
+), θref  
+
+> k
+
+← Γθ
+
+> in
+
+(T ref  
+
+> k
+
+)10 
+
+Algorithm 2: LPVMPC 
+
+Input : z0, Γr, N
+
+Output: X 
+
+> 1
+
+[xref , y ref , θ ref , v ref  
+
+> x
+
+] ← Algorithm 1  
+
+> 2
+
+{A} ← ∅, {B} ← ∅
+
+for k = 1 to N + 1 do  
+
+> 3
+
+if not initialized then pk ← [vref  
+
+> xk
+
+, 0, 0, θ ref  
+
+> k
+
+]
+
+else pk ← p⋆i−1|k+1  
+
+> 4
+
+{A} ← Ak ∪ { A}, {B} ← Bk ∪ { B} 
+
+> 5
+
+LN ← Eq. (7)  
+
+> 6
+
+X ← Eq. (39) Algorithm 2 shows the process for obtaining the decision variable X. The reference state is obtained from Algorithm 1 (line 1). With this reference state, we can compute LN as described in Section II (line 5). Finally, the decision variable 
+
+X is determined by solving Eq. (39) (line 6). 
+
+B. DRCC-LPVMPC Experiment Setup 
+
+By running the experiments in Section V-A under the assumption of no disturbance, we can calculate the model discrepancy between the nonlinear dynamic model (described in Section II-D) and the quasi-LPV model at each iteration. For an optimized output Xi obtained from Algorithm 2, let zdi
+
+denote the nonlinear state using the first control input in Xi,and zli the corresponding quasi-LPV state. The sampled model difference can then be obtained by: ˆτ i = zdi+1 −zli+1 , i ∈ Z≥0.
+
+We further introduce random disturbances as additive uncer-tainty to the system, which contribute to the accumulation of model uncertainty: 
+
+ˆξi = ˆτ i + U(−0.01 , 0.01) , i ∈ Z>0. (40) The error U(−0.01 , 0.01) represents a uniformly distributed disturbance with values ranging from −0.01 to 0.01 . The purpose of this term is to simulate other uncertainties except the quasi-LPV process, the simulated ˆξ shows how the used quasi-LPV model differs with the actual vehicle model due to any reasons, which is close to the real world condition as the only change in real world reflects on the model is a different sampled ˆξ.From the collected disturbance set, we randomly se-lect J samples to form the initial disturbance set Ξ =
+
+{ˆξ0, ˆξ1, . . . , ˆξJ }, which is then used in the DRCC-LPVMPC. As the vehicle progresses, a new disturbance ˆξi is calculated at each iteration and replaces the first element in the set, updating it as Ξ = ˆξi ∪ Ξ[1 :] .Now we can convert Eq. (39) into a DRCC problem, in this work, we will keep the hard constraints of the corridor and focus on the obstacle avoidance, which is converted to following based on Eq. (31). For all j ∈ [J] and k ∈ [N ],
+
+σ − ϵγ k ≤ 1
+
+N
+
+X
+
+> j∈[J]
+
+qkj , qkj + γk ≤ skj ,skj ≤ dok Dk LN X − cok − ˆwkj + Mj (1 − rkj ),skj ≤ Mj rkj , γk ≥ 0, qkj ≤ 0, skj ≥ 0, rkj ∈ { 0, 1}.
+
+(41) 
+
+Thus, the DRCC-LPVMPC formulation in Eq. (36) can be written as follows: 
+
+min 
+
+> X
+> N
+
+X
+
+> k=1
+
+{Pk[( e60DkLN X − xref  
+
+> k
+
+)2 + ( e61DkLN X − yref  
+
+> k
+
+)2]+ ρk
+
+X
+
+> j∈[J]
+
+(qkj + γk)} (42) s.t. Eq. (38) , Eq. (41) , ∀j ∈ [J], ∀k ∈ [N ],Eq. (37a) , Eq. (37b) , X ∈ X , u ∈ U .
+
+Algorithm 3 outlines the process for calculating the decision variable in DRCC-LPVMPC. It follows a similar procedure to Algorithm 2 but includes an additional step for computing 
+
+HN (line 1-5). The decision variable X is then obtained by solving Eq. (42) (line 6). Finally, the disturbance set is updated for using in the next iteration (line 7). 
+
+Algorithm 3: DRCC-LPVMPC 
+
+Input : z0, Rr, N
+
+Output: X 
+
+> 1
+
+[xref , y ref , θ ref , v ref  
+
+> x
+
+] ← Algorithm 1  
+
+> 2
+
+{A} ← ∅, {B} ← ∅
+
+for k = 1 to N + 1 do  
+
+> 3
+
+if not initialized then pk ← [vref  
+
+> xk
+
+, 0, 0, θ ref  
+
+> k
+
+]
+
+else pk ← p⋆i−1|k+1  
+
+> 4
+
+{A} ← Ak ∪ { A}, {B} ← Bk ∪ { B} 
+
+> 5
+
+LN ← Eq. (7), HN ← Eq. (8)  
+
+> 6
+
+X ← Eq. (42)  
+
+> 7
+
+ˆξi ← Eq. (40), Ξ = ˆξi ∪ Ξ[1 :]    
+
+> Fig. 6. Overview of obtaining the control variable Xfrom LPVMPC and DRCC-LPVMPC.
+
+In particular, both LPVMPC and DRCC-LPVMPC are used to compute the decision variable X, which combines the initial state z0 and the control inputs uk, k ∈ [N ]. The predicted states [vxk , v yk , ψ k] are then obtained using Eq. (4). Together with the control inputs δk, these form the scheduling parameter vector pk = [ vxk , v yk , δ k, ψ k], which is passed to the next time step. Fig. 6 summarizes the overall steps of LPVMPC and DRCC-LPVMPC. 
+
+C. NMPC Setup 
+
+Beyond LPVMPC and DRCC-LPVMPC, we also con-ducted NMPC experiments, following the formulation in [45]. 11 
+
+Since [45] only addresses trajectory tracking without collision avoidance, we extend it by incorporating the same first-order obstacle avoidance constraints as in Eq. (18). The NMPCs are solved using the Interior Point Optimizer. The full formulation of the NMPC tracking problem is detailed in [45] and is omitted here for brevity. VI. N UMERICAL RESULTS AND DISCUSSIONS 
+
+A. LPVMPC 
+
+We first present the experimental results of running the LPVMPC as described in Section V-A. Fig. 7 shows the tracking results using LPVMPC, under the assumption that no uncertainties are considered. The distance to the obstacles is shown in Table III. While performing obstacle avoidance, the maximum distance to the obstacles is only 0.00374 m. This means that if the disturbances exceed this threshold, the controller will direct the vehicle to an infeasible region of the problem. To simulate accumulated uncertainties, random disturbances from Table IV are added to the current state. We conducted 40 trials, and in all cases the vehicle collided with the first obstacle once additive noise pushed it into the safety region after approaching too closely. In rare instances, the vehicle managed to bypass the first two obstacles with very narrow margins, but even in these best-case scenarios it ultimately entered the safety region of the third obstacle and collided. One such case is illustrated in Fig. 8, where the vehicle successfully skirts the first two obstacles but is eventually driven inside the third obstacle’s safety region due to random disturbances.                                                                                                                                                      
+
+> Fig. 7. Tracking results using LPVMPC without uncertainties, showing the close distance between the path and obstacles. TABLE III NMPC, LPVMPC, AND DRCC-LPVMPC D ISTANCE STATISTICS FOR
+> OBSTACLES (ϵ= 0 .10 ,σ= 0 .08 )
+> Methods ρkObs. Mean Dist. Max Dist. Min Dist.
+> NMPC -00.00132 0.00451 0.00039 -10.00267 0.00289 0.00198 -20.00148 0.00486 0.00253 -30.00301 0.00415 0.00259 LPVMPC -00.00197 0.00351 0.00056 -10.00220 0.00258 0.00173 -20.00327 0.00374 0.00262 -30.00270 0.00318 0.00202 DRCC--0.12 00.01911 0.02024 0.01738 10.01488 0.01587 0.01371 20.02339 0.02438 0.02222 30.02094 0.02364 0.01880 LPVMPC -0.14 00.02319 0.02449 0.02130 10.01838 0.01947 0.01714 20.02672 0.02783 0.02544 30.02377 0.02546 0.02174 -0.16 00.02718 0.02875 0.02503 10.02120 0.02221 0.01997 20.02964 0.03088 0.02822 30.02633 0.02828 0.02402 -0.18 00.03084 0.03249 0.02859 10.02429 0.02544 0.02293 20.03321 0.03457 0.03169 30.03264 0.03401 0.03113 -0.20 00.03506 0.03700 0.03261 10.02730 0.02879 0.02561 20.03010 0.03183 0.02822 30.03533 0.03683 0.03368 TABLE IV RANGES OF ADDITIVE DISTURBANCES
+> State Variable Min Max
+> x(m) −0.5×10 −20.5×10 −2
+> y(m) −0.5×10 −20.5×10 −2
+> φ(rad) −0.5×10 −40.5×10 −4
+> vx(m/s) −0.1×10 −40.1×10 −4
+> vy(m/s) −0.1×10 −50.1×10 −4
+> ω(rad/s) −0.1×10 −40.1×10 −4
+
+We note that different works represent obstacles in various ways (e.g., circles, tubes, or grid-based methods), and by modifying the cost or constraint formulations, linear or non-linear MPC schemes can achieve successful avoidance. In this study, however, we intentionally adopt a consistent obstacle representation and avoidance scheme for both LPVMPC and our proposed DRCC-LPVMPC, so that the benefits of distribu-tional robustness can be highlighted through a fair comparison. 
+
+B. DRCC-LPVMPC 
+
+A common way to address collision is to add an “inflation radius” to obstacles, effectively “expanding” them with a safety gap, similar to the concepts used in simultaneous localization and mapping. The original purpose of adding the inflation radius is to treat the vehicle as a point by adding the maximum radius of the vehicle body to the obstacle boundary. By further increasing the inflation radius, the vehicle may hit the inflated boundary, but it is still considered safe relative to the actual obstacle boundary. However, increasing the inflation radius reduces the feasible region for the controller and does 12     
+
+> Fig. 8. The best-case scenario tracking results using LPVMPC with random disturbances added to the state at each iteration, where the solver fails at the third obstacle due to an infeasible problem.
+> Fig. 9. Tracking results using DRCC-LPVMPC without uncertainties under
+> ρk=−0.18 . The inset figure shows the zoomed-in tracking trajectory versus the reference, where the distance between the path and obstacles is larger.
+
+not change the fact that the constraints remain hard constraints. If uncertainty causes the vehicle to enter an infeasible region, such as the safety region shown in Fig. 3, the controller will fail to find a solution, regardless of the inflation radius. By converting the hard constraints into chance constraints in the DRCC-LPVMPC, we not only expand the feasible region (increasing robustness) but also enable the vehicle to bypass obstacles at a larger distance (improving safety). This     
+
+> Fig. 10. Tracking results using DRCC-LPVMPC with ρk=−0.20 , where random disturbances are added to the state at each iteration, illustrating a safer driving trajectory under uncertainties.
+
+is another key contribution of this work. Numerical experiments for DRCC-LPVMPC were con-ducted as described in Section V-B. Similar to LPVMPC, the first tests were run without random additive disturbances to the current state. Fig. 9 shows the tracking performance with 
+
+ρk = −0.18 , ϵ = 0 .10 , and σ = 0 .08 . Compared to Fig. 7, it is clear that DRCC-LPVMPC allows the vehicle to avoid obstacles with larger clearance, yielding safer trajectories even under uncertainty. Fig. 10 presents the tracking performance of DRCC-LPVMPC with ρk = −0.20 , ϵ = 0 .10 , and σ = 0 .08 ,while introducing random additive disturbances to the current state. Unlike LPVMPC, DRCC-LPVMPC successfully avoids the obstacles and maintains a safe distance from them, even in the presence of disturbances. Readers can refer to the com-panion video clip for a comparison of tracking performance. We also present the mean, maximum, and minimum dis-tances between the vehicle and each obstacle during the avoidance process, as shown in Table III. It is evident that as the absolute value of ρk increases, the planner increases the distance between the vehicle and the obstacles to enhance robustness. Additionally, we show the best lower bound value found by the DRCC-LPVMPC in Table V. As the risk tol-erance ϵ decreases from 0.30 to 0.05, the planner adjusts to increase the lower bound of the chance constraints, further improving robustness. 
+
+C. NMPC 
+
+As shown in Table III, NMPC with hard constraints fails to ensure safe and robust obstacle avoidance. Table VI further shows that NMPC’s computation time increases sharply with obstacle-avoidance constraints, leading to frequent solution failures. In contrast, LPVMPC and DRCC-LPVMPC achieve real-time feasibility, with the linearized model greatly reduc-ing computational burden. While DRCC-LPVMPC requires 13                                                                                   
+
+> TABLE V DRCC-LPVMPC LOWER BOUND (LB) STATISTICS FOR OBSTACLES
+> (σ= 0 .08 , ρ k=−0.16 )
+> Method ϵObs. Mean LB Max LB Min LB
+> DRCC-0.05 0500.01312 500.01390 500.01203 1500.01112 500.01162 500.01050 2475.09651 475.09722 475.09563 3487.55336 500.01436 475.09230 LPVMPC 0.10 0466.73778 500.01391 450.09370 1500.01108 500.01159 500.01047 2466.73512 500.01408 450.09539 3475.05289 500.01353 450.09199 0.15 0450.06719 500.01384 425.09329 1475.04104 500.01121 425.10142 2450.07035 500.01424 425.09401 3462.55265 500.01353 425.09171 0.20 0433.40256 500.01384 400.09359 1433.40379 500.01128 400.09962 2466.70704 500.01430 400.09323 3450.05220 500.01439 400.09135 0.30 0350.09387 350.09774 350.09162 1450.03601 500.01056 350.08816 2350.09133 350.09156 350.09091 3350.08993 350.09035 350.08921 TABLE VI AVERAGE COMPUTATION TIME OVER 30 DIFFERENT TRIALS UNDER SCENARIOS WITHOUT AND WITH OBSTACLE AVOIDANCE
+> Methods No obstacle avoidance With obstacle avoidance NMPC 0.026 s 0.37 s LPVMPC 0.0032 s 0.0047 s DRCC-LPVMPC 0.0032 s 0.0098 s
+> Fig. 11. High-fidelity CARLA simulation of obstacle avoidance using DRCC-LPVMPC. A full video demonstration and package are available on GitHub.
+
+slightly more computation than LPVMPC due to uncertainty handling, its runtime remains well within real-time limits. Overall, DRCC-LPVMPC provides a practical balance be-tween robustness and efficiency. 
+
+D. CARLA Simulation 
+
+In addition to the numerical experiments, we conducted high-fidelity simulation studies in CARLA [46], a widely used platform for sim-to-real autonomous driving research. The vehicle’s tire model was obtained using the method in [47], [48]. Fig. 11 shows the CARLA simulation of obstacle avoid-ance using DRCC-LPVMPC. Unknown obstacles are detected online through sensors and incorporated into the controller in real time. The vehicle model in CARLA uses an unknown nonlinear model, while the controller relies on a bicycle model for estimation. DRCC-LPVMPC successfully avoids three obstacles with safe margins, demonstrating robustness under model mismatch. A full video demonstration and ROS2 package are available on GitHub. For clarity, we report in the paper only the results with static obstacles, while additional experiments with dynami-cally sensed obstacles are provided in the GitHub repository. These results show that moving obstacles impose greater chal-lenges on motion control and solution feasibility, as the vehicle must continuously adapt to dynamic constraints. Nevertheless, our proposed DRCC-LPVMPC controller consistently demon-strated robustness, safely avoiding all obstacles with sufficient clearance. In contrast, LPVMPC frequently led the vehicle too close to the safety region, resulting in collisions. VII. R EAL WORLD EXPERIMENT 
+
+To further validate our approach, we performed real-world experiments using a 1:5 scaled vehicle, shown in Fig. 12(a). The test scenario required the vehicle to bypass box-shaped obstacles. Both LPVMPC and DRCC-LPVMPC were im-plemented with identical controller configurations (tracking weights, vehicle dynamics, and maximum vehicle speed of 
+
+1.5 m/s). The tracking results in Fig. 12(b) show that LPVMPC (red trajectory) collided with the obstacle during the turning maneuver, whereas DRCC-LPVMPC successfully avoided the obstacle and reached the target. Moreover, DRCC-LPVMPC maintained a larger safety mar-gin, as reflected in Fig. 12(c), where the steering behavior leads to trajectories that remain farther from obstacles while still preserving accurate path tracking. This robustness arises from the data-driven disturbance samples ˆwkj , computed online as discrepancies between quasi-LPV predictions and sensor measurements. Although not detailed in this paper, these samples directly shaped the ambiguity set used in the DRCC formulation. Finally, Fig. 12(b) highlights that, while LPVMPC still produced mathematically feasible trajectories, the real ve-hicle collided with the obstacle due to localization errors and actuation disturbances. This outcome is consistent with our simulation findings, underscoring that controllers which drive too close to obstacles are inherently fragile under real-world uncertainty, whereas DRCC-LPVMPC preserves safety margins and robustness. VIII. C ONCLUSION 
+
+This paper presented DRCC-LPVMPC, a data-driven distri-butionally robust control framework for autonomous driving with emphasis on safety-critical tasks such as obstacle avoid-ance. By consolidating discrepancies between STM dynamics, full vehicle models, and sensing disturbances into an additive disturbance term, the original MPC problem was reformulated as a DRCC problem within a quasi-LPV representation. The resulting convex approximation can be solved online via QP using real-time disturbance samples. Simulations demonstrated superior feasibility and safety margins compared to LPVMPC and NMPC, while scaled-vehicle experiments confirmed ro-bustness and improved obstacle avoidance. Remaining chal-lenges include accurate scheduling parameter estimation in highly dynamic scenarios, motivating future work on refined linearization and adaptive disturbance modeling to further enhance robustness and generalization. 14 
+
+(a) (b)  (c) Fig. 12. (a) 1:5 scaled experimental vehicle platform. (x, y, ψ ) is estimated using LiDAR-based 3D SLAM, while vx, v y , and ω are obtained from odometry and an onboard IMU. An NVIDIA Jetson AGX Orin running ROS serves as the embedded computer, providing real-time control through steering and duty cycle/velocity commands. (b) Tracking performance of the scaled vehicle under LPVMPC (red) and DRCC-LPVMPC (blue). The obstacle is represented by the centered gray box with its inflated region shown in black. The yellow line denotes the reference trajectory, and the green line indicates the upper bound of the safety region. DRCC-LPVMPC maintains a larger clearance, ensuring safe avoidance, while LPVMPC collides with the obstacle. (c) Steering control inputs generated by LPVMPC and DRCC-LPVMPC during the real-world experiment. See the companion video for the real-world tracking performance. 
+
+APPENDIX 
+
+A. Proof of Theorem 1 
+
+To reformulate, according to Eq. (23), 
+
+min  
+
+> λk≥0
+
+{λkσ − 1
+
+N
+
+X
+
+> j∈[J]
+
+inf  
+
+> ˜w
+
+[λk∥ ˜w − ˆwj ∥− 
+
+I(dkDkLN X − ck < ˜wk, ∃k ∈ [N ])] } ≤ ϵ
+
+is equivalent to 
+
+min  
+
+> λk≥0
+
+{λkσ − 1
+
+N
+
+X
+
+> j∈[J]
+
+min { min  
+
+> k∈[N]
+
+λk max {dkDkLN X − ck − ˆwkj , 0} − 1, 0}} ≤ ϵ, 
+
+by replacing with Eq. (24). Then, we obtain 
+
+min  
+
+> λk≥0
+
+{λkσ − 1
+
+N
+
+X
+
+> j∈[J]
+
+λkf (X, ˆwj ) − 1, 0} ≤ ϵ, 
+
+which can be expressed as 
+
+λkσ − ϵ ≤ 1
+
+N
+
+X
+
+> j∈[J]
+
+min {λkf (X, ˆwj ) − 1, 0}.
+
+This completes the proof. 
+
+B. Proof of Theorem 2 
+
+To prove the theorem, we define X1 
+
+> D
+
+as the set in Eq. (29), then we only need to prove X1 
+
+> D
+
+⊆ XD and XD ⊆ X1 
+
+> D
+
+. For 
+
+X1 
+
+> D
+
+⊆ XD : Given X ∈ X1 
+
+> D
+
+, there exists (γk, q, X) which satisfies Eq. (29). For each k ∈ [N ], Eq. (29a) and Eq. (29b) imply that 
+
+qkj ≤ min { min   
+
+> k∈[N]
+
+max {dkDkLN X − ck − ˆwkj } − γk, 0}
+
+= min {f (X, ˆwj ) − γk, 0}.
+
+therefore, Eq. (29a) gives 
+
+σ − ϵγ k ≤ 1
+
+N
+
+X
+
+> j∈[J]
+
+qkj ≤ 1
+
+N
+
+X
+
+> j∈[J]
+
+min {f (X, ˆwj ) − γk, 0},
+
+which is the same as Eq. (28a), thus X ∈ XD .For XD ⊆ X1 
+
+> D
+
+: Given X ∈ XD , there exists (γk, X) that satisfies Eq. (28). Then, we can define 
+
+qkj = min  
+
+> k∈[N]
+
+{max {dk Dk LN X − ck − ˆwkj , 0} − γk , 0}, ∀j ∈ [J].
+
+Next, Eq. (28a) becomes 
+
+σ − ϵγ k
+
+≤ 1
+
+N
+
+X
+
+> j∈[J]
+
+min { min   
+
+> k∈[N]
+
+max {dk Dk LN X − ck − ˆwkj , 0} − γk , 0}
+
+= 1
+
+N
+
+X
+
+> j∈[J]
+
+qkj .
+
+and 
+
+qkj + γk = min  
+
+> k∈[N]
+
+{max {dkDkLN X − ck − ˆwkj , 0}} ≤ max {dkDkLN X − ck − ˆwkj , 0}, ∀j ∈ [J], ∀k ∈ [N ].
+
+In addition, the expression of qkj implies qkj ≤ 0,γk ≥ 0, thus 
+
+X ⊆ X1 
+
+> D
+
+. This completes the proof. 
+
+C. Proof of Corollary 1 
+
+Eq. (29b) is equivalent to 
+
+qkj + γk ≤ max { min   
+
+> k∈[N]
+
+dkDkLN X − ck − ˆwkj , 0}, ∀j ∈ [J].
+
+The outer maximum on the right-hand side can be linearized by introducing a binary variable gkj , a continuous variable skj ,and a sufficiently large constant Mj . If gkj = 0 , then Eq. (31b) is relaxed (inactive) and qkj + γk ≤ skj = 0 , which covers the case dkDkLN X − ck − ˆwkj ≤ 0 in Eq. (29b). If gkj =1, then Eq. (31c) is relaxed (inactive) and qkj + γk ≤ skj ≤
+
+dkDkLN X − ck − ˆwkj , which covers the case dkDkLN X −
+
+ck − ˆwkj ≥ 0 in Eq. (29b). This completes the proof. 
+
+D. Proof of Theorem 3 
+
+To formally prove recursive feasibility, we adopt binary initialization, a common MPC strategy [40], [49], [50]. This approach ensures that if the controller becomes infeasible at the current step, it can initialize using the predicted state from the previous step, thereby maintaining feasibility. Specifically, 15 
+
+while the controller is feasible at the current time t, it uses the latest state zt. If the problem becomes infeasible, the controller uses the predicted state z∗ 
+
+> t|t−1
+
+obtained from the optimization at the previous time step t − 1.To prove recursive feasibility, we need to show that a feasible solution exists for the DRCC-LPVMPC at time t + 1 
+
+if ¯zt+1 = ¯ zt+1 |t. Specifically, assuming the DRCC-LPVMPC is feasible at time t with the corresponding optimal solution 
+
+X∗ 
+
+> t
+
+= {zt, u∗ 
+
+> t
+
+, u∗
+
+> t+1
+
+, . . . , u∗ 
+
+> t+N−1
+
+}, we need to prove that the solution Xt+1 = {zt+1 , u∗
+
+> t+1
+
+, u∗
+
+> t+2
+
+, . . . , u∗ 
+
+> t+N−1
+
+, 01×2}
+
+is feasible at time t + 1 .Adopting binary initialization ensures that Xt+1 satisfies the system constraints Eq. (34) from time t + 1 to t + N −
+
+1. Now, we need to prove Xt+1 is feasible for the system constraints at t + N and the terminal constraints are satisfied as well. To proceed, we first rewrite the system constraints as 
+
+dt+kzt+k − ct+k − ˆwt+kj
+
+= dt+k(Et+kt zt +
+
+> k
+
+X
+
+> j=1
+
+(Ekj Bj−1u⊤ 
+
+> j−1
+
++ Ekj ξ⊤
+
+> j−1
+
+) + Bku⊤ 
+
+> k
+
+)
+
+− ct+k − ˆwt+kj . (45) Applying Eq. (45) to Corollary 1 and denoting the system with expectation, we obtain 
+
+dt+k ¯zt+k = dt+k(Et+kt ¯zt +
+
+> k
+
+X
+
+> j=1
+
+Ekj Bj−1u⊤ 
+
+> j−1
+
++ Bku⊤ 
+
+> k
+
+)
+
+≤ Mj + ct+k.
+
+Since ¯zt+N satisfies the terminal constraints in Eq. (35), at 
+
+t + N , we have 
+
+dt+N ¯zt+N
+
+= dt+N (Et+Nt ¯zt +
+
+> t+N
+
+X
+
+> j=1
+
+Et+Nj Bj−1u⊤ 
+
+> j−1
+
++ Bt+N u⊤ 
+
+> t+N
+
+)
+
+≤ Mj + ct+N .
+
+Thus, the system constraints are satisfied for Xt+1 at t + N .Finally, since ut+N = 01×2 and ¯zt+N ∈ Z T , from Eq. (33) we obtain 
+
+¯zt+N +1 = At+N ¯zt+N + Bt+N ut+N = At+N ¯zt+N ∈ Z T .
+
+Therefore, the terminal constraints are satisfied for Xt+1 ,completing the proof of recursive feasibility. REFERENCES [1] X. Zhang, M. Bujarbaruah, and F. Borrelli, “Near-optimal rapid MPC using neural networks: A primal-dual policy learning framework,” IEEE Trans. Control Syst. Technol. , vol. 29, no. 5, pp. 2102–2114, 2020. [2] L. Hewing, J. Kabzan, and M. N. Zeilinger, “Cautious model predictive control using Gaussian process regression,” IEEE Trans. Control Syst. Technol. , vol. 28, no. 6, pp. 2736–2743, 2019. [3] R. Kensbock, M. Nezami, and G. Schildbach, “Scenario-based decision-making, planning and control for interaction-aware autonomous driving on highways,” in Proc. IEEE Intell. Veh. Symp. , Anchorage, AK, USA, 2023, pp. 1–6. [4] G. Williams, P. Drews, B. Goldfain, J. M. Rehg, and E. A. Theodorou, “Information-theoretic model predictive control: Theory and applications to autonomous driving,” IEEE Trans. Robot. , vol. 34, no. 6, pp. 1603– 1622, 2018. [5] M. Nezami, D. S. Karachalios, G. Schildbach, and H. S. Abbas, “Ob-stacle avoidance of autonomous vehicles: An LPVMPC with scheduling trust region,” arXiv preprint arXiv:2405.02030 , 2024. [6] E. Alcal´ a, V. Puig, and J. Quevedo, “LPV-MP planning for autonomous racing vehicles considering obstacles,” Robot. Auton. Syst. , vol. 124, p. 103392, 2020. [7] J. Bokor and G. Balas, “Linear parameter varying systems: A geometric theory and applications,” IFAC Proc. Vol. , vol. 38, no. 1, pp. 12–22, 2005. [8] E. Alcal´ a, V. Puig, J. Quevedo, and U. Rosolia, “Autonomous racing using linear parameter varying-model predictive control (LPV-MPC),” 
+
+Control Eng. Pract. , vol. 95, p. 104270, 2020. [9] Y. Tian, Q. Yao, P. Hang, and S. Wang, “A gain-scheduled robust controller for autonomous vehicles path tracking based on LPV system with MPC and H∞,” IEEE Trans. Veh. Technol. , vol. 71, no. 9, pp. 9350–9362, 2022. [10] D. Rodriguez-Guevara, A. Favela-Contreras, and O. J. Gonzalez-Villarreal, “A qlpv-mpc control strategy for trajectory tracking of quadrotors,” Machines , vol. 11, no. 7, p. 755, 2023. [11] A. Samir, H. M. Calder´ on, H. Werner, B. Herrmann, L. Rieck, and F. Thielecke, “A velocity qlmpc algorithm for path-following with ob-stacle avoidance for fixed-wing uavs,” in 2024 International Conference on Unmanned Aircraft Systems . IEEE, 2024, pp. 107–112. [12] C. Hespe and H. Werner, “Convergence properties of fast quasi-LPV model predictive control,” in Proc. IEEE Conf. Decis. Control . Virtual Conference: IEEE, 2021, pp. 3869–3874. [13] Y. Chen, Y. Sun, J. Li, J. He, and C. He, “Tube-based robust model predictive control for autonomous vehicle with complex road scenarios,” 
+
+Appl. Sci. , vol. 15, no. 12, p. 6471, 2025. [14] W. Liu, G. Chen, and A. Knoll, “Matrix inequalities based robust model predictive control for vehicle considering model uncertainties, external disturbances, and time-varying delay,” Front. Neurorobot. , vol. 14, p. 617293, 2021. [15] P. Zhang, D. Tian, J. Zhou, X. Duan, D. Zhao, and D. Cao, “A distributionally robust optimization model for vehicle platooning under stochastic disturbances,” IEEE Trans. Veh. Technol. , vol. 73, no. 7, pp. 9666–9681, 2024. [16] K. Ryu and N. Mehr, “Integrating predictive motion uncertainties with distributionally robust risk-aware control for safe robot navigation in crowds,” in Proc. IEEE Int. Conf. Robot. Autom. , Yokohama, Japan, 2024, pp. 2410–2417. [17] A. Hakobyan and I. Yang, “Learning-based distributionally robust mo-tion control with gaussian processes,” in Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. , Las Vegas, NV, USA, 2020, pp. 7667–7674. [18] J. Chen, Y. Shimizu, L. Sun, M. Tomizuka, and W. Zhan, “Constrained iterative lqg for real-time chance-constrained gaussian belief space planning,” in Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. , Prague, Czech Republic, 2021, pp. 5801–5808. [19] S. Zhao and K. Zhang, “A distributionally robust stochastic optimization-based model predictive control with distributionally robust chance con-straints for cooperative adaptive cruise control under uncertain traffic conditions,” Michigan Tech Digital Commons , vol. 2076, 2024. [20] S. Xu, H. Ruan, W. Zhang, Y. Wang, L. Zhu, and C. P. Ho, “Distribution-ally robust chance constrained trajectory optimization for mobile robots within uncertain safe corridors,” arXiv preprint arXiv:2308.16381 , 2024. [21] A. Hakobyan and I. Yang, “Wasserstein distributionally robust motion control for collision avoidance using conditional value-at-risk,” arXiv preprint arXiv:2001.04727 , 2024. [22] L. Chen, D. Kuhn, and W. Wiesemann, “On approximations of data-driven chance constrained programs over wasserstein balls,” arXiv preprint , vol. abs/2206.00231, 2022. [23] Z. Liu, J. Zhang, and W. Zhang, “Data-driven distributionally robust optimal power flow for distribution grids under wasserstein ambiguity sets,” IEEE Trans. Power Syst. , vol. 14, no. 4, p. 822, 2025. [24] Z. Chen, W. Ma, and W. Ji, “Data-driven approximation of distribution-ally robust chance constraints using bayesian credible intervals,” arXiv preprint , vol. abs/2306.12735, 2025. [25] B. Comden, A. Zamzam, and A. Bernstein, “Data-driven moment-based distributionally robust chance-constrained optimization,” arXiv preprint ,vol. abs/2109.08742, 2021. [26] A. Bahari Kordabad, R. Ghosh, D. Sadigh, and S. Sadraddini, “Data-driven distributionally robust control for interacting agents under logical constraints,” arXiv preprint , vol. abs/2503.09816, 2025. [27] N. Kumar and R. Pachamuthu, “Real-time lpv-based non-linear model predictive control for robust trajectory tracking in autonomous vehicles,” 
+
+arXiv preprint , vol. abs/2506.04684, 2025, arXiv:2506.04684. 16 
+
+[28] W. Xie, “On distributionally robust chance constrained programs with wasserstein distance,” Math. Program. , vol. 186, no. 1, pp. 115–155, 2021. [29] R. Rajamani, Vehicle Dynamics and Control , 2nd ed. New York, NY: Springer, 2011. [30] H. B. Pacejka, Tire and Vehicle Dynamics , 2nd ed. Warrendale, PA: SAE International, 2005. [31] A. Muraleedharan, H. Okuda, and T. Suzuki, “Real-time implementation of randomized model predictive control for autonomous driving,” IEEE Trans. Intell. Transp. Syst. , vol. 7, no. 1, pp. 11–20, 2021. [32] E. Erkan and S. Y¨ uce, “Serret-frenet frame and curvatures of b´ ezier curves,” Mathematics , vol. 6, no. 12, p. 321, 2018. [33] L. Zhang, P.-H. Su, J. Hoang, G. C. Haynes, and M. Marchetti-Bowick, “Map-adaptive goal-based trajectory prediction,” in Proc. Conf. Robot. Learn. , London, United Kingdom, 2021, pp. 1371–1383. [34] S. Narayanan, R. Moslemi, F. Pittaluga, B. Liu, and M. Chandraker, “Divide-and-conquer for lane-aware diverse trajectory prediction,” in 
+
+Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. , virtual, 2021, pp. 15 799–15 808. [35] O. de Groot, L. Ferranti, D. Gavrila, and J. Alonso-Mora, “Globally guided trajectory planning in dynamic environments,” in Proc. IEEE Int. Conf. Robot. Autom. , London, United Kingdom, 2023, pp. 10 118– 10 124. [36] N. Fournier and A. Guillin, “On the rate of convergence in wasserstein distance of the empirical measure,” Probab. Theory Relat. Fields , vol. 162, no. 3, pp. 707–738, 2015. [37] R. Gao and A. Kleywegt, “Distributionally robust stochastic optimization with wasserstein distance,” Math. Oper. Res. , vol. 48, no. 2, pp. 603–655, 2023. [38] J. Blanchet and K. Murthy, “Quantifying distributional model risk via optimal transport,” Math. Oper. Res. , vol. 44, no. 2, pp. 565–600, 2019. [39] D. Q. Mayne, J. B. Rawlings, C. V. Rao, and P. O. Scokaert, “Survey constrained model predictive control: Stability and optimality,” Automat-ica , vol. 36, no. 6, pp. 789–814, 2000. [40] B. Li, Y. Tan, A.-G. Wu, and G.-R. Duan, “A distributionally robust optimization based method for stochastic model predictive control,” 
+
+IEEE Trans. Autom. Control , vol. 67, no. 11, pp. 5762–5776, 2021. [41] M. Diehl, H. G. Bock, J. P. Schl¨ oder, R. Findeisen, Z. Nagy, and F. Allg¨ ower, “Real-time optimization and nonlinear model predictive control of processes governed by differential-algebraic equations,” J. Process Control , vol. 12, no. 4, pp. 577–585, 2002. [42] M. Diehl, H. G. Bock, and J. P. Schl¨ oder, “A real-time iteration scheme for nonlinear optimization in optimal feedback control,” SIAM J. Control Optim. , vol. 43, no. 5, pp. 1714–1736, 2005. [43] A. Bambade, S. El-Kazdadi, A. Taylor, and J. Carpentier, “Prox-qp: Yet another quadratic programming solver for robotics and beyond,” in Proc. Robot. Sci. Syst. , New York City, NY, USA, 2022. [44] A. Liniger, A. Domahidi, and M. Morari, “Optimization-based au-tonomous racing of 1:43 scale RC cars,” Optim. Control Appl. Methods ,vol. 36, no. 5, pp. 628–647, 2015. [45] A. Jain, M. O’Kelly, P. Chaudhari, and M. Morari, “Bayesrace: Learn-ing to race autonomously using prior experience,” arXiv preprint arXiv:2005.04755 , 2020. [46] A. Dosovitskiy, G. Ros, F. Codevilla, A. Lopez, and V. Koltun, “Carla: An open urban driving simulator,” in Proc. Conf. Robot Learning ,Mountain View, CA, USA, 2017, pp. 1–16. [47] S. Fang and K. Yu, “Fine-tuning hybrid dynamics with physics-informed neural networks for vehicle dynamics estimation,” Int. J. Intell. Robot. Appl. , vol. 9, no. 4, pp. 1594–1610, 2025. [48] S. Fang and K. Yu, “Fine-tuning hybrid physics-informed neural net-works for vehicle dynamics model estimation,” in Proc. Modeling Estimation Control Conf. , Chicago, IL, USA, 2024, pp. 810–815. [49] L. Hewing, J. Kabzan, and M. N. Zeilinger, “Cautious model predictive control using gaussian process regression,” IEEE Trans. Autom. Control ,vol. 66, no. 8, pp. 3787–3802, 2020. [50] P. Giselsson and S. Boyd, “Recursive feasibility and stability of con-strained model predictive control under real-time optimization,” IEEE Trans. Autom. Control , vol. 59, no. 6, pp. 1425–1438, 2014. 
+
+Shiming Fang received the B.S. degree in Mechan-ical Engineering from Wuhan University of Tech-nology, Wuhan, China in 2016, and the M.S. de-gree in Mechanical Engineering from University of Birmingham, Birmingham, UK in 2017. He earned his Ph.D. in Mechanical Engineering at Binghamton University, Binghamton, NY, USA, in 2025. His research focuses on modeling, estimation, and deep reinforcement learning for robotics and autonomous robust control. He is currently a Postdoctoral Re-searcher at the State University of New York Poly-technic Institute, Utica, NY, USA, where he is developing deep reinforcement learning-based control for nanowires and energy-efficient spiking neural network models. 
+
+Xilin Li received the B.S. degree in process equip-ment and control engineering and the M.S. degree in chemical machinery from Zhejiang University, China, in 2007 and 2010, respectively. He earned his Ph.D. in Mechanical Engineering from Binghamton University, Binghamton, NY, USA, in 2025, spe-cializing in advanced robotics with an emphasis on autonomous vehicles. His research primarily focuses on autonomous trajectory generation and optimiza-tion, as well as nonlinear model predictive trajectory control. He is currently a Postdoctoral Researcher at the Syracuse Center of Excellence at Syracuse University, Syracuse, NY, USA, where he is developing sensor networks and adaptive building technologies for environmental monitoring and energy efficiency. 
+
+Changzhi Wu is a Chair Professor at the National Center for Applied Mathematics in Chongqing, China, and serves as a doctoral supervisor. He is currently the Managing Editor of the Journal of In-dustrial and Management Optimization. His research interests include big data modeling and analysis, optimization modeling and computational methods, and intelligent decision analysis. 
+
+Kaiyan Yu (Member, IEEE) received the B.S. degree in intelligent science and technology from Nankai University, Tianjin, China, in 2010. She earned the Ph.D. degree in mechanical and aerospace engineering from Rutgers University, Piscataway, NJ, USA, in 2017. She joined the Department of Mechanical Engineering at Binghamton University, Binghamton, NY, USA, in 2018, where she is cur-rently an Associate Professor. Her current research interests include autonomous robotic systems, mo-tion planning and control, mechatronics, and au-tomation science and engineering, with applications focused on Lab-on-a-chip technologies and nano/micro particle control and manipulation. Dr. Yu is a member of the American Society of Mechanical Engineers (ASME). She is a recipient of the 2022 US NSF CAREER Award. She currently serves as an Associate Editor of the IEEE T RANSACTIONS ON AUTOMATION 
+
+SCIENCE AND ENGINEERING , IEEE Robotics and Automation Letters , IFAC Mechatronics , Frontiers in Robotics and AI , and the IEEE Robotics and Automation Society Conference Editorial Board and the ASME Dynamic Systems and Control Division Conference Editorial Board (since 2018).

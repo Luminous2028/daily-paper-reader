@@ -1,0 +1,507 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-03-21T20:00:36.580946+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 29,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2603.16368v1",
+      "title": "Encoding Predictability and Legibility for Style-Conditioned Diffusion Policy",
+      "abstract": "Striking a balance between efficiency and transparent motion is a core challenge in human-robot collaboration, as highly expressive movements often incur unnecessary time and energy costs. In collaborative environments, legibility allows a human observer a better understanding of the robot's actions, increasing safety and trust. However, these behaviors result in sub-optimal and exaggerated trajectories that are redundant in low-ambiguity scenarios where the robot's goal is already obvious. To address this trade-off, we propose Style-Conditioned Diffusion Policy (SCDP), a modular framework that constrains the trajectory generation of a pre-trained diffusion model toward either legibility or efficiency based on the environment's configuration. Our method utilizes a post-training pipeline that freezes the base policy and trains a lightweight scene encoder and conditioning predictor to modulate the diffusion process. At inference time, an ambiguity detection module activates the appropriate conditioning, prioritizing expressive motion only for ambiguous goals and reverting to efficient paths otherwise. We evaluate SCDP on manipulation and navigation tasks, and results show that it enhances legibility in ambiguous settings while preserving optimal efficiency when legibility is unnecessary, all without retraining the base policy.",
+      "authors": [
+        "Adrien Jacquet Crétides",
+        "Mouad Abrini",
+        "Hamed Rahimi",
+        "Mohamed Chetouani"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-03-17T10:55:44+00:00",
+      "link": "https://arxiv.org/pdf/2603.16368v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "diffusion model for trajectory generation in collaborative environments",
+      "llm_evidence_cn": "协作环境下的扩散模型轨迹生成",
+      "llm_evidence": "协作环境下的扩散模型轨迹生成",
+      "canonical_evidence": "协作环境下的扩散模型轨迹生成",
+      "llm_tldr_en": "Introduces Style-Conditioned Diffusion Policy to balance legibility and efficiency in robot trajectories.",
+      "llm_tldr_cn": "引入风格条件扩散策略，在机器人轨迹中平衡易读性和效率。",
+      "llm_tldr": "引入风格条件扩散策略，在机器人轨迹中平衡易读性和效率。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2603.14320v1",
+      "title": "Early Failure Detection and Intervention in Video Diffusion Models",
+      "abstract": "Text-to-video (T2V) diffusion models have rapidly advanced, yet generations still occasionally fail in practice, such as low text-video alignment or low perceptual quality. Since diffusion sampling is non-deterministic, it is difficult to know during inference whether a generation will succeed or fail, incurring high computational cost due to trial-and-error regeneration. To address this, we propose an early failure detection and diagnostic intervention pipeline for latent T2V diffusion models. For detection, we design a Real-time Inspection (RI) module that converts latents into intermediate video previews, enabling the use of established text-video alignment scorers for inspection in the RGB space. The RI module completes the conversion and inspection process in just 39.2ms. This is highly efficient considering that CogVideoX-5B requires 4.3s per denoising step when generating a 480p, 49-frame video on an NVIDIA A100 GPU. Subsequently, we trigger a hierarchical and early-exit intervention pipeline only when failure is predicted. Experiments on CogVideoX-5B and Wan2.1-1.3B demonstrate consistency gains on VBench with up to 2.64 times less time overhead compared to post-hoc regeneration. Our method also generalizes to a higher-capacity setting, remaining effective on Wan2.1-14B with 720p resolution and 81-frame generation. Furthermore, our pipeline is plug-and-play and orthogonal to existing techniques, showing seamless compatibility with prompt refinement and sampling guidance methods. We also provide evidence that failure signals emerge early in the denoising process and are detectable within intermediate video previews using standard vision-language evaluators.",
+      "authors": [
+        "Kwon Byung-Ki",
+        "Sohwi Lim",
+        "Nam Hyeon-Woo",
+        "Moon Ye-Bin",
+        "Tae-Hyun Oh"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-15T10:32:41+00:00",
+      "link": "https://arxiv.org/pdf/2603.14320v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "early failure detection and diagnostic intervention in diffusion models",
+      "llm_evidence_cn": "扩散模型中的早期故障检测与诊断干预",
+      "llm_evidence": "扩散模型中的早期故障检测与诊断干预",
+      "canonical_evidence": "扩散模型中的早期故障检测与诊断干预",
+      "llm_tldr_en": "Proposes a real-time inspection module to detect and intervene in failed diffusion model generations.",
+      "llm_tldr_cn": "提出一种实时检测模块，用于识别并干预扩散模型生成过程中的失败案例。",
+      "llm_tldr": "提出一种实时检测模块，用于识别并干预扩散模型生成过程中的失败案例。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.12553v1",
+      "title": "Beyond Dense Futures: World Models as Structured Planners for Robotic Manipulation",
+      "abstract": "Recent world-model-based Vision-Language-Action (VLA) architectures have improved robotic manipulation through predictive visual foresight. However, dense future prediction introduces visual redundancy and accumulates errors, causing long-horizon plan drift. Meanwhile, recent sparse methods typically represent visual foresight using high-level semantic subtasks or implicit latent states. These representations often lack explicit kinematic grounding, weakening the alignment between planning and low-level execution. To address this, we propose StructVLA, which reformulates a generative world model into an explicit structured planner for reliable control. Instead of dense rollouts or semantic goals, StructVLA predicts sparse, physically meaningful structured frames. Derived from intrinsic kinematic cues (e.g., gripper transitions and kinematic turning points), these frames capture spatiotemporal milestones closely aligned with task progress. We implement this approach through a two-stage training paradigm with a unified discrete token vocabulary: the world model is first trained to predict structured frames and subsequently optimized to map the structured foresight into low-level actions. This approach provides clear physical guidance and bridges visual planning and motion control. In our experiments, StructVLA achieves strong average success rates of 75.0% on SimplerEnv-WidowX and 94.8% on LIBERO. Real-world deployments further demonstrate reliable task completion and robust generalization across both basic pick-and-place and complex long-horizon tasks.",
+      "authors": [
+        "Minghao Jin",
+        "Mozheng Liao",
+        "Mingfei Han",
+        "Zhihui Li",
+        "Xiaojun Chang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-03-13T01:33:48+00:00",
+      "link": "https://arxiv.org/pdf/2603.12553v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "world models as structured planners for robotic control",
+      "llm_evidence_cn": "世界模型作为机器人控制的结构化规划器",
+      "llm_evidence": "世界模型作为机器人控制的结构化规划器",
+      "canonical_evidence": "世界模型作为机器人控制的结构化规划器",
+      "llm_tldr_en": "Reformulates world models into structured planners to reduce drift in long-horizon robotic manipulation.",
+      "llm_tldr_cn": "将世界模型重构为结构化规划器，减少机器人长程操作中的规划漂移。",
+      "llm_tldr": "将世界模型重构为结构化规划器，减少机器人长程操作中的规划漂移。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.14408v1",
+      "title": "DRCC-LPVMPC: Robust Data-Driven Control for Autonomous Driving and Obstacle Avoidance",
+      "abstract": "Safety in obstacle avoidance is critical for autonomous driving. While model predictive control (MPC) is widely used, simplified prediction models such as linearized or single-track vehicle models introduce discrepancies between predicted and actual behavior that can compromise safety. This paper proposes a distributionally robust chance-constrained linear parameter-varying MPC (DRCC-LPVMPC) framework that explicitly accounts for such discrepancies. The single-track vehicle dynamics are represented in a quasi-linear parameter-varying (quasi-LPV) form, with model mismatches treated as additive uncertainties of unknown distribution. By constructing chance constraints from finite sampled data and employing a Wasserstein ambiguity set, the proposed method avoids restrictive assumptions on boundedness or Gaussian distributions. The resulting DRCC problem is reformulated as tractable convex constraints and solved in real time using a quadratic programming solver. Recursive feasibility of the approach is formally established. Simulation and real-world experiments demonstrate that DRCC-LPVMPC maintains safer obstacle clearance and more reliable tracking than conventional nonlinear MPC and LPVMPC controllers under significant uncertainties.",
+      "authors": [
+        "Shiming Fang",
+        "Xilin Li",
+        "Changzhi Wu",
+        "Kaiyan Yu"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-03-15T14:45:12+00:00",
+      "link": "https://arxiv.org/pdf/2603.14408v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "robust control for autonomous driving with additive uncertainties",
+      "llm_evidence_cn": "具有加性不确定性的自动驾驶鲁棒控制",
+      "llm_evidence": "具有加性不确定性的自动驾驶鲁棒控制",
+      "canonical_evidence": "具有加性不确定性的自动驾驶鲁棒控制",
+      "llm_tldr_en": "Proposes a distributionally robust MPC framework to handle model mismatches and uncertainties in driving.",
+      "llm_tldr_cn": "提出一种分布鲁棒机会约束MPC框架，处理驾驶中的模型失配与不确定性。",
+      "llm_tldr": "提出一种分布鲁棒机会约束MPC框架，处理驾驶中的模型失配与不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "modeling aleatoric uncertainty in autonomous driving scenarios",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.12736v1",
+      "title": "Conflict Mitigation in Shared Environments using Flow-Aware Multi-Agent Path Finding",
+      "abstract": "Deploying multi-robot systems in environments shared with dynamic and uncontrollable agents presents significant challenges, especially for large robot fleets. In such environments, individual robot operations can be delayed due to unforeseen conflicts with uncontrollable agents. While existing research primarily focuses on preserving the completeness of Multi-Agent Path Finding (MAPF) solutions considering delays, there is limited emphasis on utilizing additional environmental information to enhance solution quality in the presence of other dynamic agents. To this end, we propose Flow-Aware Multi-Agent Path Finding (FA-MAPF), a novel framework that integrates learned motion patterns of uncontrollable agents into centralized MAPF algorithms. Our evaluation, conducted on a diverse set of benchmark maps with simulated uncontrollable agents and on a real-world map with recorded human trajectories, demonstrates the effectiveness of FA-MAPF compared to state-of-the-art baselines. The experimental results show that FA-MAPF can consistently reduce conflicts with uncontrollable agents, up to 55%, without compromising task efficiency.",
+      "authors": [
+        "Lukas Heuer",
+        "Yufei Zhu",
+        "Luigi Palmieri",
+        "Andrey Rudenko",
+        "Anna Mannucci",
+        "Sven Koenig",
+        "Martin Magnusson"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.MA"
+      ],
+      "published": "2026-03-13T07:28:36+00:00",
+      "link": "https://arxiv.org/pdf/2603.12736v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "integrates learned motion patterns into multi-agent path finding",
+      "llm_evidence_cn": "将学习到的运动模式整合到多智能体路径规划中",
+      "llm_evidence": "将学习到的运动模式整合到多智能体路径规划中",
+      "canonical_evidence": "将学习到的运动模式整合到多智能体路径规划中",
+      "llm_tldr_en": "Proposes FA-MAPF to mitigate conflicts by integrating motion patterns of uncontrollable agents.",
+      "llm_tldr_cn": "提出FA-MAPF，通过整合不可控智能体的运动模式来缓解冲突。",
+      "llm_tldr": "提出FA-MAPF，通过整合不可控智能体的运动模式来缓解冲突。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.14497v1",
+      "title": "WorldVLM: Combining World Model Forecasting and Vision-Language Reasoning",
+      "abstract": "Autonomous driving systems depend on on models that can reason about high-level scene contexts and accurately predict the dynamics of their surrounding environment. Vision- Language Models (VLMs) have recently emerged as promising tools for decision-making and scene understanding, offering strong capabilities in contextual reasoning. However, their limited spatial comprehension constrains their effectiveness as end-to-end driving models. World Models (WM) internalize environmental dynamics to predict future scene evolution. Recently explored as ego-motion predictors and foundation models for autonomous driving, they represent a promising direction for addressing key challenges in the field, particularly enhancing generalization while maintaining dynamic prediction. To leverage the complementary strengths of context-based decision making and prediction, we propose WorldVLM: A hybrid architecture that unifies VLMs and WMs. In our design, the high-level VLM generates behavior commands to guide the driving WM, enabling interpretable and context-aware actions. We evaluate conditioning strategies and provide insights into the hybrid design challenges.",
+      "authors": [
+        "Stefan Englmeier",
+        "Katharina Winter",
+        "Fabian B. Flohr"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-03-15T17:26:59+00:00",
+      "link": "https://arxiv.org/pdf/2603.14497v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "world models for autonomous driving motion prediction",
+      "llm_evidence_cn": "用于自动驾驶运动预测的世界模型",
+      "llm_evidence": "用于自动驾驶运动预测的世界模型",
+      "canonical_evidence": "用于自动驾驶运动预测的世界模型",
+      "llm_tldr_en": "Combines world models and VLMs to enhance scene reasoning and dynamics prediction for autonomous driving.",
+      "llm_tldr_cn": "结合世界模型与VLM，增强自动驾驶中的场景推理与动力学预测能力。",
+      "llm_tldr": "结合世界模型与VLM，增强自动驾驶中的场景推理与动力学预测能力。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.13438v1",
+      "title": "Draft-and-Target Sampling for Video Generation Policy",
+      "abstract": "Video generation models have been used as a robot policy to predict the future states of executing a task conditioned on task description and observation. Previous works ignore their high computational cost and long inference time. To address this challenge, we propose Draft-and-Target Sampling, a novel diffusion inference paradigm for video generation policy that is training-free and can improve inference efficiency. We introduce a self-play denoising approach by utilizing two complementary denoising trajectories in a single model, draft sampling takes large steps to generate a global trajectory in a fast manner and target sampling takes small steps to verify it. To further speedup generation, we introduce token chunking and progressive acceptance strategy to reduce redundant computation. Experiments on three benchmarks show that our method can achieve up to 2.1x speedup and improve the efficiency of current state-of-the-art methods with minimal compromise to the success rate. Our code is available.",
+      "authors": [
+        "Qikang Zhang",
+        "Yingjie Lei",
+        "Wei Liu",
+        "Daochang Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-03-13T09:54:18+00:00",
+      "link": "https://arxiv.org/pdf/2603.13438v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion inference paradigm for video generation policy to predict future states",
+      "llm_evidence_cn": "用于预测未来状态的视频生成策略的扩散推理范式",
+      "llm_evidence": "用于预测未来状态的视频生成策略的扩散推理范式",
+      "canonical_evidence": "用于预测未来状态的视频生成策略的扩散推理范式",
+      "llm_tldr_en": "Proposes a Draft-and-Target sampling method to improve the efficiency of diffusion-based video generation policies.",
+      "llm_tldr_cn": "提出了一种草图-目标采样方法，以提高基于扩散的视频生成策略的效率。",
+      "llm_tldr": "提出了一种草图-目标采样方法，以提高基于扩散的视频生成策略的效率。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.15185v1",
+      "title": "What Matters for Scalable and Robust Learning in End-to-End Driving Planners?",
+      "abstract": "End-to-end autonomous driving has gained significant attention for its potential to learn robust behavior in interactive scenarios and scale with data. Popular architectures often build on separate modules for perception and planning connected through latent representations, such as bird's eye view feature grids, to maintain end-to-end differentiability. This paradigm emerged mostly on open-loop datasets, with evaluation focusing not only on driving performance, but also intermediate perception tasks. Unfortunately, architectural advances that excel in open-loop often fail to translate to scalable learning of robust closed-loop driving. In this paper, we systematically re-examine the impact of common architectural patterns on closed-loop performance: (1) high-resolution perceptual representations, (2) disentangled trajectory representations, and (3) generative planning. Crucially, our analysis evaluates the combined impact of these patterns, revealing both unexpected limitations as well as underexplored synergies. Building on these insights, we introduce BevAD, a novel lightweight and highly scalable end-to-end driving architecture. BevAD achieves 72.7% success rate on the Bench2Drive benchmark and demonstrates strong data-scaling behavior using pure imitation learning. Our code and models are publicly available here: https://dmholtz.github.io/bevad/",
+      "authors": [
+        "David Holtz",
+        "Niklas Hanselmann",
+        "Simon Doll",
+        "Marius Cordts",
+        "Bernt Schiele"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-03-16T12:20:34+00:00",
+      "link": "https://arxiv.org/pdf/2603.15185v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Systematic examination of end-to-end driving planners and robust behavior",
+      "llm_evidence_cn": "系统性检查端到端驾驶规划器及其鲁棒行为",
+      "llm_evidence": "系统性检查端到端驾驶规划器及其鲁棒行为",
+      "canonical_evidence": "系统性检查端到端驾驶规划器及其鲁棒行为",
+      "llm_tldr_en": "Analyzes architectural patterns in end-to-end driving planners to improve closed-loop performance.",
+      "llm_tldr_cn": "系统分析了端到端驾驶规划器的架构模式，以提升闭环性能。",
+      "llm_tldr": "系统分析了端到端驾驶规划器的架构模式，以提升闭环性能。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.13707v1",
+      "title": "REFINE-DP: Diffusion Policy Fine-tuning for Humanoid Loco-manipulation via Reinforcement Learning",
+      "abstract": "Humanoid loco-manipulation requires coordinated high-level motion plans with stable, low-level whole-body execution under complex robot-environment dynamics and long-horizon tasks. While diffusion policies (DPs) show promise for learning from demonstrations, deploying them on humanoids poses critical challenges: the motion planner trained offline is decoupled from the low-level controller, leading to poor command tracking, compounding distribution shift, and task failures. The common approach of scaling demonstration data is prohibitively expensive for high-dimensional humanoid systems. To address this challenge, we present REFINE-DP (REinforcement learning FINE-tuning of Diffusion Policy), a hierarchical framework that jointly optimizes a DP high-level planner and an RL-based low-level loco-manipulation controller. The DP is fine-tuned via a PPO-based diffusion policy gradient to improve task success rate, while the controller is simultaneously updated to accurately track the planner's evolving command distribution, reducing the distributional mismatch that degrades motion quality. We validate REFINE-DP on a humanoid robot performing loco-manipulation tasks, including door traversal and long-horizon object transport. REFINE-DP achieves an over $90\\%$ success rate in simulation, even in out-of-distribution cases not seen in the pre-trained data, and enables smooth autonomous task execution in real-world dynamic environments. Our proposed method substantially outperforms pre-trained DP baselines and demonstrates that RL fine-tuning is key to reliable humanoid loco-manipulation. https://refine-dp.github.io/REFINE-DP/",
+      "authors": [
+        "Zhaoyuan Gu",
+        "Yipu Chen",
+        "Zimeng Chai",
+        "Alfred Cueva",
+        "Thong Nguyen",
+        "Yifan Wu",
+        "Huishu Xue",
+        "Minji Kim",
+        "Isaac Legene",
+        "Fukang Liu",
+        "Matthew Kim",
+        "Ayan Barula",
+        "Yongxin Chen",
+        "Ye Zhao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-03-14T02:21:19+00:00",
+      "link": "https://arxiv.org/pdf/2603.13707v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Diffusion policies for humanoid motion planning and reinforcement learning fine-tuning",
+      "llm_evidence_cn": "用于人形机器人运动规划的扩散策略及强化学习微调",
+      "llm_evidence": "用于人形机器人运动规划的扩散策略及强化学习微调",
+      "canonical_evidence": "用于人形机器人运动规划的扩散策略及强化学习微调",
+      "llm_tldr_en": "Presents REFINE-DP to fine-tune diffusion policies for humanoid loco-manipulation using RL.",
+      "llm_tldr_cn": "提出 REFINE-DP，利用强化学习微调人形机器人运动控制的扩散策略。",
+      "llm_tldr": "提出 REFINE-DP，利用强化学习微调人形机器人运动控制的扩散策略。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.15221v1",
+      "title": "ADV-0: Closed-Loop Min-Max Adversarial Training for Long-Tail Robustness in Autonomous Driving",
+      "abstract": "Deploying autonomous driving systems requires robustness against long-tail scenarios that are rare but safety-critical. While adversarial training offers a promising solution, existing methods typically decouple scenario generation from policy optimization and rely on heuristic surrogates. This leads to objective misalignment and fails to capture the shifting failure modes of evolving policies. This paper presents ADV-0, a closed-loop min-max optimization framework that treats the interaction between driving policy (defender) and adversarial agent (attacker) as a zero-sum Markov game. By aligning the attacker's utility directly with the defender's objective, we reveal the optimal adversary distribution. To make this tractable, we cast dynamic adversary evolution as iterative preference learning, efficiently approximating this optimum and offering an algorithm-agnostic solution to the game. Theoretically, ADV-0 converges to a Nash Equilibrium and maximizes a certified lower bound on real-world performance. Experiments indicate that it effectively exposes diverse safety-critical failures and greatly enhances the generalizability of both learned policies and motion planners against unseen long-tail risks.",
+      "authors": [
+        "Tong Nie",
+        "Yihong Tang",
+        "Junlin He",
+        "Yuewen Mei",
+        "Jie Sun",
+        "Lijun Sun",
+        "Wei Ma",
+        "Jian Sun"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-03-16T12:58:31+00:00",
+      "link": "https://arxiv.org/pdf/2603.15221v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "autonomous driving policy optimization and scenario generation",
+      "llm_evidence_cn": "自动驾驶策略优化与场景生成",
+      "llm_evidence": "自动驾驶策略优化与场景生成",
+      "canonical_evidence": "自动驾驶策略优化与场景生成",
+      "llm_tldr_en": "A closed-loop adversarial training framework for long-tail robustness in autonomous driving.",
+      "llm_tldr_cn": "一种用于提升自动驾驶长尾鲁棒性的闭环对抗训练框架。",
+      "llm_tldr": "一种用于提升自动驾驶长尾鲁棒性的闭环对抗训练框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.13707v2",
+      "title": "REFINE-DP: Diffusion Policy Fine-tuning for Humanoid Loco-manipulation via Reinforcement Learning",
+      "abstract": "Humanoid loco-manipulation requires coordinated high-level motion plans with stable, low-level whole-body execution under complex robot-environment dynamics and long-horizon tasks. While diffusion policies (DPs) show promise for learning from demonstrations, deploying them on humanoids poses critical challenges: the motion planner trained offline is decoupled from the low-level controller, leading to poor command tracking, compounding distribution shift, and task failures. The common approach of scaling demonstration data is prohibitively expensive for high-dimensional humanoid systems. To address this challenge, we present REFINE-DP (REinforcement learning FINE-tuning of Diffusion Policy), a hierarchical framework that jointly optimizes a DP high-level planner and an RL-based low-level loco-manipulation controller. The DP is fine-tuned via a PPO-based diffusion policy gradient to improve task success rate, while the controller is simultaneously updated to accurately track the planner's evolving command distribution, reducing the distributional mismatch that degrades motion quality. We validate REFINE-DP on a humanoid robot performing loco-manipulation tasks, including door traversal and long-horizon object transport. REFINE-DP achieves an over $90\\%$ success rate in simulation, even in out-of-distribution cases not seen in the pre-trained data, and enables smooth autonomous task execution in real-world dynamic environments. Our proposed method substantially outperforms pre-trained DP baselines and demonstrates that RL fine-tuning is key to reliable humanoid loco-manipulation. https://refine-dp.github.io/REFINE-DP/",
+      "authors": [
+        "Zhaoyuan Gu",
+        "Yipu Chen",
+        "Zimeng Chai",
+        "Alfred Cueva",
+        "Thong Nguyen",
+        "Yifan Wu",
+        "Huishu Xue",
+        "Minji Kim",
+        "Isaac Legene",
+        "Fukang Liu",
+        "Matthew Kim",
+        "Ayan Barula",
+        "Yongxin Chen",
+        "Ye Zhao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-03-14T02:21:19+00:00",
+      "link": "https://arxiv.org/pdf/2603.13707v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion policy for motion planning and reinforcement learning fine-tuning",
+      "llm_evidence_cn": "用于运动规划的扩散策略与强化学习微调",
+      "llm_evidence": "用于运动规划的扩散策略与强化学习微调",
+      "canonical_evidence": "用于运动规划的扩散策略与强化学习微调",
+      "llm_tldr_en": "Refines diffusion policies for humanoid robots using RL to improve motion planning and execution.",
+      "llm_tldr_cn": "利用强化学习微调类人机器人的扩散策略，以改进运动规划与执行。",
+      "llm_tldr": "利用强化学习微调类人机器人的扩散策略，以改进运动规划与执行。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.15359v2",
+      "title": "NavThinker: Action-Conditioned World Models for Coupled Prediction and Planning in Social Navigation",
+      "abstract": "Social navigation requires robots to act safely in dynamic human environments. Effective behavior demands thinking ahead: reasoning about how the scene and pedestrians evolve under different robot actions rather than reacting to current observations alone. This creates a coupled prediction-planning challenge, where robot actions and human motion mutually influence each other. To address this challenge, we propose NavThinker, a future-aware framework that couples an action-conditioned world model with on-policy reinforcement learning. The world model operates in the Depth Anything V2 patch feature space and performs autoregressive prediction of future scene geometry and human motion; multi-head decoders then produce future depth maps and human trajectories, yielding a future-aware state aligned with traversability and interaction risk. Crucially, we train the policy with DD-PPO while injecting world-model think-ahead signals via: (i) action-conditioned future features fused into the current observation embedding and (ii) social reward shaping from predicted human trajectories. Experiments on single- and multi-robot Social-HM3D show state-of-the-art navigation success, with zero-shot transfer to Social-MP3D and real-world deployment on a Unitree Go2, validating generalization and practical applicability. Webpage: https://hutslib.github.io/NavThinker.",
+      "authors": [
+        "Tianshuai Hu",
+        "Zeying Gong",
+        "Lingdong Kong",
+        "XiaoDong Mei",
+        "Yiyi Ding",
+        "Qi Zeng",
+        "Ao Liang",
+        "Rong Li",
+        "Yangyi Zhong",
+        "Junwei Liang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-16T14:37:16+00:00",
+      "link": "https://arxiv.org/pdf/2603.15359v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "coupled prediction and planning in dynamic environments",
+      "llm_evidence_cn": "动态环境中的预测与规划耦合",
+      "llm_evidence": "动态环境中的预测与规划耦合",
+      "canonical_evidence": "动态环境中的预测与规划耦合",
+      "llm_tldr_en": "Proposes NavThinker, a world model framework for coupled prediction and planning in social navigation.",
+      "llm_tldr_cn": "提出NavThinker框架，通过世界模型耦合社交导航中的预测与规划。",
+      "llm_tldr": "提出NavThinker框架，通过世界模型耦合社交导航中的预测与规划。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
