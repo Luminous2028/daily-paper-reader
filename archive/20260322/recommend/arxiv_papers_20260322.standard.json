@@ -1,0 +1,538 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-03-22T19:48:16.005048+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 22,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2603.13781v1",
+      "title": "KoopmanFlow: Spectrally Decoupled Generative Control Policy via Koopman Structural Bias",
+      "abstract": "Generative Control Policies (GCPs) show immense promise in robotic manipulation but struggle to simultaneously model stable global motions and high-frequency local corrections. While modern architectures extract multi-scale spatial features, their underlying Probability Flow ODEs apply a uniform temporal integration schedule. Compressed to a single step for real-time Receding Horizon Control (RHC), uniform ODE solvers mathematically smooth over sparse, high-frequency transients entangled within low-frequency steady states. To decouple these dynamics without accumulating pipelined errors, we introduce KoopmanFlow, a parameter-efficient generative policy guided by a Koopman-inspired structural inductive bias. Operating in a unified multimodal latent space with visual context, KoopmanFlow bifurcates generation at the terminal stage. Because visual conditioning occurs before spectral decomposition, both branches are visually guided yet temporally specialized. A macroscopic branch anchors slow-varying trajectories via single-step Consistency Training, while a transient branch uses Flow Matching to isolate high-frequency residuals stimulated by sudden visual cues (e.g., contacts or occlusions). Guided by an explicit spectral prior and optimized via a novel asymmetric consistency objective, KoopmanFlow establishes a fused co-training mechanism. This allows the variant branch to absorb localized dynamics without multi-stage error accumulation. Extensive experiments show KoopmanFlow significantly outperforms state-of-the-art baselines in contact-rich tasks requiring agile disturbance rejection. By trading a surplus latency buffer for a richer structural prior, KoopmanFlow achieves superior control fidelity and parameter efficiency within real-time deployment limits.",
+      "authors": [
+        "Chengsi Yao",
+        "Ge Wang",
+        "Kai Kang",
+        "Shenhao Yan",
+        "Jiahao Yang",
+        "Fan Feng",
+        "Honghao Cai",
+        "Xianxian Zeng",
+        "Rongjun Chen",
+        "Yiming Zhao",
+        "Yatong Han",
+        "Xi Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-14T06:23:07+00:00",
+      "link": "https://arxiv.org/pdf/2603.13781v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "decoupling dynamics in generative control policies via Koopman structural bias",
+      "llm_evidence_cn": "通过 Koopman 结构偏差解耦生成式控制策略中的动力学",
+      "llm_evidence": "通过 Koopman 结构偏差解耦生成式控制策略中的动力学",
+      "canonical_evidence": "通过 Koopman 结构偏差解耦生成式控制策略中的动力学",
+      "llm_tldr_en": "Introduces KoopmanFlow to decouple global motions and local corrections in generative robotic policies.",
+      "llm_tldr_cn": "引入 KoopmanFlow，旨在解耦生成式机器人策略中的全局运动和局部修正。",
+      "llm_tldr": "引入 KoopmanFlow，旨在解耦生成式机器人策略中的全局运动和局部修正。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty decoupling in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2603.17634v1",
+      "title": "Hierarchical Decision-Making under Uncertainty: A Hybrid MDP and Chance-Constrained MPC Approach",
+      "abstract": "This paper presents a hierarchical decision-making framework for autonomous systems operating under uncertainty, demonstrated through autonomous driving as a representative application. Surrounding agents are modeled using Hybrid Markov Decision Processes (HMDPs) that jointly capture maneuver-level and dynamic-level uncertainties, enabling the multi-modal environmental prediction. The ego agent is modeled using a separate HMDP and integrated into a Model Predictive Control (MPC) framework that unifies maneuver selection with dynamic feasibility within a single optimization. A set of joint chance constraints serves as the bridge between environmental prediction and optimization, incorporating multi-modal environment predictions into the MPC formulation and ensuring safety across all plausible interaction scenarios. The proposed framework provides theoretical guarantees on recursive feasibility and asymptotic stability, and its benefits in terms of safety and efficiency are validated through comprehensive evaluations in highway and urban environments, together with comparisons against a rule-based baseline.",
+      "authors": [
+        "Siyuan Li",
+        "Chengyuan Liu",
+        "Wen-Hua Chen"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-03-18T11:56:44+00:00",
+      "link": "https://arxiv.org/pdf/2603.17634v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "modeling maneuver and dynamic uncertainties in autonomous driving",
+      "llm_evidence_cn": "自动驾驶中的行为和动力学不确定性建模",
+      "llm_evidence": "自动驾驶中的行为和动力学不确定性建模",
+      "canonical_evidence": "自动驾驶中的行为和动力学不确定性建模",
+      "llm_tldr_en": "Presents a hierarchical decision-making framework capturing multi-modal uncertainties in autonomous driving.",
+      "llm_tldr_cn": "提出了一种分层决策框架，捕捉自动驾驶中的多模态不确定性。",
+      "llm_tldr": "提出了一种分层决策框架，捕捉自动驾驶中的多模态不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "modeling aleatoric uncertainty in autonomous driving scenarios",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2603.14354v1",
+      "title": "Deconfounded Lifelong Learning for Autonomous Driving via Dynamic Knowledge Spaces",
+      "abstract": "End-to-End autonomous driving (E2E-AD) systems face challenges in lifelong learning, including catastrophic forgetting, difficulty in knowledge transfer across diverse scenarios, and spurious correlations between unobservable confounders and true driving intents. To address these issues, we propose DeLL, a Deconfounded Lifelong Learning framework that integrates a Dirichlet process mixture model (DPMM) with the front-door adjustment mechanism from causal inference. The DPMM is employed to construct two dynamic knowledge spaces: a trajectory knowledge space for clustering explicit driving behaviors and an implicit feature knowledge space for discovering latent driving abilities. Leveraging the non-parametric Bayesian nature of DPMM, our framework enables adaptive expansion and incremental updating of knowledge without predefining the number of clusters, thereby mitigating catastrophic forgetting. Meanwhile, the front-door adjustment mechanism utilizes the DPMM-derived knowledge as valid mediators to deconfound spurious correlations, such as those induced by sensor noise or environmental changes, and enhances the causal expressiveness of the learned representations. Additionally, we introduce an evolutionary trajectory decoder that enables non-autoregressive planning. To evaluate the lifelong learning performance of E2E-AD, we propose new evaluation protocols and metrics based on Bench2Drive. Extensive evaluations in the closed-loop CARLA simulator demonstrate that our framework significantly improves adaptability to new driving scenarios and overall driving performance, while effectively retaining previous acquired knowledge.",
+      "authors": [
+        "Jiayuan Du",
+        "Yuebing Song",
+        "Yiming Zhao",
+        "Xianghui Pan",
+        "Jiawei Lian",
+        "Yuchu Lu",
+        "Liuyi Wang",
+        "Chengju Liu",
+        "Qijun Chen"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.RO"
+      ],
+      "published": "2026-03-15T12:45:17+00:00",
+      "link": "https://arxiv.org/pdf/2603.14354v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "autonomous driving trajectory knowledge space and deconfounding",
+      "llm_evidence_cn": "自动驾驶轨迹知识空间与去混杂",
+      "llm_evidence": "自动驾驶轨迹知识空间与去混杂",
+      "canonical_evidence": "自动驾驶轨迹知识空间与去混杂",
+      "llm_tldr_en": "Proposes a deconfounded lifelong learning framework for autonomous driving using dynamic trajectory knowledge spaces.",
+      "llm_tldr_cn": "提出了一种利用动态轨迹知识空间进行自动驾驶去混杂终身学习的框架。",
+      "llm_tldr": "提出了一种利用动态轨迹知识空间进行自动驾驶去混杂终身学习的框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.13663v1",
+      "title": "PDE-SSM: A Spectral State Space Approach to Spatial Mixing in Diffusion Transformers",
+      "abstract": "The success of vision transformers-especially for generative modeling-is limited by the quadratic cost and weak spatial inductive bias of self-attention. We propose PDE-SSM, a spatial state-space block that replaces attention with a learnable convection-diffusion-reaction partial differential equation. This operator encodes a strong spatial prior by modeling information flow via physically grounded dynamics rather than all-to-all token interactions. Solving the PDE in the Fourier domain yields global coupling with near-linear complexity of $O(N \\log N)$, delivering a principled and scalable alternative to attention. We integrate PDE-SSM into a flow-matching generative model to obtain the PDE-based Diffusion Transformer PDE-SSM-DiT. Empirically, PDE-SSM-DiT matches or exceeds the performance of state-of-the-art Diffusion Transformers while substantially reducing compute. Our results show that, analogous to 1D settings where SSMs supplant attention, multi-dimensional PDE operators provide an efficient, inductive-bias-rich foundation for next-generation vision models.",
+      "authors": [
+        "Eshed Gal",
+        "Moshe Eliasof",
+        "Siddharth Rout",
+        "Eldad Haber"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-14T00:16:10+00:00",
+      "link": "https://arxiv.org/pdf/2603.13663v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion transformer using PDE for generative modeling",
+      "llm_evidence_cn": "使用PDE进行生成建模的扩散Transformer",
+      "llm_evidence": "使用PDE进行生成建模的扩散Transformer",
+      "canonical_evidence": "使用PDE进行生成建模的扩散Transformer",
+      "llm_tldr_en": "Introduces a PDE-based Diffusion Transformer (PDE-SSM-DiT) for efficient generative modeling.",
+      "llm_tldr_cn": "引入了基于PDE的扩散Transformer（PDE-SSM-DiT），用于高效的生成建模。",
+      "llm_tldr": "引入了基于PDE的扩散Transformer（PDE-SSM-DiT），用于高效的生成建模。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.15757v1",
+      "title": "You've Got a Golden Ticket: Improving Generative Robot Policies With A Single Noise Vector",
+      "abstract": "What happens when a pretrained generative robot policy is provided a constant initial noise as input, rather than repeatedly sampling it from a Gaussian? We demonstrate that the performance of a pretrained, frozen diffusion or flow matching policy can be improved with respect to a downstream reward by swapping the sampling of initial noise from the prior distribution (typically isotropic Gaussian) with a well-chosen, constant initial noise input -- a golden ticket. We propose a search method to find golden tickets using Monte-Carlo policy evaluation that keeps the pretrained policy frozen, does not train any new networks, and is applicable to all diffusion/flow matching policies (and therefore many VLAs). Our approach to policy improvement makes no assumptions beyond being able to inject initial noise into the policy and calculate (sparse) task rewards of episode rollouts, making it deployable with no additional infrastructure or models. Our method improves the performance of policies in 38 out of 43 tasks across simulated and real-world robot manipulation benchmarks, with relative improvements in success rate by up to 58% for some simulated tasks, and 60% within 50 search episodes for real-world tasks. We also show unique benefits of golden tickets for multi-task settings: the diversity of behaviors from different tickets naturally defines a Pareto frontier for balancing different objectives (e.g., speed, success rates); in VLAs, we find that a golden ticket optimized for one task can also boost performance in other related tasks. We release a codebase with pretrained policies and golden tickets for simulation benchmarks using VLAs, diffusion policies, and flow matching policies.",
+      "authors": [
+        "Omkar Patil",
+        "Ondrej Biza",
+        "Thomas Weng",
+        "Karl Schmeckpeper",
+        "Wil Thomason",
+        "Xiaohan Zhang",
+        "Robin Walters",
+        "Nakul Gopalan",
+        "Sebastian Castro",
+        "Eric Rosen"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-03-16T18:00:19+00:00",
+      "link": "https://arxiv.org/pdf/2603.15757v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "improving generative robot policies using diffusion and flow matching",
+      "llm_evidence_cn": "利用扩散和流匹配改进生成式机器人策略",
+      "llm_evidence": "利用扩散和流匹配改进生成式机器人策略",
+      "canonical_evidence": "利用扩散和流匹配改进生成式机器人策略",
+      "llm_tldr_en": "Optimizes diffusion-based robot policies by finding optimal initial noise vectors.",
+      "llm_tldr_cn": "通过寻找最佳初始噪声向量来优化基于扩散的机器人策略。",
+      "llm_tldr": "通过寻找最佳初始噪声向量来优化基于扩散的机器人策略。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.14392v1",
+      "title": "WestWorld: A Knowledge-Encoded Scalable Trajectory World Model for Diverse Robotic Systems",
+      "abstract": "Trajectory world models play a crucial role in robotic dynamics learning, planning, and control. While recent works have explored trajectory world models for diverse robotic systems, they struggle to scale to a large number of distinct system dynamics and overlook domain knowledge of physical structures. To address these limitations, we introduce WestWorld, a knoWledge-Encoded Scalable Trajectory World model for diverse robotic systems. To tackle the scalability challenge, we propose a novel system-aware Mixture-of-Experts (Sys-MoE) that dynamically combines and routes specialized experts for different robotic systems via a learnable system embedding. To further enhance zero-shot generalization, we incorporate domain knowledge of robot physical structures by introducing a structural embedding that aligns trajectory representations with morphological information. After pretraining on 89 complex environments spanning diverse morphologies across both simulation and real-world settings, WestWorld achieves significant improvements over competitive baselines in zero- and few-shot trajectory prediction. Additionally, it shows strong scalability across a wide range of robotic environments and significantly improves performance on downstream model-based control for different robots. Finally, we deploy our model on a real-world Unitree Go1, where it demonstrates stable locomotion performance (see our demo on the website: https://westworldrobot.github.io/). The code will be available upon publication.",
+      "authors": [
+        "Yuchen Wang",
+        "Jiangtao Kong",
+        "Sizhe Wei",
+        "Xiaochang Li",
+        "Haohong Lin",
+        "Hongjue Zhao",
+        "Tianyi Zhou",
+        "Lu Gan",
+        "Huajie Shao"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-03-15T14:12:43+00:00",
+      "link": "https://arxiv.org/pdf/2603.14392v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "trajectory world model for robotic dynamics learning and planning",
+      "llm_evidence_cn": "用于机器人动力学学习和规划的轨迹世界模型",
+      "llm_evidence": "用于机器人动力学学习和规划的轨迹世界模型",
+      "canonical_evidence": "用于机器人动力学学习和规划的轨迹世界模型",
+      "llm_tldr_en": "Introduces a scalable trajectory world model using Mixture-of-Experts for diverse robotic systems.",
+      "llm_tldr_cn": "引入了一种可扩展的轨迹世界模型，利用混合专家模型处理多种机器人系统。",
+      "llm_tldr": "引入了一种可扩展的轨迹世界模型，利用混合专家模型处理多种机器人系统。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.16196v1",
+      "title": "PanguMotion: Continuous Driving Motion Forecasting with Pangu Transformers",
+      "abstract": "Motion forecasting is a core task in autonomous driving systems, aiming to accurately predict the future trajectories of surrounding agents to ensure driving safety. Existing methods typically process discrete driving scenes independently, neglecting the temporal continuity and historical context correlations inherent in real-world driving environments. This paper proposes PanguMotion, a motion forecasting framework for continuous driving scenarios that integrates Transformer blocks from the Pangu-1B large language model as feature enhancement modules into autonomous driving motion prediction architectures. We conduct experiments on the Argoverse 2 datasets processed by the RealMotion data reorganization strategy, transforming each independent scene into a continuous sequence to mimic real-world driving scenarios.",
+      "authors": [
+        "Quanhao Ren",
+        "Yicheng Li",
+        "Nan Song"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-17T07:21:47+00:00",
+      "link": "https://arxiv.org/pdf/2603.16196v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "motion forecasting and trajectory prediction in autonomous driving",
+      "llm_evidence_cn": "自动驾驶中的运动预测和轨迹预测",
+      "llm_evidence": "自动驾驶中的运动预测和轨迹预测",
+      "canonical_evidence": "自动驾驶中的运动预测和轨迹预测",
+      "llm_tldr_en": "Integrates Pangu Transformers into motion forecasting for continuous autonomous driving scenarios.",
+      "llm_tldr_cn": "将盘古 Transformer 集成到连续自动驾驶场景的运动预测中。",
+      "llm_tldr": "将盘古 Transformer 集成到连续自动驾驶场景的运动预测中。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.14863v1",
+      "title": "A Score Filter Enhanced Data Assimilation Framework for Data-Driven Dynamical Systems",
+      "abstract": "We introduce a score-filter-enhanced data assimilation framework designed to reduce predictive uncertainty in machine learning (ML) models for data-driven dynamical system forecasting. Machine learning serves as an efficient numerical model for predicting dynamical systems. However, even with sufficient data, model uncertainty remains and accumulates over time, causing the long-term performance of ML models to deteriorate. To overcome this difficulty, we integrate data assimilation techniques into the training process to iteratively refine the model predictions by incorporating observational information. Specifically, we apply the Ensemble Score Filter (EnSF), a generative AI-based training-free diffusion model approach, for solving the data assimilation problem in high-dimensional nonlinear complex systems. This leads to a hybrid data assimilation-training framework that combines ML with EnSF to improve long-term predictive performance. We shall demonstrate that EnSF-enhanced ML can effectively reduce predictive uncertainty in ML-based Lorenz-96 system prediction and the Korteweg-De Vries (KdV) equation prediction.",
+      "authors": [
+        "Jingqiao Tang",
+        "Ryan Bausback",
+        "Feng Bao",
+        "Guannan Zhang",
+        "Phuoc-Toan Huynh"
+      ],
+      "primary_category": "math.DS",
+      "categories": [
+        "math.DS",
+        "cs.LG",
+        "math.PR"
+      ],
+      "published": "2026-03-16T06:05:27+00:00",
+      "link": "https://arxiv.org/pdf/2603.14863v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion model approach for reducing predictive uncertainty in dynamical systems",
+      "llm_evidence_cn": "用于减少动力系统预测不确定性的扩散模型方法",
+      "llm_evidence": "用于减少动力系统预测不确定性的扩散模型方法",
+      "canonical_evidence": "用于减少动力系统预测不确定性的扩散模型方法",
+      "llm_tldr_en": "Integrates Ensemble Score Filter with diffusion models to refine predictions and reduce uncertainty in dynamical systems.",
+      "llm_tldr_cn": "将集成评分过滤器与扩散模型结合，以优化动力系统的预测并减少不确定性。",
+      "llm_tldr": "将集成评分过滤器与扩散模型结合，以优化动力系统的预测并减少不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.17685v1",
+      "title": "Flow Matching Policy with Entropy Regularization",
+      "abstract": "Diffusion-based policies have gained significant popularity in Reinforcement Learning (RL) due to their ability to represent complex, non-Gaussian distributions. Stochastic Differential Equation (SDE)-based diffusion policies often rely on indirect entropy control due to the intractability of the exact entropy, while also suffering from computationally prohibitive policy gradients through the iterative denoising chain. To overcome these issues, we propose Flow Matching Policy with Entropy Regularization (FMER), an Ordinary Differential Equation (ODE)-based online RL framework. FMER parameterizes the policy via flow matching and samples actions along a straight probability path, motivated by optimal transport. FMER leverages the model's generative nature to construct an advantage-weighted target velocity field from a candidate set, steering policy updates toward high-value regions. By deriving a tractable entropy objective, FMER enables principled maximum-entropy optimization for enhanced exploration. Experiments on sparse multi-goal FrankaKitchen benchmarks demonstrate that FMER outperforms state-of-the-art methods, while remaining competitive on standard MuJoco benchmarks. Moreover, FMER reduces training time by 7x compared to heavy diffusion baselines (QVPO) and 10-15% relative to efficient variants.",
+      "authors": [
+        "Ting Gao",
+        "Stavros Orfanoudakis",
+        "Nan Lin",
+        "Elvin Isufi",
+        "Winnie Daamen",
+        "Serge Hoogendoorn"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-18T13:00:20+00:00",
+      "link": "https://arxiv.org/pdf/2603.17685v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "diffusion-based policies and flow matching for action sampling",
+      "llm_evidence_cn": "基于扩散的策略与流匹配动作采样",
+      "llm_evidence": "基于扩散的策略与流匹配动作采样",
+      "canonical_evidence": "基于扩散的策略与流匹配动作采样",
+      "llm_tldr_en": "Proposes an ODE-based flow matching policy with entropy regularization for complex distribution representation.",
+      "llm_tldr_cn": "提出了一种带有熵正则化的基于 ODE 的流匹配策略，用于复杂分布表示。",
+      "llm_tldr": "提出了一种带有熵正则化的基于 ODE 的流匹配策略，用于复杂分布表示。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.14868v2",
+      "title": "Free Final Time Adaptive Mesh Covariance Steering via Sequential Convex Programming",
+      "abstract": "In this paper we develop a sequential convex programming (SCP) framework for free-final-time covariance steering of nonlinear stochastic differential equations (SDEs) subject to both additive and multiplicative diffusion. We cast the free-final-time objective through a time-normalization and introduce per-interval time-dilation variables that induce an adaptive discretization mesh, enabling the simultaneous optimization of the control policy and the temporal grid. A central difficulty is that, under multiplicative noise, accurate covariance propagation within SCP requires retaining the first-order diffusion linearization and its coupling with time dilation. We therefore derive the exact local linear stochastic model (preserving the multiplicative structure) and introduce a tractable discretization that maintains the associated diffusion terms, after which each SCP subproblem is solved via conic/semidefinite covariance-steering relaxations with terminal moment constraints and state/control chance constraints. Numerical experiments on a nonlinear double-integrator with drag and velocity-dependent diffusion validate free-final-time minimization through adaptive time allocation and improved covariance accuracy relative to frozen-diffusion linearizations.",
+      "authors": [
+        "Joshua Pilipovsky"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "eess.SY"
+      ],
+      "published": "2026-03-16T06:12:42+00:00",
+      "link": "https://arxiv.org/pdf/2603.14868v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "covariance steering and stochastic differential equations with diffusion",
+      "llm_evidence_cn": "协方差控制与带有扩散项的随机微分方程",
+      "llm_evidence": "协方差控制与带有扩散项的随机微分方程",
+      "canonical_evidence": "协方差控制与带有扩散项的随机微分方程",
+      "llm_tldr_en": "Develops a framework for covariance steering in stochastic systems with additive and multiplicative diffusion.",
+      "llm_tldr_cn": "开发了一个针对具有加性和乘性扩散的随机系统进行协方差控制的框架。",
+      "llm_tldr": "开发了一个针对具有加性和乘性扩散的随机系统进行协方差控制的框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.18342v1",
+      "title": "Shifting Uncertainty to Critical Moments: Towards Reliable Uncertainty Quantification for VLA Model",
+      "abstract": "Vision-Language-Action (VLA) models enable general-purpose robotic policies by mapping visual observations and language instructions to low-level actions, but they often lack reliable introspection. A common practice is to compute a token-level uncertainty signal and take its mean over a rollout. However, mean aggregation can dilute short-lived but safety-critical uncertainty spikes in continuous control. In particular, successful rollouts may contain localized high-entropy segments due to benign noise or non-critical micro-adjustments, while failure rollouts can appear low-entropy for most timesteps and only exhibit brief spikes near the onset of failure. We propose a unified uncertainty quantification approach for predicting rollout success versus failure that (1) uses max-based sliding window pooling to preserve transient risk signals, (2) applies motion-aware stability weighting to emphasize high-frequency action oscillations associated with unstable behaviors, and (3) performs DoF-adaptive calibration via Bayesian Optimization to prioritize kinematically critical axes. Experiments on the LIBERO benchmark show that our method substantially improves failure prediction accuracy and yields more reliable signals for failure detection, which can support downstream human-in-the-loop interventions.",
+      "authors": [
+        "Yanchuan Tang",
+        "Taowen Wang",
+        "Yuefei Chen",
+        "Boxuan Zhang",
+        "Qiang Guan",
+        "Ruixiang Tang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-03-18T22:52:03+00:00",
+      "link": "https://arxiv.org/pdf/2603.18342v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uncertainty quantification for robotic policies in continuous control",
+      "llm_evidence_cn": "连续控制中机器人策略的不确定性量化",
+      "llm_evidence": "连续控制中机器人策略的不确定性量化",
+      "canonical_evidence": "连续控制中机器人策略的不确定性量化",
+      "llm_tldr_en": "Proposes a method to shift uncertainty signals to critical moments for more reliable robot policy introspection.",
+      "llm_tldr_cn": "提出一种将不确定性信号转移到关键时刻的方法，以实现更可靠的机器人策略内省。",
+      "llm_tldr": "提出一种将不确定性信号转移到关键时刻的方法，以实现更可靠的机器人策略内省。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "estimating epistemic uncertainty in neural motion planners",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.14938v1",
+      "title": "FAR-Drive: Frame-AutoRegressive Video Generation in Closed-Loop Autonomous Driving",
+      "abstract": "Despite rapid progress in autonomous driving, reliable training and evaluation of driving systems remain fundamentally constrained by the lack of scalable and interactive simulation environments. Recent generative video models achieve remarkable visual fidelity, yet most operate in open-loop settings and fail to support fine-grained frame-level interaction between agent actions and environment evolution. Building a learning-based closed-loop simulator for autonomous driving poses three major challenges: maintaining long-horizon temporal and cross-view consistency, mitigating autoregressive degradation under iterative self-conditioning, and satisfying low-latency inference constraints. In this work, we propose FAR-Drive, a frame-level autoregressive video generation framework for autonomous driving. We introduce a multi-view diffusion transformer with fine-grained structured control, enabling geometrically consistent multi-camera generation. To address long-horizon consistency and iterative degradation, we design a two-stage training strategy consisting of adaptive reference horizon conditioning and blend-forcing autoregressive training, which progressively improves consistency and robustness under self-conditioning. To meet low-latency interaction requirements, we further integrate system-level efficiency optimizations for inference acceleration. Experiments on the nuScenes dataset demonstrate that our method achieves state-of-the-art performance among existing closed-loop autonomous driving simulation approaches, while maintaining sub-second latency on a single GPU.",
+      "authors": [
+        "Yaoru Li",
+        "Federico Landi",
+        "Marco Godi",
+        "Xin Jin",
+        "Ruiju Fu",
+        "Yufei Ma",
+        "Muyang Sun",
+        "Heyu Si",
+        "Qi Guo"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-16T07:40:13+00:00",
+      "link": "https://arxiv.org/pdf/2603.14938v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "generative video models for closed-loop autonomous driving simulation",
+      "llm_evidence_cn": "用于闭环自动驾驶模拟的生成式视频模型",
+      "llm_evidence": "用于闭环自动驾驶模拟的生成式视频模型",
+      "canonical_evidence": "用于闭环自动驾驶模拟的生成式视频模型",
+      "llm_tldr_en": "Proposes FAR-Drive for frame-level autoregressive video generation in autonomous driving simulators.",
+      "llm_tldr_cn": "提出了FAR-Drive，用于自动驾驶模拟器中的帧级自回归视频生成。",
+      "llm_tldr": "提出了FAR-Drive，用于自动驾驶模拟器中的帧级自回归视频生成。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.18561v1",
+      "title": "CausalVAD: De-confounding End-to-End Autonomous Driving via Causal Intervention",
+      "abstract": "Planning-oriented end-to-end driving models show great promise, yet they fundamentally learn statistical correlations instead of true causal relationships. This vulnerability leads to causal confusion, where models exploit dataset biases as shortcuts, critically harming their reliability and safety in complex scenarios. To address this, we introduce CausalVAD, a de-confounding training framework that leverages causal intervention. At its core, we design the sparse causal intervention scheme (SCIS), a lightweight, plug-and-play module to instantiate the backdoor adjustment theory in neural networks. SCIS constructs a dictionary of prototypes representing latent driving contexts. It then uses this dictionary to intervene on the model's sparse vectorized queries. This step actively eliminates spurious associations induced by confounders, thereby eliminating spurious factors from the representations for downstream tasks. Extensive experiments on benchmarks like nuScenes show CausalVAD achieves state-of-the-art planning accuracy and safety. Furthermore, our method demonstrates superior robustness against both data bias and noisy scenarios configured to induce causal confusion.",
+      "authors": [
+        "Jiacheng Tang",
+        "Zhiyuan Zhou",
+        "Zhuolin He",
+        "Jia Zhang",
+        "Kai Zhang",
+        "Jian Pu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-03-19T07:21:01+00:00",
+      "link": "https://arxiv.org/pdf/2603.18561v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "end-to-end autonomous driving planning and causal de-confounding",
+      "llm_evidence_cn": "端到端自动驾驶规划与因果去混杂",
+      "llm_evidence": "端到端自动驾驶规划与因果去混杂",
+      "canonical_evidence": "端到端自动驾驶规划与因果去混杂",
+      "llm_tldr_en": "Introduces CausalVAD to address causal confusion in end-to-end autonomous driving via causal intervention.",
+      "llm_tldr_cn": "引入 CausalVAD，通过因果干预解决端到端自动驾驶中的因果混淆问题。",
+      "llm_tldr": "引入 CausalVAD，通过因果干预解决端到端自动驾驶中的因果混淆问题。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

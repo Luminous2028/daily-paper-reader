@@ -6,58 +6,61 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-03-21
-- 运行时间：2026-03-21 20:01:51 UTC
+- 最新运行日期：2026-03-22
+- 运行时间：2026-03-22 19:50:00 UTC
 - 运行状态：成功
-- 本次总论文数：12
-- 精读区：1
+- 本次总论文数：13
+- 精读区：2
 - 速读区：11
 
 ### 今日简报（AI）
-今日深度解析了如何通过风格化编码提升扩散策略的可预测性，并同步追踪了视频生成与自动驾驶领域的最新进展。
-最值得关注的是 Diffusion Policy 在人机协作中的“可读性”优化，以及 WorldVLM 将世界模型预测与视觉语言推理结合的创新范式。
-建议优先研读风格化动作生成技术，探索如何让 AI 决策在复杂交互中既高效又符合人类直觉。
-- 详情：[/202603/21/README](/202603/21/README)
+聚焦生成式控制与复杂环境决策，今日深度解析 Koopman 结构偏差与混合 MDP-MPC 等 13 篇前沿成果。
+重点推荐通过 Koopman 理论优化生成式控制策略，以及利用混合 MDP 与机会约束 MPC 提升不确定环境下的分层决策鲁棒性。
+建议关注生成式模型与经典控制理论的深度融合，探索其在自动驾驶及机器人复杂任务中的落地潜力。
+- 详情：[/202603/22/README](/202603/22/README)
 
 ### 精读区论文标签
-1. [Encoding Predictability and Legibility for Style-Conditioned Diffusion Policy](/202603/21/2603.16368v1-encoding-predictability-and-legibility-for-style-conditioned-diffusion-policy)  
+1. [KoopmanFlow: Spectrally Decoupled Generative Control Policy via Koopman Structural Bias](/202603/22/2603.13781v1-koopmanflow-spectrally-decoupled-generative-control-policy-via-koopman-structural-bias)  
    标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：协作环境下的扩散模型轨迹生成
+   evidence：通过 Koopman 结构偏差解耦生成式控制策略中的动力学
+2. [Hierarchical Decision-Making under Uncertainty: A Hybrid MDP and Chance-Constrained MPC Approach](/202603/22/2603.17634v1-hierarchical-decision-making-under-uncertainty-a-hybrid-mdp-and-chance-constrained-mpc-approach)  
+   标签：评分：8.0/10、query:diffusion-conf-uncertainty
+   evidence：自动驾驶中的行为和动力学不确定性建模
 
 ### 速读区论文标签
-1. [Early Failure Detection and Intervention in Video Diffusion Models](/202603/21/2603.14320v1-early-failure-detection-and-intervention-in-video-diffusion-models)  
+1. [Deconfounded Lifelong Learning for Autonomous Driving via Dynamic Knowledge Spaces](/202603/22/2603.14354v1-deconfounded-lifelong-learning-for-autonomous-driving-via-dynamic-knowledge-spaces)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：扩散模型中的早期故障检测与诊断干预
-2. [DRCC-LPVMPC: Robust Data-Driven Control for Autonomous Driving and Obstacle Avoidance](/202603/21/2603.14408v1-drcc-lpvmpc-robust-data-driven-control-for-autonomous-driving-and-obstacle-avoidance)  
+   evidence：自动驾驶轨迹知识空间与去混杂
+2. [You've Got a Golden Ticket: Improving Generative Robot Policies With A Single Noise Vector](/202603/22/2603.15757v1-youve-got-a-golden-ticket-improving-generative-robot-policies-with-a-single-noise-vector)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：具有加性不确定性的自动驾驶鲁棒控制
-3. [WorldVLM: Combining World Model Forecasting and Vision-Language Reasoning](/202603/21/2603.14497v1-worldvlm-combining-world-model-forecasting-and-vision-language-reasoning)  
+   evidence：利用扩散和流匹配改进生成式机器人策略
+3. [PanguMotion: Continuous Driving Motion Forecasting with Pangu Transformers](/202603/22/2603.16196v1-pangumotion-continuous-driving-motion-forecasting-with-pangu-transformers)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：用于自动驾驶运动预测的世界模型
-4. [What Matters for Scalable and Robust Learning in End-to-End Driving Planners?](/202603/21/2603.15185v1-what-matters-for-scalable-and-robust-learning-in-end-to-end-driving-planners)  
+   evidence：自动驾驶中的运动预测和轨迹预测
+4. [Flow Matching Policy with Entropy Regularization](/202603/22/2603.17685v1-flow-matching-policy-with-entropy-regularization)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：系统性检查端到端驾驶规划器及其鲁棒行为
-5. [ADV-0: Closed-Loop Min-Max Adversarial Training for Long-Tail Robustness in Autonomous Driving](/202603/21/2603.15221v1-adv-0-closed-loop-min-max-adversarial-training-for-long-tail-robustness-in-autonomous-driving)  
+   evidence：基于扩散的策略与流匹配动作采样
+5. [Shifting Uncertainty to Critical Moments: Towards Reliable Uncertainty Quantification for VLA Model](/202603/22/2603.18342v1-shifting-uncertainty-to-critical-moments-towards-reliable-uncertainty-quantification-for-vla-model)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶策略优化与场景生成
-6. [NavThinker: Action-Conditioned World Models for Coupled Prediction and Planning in Social Navigation](/202603/21/2603.15359v2-navthinker-action-conditioned-world-models-for-coupled-prediction-and-planning-in-social-navigation)  
+   evidence：连续控制中机器人策略的不确定性量化
+6. [CausalVAD: De-confounding End-to-End Autonomous Driving via Causal Intervention](/202603/22/2603.18561v1-causalvad-de-confounding-end-to-end-autonomous-driving-via-causal-intervention)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：动态环境中的预测与规划耦合
-7. [Beyond Dense Futures: World Models as Structured Planners for Robotic Manipulation](/202603/21/2603.12553v1-beyond-dense-futures-world-models-as-structured-planners-for-robotic-manipulation)  
+   evidence：端到端自动驾驶规划与因果去混杂
+7. [PDE-SSM: A Spectral State Space Approach to Spatial Mixing in Diffusion Transformers](/202603/22/2603.13663v1-pde-ssm-a-spectral-state-space-approach-to-spatial-mixing-in-diffusion-transformers)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：世界模型作为机器人控制的结构化规划器
-8. [Conflict Mitigation in Shared Environments using Flow-Aware Multi-Agent Path Finding](/202603/21/2603.12736v1-conflict-mitigation-in-shared-environments-using-flow-aware-multi-agent-path-finding)  
+   evidence：使用PDE进行生成建模的扩散Transformer
+8. [WestWorld: A Knowledge-Encoded Scalable Trajectory World Model for Diverse Robotic Systems](/202603/22/2603.14392v1-westworld-a-knowledge-encoded-scalable-trajectory-world-model-for-diverse-robotic-systems)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：将学习到的运动模式整合到多智能体路径规划中
-9. [Draft-and-Target Sampling for Video Generation Policy](/202603/21/2603.13438v1-draft-and-target-sampling-for-video-generation-policy)  
+   evidence：用于机器人动力学学习和规划的轨迹世界模型
+9. [A Score Filter Enhanced Data Assimilation Framework for Data-Driven Dynamical Systems](/202603/22/2603.14863v1-a-score-filter-enhanced-data-assimilation-framework-for-data-driven-dynamical-systems)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于预测未来状态的视频生成策略的扩散推理范式
-10. [REFINE-DP: Diffusion Policy Fine-tuning for Humanoid Loco-manipulation via Reinforcement Learning](/202603/21/2603.13707v1-refine-dp-diffusion-policy-fine-tuning-for-humanoid-loco-manipulation-via-reinforcement-learning)  
+   evidence：用于减少动力系统预测不确定性的扩散模型方法
+10. [Free Final Time Adaptive Mesh Covariance Steering via Sequential Convex Programming](/202603/22/2603.14868v2-free-final-time-adaptive-mesh-covariance-steering-via-sequential-convex-programming)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于人形机器人运动规划的扩散策略及强化学习微调
-11. [REFINE-DP: Diffusion Policy Fine-tuning for Humanoid Loco-manipulation via Reinforcement Learning](/202603/21/2603.13707v2-refine-dp-diffusion-policy-fine-tuning-for-humanoid-loco-manipulation-via-reinforcement-learning)  
+   evidence：协方差控制与带有扩散项的随机微分方程
+11. [FAR-Drive: Frame-AutoRegressive Video Generation in Closed-Loop Autonomous Driving](/202603/22/2603.14938v1-far-drive-frame-autoregressive-video-generation-in-closed-loop-autonomous-driving)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于运动规划的扩散策略与强化学习微调
+   evidence：用于闭环自动驾驶模拟的生成式视频模型
 
 
 <div class="dpr-home-promo-card">
