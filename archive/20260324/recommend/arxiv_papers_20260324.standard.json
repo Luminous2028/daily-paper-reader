@@ -1,0 +1,484 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-03-24T19:52:19.853363+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 18,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2603.18396v2",
+      "title": "RE-SAC: Disentangling aleatoric and epistemic risks in bus fleet control: A stable and robust ensemble DRL approach",
+      "abstract": "Bus holding control is challenging due to stochastic traffic and passenger demand. While deep reinforcement learning (DRL) shows promise, standard actor-critic algorithms suffer from Q-value instability in volatile environments. A key source of this instability is the conflation of two distinct uncertainties: aleatoric uncertainty (irreducible noise) and epistemic uncertainty (data insufficiency). Treating these as a single risk leads to value underestimation in noisy states, causing catastrophic policy collapse. We propose a robust ensemble soft actor-critic (RE-SAC) framework to explicitly disentangle these uncertainties. RE-SAC applies Integral Probability Metric (IPM)-based weight regularization to the critic network to hedge against aleatoric risk, providing a smooth analytical lower bound for the robust Bellman operator without expensive inner-loop perturbations. To address epistemic risk, a diversified Q-ensemble penalizes overconfident value estimates in sparsely covered regions. This dual mechanism prevents the ensemble variance from misidentifying noise as a data gap, a failure mode identified in our ablation study. Experiments in a realistic bidirectional bus corridor simulation demonstrate that RE-SAC achieves the highest cumulative reward (approx. -0.4e6) compared to vanilla SAC (-0.55e6). Mahalanobis rareness analysis confirms that RE-SAC reduces Oracle Q-value estimation error by up to 62% in rare out-of-distribution states (MAE of 1647 vs. 4343), demonstrating superior robustness under high traffic variability.",
+      "authors": [
+        "Yifan Zhang",
+        "Liang Zheng"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-03-19T01:37:45+00:00",
+      "link": "https://arxiv.org/pdf/2603.18396v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Disentangling aleatoric and epistemic risks in bus fleet control",
+      "llm_evidence_cn": "在公交车队控制中解耦偶然不确定性和认知不确定性",
+      "llm_evidence": "在公交车队控制中解耦偶然不确定性和认知不确定性",
+      "canonical_evidence": "在公交车队控制中解耦偶然不确定性和认知不确定性",
+      "llm_tldr_en": "Proposes RE-SAC to explicitly disentangle aleatoric and epistemic uncertainties in stochastic environments.",
+      "llm_tldr_cn": "提出了 RE-SAC 框架，用于在随机环境中显式解耦偶然和认知不确定性。",
+      "llm_tldr": "提出了 RE-SAC 框架，用于在随机环境中显式解耦偶然和认知不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "aleatoric and epistemic uncertainty decomposition in diffusion trajectory models",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2603.19979v1",
+      "title": "X-World: Controllable Ego-Centric Multi-Camera World Models for Scalable End-to-End Driving",
+      "abstract": "Scalable and reliable evaluation is increasingly critical in the end-to-end era of autonomous driving, where vision--language--action (VLA) policies directly map raw sensor streams to driving actions. Yet, current evaluation pipelines still rely heavily on real-world road testing, which is costly, biased toward limited scenario coverage, and difficult to reproduce. These challenges motivate a real-world simulator that can generate realistic future observations under proposed actions, while remaining controllable and stable over long horizons. We present X-World, an action-conditioned multi-camera generative world model that simulates future observations directly in video space. Given synchronized multi-view camera history and a future action sequence, X-World generates future multi-camera video streams that follow the commanded actions. To ensure reproducible and editable scene rollouts, X-World further supports optional controls over dynamic traffic agents and static road elements, and retains a text-prompt interface for appearance-level control (e.g., weather and time of day). Beyond world simulation, X-World also enables video style transfer by conditioning on appearance prompts while preserving the underlying action and scene dynamics. At the core of X-World is a multi-view latent video generator designed to explicitly encourage cross-view geometric consistency and temporal coherence under diverse control signals. Experiments show that X-World achieves high-quality multi-view video generation with (i) strong view consistency across cameras, (ii) stable temporal dynamics over long rollouts, and (iii) high controllability with strict action following and faithful adherence to optional scene controls. These properties make X-World a practical foundation for scalable and reproducible evaluation.",
+      "authors": [
+        "Chaoda Zheng",
+        "Sean Li",
+        "Jinhao Deng",
+        "Zhennan Wang",
+        "Shijia Chen",
+        "Liqiang Xiao",
+        "Ziheng Chi",
+        "Hongbin Lin",
+        "Kangjie Chen",
+        "Boyang Wang",
+        "Yu Zhang",
+        "Xianming Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-03-20T14:23:32+00:00",
+      "link": "https://arxiv.org/pdf/2603.19979v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "world models for scalable end-to-end driving",
+      "llm_evidence_cn": "用于可扩展端到端驾驶的世界模型",
+      "llm_evidence": "用于可扩展端到端驾驶的世界模型",
+      "canonical_evidence": "用于可扩展端到端驾驶的世界模型",
+      "llm_tldr_en": "Presents X-World, a generative world model for simulating future observations in autonomous driving.",
+      "llm_tldr_cn": "展示了X-World，一种用于模拟自动驾驶未来观测的生成式世界模型。",
+      "llm_tldr": "展示了X-World，一种用于模拟自动驾驶未来观测的生成式世界模型。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.16059v1",
+      "title": "Ultrafast Sampling-based Kinodynamic Planning via Differential Flatness",
+      "abstract": "Motion planning under dynamics constraints, i.e., kinodynamic planning, enables safe robot operation by generating dynamically feasible trajectories that the robot can accurately track. For high-\\dof robots such as manipulators, sampling-based motion planners are commonly used, especially for complex tasks in cluttered environments. However, enforcing constraints on robot dynamics in such planners requires solving either challenging two-point boundary value problems (BVPs) or propagating robot dynamics over time, both of which are computational bottlenecks that drastically increase planning times. Meanwhile, recent efforts have shown that sampling-based motion planners can generate plans in microseconds using parallelization, but are limited to geometric paths. This paper develops AkinoPDF, a fast parallelized sampling-based kinodynamic motion planning technique for a broad class of differentially flat robot systems, including manipulators, ground and aerial vehicles, and more. Differential flatness allows us to transform the motion planning problem from the original state space to a flat output space, where an analytical time-parameterized solution of the BVP and dynamics integration can be obtained. A trajectory in the flat output space is then converted back to a closed-form dynamically feasible trajectory in the original state space, enabling fast validation via ``single instruction, multiple data\" parallelism. Our method is fast, exact, and compatible with any sampling-based motion planner. We extensively verify the effectiveness of our approach in both simulated benchmarks and real experiments with cluttered and dynamic environments, requiring mere microseconds to milliseconds of planning time.",
+      "authors": [
+        "Thai Duong",
+        "Clayton W. Ramsey",
+        "Zachary Kingston",
+        "Wil Thomason",
+        "Lydia E. Kavraki"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-17T01:53:10+00:00",
+      "link": "https://arxiv.org/pdf/2603.16059v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "kinodynamic planning and trajectory generation for robots",
+      "llm_evidence_cn": "机器人的动力学约束规划与轨迹生成",
+      "llm_evidence": "机器人的动力学约束规划与轨迹生成",
+      "canonical_evidence": "机器人的动力学约束规划与轨迹生成",
+      "llm_tldr_en": "Accelerates kinodynamic planning for high-DOF robots using differential flatness.",
+      "llm_tldr_cn": "利用微分平坦性加速高自由度机器人的动力学约束路径规划。",
+      "llm_tldr": "利用微分平坦性加速高自由度机器人的动力学约束路径规划。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.20839v1",
+      "title": "Dodgersort: Uncertainty-Aware VLM-Guided Human-in-the-Loop Pairwise Ranking",
+      "abstract": "Pairwise comparison labeling is emerging as it yields higher inter-rater reliability than conventional classification labeling, but exhaustive comparisons require quadratic cost. We propose Dodgersort, which leverages CLIP-based hierarchical pre-ordering, a neural ranking head and probabilistic ensemble (Elo, BTL, GP), epistemic--aleatoric uncertainty decomposition, and information-theoretic pair selection. It reduces human comparisons while improving the reliability of the rankings. In visual ranking tasks in medical imaging, historical dating, and aesthetics, Dodgersort achieves a 11--16\\% annotation reduction while improving inter-rater reliability. Cross-domain ablations across four datasets show that neural adaptation and ensemble uncertainty are key to this gain. In FG-NET with ground-truth ages, the framework extracts 5--20$\\times$ more ranking information per comparison than baselines, yielding Pareto-optimal accuracy--efficiency trade-offs.",
+      "authors": [
+        "Yujin Park",
+        "Haejun Chung",
+        "Ikbeom Jang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.HC",
+        "cs.LG"
+      ],
+      "published": "2026-03-21T14:55:49+00:00",
+      "link": "https://arxiv.org/pdf/2603.20839v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Epistemic-aleatoric uncertainty decomposition in probabilistic ensembles",
+      "llm_evidence_cn": "概率集成中的认知-偶然不确定性分解",
+      "llm_evidence": "概率集成中的认知-偶然不确定性分解",
+      "canonical_evidence": "概率集成中的认知-偶然不确定性分解",
+      "llm_tldr_en": "Decomposes epistemic and aleatoric uncertainty for active learning and ranking tasks.",
+      "llm_tldr_cn": "在主动学习和排序任务中分解认知和偶然不确定性。",
+      "llm_tldr": "在主动学习和排序任务中分解认知和偶然不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "aleatoric and epistemic uncertainty decomposition in diffusion trajectory models",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.16188v1",
+      "title": "ECHO: Edge-Cloud Humanoid Orchestration for Language-to-Motion Control",
+      "abstract": "We present ECHO, an edge--cloud framework for language-driven whole-body control of humanoid robots. A cloud-hosted diffusion-based text-to-motion generator synthesizes motion references from natural language instructions, while an edge-deployed reinforcement-learning tracker executes them in closed loop on the robot. The two modules are bridged by a compact, robot-native 38-dimensional motion representation that encodes joint angles, root planar velocity, root height, and a continuous 6D root orientation per frame, eliminating inference-time retargeting from human body models and remaining directly compatible with low-level PD control. The generator adopts a 1D convolutional UNet with cross-attention conditioned on CLIP-encoded text features; at inference, DDIM sampling with 10 denoising steps and classifier-free guidance produces motion sequences in approximately one second on a cloud GPU. The tracker follows a Teacher--Student paradigm: a privileged teacher policy is distilled into a lightweight student equipped with an evidential adaptation module for sim-to-real transfer, further strengthened by morphological symmetry constraints and domain randomization. An autonomous fall recovery mechanism detects falls via onboard IMU readings and retrieves recovery trajectories from a pre-built motion library. We evaluate ECHO on a retargeted HumanML3D benchmark, where it achieves strong generation quality (FID 0.029, R-Precision Top-1 0.686) under a unified robot-domain evaluator, while maintaining high motion safety and trajectory consistency. Real-world experiments on a Unitree G1 humanoid demonstrate stable execution of diverse text commands with zero hardware fine-tuning.",
+      "authors": [
+        "Haozhe Jia",
+        "Jianfei Song",
+        "Yuan Zhang",
+        "Honglei Jin",
+        "Youcheng Fan",
+        "Wenshuo Chen",
+        "Wei Zhang",
+        "Yutao Yue"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-17T07:16:18+00:00",
+      "link": "https://arxiv.org/pdf/2603.16188v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Diffusion-based text-to-motion generator for humanoid robot control",
+      "llm_evidence_cn": "用于类人机器人控制的基于扩散的文本到运动生成器",
+      "llm_evidence": "用于类人机器人控制的基于扩散的文本到运动生成器",
+      "canonical_evidence": "用于类人机器人控制的基于扩散的文本到运动生成器",
+      "llm_tldr_en": "An edge-cloud framework using diffusion models to synthesize motion references for humanoid robots.",
+      "llm_tldr_cn": "一种利用扩散模型为类人机器人合成运动参考的边缘云框架。",
+      "llm_tldr": "一种利用扩散模型为类人机器人合成运动参考的边缘云框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.21717v1",
+      "title": "Uncertainty Quantification for Distribution-to-Distribution Flow Matching in Scientific Imaging",
+      "abstract": "Distribution-to-distribution generative models support scientific imaging tasks ranging from modeling cellular perturbation responses to translating medical images across conditions. Trustworthy generation requires both reliability (generalization across labs, devices, and experimental conditions) and accountability (detecting out-of-distribution cases where predictions may be unreliable). Uncertainty quantification (UQ) based approaches serve as promising candidates for these tasks, yet UQ for distribution-to-distribution generative models remains underexplored. We present a unified UQ framework, Bayesian Stochastic Flow Matching (BSFM), that disentangles aleatoric and epistemic uncertainty. The Stochastic Flow Matching (SFM) component augments deterministic flows with a diffusion term to improve model generalization to unseen scenarios. For UQ, we develop a scalable Bayesian approach -- MCD-Antithetic -- that combines Monte Carlo Dropout with sample-efficient antithetic sampling to produce effective anomaly scores for out-of-distribution detection. Experiments on cellular imaging (BBBC021, JUMP) and brain fMRI (Theory of Mind) across diverse scenarios show that SFM improves reliability while MCD-Antithetic enhances accountability.",
+      "authors": [
+        "Dongxia Wu",
+        "Yuhui Zhang",
+        "Serena Yeung-Levy",
+        "Emma Lundberg",
+        "Emily B. Fox"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-23T09:01:02+00:00",
+      "link": "https://arxiv.org/pdf/2603.21717v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "disentangles aleatoric and epistemic uncertainty in generative flow matching models",
+      "llm_evidence_cn": "在生成式流匹配模型中解耦偶然不确定性和认知不确定性",
+      "llm_evidence": "在生成式流匹配模型中解耦偶然不确定性和认知不确定性",
+      "canonical_evidence": "在生成式流匹配模型中解耦偶然不确定性和认知不确定性",
+      "llm_tldr_en": "Proposes a Bayesian Stochastic Flow Matching framework to disentangle aleatoric and epistemic uncertainty.",
+      "llm_tldr_cn": "提出贝叶斯随机流匹配框架，实现了生成模型中偶然与认知不确定性的解耦。",
+      "llm_tldr": "提出贝叶斯随机流匹配框架，实现了生成模型中偶然与认知不确定性的解耦。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "aleatoric and epistemic uncertainty decomposition in diffusion trajectory models",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.17671v1",
+      "title": "Few-Step Diffusion Sampling Through Instance-Aware Discretizations",
+      "abstract": "Diffusion and flow matching models generate high-fidelity data by simulating paths defined by Ordinary or Stochastic Differential Equations (ODEs/SDEs), starting from a tractable prior distribution. The probability flow ODE formulation enables the use of advanced numerical solvers to accelerate sampling. Orthogonal yet vital to solver design is the discretization strategy. While early approaches employed handcrafted heuristics and recent methods adopt optimization-based techniques, most existing strategies enforce a globally shared timestep schedule across all samples. This uniform treatment fails to account for instance-specific complexity in the generative process, potentially limiting performance. Motivated by controlled experiments on synthetic data, which reveals the suboptimality of global schedules under instance-specific dynamics, we propose an instance-aware discretization framework. Our method learns to adapt timestep allocations based on input-dependent priors, extending gradient-based discretization search to the conditional generative setting. Empirical results across diverse settings, including synthetic data, pixel-space diffusion, latent-space images and video flow matching models, demonstrate that our method consistently improves generation quality with marginal tuning cost compared to training and negligible inference overhead.",
+      "authors": [
+        "Liangyu Yuan",
+        "Ruoyu Wang",
+        "Tong Zhao",
+        "Dingwen Fu",
+        "Mingkun Lei",
+        "Beier Zhu",
+        "Chi Zhang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-18T12:49:38+00:00",
+      "link": "https://arxiv.org/pdf/2603.17671v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion sampling and generative process complexity",
+      "llm_evidence_cn": "扩散模型采样与生成过程复杂性",
+      "llm_evidence": "扩散模型采样与生成过程复杂性",
+      "canonical_evidence": "扩散模型采样与生成过程复杂性",
+      "llm_tldr_en": "Proposes instance-aware discretization to accelerate diffusion sampling by accounting for sample complexity.",
+      "llm_tldr_cn": "提出实例感知离散化策略，通过考虑样本复杂性来加速扩散模型采样。",
+      "llm_tldr": "提出实例感知离散化策略，通过考虑样本复杂性来加速扩散模型采样。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.17850v1",
+      "title": "ProbeFlow: Training-Free Adaptive Flow Matching for Vision-Language-Action Models",
+      "abstract": "Recent Vision-Language-Action (VLA) models equipped with Flow Matching (FM) action heads achieve state-of-the-art performance in complex robot manipulation. However, the multi-step iterative ODE solving required by FM introduces inference latency that precludes responsive physical control. While current acceleration efforts optimize the Vision-Language Model (VLM) backbone, the action head bottleneck remains overlooked. To address this, we propose ProbeFlow, a training-free adaptive inference framework tai- lored for continuous robotic control. By evaluating geometric trajectory complexity via the cosine similarity between initial and lookahead velocity vectors, ProbeFlow dynamically sched- ules integration steps to prune redundant network evaluations. On the MetaWorld benchmark, it accelerates action decoding by 14.8x (reducing average steps from N = 50 to 2.6) and cuts end-to-end system latency by 2.8x without compromising the manipulation success rate. On the long-horizon LIBERO benchmark, the probe automatically allocates a denser schedule to navigate semantic bottlenecks, effectively resolving the flow solver delay. Real-world physical deployments confirm that ProbeFlow successfully mitigates action decoding latency while ensuring execution stability, offering a highly practical solution for low-latency continuous generative policies.",
+      "authors": [
+        "Zhou Fang",
+        "Jiaqi Wang",
+        "Yi Zhou",
+        "Qiongfeng Shi"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-18T15:38:29+00:00",
+      "link": "https://arxiv.org/pdf/2603.17850v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "evaluating geometric trajectory complexity in flow matching",
+      "llm_evidence_cn": "在流匹配中评估几何轨迹复杂度",
+      "llm_evidence": "在流匹配中评估几何轨迹复杂度",
+      "canonical_evidence": "在流匹配中评估几何轨迹复杂度",
+      "llm_tldr_en": "Adaptive flow matching framework that evaluates trajectory complexity to optimize inference latency.",
+      "llm_tldr_cn": "一种自适应流匹配框架，通过评估轨迹复杂度来优化推理延迟。",
+      "llm_tldr": "一种自适应流匹配框架，通过评估轨迹复杂度来优化推理延迟。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.18266v1",
+      "title": "Enactor: From Traffic Simulators to Surrogate World Models",
+      "abstract": "Traffic microsimulators are widely used to evaluate road network performance under various ``what-if\" conditions. However, the behavior models controlling the actions of the actors are overly simplistic and fails to capture realistic actor-actor interactions. Deep learning-based methods have been applied to model vehicles and pedestrians as ``agents\" responding to their surrounding ``environment\" (including lanes, signals, and neighboring agents). Although effective in learning actor-actor interaction, these approaches fail to generate physically consistent trajectories over long time periods, and they do not explicitly address the complex dynamics that arise at traffic intersections which is a critical location in urban networks. Inspired by the World Model paradigm, we have developed an actor centric generative model using transformer-based architecture that is able to capture the actor-actor interaction, at the same time understanding the geometry to the traffic intersection to generate physically grounded trajectories that are based on learned behavior. Moreover, we test the model in a live ``simulation-in-the-loop\" setting, where we generate the initial conditions of the actors using SUMO and then let the model control the dynamics of the actors. We let the simulation run for 40000 timesteps (4000 seconds), testing the performance of the model on long timerange and evaluating the trajectories on traffic engineering related metrics. Experimental results demonstrate that the proposed framework effectively captures complex actor-actor interactions and generates long-horizon, physically consistent trajectories, while requiring significantly fewer training samples than traditional agent-centric generative approaches. Our model is able to outperform the baseline in traffic related as well as aggregate metrics where our model beats the baseline by more than 10x on the KL-Divergence.",
+      "authors": [
+        "Yash Ranjan",
+        "Rahul Sengupta",
+        "Anand Rangarajan",
+        "Sanjay Ranka"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-03-18T20:38:28+00:00",
+      "link": "https://arxiv.org/pdf/2603.18266v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "modeling actor-actor interactions and generating trajectories for autonomous agents",
+      "llm_evidence_cn": "建模参与者间的交互并为自动驾驶智能体生成轨迹",
+      "llm_evidence": "建模参与者间的交互并为自动驾驶智能体生成轨迹",
+      "canonical_evidence": "建模参与者间的交互并为自动驾驶智能体生成轨迹",
+      "llm_tldr_en": "Proposes a world model approach to improve realistic actor interactions and trajectory consistency in traffic sims.",
+      "llm_tldr_cn": "提出一种世界模型方法，旨在改进交通模拟中真实的参与者交互和轨迹一致性。",
+      "llm_tldr": "提出一种世界模型方法，旨在改进交通模拟中真实的参与者交互和轨迹一致性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.18336v1",
+      "title": "ManiDreams: An Open-Source Library for Robust Object Manipulation via Uncertainty-aware Task-specific Intuitive Physics",
+      "abstract": "Dynamics models, whether simulators or learned world models, have long been central to robotic manipulation, but most focus on minimizing prediction error rather than confronting a more fundamental challenge: real-world manipulation is inherently uncertain. We argue that robust manipulation under uncertainty is fundamentally an integration problem: uncertainties must be represented, propagated, and constrained within the planning loop, not merely suppressed during training. We present and open-source ManiDreams, a modular framework for uncertainty-aware manipulation planning over intuitive physics models. It realizes this integration through composable abstractions for distributional state representation, backend-agnostic dynamics prediction, and declarative constraint specification for action optimization. The framework explicitly addresses three sources of uncertainty: perceptual, parametric, and structural. It wraps any base policy with a sample-predict-constrain loop that evaluates candidate actions against distributional outcomes, adding robustness without retraining. Experiments on ManiSkill tasks show that ManiDreams maintains robust performance under various perturbations where the RL baseline degrades significantly. Runnable examples on pushing, picking, catching, and real-world deployment demonstrate flexibility across different policies, optimizers, physics backends, and executors. The framework is publicly available at https://github.com/Rice-RobotPI-Lab/ManiDreams",
+      "authors": [
+        "Gaotian Wang",
+        "Kejia Ren",
+        "Andrew S. Morgan",
+        "Kaiyu Hang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-18T22:46:46+00:00",
+      "link": "https://arxiv.org/pdf/2603.18336v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "uncertainty-aware planning and representation of uncertainty in loops",
+      "llm_evidence_cn": "不确定性感知规划与循环中的不确定性表示",
+      "llm_evidence": "不确定性感知规划与循环中的不确定性表示",
+      "canonical_evidence": "不确定性感知规划与循环中的不确定性表示",
+      "llm_tldr_en": "ManiDreams is a framework for uncertainty-aware robotic manipulation planning under inherent uncertainty.",
+      "llm_tldr_cn": "ManiDreams是一个用于在固有不确定性下进行感知不确定性的机器人操作规划框架。",
+      "llm_tldr": "ManiDreams是一个用于在固有不确定性下进行感知不确定性的机器人操作规划框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "estimating epistemic uncertainty in neural motion planners",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.18811v1",
+      "title": "V-Dreamer: Automating Robotic Simulation and Trajectory Synthesis via Video Generation Priors",
+      "abstract": "Training generalist robots demands large-scale, diverse manipulation data, yet real-world collection is prohibitively expensive, and existing simulators are often constrained by fixed asset libraries and manual heuristics. To bridge this gap, we present V-Dreamer, a fully automated framework that generates open-vocabulary, simulation-ready manipulation environments and executable expert trajectories directly from natural language instructions. V-Dreamer employs a novel generative pipeline that constructs physically grounded 3D scenes using large language models and 3D generative models, validated by geometric constraints to ensure stable, collision-free layouts. Crucially, for behavior synthesis, we leverage video generation models as rich motion priors. These visual predictions are then mapped into executable robot trajectories via a robust Sim-to-Gen visual-kinematic alignment module utilizing CoTracker3 and VGGT. This pipeline supports high visual diversity and physical fidelity without manual intervention. To evaluate the generated data, we train imitation learning policies on synthesized trajectories encompassing diverse object and environment variations. Extensive evaluations on tabletop manipulation tasks using the Piper robotic arm demonstrate that our policies robustly generalize to unseen objects in simulation and achieve effective sim-to-real transfer, successfully manipulating novel real-world objects.",
+      "authors": [
+        "Songjia He",
+        "Zixuan Chen",
+        "Hongyu Ding",
+        "Dian Shao",
+        "Jieqi Shi",
+        "Chenxu Li",
+        "Jing Huo",
+        "Yang Gao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-19T12:00:04+00:00",
+      "link": "https://arxiv.org/pdf/2603.18811v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Trajectory synthesis via generative priors and video generation models",
+      "llm_evidence_cn": "通过生成先验和视频生成模型进行轨迹合成",
+      "llm_evidence": "通过生成先验和视频生成模型进行轨迹合成",
+      "canonical_evidence": "通过生成先验和视频生成模型进行轨迹合成",
+      "llm_tldr_en": "Automates robotic simulation and expert trajectory synthesis using video generation priors.",
+      "llm_tldr_cn": "利用视频生成先验自动化机器人仿真和专家轨迹合成。",
+      "llm_tldr": "利用视频生成先验自动化机器人仿真和专家轨迹合成。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.18907v1",
+      "title": "Neural Galerkin Normalizing Flow for Transition Probability Density Functions of Diffusion Models",
+      "abstract": "We propose a new Neural Galerkin Normalizing Flow framework to approximate the transition probability density function of a diffusion process by solving the corresponding Fokker-Planck equation with an atomic initial distribution, parametrically with respect to the location of the initial mass. By using Normalizing Flows, we look for the solution as a transformation of the transition probability density function of a reference stochastic process, ensuring that our approximation is structure-preserving and automatically satisfies positivity and mass conservation constraints. By extending Neural Galerkin schemes to the context of Normalizing Flows, we derive a system of ODEs for the time evolution of the Normalizing Flow's parameters. Adaptive sampling routines are used to evaluate the Fokker-Planck residual in meaningful locations, which is of vital importance to address high-dimensional PDEs. Numerical results show that this strategy captures key features of the true solution and enforces the causal relationship between the initial datum and the density function at subsequent times. After completing an offline training phase, online evaluation becomes significantly more cost-effective than solving the PDE from scratch. The proposed method serves as a promising surrogate model, which could be deployed in many-query problems associated with stochastic differential equations, like Bayesian inference, simulation, and diffusion bridge generation.",
+      "authors": [
+        "Riccardo Saporiti",
+        "Fabio Nobile"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "math.NA"
+      ],
+      "published": "2026-03-19T13:43:18+00:00",
+      "link": "https://arxiv.org/pdf/2603.18907v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Approximating transition probability density functions of diffusion processes",
+      "llm_evidence_cn": "近似扩散过程的转移概率密度函数",
+      "llm_evidence": "近似扩散过程的转移概率密度函数",
+      "canonical_evidence": "近似扩散过程的转移概率密度函数",
+      "llm_tldr_en": "Uses Normalizing Flows to solve Fokker-Planck equations for diffusion process density approximation.",
+      "llm_tldr_cn": "利用归一化流求解Fokker-Planck方程，以近似扩散过程的密度函数。",
+      "llm_tldr": "利用归一化流求解Fokker-Planck方程，以近似扩散过程的密度函数。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

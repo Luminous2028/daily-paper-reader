@@ -6,59 +6,58 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-03-23
-- 运行时间：2026-03-23 20:01:01 UTC
+- 最新运行日期：2026-03-24
+- 运行时间：2026-03-24 19:53:50 UTC
 - 运行状态：成功
-- 本次总论文数：13
-- 精读区：2
+- 本次总论文数：12
+- 精读区：1
 - 速读区：11
 
 ### 今日简报（AI）
-今日深度复盘自动驾驶感知与决策前沿，涵盖行人心理建模及不确定性在线建图等 13 篇核心成果
-- 详情：[/202603/23/README](/202603/23/README)
+今日精选 12 篇前沿成果，重点攻克自动驾驶与公交调度中复杂风险的解耦与控制。
+推荐关注 RE-SAC 算法在鲁棒性调度上的突破，以及 X-World 带来的可扩展端到端驾驶世界模型。
+建议从不确定性
+- 详情：[/202603/24/README](/202603/24/README)
 
 ### 精读区论文标签
-1. [Pedestrian Crossing Intent Prediction via Psychological Features and Transformer Fusion](/202603/23/2603.19533v1-pedestrian-crossing-intent-prediction-via-psychological-features-and-transformer-fusion)  
+1. [RE-SAC: Disentangling aleatoric and epistemic risks in bus fleet control: A stable and robust ensemble DRL approach](/202603/24/2603.18396v2-re-sac-disentangling-aleatoric-and-epistemic-risks-in-bus-fleet-control-a-stable-and-robust-ensemble-drl-approach)  
    标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：量化行人意图中的认知不确定性
-2. [Uncertainty Matters: Structured Probabilistic Online Mapping for Motion Prediction in Autonomous Driving](/202603/23/2603.20076v1-uncertainty-matters-structured-probabilistic-online-mapping-for-motion-prediction-in-autonomous-driving)  
-   标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶中的概率在线建图与运动预测
+   evidence：在公交车队控制中解耦偶然不确定性和认知不确定性
 
 ### 速读区论文标签
-1. [Q-Drift: Quantization-Aware Drift Correction for Diffusion Model Sampling](/202603/23/2603.18095v1-q-drift-quantization-aware-drift-correction-for-diffusion-model-sampling)  
+1. [X-World: Controllable Ego-Centric Multi-Camera World Models for Scalable End-to-End Driving](/202603/24/2603.19979v1-x-world-controllable-ego-centric-multi-camera-world-models-for-scalable-end-to-end-driving)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：量化并修正扩散模型轨迹中的噪声
-2. [TRACE: Trajectory Recovery with State Propagation Diffusion for Urban Mobility](/202603/23/2603.19474v1-trace-trajectory-recovery-with-state-propagation-diffusion-for-urban-mobility)  
+   evidence：用于可扩展端到端驾驶的世界模型
+2. [Dodgersort: Uncertainty-Aware VLM-Guided Human-in-the-Loop Pairwise Ranking](/202603/24/2603.20839v1-dodgersort-uncertainty-aware-vlm-guided-human-in-the-loop-pairwise-ranking)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：用于城市移动轨迹恢复的扩散模型
-3. [Planning Autonomous Vehicle Maneuvering in Work Zones Through Game-Theoretic Trajectory Generation](/202603/23/2603.19556v1-planning-autonomous-vehicle-maneuvering-in-work-zones-through-game-theoretic-trajectory-generation)  
+   evidence：概率集成中的认知-偶然不确定性分解
+3. [Uncertainty Quantification for Distribution-to-Distribution Flow Matching in Scientific Imaging](/202603/24/2603.21717v1-uncertainty-quantification-for-distribution-to-distribution-flow-matching-in-scientific-imaging)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶车辆在施工区域的轨迹生成
-4. [DynFlowDrive: Flow-Based Dynamic World Modeling for Autonomous Driving](/202603/23/2603.19675v1-dynflowdrive-flow-based-dynamic-world-modeling-for-autonomous-driving)  
-   标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶规划的流式世界模型
-5. [Wildfire Spread Scenarios: Increasing Sample Diversity of Segmentation Diffusion Models with Training-Free Methods](/202603/23/2603.20188v1-wildfire-spread-scenarios-increasing-sample-diversity-of-segmentation-diffusion-models-with-training-free-methods)  
-   标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶中用于多样化预测的扩散模型
-6. [AutoMoT: A Unified Vision-Language-Action Model with Asynchronous Mixture-of-Transformers for End-to-End Autonomous Driving](/202603/23/2603.14851v2-automot-a-unified-vision-language-action-model-with-asynchronous-mixture-of-transformers-for-end-to-end-autonomous-driving)  
+   evidence：在生成式流匹配模型中解耦偶然不确定性和认知不确定性
+4. [Ultrafast Sampling-based Kinodynamic Planning via Differential Flatness](/202603/24/2603.16059v1-ultrafast-sampling-based-kinodynamic-planning-via-differential-flatness)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：端到端自动驾驶动作生成
-7. [ReMAP-DP: Reprojected Multi-view Aligned PointMaps for Diffusion Policy](/202603/23/2603.14977v1-remap-dp-reprojected-multi-view-aligned-pointmaps-for-diffusion-policy)  
+   evidence：机器人的动力学约束规划与轨迹生成
+5. [ECHO: Edge-Cloud Humanoid Orchestration for Language-to-Motion Control](/202603/24/2603.16188v1-echo-edge-cloud-humanoid-orchestration-for-language-to-motion-control)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于机器人轨迹和动作生成的扩散策略
-8. [ReMAP-DP: Reprojected Multi-view Aligned PointMaps for Diffusion Policy](/202603/23/2603.14977v2-remap-dp-reprojected-multi-view-aligned-pointmaps-for-diffusion-policy)  
+   evidence：用于类人机器人控制的基于扩散的文本到运动生成器
+6. [Few-Step Diffusion Sampling Through Instance-Aware Discretizations](/202603/24/2603.17671v1-few-step-diffusion-sampling-through-instance-aware-discretizations)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于机器人控制和3D空间感知的扩散策略
-9. [EFF-Grasp: Energy-Field Flow Matching for Physics-Aware Dexterous Grasp Generation](/202603/23/2603.16151v1-eff-grasp-energy-field-flow-matching-for-physics-aware-dexterous-grasp-generation)  
+   evidence：扩散模型采样与生成过程复杂性
+7. [ProbeFlow: Training-Free Adaptive Flow Matching for Vision-Language-Action Models](/202603/24/2603.17850v1-probeflow-training-free-adaptive-flow-matching-for-vision-language-action-models)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：基于扩散方法的轨迹生成
-10. [Contingency-Aware Planning via Certified Neural Hamilton-Jacobi Reachability](/202603/23/2603.17022v1-contingency-aware-planning-via-certified-neural-hamilton-jacobi-reachability)  
+   evidence：在流匹配中评估几何轨迹复杂度
+8. [Enactor: From Traffic Simulators to Surrogate World Models](/202603/24/2603.18266v1-enactor-from-traffic-simulators-to-surrogate-world-models)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：未知环境中的应急感知规划与安全认证
-11. [Flow Matching Policy with Entropy Regularization](/202603/23/2603.17685v2-flow-matching-policy-with-entropy-regularization)  
+   evidence：建模参与者间的交互并为自动驾驶智能体生成轨迹
+9. [ManiDreams: An Open-Source Library for Robust Object Manipulation via Uncertainty-aware Task-specific Intuitive Physics](/202603/24/2603.18336v1-manidreams-an-open-source-library-for-robust-object-manipulation-via-uncertainty-aware-task-specific-intuitive-physics)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：扩散策略中的熵正则化
+   evidence：不确定性感知规划与循环中的不确定性表示
+10. [V-Dreamer: Automating Robotic Simulation and Trajectory Synthesis via Video Generation Priors](/202603/24/2603.18811v1-v-dreamer-automating-robotic-simulation-and-trajectory-synthesis-via-video-generation-priors)  
+   标签：评分：6.0/10、query:diffusion-conf-uncertainty
+   evidence：通过生成先验和视频生成模型进行轨迹合成
+11. [Neural Galerkin Normalizing Flow for Transition Probability Density Functions of Diffusion Models](/202603/24/2603.18907v1-neural-galerkin-normalizing-flow-for-transition-probability-density-functions-of-diffusion-models)  
+   标签：评分：6.0/10、query:diffusion-conf-uncertainty
+   evidence：近似扩散过程的转移概率密度函数
 
 
 <div class="dpr-home-promo-card">
