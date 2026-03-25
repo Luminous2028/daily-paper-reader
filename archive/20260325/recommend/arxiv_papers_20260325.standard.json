@@ -1,0 +1,472 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-03-25T20:29:31.102946+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 19,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2603.21717v2",
+      "title": "Uncertainty Quantification for Distribution-to-Distribution Flow Matching in Scientific Imaging",
+      "abstract": "Distribution-to-distribution generative models support scientific imaging tasks ranging from modeling cellular perturbation responses to translating medical images across conditions. Trustworthy generation requires both reliability (generalization across labs, devices, and experimental conditions) and accountability (detecting out-of-distribution cases where predictions may be unreliable). Uncertainty quantification (UQ) based approaches serve as promising candidates for these tasks, yet UQ for distribution-to-distribution generative models remains underexplored. We present a unified UQ framework, Bayesian Stochastic Flow Matching (BSFM), that disentangles aleatoric and epistemic uncertainty. The Stochastic Flow Matching (SFM) component augments deterministic flows with a diffusion term to improve model generalization to unseen scenarios. For UQ, we develop a scalable Bayesian approach -- MCD-Antithetic -- that combines Monte Carlo Dropout with sample-efficient antithetic sampling to produce effective anomaly scores for out-of-distribution detection. Experiments on cellular imaging (BBBC021, JUMP) and brain fMRI (Theory of Mind) across diverse scenarios show that SFM improves reliability while MCD-Antithetic enhances accountability.",
+      "authors": [
+        "Dongxia Wu",
+        "Yuhui Zhang",
+        "Serena Yeung-Levy",
+        "Emma Lundberg",
+        "Emily B. Fox"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-23T09:01:02+00:00",
+      "link": "https://arxiv.org/pdf/2603.21717v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "disentangles aleatoric and epistemic uncertainty in stochastic flow matching",
+      "llm_evidence_cn": "在随机流匹配中解耦偶然不确定性和认知不确定性",
+      "llm_evidence": "在随机流匹配中解耦偶然不确定性和认知不确定性",
+      "canonical_evidence": "在随机流匹配中解耦偶然不确定性和认知不确定性",
+      "llm_tldr_en": "A unified framework for disentangling aleatoric and epistemic uncertainty in generative flow models.",
+      "llm_tldr_cn": "一个用于在生成流模型中解耦偶然和认知不确定性的统一框架。",
+      "llm_tldr": "一个用于在生成流模型中解耦偶然和认知不确定性的统一框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "aleatoric and epistemic uncertainty decomposition in diffusion trajectory models",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2603.20583v2",
+      "title": "GHOST: Ground-projected Hypotheses from Observed Structure-from-Motion Trajectories",
+      "abstract": "We present a scalable self-supervised approach for segmenting feasible vehicle trajectories from monocular images for autonomous driving in complex urban environments. Leveraging large-scale dashcam videos, we treat recorded ego-vehicle motion as implicit supervision and recover camera trajectories via monocular structure-from-motion, projecting them onto the ground plane to generate spatial masks of traversed regions without manual annotation. These automatically generated labels are used to train a deep segmentation network that predicts motion-conditioned path proposals from a single RGB image at run time, without explicit modeling of road or lane markings. Trained on diverse, unconstrained internet data, the model implicitly captures scene layout, lane topology, and intersection structure, and generalizes across varying camera configurations. We evaluate our approach on NuScenes, demonstrating reliable trajectory prediction, and further show transfer to an electric scooter platform through light fine-tuning. Our results indicate that large-scale ego-motion distillation yields structured and generalizable path proposals beyond the demonstrated trajectory, enabling trajectory hypothesis estimation via image segmentation.",
+      "authors": [
+        "Tomasz Frelek",
+        "Rohan Patil",
+        "Akshar Tumu",
+        "Henrik I. Christensen"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-03-21T00:47:03+00:00",
+      "link": "https://arxiv.org/pdf/2603.20583v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "segmenting feasible vehicle trajectories for autonomous driving",
+      "llm_evidence_cn": "为自动驾驶分割可行的车辆轨迹",
+      "llm_evidence": "为自动驾驶分割可行的车辆轨迹",
+      "canonical_evidence": "为自动驾驶分割可行的车辆轨迹",
+      "llm_tldr_en": "GHOST uses self-supervision to predict motion-conditioned path proposals from monocular images.",
+      "llm_tldr_cn": "GHOST利用自监督学习从单目图像中预测基于运动条件的路径建议。",
+      "llm_tldr": "GHOST利用自监督学习从单目图像中预测基于运动条件的路径建议。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.16050v1",
+      "title": "The Era of End-to-End Autonomy: Transitioning from Rule-Based Driving to Large Driving Models",
+      "abstract": "Autonomous driving is undergoing a shift from modular rule based pipelines toward end to end (E2E) learning systems. This paper examines this transition by tracing the evolution from classical sense perceive plan control architectures to large driving models (LDMs) capable of mapping raw sensor input directly to driving actions. We analyze recent developments including Tesla's Full Self Driving (FSD) V12 V14, Rivian's Unified Intelligence platform, NVIDIA Cosmos, and emerging commercial robotaxi deployments, focusing on architectural design, deployment strategies, safety considerations and industry implications. A key emerging product category is supervised E2E driving, often referred to as FSD (Supervised) or L2 plus plus, which several manufacturers plan to deploy from 2026 onwards. These systems can perform most of the Dynamic Driving Task (DDT) in complex environments while requiring human supervision, shifting the driver's role to safety oversight. Early operational evidence suggests E2E learning handles the long tail distribution of real world driving scenarios and is becoming a dominant commercial strategy. We also discuss how similar architectural advances may extend beyond autonomous vehicles (AV) to other embodied AI systems, including humanoid robotics.",
+      "authors": [
+        "Eduardo Nebot",
+        "Julie Stephany Berrio Perez"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV",
+        "eess.IV"
+      ],
+      "published": "2026-03-17T01:32:08+00:00",
+      "link": "https://arxiv.org/pdf/2603.16050v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "transition to end-to-end large driving models for planning",
+      "llm_evidence_cn": "向端到端大驾驶模型规划的转型",
+      "llm_evidence": "向端到端大驾驶模型规划的转型",
+      "canonical_evidence": "向端到端大驾驶模型规划的转型",
+      "llm_tldr_en": "Analyzes the shift from rule-based to end-to-end learning in autonomous driving.",
+      "llm_tldr_cn": "分析了自动驾驶从基于规则到端到端学习的转变。",
+      "llm_tldr": "分析了自动驾驶从基于规则到端到端学习的转变。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.21621v1",
+      "title": "Proximal Policy Optimization in Path Space: A Schrödinger Bridge Perspective",
+      "abstract": "On-policy reinforcement learning with generative policies is promising but remains underexplored. A central challenge is that proximal policy optimization (PPO) is traditionally formulated in terms of action-space probability ratios, whereas diffusion- and flow-based policies are more naturally represented as trajectory-level generative processes. In this work, we propose GSB-PPO, a path-space formulation of generative PPO inspired by the Generalized Schrödinger Bridge (GSB). Our framework lifts PPO-style proximal updates from terminal actions to full generation trajectories, yielding a unified view of on-policy optimization for generative policies. Within this framework, we develop two concrete objectives: a clipping-based objective, GSB-PPO-Clip, and a penalty-based objective, GSB-PPO-Penalty. Experimental results show that while both objectives are compatible with on-policy training, the penalty formulation consistently delivers better stability and performance than the clipping counterpart. Overall, our results highlight path-space proximal regularization as an effective principle for training generative policies with PPO.",
+      "authors": [
+        "Yuehu Gong",
+        "Zeyuan Wang",
+        "Yulin Chen",
+        "Yanwei Fu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-23T06:37:42+00:00",
+      "link": "https://arxiv.org/pdf/2603.21621v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "path-space formulation of generative PPO for diffusion- and flow-based policies",
+      "llm_evidence_cn": "针对扩散和流策略的路径空间生成式 PPO 公式",
+      "llm_evidence": "针对扩散和流策略的路径空间生成式 PPO 公式",
+      "canonical_evidence": "针对扩散和流策略的路径空间生成式 PPO 公式",
+      "llm_tldr_en": "Lifts PPO updates to full generation trajectories for optimizing diffusion-based generative policies.",
+      "llm_tldr_cn": "将 PPO 更新提升至完整生成轨迹，用于优化基于扩散的生成式策略。",
+      "llm_tldr": "将 PPO 更新提升至完整生成轨迹，用于优化基于扩散的生成式策略。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.17714v1",
+      "title": "From Virtual Environments to Real-World Trials: Emerging Trends in Autonomous Driving",
+      "abstract": "Autonomous driving technologies have achieved significant advances in recent years, yet their real-world deployment remains constrained by data scarcity, safety requirements, and the need for generalization across diverse environments. In response, synthetic data and virtual environments have emerged as powerful enablers, offering scalable, controllable, and richly annotated scenarios for training and evaluation. This survey presents a comprehensive review of recent developments at the intersection of autonomous driving, simulation technologies, and synthetic datasets. We organize the landscape across three core dimensions: (i) the use of synthetic data for perception and planning, (ii) digital twin-based simulation for system validation, and (iii) domain adaptation strategies bridging synthetic and real-world data. We also highlight the role of vision-language models and simulation realism in enhancing scene understanding and generalization. A detailed taxonomy of datasets, tools, and simulation platforms is provided, alongside an analysis of trends in benchmark design. Finally, we discuss critical challenges and open research directions, including Sim2Real transfer, scalable safety validation, cooperative autonomy, and simulation-driven policy learning, that must be addressed to accelerate the path toward safe, generalizable, and globally deployable autonomous driving systems.",
+      "authors": [
+        "A. Humnabadkar",
+        "A. Sikdar",
+        "B. Cave",
+        "H. Zhang",
+        "N. Bessis",
+        "A. Behera"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-03-18T13:32:26+00:00",
+      "link": "https://arxiv.org/pdf/2603.17714v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "survey of synthetic data for perception and planning in autonomous driving",
+      "llm_evidence_cn": "自动驾驶感知与规划合成数据综述",
+      "llm_evidence": "自动驾驶感知与规划合成数据综述",
+      "canonical_evidence": "自动驾驶感知与规划合成数据综述",
+      "llm_tldr_en": "Reviews synthetic data and virtual environments for autonomous driving validation.",
+      "llm_tldr_cn": "综述了用于自动驾驶验证的合成数据和虚拟环境。",
+      "llm_tldr": "综述了用于自动驾驶验证的合成数据和虚拟环境。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.21635v1",
+      "title": "RTD-RAX: Fast, Safe Trajectory Planning for Systems under Unknown Disturbances",
+      "abstract": "Reachability-based Trajectory Design (RTD) is a provably safe, real-time trajectory planning framework that combines offline reachable-set computation with online trajectory optimization. However, standard RTD implementations suffer from two key limitations: conservatism induced by worst-case reachable-set overapproximations, and an inability to account for real-time disturbances during execution. This paper presents RTD-RAX, a runtime-assurance extension of RTD that utilizes a non-conservative RTD formulation to rapidly generate goal-directed candidate trajectories, and utilizes mixed monotone reachability for fast, disturbance-aware online safety certification. When proposed trajectories fail safety certification under real-time uncertainty, a repair procedure finds nearby safe trajectories that preserve progress toward the goal while guaranteeing safety under real-time disturbances.",
+      "authors": [
+        "Evanns Morales-Cuadrado",
+        "Long Kiu Chung",
+        "Shreyas Kousik",
+        "Samuel Coogan"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-03-23T06:59:13+00:00",
+      "link": "https://arxiv.org/pdf/2603.21635v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "trajectory planning under unknown disturbances and uncertainty",
+      "llm_evidence_cn": "未知扰动与不确定性下的轨迹规划",
+      "llm_evidence": "未知扰动与不确定性下的轨迹规划",
+      "canonical_evidence": "未知扰动与不确定性下的轨迹规划",
+      "llm_tldr_en": "A safe trajectory planning framework that accounts for real-time disturbances and uncertainty.",
+      "llm_tldr_cn": "一种考虑实时扰动和不确定性的安全轨迹规划框架。",
+      "llm_tldr": "一种考虑实时扰动和不确定性的安全轨迹规划框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.18992v1",
+      "title": "Foundations of Schrödinger Bridges for Generative Modeling",
+      "abstract": "At the core of modern generative modeling frameworks, including diffusion models, score-based models, and flow matching, is the task of transforming a simple prior distribution into a complex target distribution through stochastic paths in probability space. Schrödinger bridges provide a unifying principle underlying these approaches, framing the problem as determining an optimal stochastic bridge between marginal distribution constraints with minimal-entropy deviations from a pre-defined reference process. This guide develops the mathematical foundations of the Schrödinger bridge problem, drawing on optimal transport, stochastic control, and path-space optimization, and focuses on its dynamic formulation with direct connections to modern generative modeling. We build a comprehensive toolkit for constructing Schrödinger bridges from first principles, and show how these constructions give rise to generalized and task-specific computational methods.",
+      "authors": [
+        "Sophia Tang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-03-19T14:59:56+00:00",
+      "link": "https://arxiv.org/pdf/2603.18992v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "mathematical foundations of Schrödinger bridges for diffusion and generative modeling",
+      "llm_evidence_cn": "扩散模型和生成模型中薛定谔桥的数学基础",
+      "llm_evidence": "扩散模型和生成模型中薛定谔桥的数学基础",
+      "canonical_evidence": "扩散模型和生成模型中薛定谔桥的数学基础",
+      "llm_tldr_en": "Provides a unifying mathematical framework for diffusion models and stochastic path optimization.",
+      "llm_tldr_cn": "为扩散模型和随机路径优化提供了一个统一的数学框架。",
+      "llm_tldr": "为扩散模型和随机路径优化提供了一个统一的数学框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty:composite"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty:composite",
+      "matched_query_text": "Papers central to 自动驾驶轨迹生成中利用扩散模型进行不确定性解耦、量化、追溯的论文检索, especially work that connects or combines: c; trajectory generation and path planning; autonomous driving motion planning and prediction; diffusion models for trajectory generation in autonomous driving; modeling aleatoric uncertainty in autonomous driving scenarios; estimating epistemic uncertainty in neural motion planners; diffusion models for uncertainty decoupling in autonomous driving trajectory generation; quantifying and tracing uncertainty in diffusion based motion planning; aleatoric and epistemic uncertainty decomposition in diffusion trajectory models; diffusion models for uncertainty estimation in autonomous driving trajectory generation.",
+      "matched_requirement_id": "req-composite-diffusion-conf-uncertainty",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.21958v1",
+      "title": "Interaction-Aware Predictive Environmental Control Barrier Function for Emergency Lane Change",
+      "abstract": "Safety-critical motion planning in mixed traffic remains challenging for autonomous vehicles, especially when it involves interactions between the ego vehicle (EV) and surrounding vehicles (SVs). In dense traffic, the feasibility of a lane change depends strongly on how SVs respond to the EV motion. This paper presents an interaction-aware safety framework that incorporates such interactions into a control barrier function (CBF)-based safety assessment. The proposed method predicts near-future vehicle positions over a finite horizon, thereby capturing reactive SV behavior and embedding it into the CBF-based safety constraint. To address uncertainty in the SV response model, a robust extension is developed by treating the model mismatch as a bounded disturbance and incorporating an online uncertainty estimate into the barrier condition. Compared with classical environmental CBF methods that neglect SV reactions, the proposed approach provides a less conservative and more informative safety representation for interactive traffic scenarios, while improving robustness to uncertainty in the modeled SV behavior.",
+      "authors": [
+        "Ying Shuai Quan",
+        "Paolo Falcone",
+        "Jonas Sjöberg"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-03-23T13:15:41+00:00",
+      "link": "https://arxiv.org/pdf/2603.21958v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "interaction-aware safety framework for autonomous vehicle emergency lane change",
+      "llm_evidence_cn": "自动驾驶汽车紧急换道的交互感知安全框架",
+      "llm_evidence": "自动驾驶汽车紧急换道的交互感知安全框架",
+      "canonical_evidence": "自动驾驶汽车紧急换道的交互感知安全框架",
+      "llm_tldr_en": "Integrates reactive vehicle behavior into CBF-based planning to handle uncertainty in lane changes.",
+      "llm_tldr_cn": "将反应式车辆行为整合到基于控制屏障函数的规划中，以处理换道过程中的不确定性。",
+      "llm_tldr": "将反应式车辆行为整合到基于控制屏障函数的规划中，以处理换道过程中的不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.19029v1",
+      "title": "ATG-MoE: Autoregressive trajectory generation with mixture-of-experts for assembly skill learning",
+      "abstract": "Flexible manufacturing requires robot systems that can adapt to constantly changing tasks, objects, and environments. However, traditional robot programming is labor-intensive and inflexible, while existing learning-based assembly methods often suffer from weak positional generalization, complex multi-stage designs, and limited multi-skill integration capability. To address these issues, this paper proposes ATG-MoE, an end-to-end autoregressive trajectory generation method with mixture of experts for assembly skill learning from demonstration. The proposed method establishes a closed-loop mapping from multi-modal inputs, including RGB-D observations, natural language instructions, and robot proprioception to manipulation trajectories. It integrates multi-modal feature fusion for scene and task understanding, autoregressive sequence modeling for temporally coherent trajectory generation, and a mixture-of-experts architecture for unified multi-skill learning. In contrast to conventional methods that separate visual perception and control or train different skills independently, ATG-MoE directly incorporates visual information into trajectory generation and supports efficient multi-skill integration within a single model. We train and evaluate the proposed method on eight representative assembly skills from a pressure-reducing valve assembly task. Experimental results show that ATG-MoE achieves strong overall performance in simulation, with an average grasp success rate of 96.3% and an average overall success rate of 91.8%, while also demonstrating strong generalization and effective multi-skill integration. Real-world experiments further verify its practicality for multi-skill industrial assembly. The project page can be found at https://hwh23.github.io/ATG-MoE",
+      "authors": [
+        "Weihang Huang",
+        "Chaoran Zhang",
+        "Xiaoxin Deng",
+        "Hao Zhou",
+        "Zhaobo Xu",
+        "Shubo Cui",
+        "Long Zeng"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-19T15:28:17+00:00",
+      "link": "https://arxiv.org/pdf/2603.19029v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Autoregressive trajectory generation for robot manipulation tasks",
+      "llm_evidence_cn": "机器人操纵任务的自回归轨迹生成",
+      "llm_evidence": "机器人操纵任务的自回归轨迹生成",
+      "canonical_evidence": "机器人操纵任务的自回归轨迹生成",
+      "llm_tldr_en": "Introduces ATG-MoE for end-to-end autoregressive trajectory generation in robot assembly skills.",
+      "llm_tldr_cn": "引入ATG-MoE，用于机器人装配技能中的端到端自回归轨迹生成。",
+      "llm_tldr": "引入ATG-MoE，用于机器人装配技能中的端到端自回归轨迹生成。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.22787v1",
+      "title": "DiSCo: Diffusion Sequence Copilots for Shared Autonomy",
+      "abstract": "Shared autonomy combines human user and AI copilot actions to control complex systems such as robotic arms. When a task is challenging, requires high dimensional control, or is subject to corruption, shared autonomy can significantly increase task performance by using a trained copilot to effectively correct user actions in a manner consistent with the user's goals. To significantly improve the performance of shared autonomy, we introduce Diffusion Sequence Copilots (DiSCo): a method of shared autonomy with diffusion policy that plans action sequences consistent with past user actions. DiSCo seeds and inpaints the diffusion process with user-provided actions with hyperparameters to balance conformity to expert actions, alignment with user intent, and perceived responsiveness. We demonstrate that DiSCo substantially improves task performance in simulated driving and robotic arm tasks. Project website: https://sites.google.com/view/disco-shared-autonomy/",
+      "authors": [
+        "Andy Wang",
+        "Xu Yan",
+        "Brandon McMahan",
+        "Michael Zhou",
+        "Yuyang Yuan",
+        "Johannes Y. Lee",
+        "Ali Shreif",
+        "Matthew Li",
+        "Zhenghao Peng",
+        "Bolei Zhou",
+        "Yuchen Cui",
+        "Jonathan C. Kao"
+      ],
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC",
+        "cs.RO"
+      ],
+      "published": "2026-03-24T04:22:20+00:00",
+      "link": "https://arxiv.org/pdf/2603.22787v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "diffusion policy for planning action sequences in shared autonomy",
+      "llm_evidence_cn": "共享自主中用于规划动作序列的扩散策略",
+      "llm_evidence": "共享自主中用于规划动作序列的扩散策略",
+      "canonical_evidence": "共享自主中用于规划动作序列的扩散策略",
+      "llm_tldr_en": "Uses diffusion models to generate action sequences that align human intent with expert behavior.",
+      "llm_tldr_cn": "利用扩散模型生成符合人类意图与专家行为的动作序列。",
+      "llm_tldr": "利用扩散模型生成符合人类意图与专家行为的动作序列。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.19188v1",
+      "title": "Markov Potential Game and Multi-Agent Reinforcement Learning for Autonomous Driving",
+      "abstract": "Autonomous driving (AD) requires safe and reliable decision-making among interacting agents, e.g., vehicles, bicycles, and pedestrians. Multi-agent reinforcement learning (MARL) modeled by Markov games (MGs) provides a suitable framework to characterize such agents' interactions during decision-making. Nash equilibria (NEs) are often the desired solution in an MG. However, it is typically challenging to compute an NE in general-sum games, unless the game is a Markov potential game (MPG), which ensures the NE attainability under a few learning algorithms such as gradient play. However, it has been an open question how to construct an MPG and whether these construction rules are suitable for AD applications. In this paper, we provide sufficient conditions under which an MG is an MPG and show that these conditions can accommodate general driving objectives for autonomous vehicles (AVs) using highway forced merge scenarios as illustrative examples. A parameter-sharing neural network (NN) structure is designed to enable decentralized policy execution. The trained driving policy from MPGs is evaluated in both simulated and naturalistic traffic datasets. Comparative studies with single-agent RL and with human drivers whose behaviors are recorded in the traffic datasets are reported, respectively.",
+      "authors": [
+        "Huiwen Yan",
+        "Mushuang Liu"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-03-19T17:43:19+00:00",
+      "link": "https://arxiv.org/pdf/2603.19188v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "multi-agent reinforcement learning for autonomous driving decision-making",
+      "llm_evidence_cn": "自动驾驶决策的多智能体强化学习",
+      "llm_evidence": "自动驾驶决策的多智能体强化学习",
+      "canonical_evidence": "自动驾驶决策的多智能体强化学习",
+      "llm_tldr_en": "Explores Markov potential games for multi-agent interactions in autonomous driving.",
+      "llm_tldr_cn": "探索了用于自动驾驶多智能体交互的马尔可夫势博弈。",
+      "llm_tldr": "探索了用于自动驾驶多智能体交互的马尔可夫势博弈。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.23393v1",
+      "title": "Rectify, Don't Regret: Avoiding Pitfalls of Differentiable Simulation in Trajectory Prediction",
+      "abstract": "Current open-loop trajectory models struggle in real-world autonomous driving because minor initial deviations often cascade into compounding errors, pushing the agent into out-of-distribution states. While fully differentiable closed-loop simulators attempt to address this, they suffer from shortcut learning: the loss gradients flow backward through induced state inputs, inadvertently leaking future ground truth information directly into the model's own previous predictions. The model exploits these signals to artificially avoid drift, non-causally \"regretting\" past mistakes rather than learning genuinely reactive recovery. To address this, we introduce a detached receding horizon rollout. By explicitly severing the computation graph between simulation steps, the model learns genuine recovery behaviors from drifted states, forcing it to \"rectify\" mistakes rather than non-causally optimizing past predictions. Extensive evaluations on the nuScenes and DeepScenario datasets show our approach yields more robust recovery strategies, reducing target collisions by up to 33.24% compared to fully differentiable closed-loop training at high replanning frequencies. Furthermore, compared to standard open-loop baselines, our non-differentiable framework decreases collisions by up to 27.74% in dense environments while simultaneously improving multi-modal prediction diversity and lane alignment.",
+      "authors": [
+        "Harsh Yadav",
+        "Christian Bohn",
+        "Tobias Meisen"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-24T16:28:09+00:00",
+      "link": "https://arxiv.org/pdf/2603.23393v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "trajectory prediction in autonomous driving and out-of-distribution states",
+      "llm_evidence_cn": "自动驾驶轨迹预测与分布外状态",
+      "llm_evidence": "自动驾驶轨迹预测与分布外状态",
+      "canonical_evidence": "自动驾驶轨迹预测与分布外状态",
+      "llm_tldr_en": "Addresses compounding errors in trajectory prediction using a detached receding horizon rollout.",
+      "llm_tldr_cn": "通过分离退避水平轮转解决轨迹预测中的复合误差问题。",
+      "llm_tldr": "通过分离退避水平轮转解决轨迹预测中的复合误差问题。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
