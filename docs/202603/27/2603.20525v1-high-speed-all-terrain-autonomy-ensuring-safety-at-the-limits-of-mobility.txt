@@ -1,0 +1,1152 @@
+Title: High-Speed, All-Terrain Autonomy: Ensuring Safety at the Limits of Mobility
+
+URL Source: https://arxiv.org/pdf/2603.20525v1
+
+Published Time: Tue, 24 Mar 2026 00:20:15 GMT
+
+Number of Pages: 19
+
+Markdown Content:
+> 1
+
+# High-Speed, All-Terrain Autonomy: Ensuring Safety at the Limits of Mobility 
+
+James R. Baxter , Bogdan I. Epureanu , Paramsothy Jayakumar, Tulga Ersal ∗
+
+Abstract —A novel local trajectory planner, capable of control-ling an autonomous off-road vehicle on rugged terrain at high-speed is presented. Autonomous vehicles are currently unable to safely operate off-road at high-speed, as current approaches either fail to predict and mitigate rollovers induced by rough terrain or are not real-time feasible. To address this challenge, a novel model predictive control (MPC) formulation is developed for local trajectory planning. A new dynamics model for off-road vehicles on rough, non-planar terrain is derived and used for prediction. Extreme mobility, including tire liftoff without rollover, is safely enabled through a new energy-based constraint. The formulation is analytically shown to mitigate rollover types ignored by many state-of-the-art methods, and real-time feasi-bility is achieved through parallelized GPGPU computation. The planner’s ability to provide safe, extreme trajectories is studied through both simulated trials and full-scale physical experiments. The results demonstrate fewer rollovers and more successes compared to a state-of-the-art baseline across several challenging scenarios that push the vehicle to its mobility limits. 
+
+Index Terms —Autonomous Vehicle Navigation, Field Robotics, Optimization and Optimal Control, Robot Safety 
+
+I. I NTRODUCTION 
+
+# ALL-TERRAIN vehicles have tremendous mobility ca-pacity: the physical platforms are capable of navigating rugged off-road terrain, even at high speeds. However, for them to be useful as autonomous ground vehicles (AGVs) in applications ranging from extraterrestrial planetary exploration to mining and disaster relief, where vehicles are required to robustly navigate many types of terrain, including rugged off-road environments, the autonomous control algorithm must be advanced enough to fully utilize the mobility of the platforms. A crucial feature of such a successful control algorithm is the ability to ensure vehicle safety. This is especially relevant when operating in remote regions or on other planets. Yet in the off-road domain, this intersects with the simultaneous need for vehicles to operate at high speed. For example, a steep hill composed of loose soil can only be summited if the vehicle has sufficient speed at the base, which may be rough and uneven. As reviewed below in Sec. II, the combination of high speed, 
+
+J. R. Baxter, B. I. Epureanu and T. Ersal are with the Depart-ment of Mechanical Engineering, University of Michigan, Ann Arbor, MI. (email: jrbaxter, epureanu, tersal@umich.edu). P. Jayakumar is with U.S. Army Ground Vehicle Systems Center, Warren, MI. (e-mail: param-sothy.jayakumar.civ@army.mil). The authors acknowledge the technical and financial support of the Auto-motive Research Center (ARC) in accordance with Cooperative Agreement W56HZV-24-2-0001 U.S. Army DEVCOM Ground Vehicle Systems Center (GVSC) Warren, MI. DISTRIBUTION STATEMENT A. Approved for public release; distribu-tion is unlimited. OPSEC #9732 * Corresponding author 
+
+Fig. 1. Off-road vehicles experience significant vertical dynamics (evidenced by the extreme bend of the fiberglass flagpole) and even tire liftoff (shown in close-up view) when traveling over the rugged terrain considered in this work, even at moderate speed (5 m/s). Since these dynamics contribute to rollover, navigation, especially at high speeds, is dangerous. This work demonstrates a method to mitigate the risk of rollover through advanced control design. 
+
+terrain roughness, and the need to ensure vehicle safety is not adequately addressed by existing methods. When performing high-speed operations over rugged ter-rain, rollover poses a significant danger [1], and it may be provoked by a variety of means: some rollovers may be caused entirely by tire forces acting within the longitudinal-lateral plane of the vehicle, and others may be operate via exciting the vertical and suspension dynamics of the vehicle. For example, the former could be caused by taking a turn too quickly, assuming there is sufficient traction, and the latter could be caused by suddenly driving a wheel into a berm at high speed or rapidly moving between alternating side-slopes. In rugged off-road domains, especially if an autonomous all-terrain vehicle platform is desired to operate at maximum mobility, these hazards must be addressed. It is not sufficient to think of safety as only avoiding obstacles: these environments are characterized by an absence of flat, even ground, and the distinction between the nominal terrain surface and separate outcroppings is ambiguous at best (for example, the deep wheel ruts in Fig. 1). A successful approach must mitigate the risk of both identified types of rollovers, in addition to avoiding obstacles. Planners are needed that can ensure vehicle safety while operating at the limits of mobility, and this work aims to fill that gap. The primary original contributions are 1) a detailed analysis of vehicle and constraint modeling for rollover-prevention of AGVs operating over rugged off-
+
+> arXiv:2603.20525v1 [cs.RO] 20 Mar 2026 2
+
+road terrain at high-speed, including identification of the requirements to ensure safety in this domain; 2) construction of a model predictive control (MPC) formu-lation that meets the previously identified requirements via synthesis of a vehicle dynamics model with explicit consideration of 3D terrain geometry and construction of an energy-based rollover-prevention constraint; and 3) closed-loop evaluation of the proposed formulation, in-cluding demonstration of real-time feasibility and com-parison against a state-of-the-art baseline through both high-fidelity simulation and physical experimentation. Additionally, the software developed to complete this work, the AllTerrainAutonomyToolbox.jl package for Julia [2], is re-leased as free and open-source software. The package provides utilities for performing simulated MPC trials using the baseline and proposed formulations from this work, and it also includes the real-time-feasible CUDA C++ implementations, a high fidelity plant co-simulator, and a ROS1 Noetic [3] implementa-tion of the local trajectory planner. Source code may be found at github.com/JamesRBaxter/AllTerrainAutonomyToolbox.jl. The remainder of the paper is organized as follows:  
+
+> •
+
+Sec. II conducts a literature review of related work.  
+
+> •
+
+Sec. III defines the baseline extended single-track vehi-cle dynamics model and analyzes the theory of safety-constraint formulation for autonomous vehicles on rough off-road terrain.  
+
+> •
+
+Sec. IV defines the single-level sampling-based MPC for-mulation proposed by this work, including the proposed single rigid body vehicle dynamics model.  
+
+> •
+
+Sec. V describes the off-road autonomous navigation tasks used to evaluate the proposed formulation.  
+
+> •
+
+Sec. VI reports and discusses results from 9900 simulated and 48 physical trials of the navigation tasks.  
+
+> •
+
+Sec. VII concludes the study. Additionally, App. A describes modeling notation, App. B provides numerical parameter values, and App. C studies open-loop model performance. A video of the experiments may be found online at youtu.be/RBUyvF6fzv0. II. R ELATED WORK 
+
+This work considers the problem of local trajectory planning and control, which is responsible for producing and tracking short-range trajectories that allow the vehicle to make progress towards a waypoint or goal. In practice, this may be integrated as a component into a larger autonomy system by providing it the output of a global path planner [4], [5]. Safety is an important consideration for this problem as discussed in Sec. I. Another is dynamical feasibility: as the local trajectory planner produces plans, following them must be within the dynamic capabilities of the vehicle. Several approaches have been considered for this problem domain. State-lattice methods [6], [7] have been proposed for a variety of applications, including high-speed driving and extraterrestrial navigation, but they are fundamentally incom-patible with rugged off-road terrain or simply decompose the problem such that a solution to the current problem is still needed. Potential field methods have also been explored for high-speed off-road driving [8], [9], but while the control algorithm is computationally efficient, it cannot guarantee dynamic feasibility nor safety. Imitation learning approaches [10] have also been proposed, but they require an expert to learn from, so the planning problem still stands. MPC [1], [11], [12] is another approach to this problem. It leverages a vehicle dynamics model to predict future states given a control input, and it uses a cost function to assign scalar costs to the associated trajectory prediction. Planning and control is done iteratively, where each iteration constructs and solves an optimal control problem (OCP) to find the control input that minimizes cost given the vehicle’s current state, then applies it to the vehicle. While computationally more expensive than the aforementioned methods, it is capable of guaranteeing dynamic feasibility and safety. Thus, this work considers MPC-based approaches. In the prior work, most MPC-based approaches leverage some form of planar model (a.k.a., bicycle model) [1], [12], [13]. An advanced form of this model is the extended single-track model introduced in [12]. The differential equations still assume operation on a plane, but the model is applied to smooth non-planar terrain by creating a locally tangent approximation at each timestep. Importantly, it requires that the terrain is locally planar at the length-scale of the chassis, and like the planar model, it assumes that neither tire liftoff nor suspension deflection occur. Approaches using the extended single-track model have been demonstrated to be real-time feasible [12]. Therefore, it is used as a state-of-the-art baseline in this work, and a full description is provided in App. III-A. A limitation of the extended single-track model is that it does not capture the vertical and suspension dynamics of the vehicle. Other analytical models with additional dynamics exist in the literature [14], [15], but they have not been derived for use on non-planar terrain, making them inapplicable to the current problem. Data-driven methods have also been used to model additional dynamics [11], [16], [17]. In particular, authors in [17] use a feed-forward neural network approach to model an SUV’s dynamics in 3D space over arbitrary heightmap-encoded terrain. However, the network uses two convolutional layers, one pooling layer, and five fully con-nected layers; it has nearly 60 000 parameters, so it is very likely that evaluating this model is much more computationally expensive than an explicit analytical model. Since real-time feasibility is a key feature of a successful solution in this problem domain, and the approach given in [17] has not been demonstrated as such, it is not used as a baseline in this work. However, the proposed analytical model contains similar dynamical properties. To ensure vehicle safety, MPC formulations typically im-pose constraints on solutions to the OCP. In the literature, rollover prevention constraints have been formulated to act on lateral acceleration [1], [13]; steering angle [18]; chassis side-slip angle [11]; tire vertical load [12], [19]; chassis roll and pitch [17]; and terrain-interaction moments [1], [17]. Of these, chassis roll and pitch are most directly related to rollover (and pitch-over) prevention, but they are reliant on the model’s ability to predict these states. In the absence of direct prediction of these states, such as with a planar model, 3
+
+tire vertical load and lateral acceleration are the next most directly related to rollover prevention: tire liftoff is a necessary condition for rollover, so constraining tire loads to remain positive precludes vehicle rollover. There is a strong relationship between the extended single-track model’s predicted tire vertical load and lateral acceler-ation (discussed in Sec III-B). Thus, the lateral-acceleration constraint is used as a state-of-the-art baseline in this work, but the findings are shown to be generally applicable to the tire-liftoff constraint as well. The limitation of such a constraint is that it only considers rollovers caused by tire forces within the lateral-longitudinal plane of the vehicle. It neglects rollovers caused by terrain roughness and out-of-plane dynamics, leaving the vehicle unprotected against them (discussed in Sec III-C). As these factors are significant in off-road driving, neglecting them puts the the autonomous vehicle at risk. Outside of applications to MPC safety constraint formula-tion, several other metrics related to rollover are proposed in the literature. Perhaps the most simple is static stability factor (SSF), which measures geometric properties of the vehicle and considers no dynamic terms [20]. It may be used to compare the intrinsic stability of different vehicles, but is not useful as a real-time metric of stability. Load transfer ratio (LTR) considers the distribution of tire normal force along the vehicle’s lateral axis [20]. This metric is similar to the previously considered tire-vertical-load and lateral-acceleration constraints and suffers the same problems when used with a planar model. In addition, it is overconservative for off-road applications since it is possible to experience tire liftoff without rollover. The force-angle [20]–[22] and energy-stability [23]–[25] families of metrics also exist. Both consider the support polygon of the vehicle, meaning a quadrilateral formed by the four tires. The force angle measure (FAM) considers the vector of summed forces (gravitational and d’Alambert’s) acting on the chassis and computes its angle relative to the support polygon. When forces are directed inside the polygon, the vehicle is stable and the metric is positive. The metric decreases to zero and becomes increasingly negative as the vector rotates to point at the perimeter then finally outside. Importantly, a negative value of this metric does not indicate rollover is occurring or will occur; it indicates that the current forces, if held constant, will eventually produce rollover. A form of this metric has been applied to high-speed mobile robotics [20], but because aggressive maneuvering may require subjecting the vehicle to brief destabilizing forces that do not persist long enough to cause rollover, the above property makes it overconservative for high-speed off-road applications. The latter family of metrics, energy-stability, consider the location of the chassis center of mass (CoM) relative to the support polygon. The energy stability margin (ESM) measures the minimum potential energy difference between the system’s current state and an unstable equilibrium reached by rotating the vehicle about an edge of the support polygon, such that the CoM lies directly above the line of contact. In other words, it measures the minimum required potential energy change to bring the system to rollover or pitch-over. A negative value of this metric indicates that rollover or pitch-over is actively occurring, and it may continue to grow in the negative direction as rollover or pitch-over continues. Thus, ESM does not suffer from the same overconservativeness as FAM and is therefore preferred in this work. Notably, implementing this metric requires a vehicle model capable of accurately predicting roll and pitch, something the extended single-track model is not designed for. As the vehicle model proposed in this work has no such limitation, ESM is used to formulate the rollover-prevention constraint of the proposed approach. To the best of the authors’ knowledge, this is the first application of this metric to constraint design in local trajectory planning for high-speed autonomous mobile robotics applications. Equally important to the formulation, MPC approaches require a means to solve the OCP in real time. Prior studies have used both gradient-based [12] and sampling-based [11] methods. In addition to not requiring gradients, the latter can accelerate drawing samples, simulating trajectories, and computing costs through the use of GPGPU (General-Purpose computing on Graphics Processing Units) programming. For example, authors in [1] use the model predictive path integral control (MPPI) algorithm [26], a specific type of sampling-based method, to demonstrate operation at 33.8 Hz with an NVIDIA 3080 desktop GPU. Because the proposed vehicle model is not analytically differentiable, this work uses asampling-based method, and GPGPU programming is lever-aged to demonstrate real-time feasibility with an NVIDIA mobile GPU. In summary, current methods lack the ability to plan and execute the extreme maneuvers required to autonomously navigate rugged off-road terrain while simultaneously ensuring vehicle safety. Approaches using planar vehicle models may be real-time feasible, but they lack the ability to predict and mitigate an entire class of rollovers, forcing one to compromise on either safety, speed, or terrain ruggedness. This can be overcome by using a vehicle model with additional dynamics, but these approaches have not yet been demonstrated as real-time feasible and lack thorough analysis in realistic off-road environments. This work proposes an analytical vehicle model with the necessary dynamics and demonstrates real-time feasibility via GPGPU computing. The performance of the approach is rigorously evaluated through theoretical and empirical means, and data from both simulated trials and physical experiments are presented. III. S TATE -OF -THE -A RT VEHICLE AND SAFETY 
+
+CONSTRAINT MODELS 
+
+A. Extended Single-Track Vehicle Dynamics Model 
+
+The extended single-track model, diagrammed in Fig. 2, is a single-track, planar vehicle model with prescribed longitudinal velocity rate and steering rate. It is applied to non-planar terrain by continually approximating the terrain as a plane locally tangential to the surface under the center of mass (CoM). Due to the planar terrain approximation, it is only valid on smooth terrain. The terrain is also assumed to be rigid and expressed as a function of location, but this function need not be analytical: a heightmap is sufficient so long as numerical first derivatives can be taken to evaluate slope. 4 
+
+> Fig. 2. The extended single-track vehicle dynamics model, a state-of-the-art baseline
+
+The model was introduced in [12], and the version leveraged in this work is identical except for the tire model. The model is reproduced here to remove any ambiguity; this reporting corrects minor errors, expresses assumptions more thoroughly, uses a notation consistent with the model proposed in Sec. IV-A, and provides several necessary additional equations. The model makes the following assumptions: A1) The terrain is rigid, and the terrain height can be determined for any (x, y ) location A2) The terrain is sufficiently smooth to be locally planar at the length-scale of the chassis A3) The tires are always in contact with the terrain A4) The suspension deflection is negligible: the vehicle’s CoM is a constant distance from the local plane, and the chassis’ vertical axis is always normal to the terrain A5) The longitudinal and lateral components of angular velocity are negligible A6) The longitudinal velocity of the chassis is positive and may have a prescribed rate of change The state and control vectors are defined in [12] as 
+
+ξ ≜
+
+
+
+xyψ 
+
+> B
+
+vy 
+
+> B
+
+ωz
+
+δ 
+
+> B
+
+vx
+
+
+
+=
+
+
+
+CoM x position CoM y position chassis yaw angle CoM lateral velocity chassis angular velocity about bx
+
+steering angle CoM longitudinal velocity 
+
+
+
+(1) and 
+
+ζ ≜
+
+ ˙δ
+
+˙B vx
+
+
+
+=
+
+ steering rate CoM longitudinal velocity rate 
+
+
+
+(2) The derivative of the state is computed using 
+
+˙ξ = A(ξ) + Bζ (3) where 
+
+A(ξ) = 
+
+ 
+
+> W
+
+vx 
+
+> W
+
+vy 
+
+> B
+
+ωzFy,f +Fy,r  
+
+> M
+
++ B gy − B ωz B vxFy,f Lf cos( δ)−Fy,r Lr
+
+> Jzz
+
+00
+
+
+
+(4) and 
+
+B =
+
+0 0 0 0 0 1 00 0 0 0 0 0 1
+
+T
+
+(5) as in [12], where Fy,f and Fy,r are the lateral forces on the front and rear virtual tires, respectively, g is the gravity vector, and other parameters are as defined in App. A. Notably, the vehicle experiences roll, pitch, and heave dynamics, but these terms do not appear in the state vector. Due to assumption A4, these dynamics are passively induced by the terrain as the vehicle moves between local planes. To simplify the computation necessary to recover these dynamics from the state vector and local plane, the model utilizes Euler angles following the 1-2-3 convention. That is, 
+
+B is generated from W by first rotating along wx by ϕ, then along the new y axis by θ; then along the new z axis, bz by 
+
+ψ. An arbitrary vector, q, is transformed via  
+
+> W
+
+q =
+
+ cθ cψ −cθ sψ sθ
+
+cϕsψ + cψ sϕsθ cϕcψ − sϕsθ sψ −cθ sϕ
+
+sϕsψ − cϕcψ sθ cψ sϕ + cϕsθ sψ cϕcθ
+
+ B q (6) where c• and s• are shorthand for cos( •) and sin( •).Under this convention, the roll and pitch angles are deter-mined by the normal vector of the terrain under the vehicle’s CoM. Essentially, the roll and pitch define the local plane, and the yaw rotates within the it. The relationship, from [12], is  
+
+> W
+
+τ =
+
+
+
+sin( θ)
+
+− cos( θ) sin( ϕ)cos( ϕ) cos( θ)
+
+ (7) where τ is the unit-length normal vector, found by evaluating the slope of the terrain at the position of the vehicle’s CoM:  
+
+> W
+
+τ ∝ fx(x, y ) fy (x, y ) 1T (8) where fx and fy are partial derivatives of f , the terrain height function, taken with respect to x and y, respectively. Additionally, the following are true via assumption A4, assumption A5, and the 1-2-3 Euler angle convention: 
+
+z = f (x, y ) + ( h + R)bz (9)  
+
+> B
+
+v = B vx B vy 0T (10)  
+
+> B
+
+ω = 0 0 B ωz
+
+T (11) where z denotes the z position of the CoM. Correcting from [12], the rate of change of the yaw angle, ˙ψ, is simply B ωz .The lateral tire forces, Fy,f and Fy,r , are computed using a reduced-order tire model. The model was created by fitting 5
+
+to synthetic data produced by the data-driven tire model used in [27]. It utilizes a sigmoid function: 
+
+Fy,i 
+
+Fz,i 
+
+= −Ciαiμi
+
+pμ2 
+
+> i
+
++ ( Ciαi)2 (12) where i indexes the tire under analysis, αi is the slip angle, 
+
+Fz,i is the normal force, Ci is the cornering stiffness in the linear region, and μi is the maximum value of | Fy,i  
+
+> Fz,i
+
+|.The extended single-track model evaluates (12) on the front and rear virtual tires. Their slip angles are computed as 
+
+αf = arctan 
+
+ B vy + B ωz Lf 
+
+> B
+
+vx
+
+
+
+− δ (13a) 
+
+αr = arctan 
+
+ B vy − B ωz Lr 
+
+> B
+
+vx
+
+
+
+(13b) Normal forces for each physical tire, which may be used to verify assumption A3 and/or enforce constraints, are computed via the following corrected and simplified relations from [12]: 
+
+Fz,f l = ( −Kzz,f B gz − Kzx B ax)
+
+ 12 − Kzy B ay
+
+−M B gz
+
+
+
+(14a) 
+
+Fz,f r = ( −Kzz,f B gz − Kzx B ax)
+
+ 12 + Kzy B ay
+
+−M B gz
+
+
+
+(14b) 
+
+Fz,rl = ( −Kzz,r B gz + Kzx B ax)
+
+ 12 − Kzy B ay
+
+−M B gz
+
+
+
+(14c) 
+
+Fz,rr = ( −Kzz,r B gz + Kzx B ax)
+
+ 12 + Kzy B ay
+
+−M B gz
+
+
+
+(14d) where Kzz,f , Kzz,r , Kzx , and Kzy are the front-vertical, rear-vertical, longitudinal, and lateral load transfer coefficients, respectively, given by 
+
+Kzz,f ≜ M Lr
+
+Lf + Lr
+
+(15) 
+
+Kzz,r ≜ M Lf
+
+Lf + Lr
+
+(16) 
+
+Kzx ≜ M h + RLf + Lr
+
+(17) 
+
+Kzy ≜ M h + Re (18) and B ax and B ay are the longitudinal and lateral components of the vehicle CoM’s acceleration, respectively, given by  
+
+> B
+
+ax = B ˙vx − B ωz B vy (19)  
+
+> B
+
+ay = B ˙vy + B ωz B vx (20) The normal forces for the virtual tires, needed to evaluate (12), are found by summing the forces from (14): 
+
+Fz,f = −Kzz,f B gz − Kzx B ax (21a) 
+
+Fz,r = −Kzz,r B gz + Kzx B ax (21b) 
+
+B. Analysis 
+
+The purpose of the following analysis is to establish a fun-damental shortcoming of state-of-the-art approaches. It proves that the typically applied rollover prevention constraints do not protect against rollovers caused by terrain roughness and/or suspension dynamics. This means that protection against these types of rollovers is left up to chance, and it motivates the development of the proposed formulation in Sec. IV. The derivation takes place in three parts. First, Sec. III-B1 demonstrates how a tire-liftoff constraint may be reformulated as an equivalent lateral-acceleration constraint. Notably, this justifies the use of a lateral-acceleration constraint as a state-of-the-art baseline in this work. Next, Sec. III-B2 demonstrates how the possibility of violating the lateral-acceleration (and corresponding tire-liftoff) constraint is governed by the trac-tion of the terrain. Lastly, Sec. III-B3 proves how this results in the aforementioned shortcoming, a lack of protection against certain types of rollovers, when applied to the problem domain studied in this work. The analysis considers a tire-liftoff constraint, which, as re-viewed in Sec. II, is a state-of-the-art approach for ensuring the safety of an autonomous off-road vehicle against rollover. A scenario where the chassis experiences negligible longitudinal acceleration is considered, which, as seen in (19), occurs when a constant longitudinal velocity is prescribed and the yaw rate and lateral velocity are both small enough that their product is approximately zero. 
+
+1) Constraint Equivalencies: The tire-liftoff constraint as-serts that the tire normal forces given in (14) are all strictly positive, meaning Fz,i > 0 ∀ i ∈ { f l, f r, rl, rr }. Under the assumed condition of negligible longitudinal acceleration, the tire normal forces simplify as 
+
+F ′ 
+
+> z,f l
+
+= Kzz,f 
+
+M
+
+ −M B gz
+
+2 − Kzy B ay
+
+
+
+(22a) 
+
+F ′ 
+
+> z,f r
+
+= Kzz,f 
+
+M
+
+ −M B gz
+
+2 + Kzy B ay
+
+
+
+(22b) 
+
+F ′ 
+
+> z,rl
+
+= Kzz,r 
+
+M
+
+ −M B gz
+
+2 − Kzy B ay
+
+
+
+(22c) 
+
+F ′ 
+
+> z,rr
+
+= Kzz,r 
+
+M
+
+ −M B gz
+
+2 + Kzy B ay
+
+
+
+(22d) where it is noted that B gz is a negative quantity. Due to the symmetry of (22), the tire-liftoff constraint may be equivalently expressed as 
+
+|B ay | < −M B gz
+
+2Kzy 
+
+(23) The load transfer equations given in (14) and simplified in (22) are originally from [28], which did not consider non-horizontal surfaces in its derivation. Due to this, the in-plane components of the gravity vector are neglected. For the terrain considered in this study, which does not include extreme slopes, this assumption is justifiable. However, to assist with analytical simplification in this analysis, this assumption is removed by subtracting the missing gravity components from chassis acceleration. Thus, (23) is corrected as 
+
+|B ay − B gy | < −M B gz
+
+2Kzy 
+
+(24) 6
+
+where B gy is the lateral component of the gravity vector. By dividing both sides by −B gz , the right-hand side of the inequality is made to contain only fixed vehicle properties: 
+
+|B ay − B gy |−B gz
+
+< M
+
+2Kzy 
+
+(25) This inequality expresses a lateral-acceleration constraint. Thus, a tire-liftoff constraint may be equivalently reformu-lated as a lateral-acceleration constraint when the longitudinal acceleration is negligible. The constraint may be expressed as 
+
+|B ay − B gy |−B gz
+
+< B ¯ay
+
+g (26) where B ¯ay is the critical lateral-acceleration boundary for tire liftoff on flat terrain. It may be found empirically or via  
+
+> B
+
+¯ay ≜ M g 
+
+2Kzy 
+
+(27) 
+
+2) Possibility of Constraint Violation: To compute the left-hand side of (26), (4) is first substituted into (20), yielding  
+
+> B
+
+ay = Fy,f + Fy,r 
+
+M + B gy (28) where Fy,f and Fy,r are the lateral tire forces on the front and rear virtual tires, respectively. An important property of the tire model is that the maximum lateral force it may predict is bounded by the tire normal force and terrain traction. The maximum lateral force for virtual tire i ∈ { f, r } is constrained as follows: 
+
+|Fy,i | ≤ μF ′ 
+
+> z,i
+
+(29) where μ is a model parameter denoting the maximum coeffi-cient of friction supported by the terrain. Virtual tire normal forces are found by laterally summing the physical tire normal forces. Performing this operation on (22) yields 
+
+F ′ 
+
+> z,i
+
+= −Kzz,i B gz (30) Subtracting B gy from both sides of (28) and performing substitution via (29) and (30) yields an inequality constraining the maximum lateral acceleration that the model may predict: 
+
+|B ay − B gy | ≤ − B gz μ Kzz,f + Kzz,r 
+
+M (31) The fraction in (31) simplifies to 1, and both sides may be divided by −B gz to express the maximum value of the left-hand side of (26): 
+
+|B ay − B gy |−B gz
+
+≤ μ (32) Thus, the possibility of violating (26) is governed by 
+
+μ ≥ B ¯ay
+
+g (33) If this inequality evaluates false, it is not possible to violate the lateral-acceleration (and equivalent tire-liftoff) constraint with any state or control vector that maintains the assumed negligible longitudinal acceleration. 
+
+3) Application to Off-Road Domains: The previous find-ings are relevant to applications that meet the following two conditions: First, the terrain traction is low enough, and the vehicle is stable enough, that (33) evaluates false. Second, it is still possible to roll the vehicle due to the effects of non-planar geometry, even without experiencing non-negligible longitudinal acceleration. Both of these conditions are true for the vehicle and scenarios considered in this work. The relevance is demonstrated through a simple proof by contradiction. The proof supposes that a tire-liftoff constraint implemented with the extended single-track model is capable of protecting the vehicle against all types of rollovers. Due to the first condition, the equivalent lateral-acceleration constraint is impossible to violate. This implies the vehicle cannot be rolled so long as longitudinal acceleration is negligible, contradicting the second condition. Thus, the initial premise is false, meaning the tire-liftoff constraint is not capable of protecting the vehicle against all types of rollovers. To summarize, being unable to violate the safety constraint does not guarantee the vehicle is protected from rollover. Even on low-traction terrains, it is still possible to roll the vehicle due to the effects of terrain roughness and/or suspension dynamics. This proves that a tire-liftoff or lateral-acceleration constraint, implemented with the extended single-track model, is insufficient to protect autonomous off-road vehicles from rollover when navigating rough terrain at high-speed. 
+
+C. Discussion 
+
+The efficacy of a safety constraint depends on the model’s ability to predict the terms included in the constraint. In the case of the state-of-the-art approach analyzed in the previous section, it depends on the extended single-track model’s ability to predict tire loading. Due to the extended single-track model’s simplicity, its ability to predict tire loading is limited: the model lacks roll, pitch, and heave dynamics, and it assumes the terrain is locally planar, meaning it ignores the unique geometry under each tire. As such, the only tire loading dynamics it predicts are those caused by longitudinal and lateral acceleration. This is demonstrated by the re-expression of a tire-liftoff constraint as a lateral-acceleration constraint in the previous analysis. Therefore, when the extended single-track model is used to evaluate a tire-liftoff constraint, it only evaluates tire liftoff caused by load transfer due to in-plane acceleration. It does not consider tire liftoff caused by vertical dynamics or rough terrain, since the model is not designed to predict these phenomena. Thus, the safety constraint protects against only one type of tire liftoff, and the vehicle is left vulnerable to the others. To safely use this approach, these vulnerabilities must be mitigated through alternate means. A straightforward way to achieve this is by reducing oper-ational domain via simple constraints on speed and location. To guarantee safety, the domain must be restricted such that the vehicle cannot experience rollover via vertical dynamics or rough terrain. This may take the form of no-go areas around rough terrain, or significant speed restrictions in these regions, such that the suspension dynamics are quasi-static. However, this would significantly reduce the mobility of the vehicle. 7
+
+To leverage the full limits of mobility of an off-road vehicle platform, it must be enabled to safely operate in domains with a risk of rollover due to rough terrain and vertical dynamics. The state-of-the-art approach cannot achieve this, since it lacks sufficient modeling fidelity to provide complete safety against rollover via a tire-liftoff constraint. Therefore, a successful ap-proach must include mechanisms to comprehensively predict and mitigate a rollovers across a larger operational domain. The next section proposes such an approach. IV. P ROPOSED MPC F ORMULATION 
+
+A. Single Rigid Body Vehicle Dynamics Model  
+
+> Fig. 3. The single rigid body vehicle dynamics model, a higher-fidelity alternative to the extended single-track model
+
+To predict and mitigate rollovers more comprehensively than the state-of-the-art approach, a higher fidelity model is used to predict vehicle dynamics. This model, denoted as the single rigid body model, is derived with the aim of having the minimal complexity required to model rollover caused by rough terrain and vertical motion. The single rigid body model, diagrammed in Fig. 3, is a 4-wheeled vehicle model that treats the vehicle as a single rigid body in 3D space, with the lumped mass and inertia properties of the whole vehicle. Due to this, the roll, pitch, and heave dynamics are independent degrees of freedom, distinct from the terrain. It models the suspension as independent linear spring-dampers at each wheel, and the wheels are considered massless. Additionally, the tires are not assumed to drive on the same local plane, nor are they required to be in constant contact with the terrain. This relaxes the smoothness requirement compared to the extended single-track model, enabling it to be simulated over rough surfaces. The model makes the following assumptions: A1) The terrain is rigid, and the terrain height can be determined for any (x, y ) location A2) The terrain is sufficiently smooth to be locally planar at the length-scale of a wheel A3) The suspension deflection occurs in the chassis vertical direction, and the contact patch is directly below the wheel hub in the chassis frame A4) The location at which the tire forces act is constant in the chassis frame, despite suspension deflection A5) The wheels have negligible mass A6) The longitudinal velocity of the chassis is positive and may have a prescribed rate of change The state vector is defined as 
+
+ξ ≜
+
+
+
+xyzψθϕ 
+
+> B
+
+vx 
+
+> B
+
+vy 
+
+> B
+
+vz 
+
+> B
+
+ωx 
+
+> B
+
+ωy 
+
+> B
+
+ωz
+
+δ
+
+
+
+=
+
+
+
+CoM x position CoM y position CoM z position chassis yaw angle chassis pitch angle chassis roll angle CoM longitudinal velocity CoM lateral velocity CoM vertical velocity chassis angular velocity about bx
+
+chassis angular velocity about by
+
+chassis angular velocity about bz
+
+steering angle 
+
+
+
+(34) and the control vector is identical to (2). The state update equation is also identical to (3), where 
+
+A(ξ) = 
+
+ 
+
+> W
+
+vx 
+
+> W
+
+vy 
+
+> W
+
+vz
+
+˙ψ
+
+˙θ
+
+˙ϕ
+
+0 
+
+> Fy
+> M
+
++ B gy + B ωxB vz − B ωz B vxFz 
+
+> M
+
++ B gz − B ωxB vy + B ωy B vxMx+( Jyy −Jzz )B ωy B ωz        
+
+> Jxx
+> My−(Jxx −Jzz )BωxBωz
+> Jyy
+> Mz+( Jxx −Jyy )BωxBωy
+> Jzz
+
+0
+
+
+
+(35) and 
+
+B =
+
+"
+
+02x6 
+
+01 02x5 
+
+10
+
+#T
+
+(36) 
+
+Fy , Fz , Mx, My , and Mz are summed forces and moments computed by separate equations described in this section. The implementation of this model utilizes Euler angles following the 3-2-1 convention. That is, B is generated from 
+
+W by first rotating along wz by ψ, then along the new y axis by θ, then along the new x axis, bx, by ϕ. An arbitrary vector, 
+
+q, is transformed via  
+
+> W
+
+q =
+
+
+
+cψ cθ cψ sϕsθ − cϕsψ sϕsψ + cϕcψ sθ
+
+cθ sψ cϕcψ + sϕsψ sθ cϕsψ sθ − cψ sϕ
+
+−sθ cθ sϕ cϕcθ
+
+ B q (37) 8
+
+where c• and s• are shorthand for cos( •) and sin( •).This rotation representation is selected out of preference, and it is not intrinsically required by the model. Notably, it experiences gimbal lock when θ = π 
+
+> 2
+
+. However, no numerical issues are observed due to this, as this situation corresponds to the vehicle’s forward axis, bx, pointing directly upwards along the world’s vertical axis, wz . The vehicle’s dynamics do not approach this region, so it is not a concern for applications of this work. Under this convention, Euler angle rates can be determined from angular velocity via 
+
+
+
+˙ψ
+
+˙θ
+
+˙ϕ
+
+ =
+
+
+
+0 sin( ϕ)cos( θ)cos( ϕ)cos( θ)
+
+0 cos( ϕ) − sin( ϕ)1 sin( ϕ) sin( θ)cos( θ)cos( ϕ) sin( θ)cos( θ)
+
+ B ω (38) Several steps are required to compute the forces and mo-ments occurring at each wheel. The procedure for wheel 
+
+i ∈ { f l, f r, rl, rr } (corresponding to front-left, front-right, rear-left, and rear-right, respectively) is as follows: First, the position and velocity of the chassis, at a virtual point coincident with the nominal contact patch is found via  
+
+> W
+
+P i = x y zT + W ρi (39) 
+
+vi = v + ω × ρi (40) where  
+
+> B
+
+ρf l =  Lf e 
+
+> 2
+
+−(h + R)T (41a)  
+
+> B
+
+ρf r =  Lf − e 
+
+> 2
+
+−(h + R)T (41b)  
+
+> B
+
+ρrl = −Lr e 
+
+> 2
+
+−(h + R)T (41c)  
+
+> B
+
+ρrr = −Lr − e 
+
+> 2
+
+−(h + R)T (41d) Then, the relative extension and extension rate are computed as a function of the terrain height and slope at the previously determined position: 
+
+χi = W P iz − f (W P ix, W P iy ) 
+
+> B
+
+¯τ iz
+
+(42) 
+
+˙χi = ¯τ i · (vi − χiω × bz ) 
+
+> B
+
+¯τ iz
+
+(43) where ¯τ i is parallel to the normal vector, found by evaluating the slope of the terrain at the nominal contact patch position:  
+
+> W
+
+¯τ i ≜ fx(W P ix, W P iy ) fy (W P ix, W P iy ) 1T (44) Equation (42) determines χi such that W P i − χibz is coin-cident with a planar approximation of the terrain constructed below the nominal contact patch position. This operation determines the length-scale mentioned in assumption A2, and it is less strict than its extended single-track model counterpart. With the extension and extension rate known, the suspension forces are calculated via 
+
+Fs,i = g
+
+2 Kzz,i (45) 
+
+Fk,i = max( Fs,i − kiχi, 0) (46) 
+
+Fb,i =
+
+(
+
+max( −bi ˙χi, −Fk,i ), Fk,i > 00, Fk,i = 0 (47) 
+
+Fz,i = Fk,i + Fb,i (48) where Fs,i is the nominal tire loading, Kzz,i is given by either (15) or (16) depending on i, Fk,i is the additional force by an assumed linear spring, Fb,i is the additional force by an assumed linear damper, and Fz,i is the overall loading on tire 
+
+i, acting in the bz direction. The springs are parameterized by coefficients kf and kr for the front and rear, respectively, and the dampers are parameterized by coefficients bf and br for the front and rear, respectively. The suspension equations ensure that forces are only gen-erated when the tire is in contact with the ground and that the overall force is never attractive. This allows the model to operate without the assumption of persistent tire contact, i.e., the equations are still valid after tire liftoff. The slip angle for tire i is computed as 
+
+αi = arctan B viy 
+
+> B
+
+vix
+
+!
+
+− δi (49) where δi is δ for the front tires and zero otherwise. With this and the vertical force known, the lateral force, Fy,i , may be computed using the tire model discussed in Sec. III-A. The summed forces required by (35) are computed as 
+
+Fy = X
+
+> i
+
+Fy,i cos δi (50) 
+
+Fz = X
+
+> i
+
+Fz,i (51) The summed moments required by (35) are computed as 
+
+
+
+Mx
+
+My
+
+Mz
+
+ = X
+
+> i
+
+B ρi ×
+
+
+
+Fx,i 
+
+Fy,i cos δi
+
+Fz,i 
+
+ (52) where Fx,i is the constraining force required to maintain assumption A6, computed via 
+
+Fx,i =
+
+(
+
+0, i ∈ { f l, f r } 
+
+> M
+> 2
+
+(B ˙vx − B gx + B ωy B vz − B ωz B vy ), i ∈ { rl, rr }
+
+(53) 
+
+B. Energy Stability Margin Constraint 
+
+When using the single rigid body model, an additional limitation of the tire-liftoff constraint becomes apparent. When the vehicle dynamics model is of a sufficient fidelity to predict tire liftoff from causes other than in-plane accelerations, the constraint is overconservative. For example, the many small tire liftoffs that may occur when driving over terrain with high-frequency ruts do not pose a danger to the vehicle (see Fig. 1), but they are deemed unsafe by a tire-liftoff constraint. This is not an issue for the state-of-the-art approach, since the extended single-track model does not predict these liftoffs, but it presents an issue for the proposed approach. Therefore, a constraint leveraging the energy stability mar-gin (ESM) from [23] is presented. Fig. 4 illustrates the application of ESM to a wheeled vehicle: it measures the minimum required potential energy change to bring the system to rollover or pitch-over, produced by rotating the vehicle about a line of contact with the ground such that the center of mass (CoM) lies directly over it. With ∆h denoting the 9Δh 
+
+> Fig. 4. Relative height used to compute the Energy Stability Margin (ESM)
+
+height difference of the CoM between the current and nearest unstable equilibrium state, ESM is computed via 
+
+UESM ≜
+
+(
+
+M g ∆h CoM is inside the vehicle footprint 
+
+−M g ∆h CoM is outside the vehicle footprint (54) ESM is at a maximum when the vehicle is sitting evenly on the ground, and it decreases to zero when the vehicle is per-fectly balanced over an adjacent pair of wheels. Additionally, the metric does not saturate; it can continue to go negative as rollover or pitch-over continues. The ESM safety constraint simply asserts that the metric remains positive: 
+
+UESM > 0 (55) The height difference, ∆h, required to compute ESM via (54) is computed via the roll and pitch of the chassis. The metric may be computed for the single rigid body model, but it may not be applied to the extended single-track track model, since it lacks roll and pitch dynamics. To simplify computation, it is assumed that rollover always requires less energy than pitch-over. This is numerically true for the vehicle and terrain considered in this work, but it may not always hold. It is also assumed that the location of the sup-port polygon remains constant as the vehicle rolls and pitches, meaning this implementation of the metric neglects suspension deflection. With these simplifications, ∆h is computed from 3-2-1 Euler angles via 
+
+∆h = ¯R  1 − sin  |ϕ| + ¯ϕ cos( θ) (56) where 
+
+¯R ≜
+
+r
+
+(h + R)2 +
+
+ e
+
+2
+
+2
+
+(57) and 
+
+¯ϕ ≜ arctan 
+
+ 2( h + R)
+
+e
+
+
+
+(58) 
+
+C. OCP Formulation 
+
+At each iteration of the MPC outer loop, an OCP must be solved to determine the next control for the vehicle to execute. Two problem formulations are created: one for a state-of-the-art baseline approach using the extended single-track vehicle model and a lateral-acceleration constraint, and one for the proposed approach using the single rigid body vehicle model and an ESM constraint. Both formulations each have an obstacle-avoidance constraint and are identical outside of the vehicle dynamics model and rollover-prevention constraint. A key component of the formulation is the cost function: 
+
+J ≜
+
+Z tf
+
+> t0
+
+L(ξ(t), ζ(t)) dt + Φ( ξ(tf )) (59) where the prediction horizon is given by tf − t0, L and Φ
+
+are the running and terminal cost functions, and ξ and ζ are the state and control vectors, respectively. ξ is model-specific, given in (1) and (34) for the extended single-track and single rigid body models, respectively. ζ is identical between the models and given in (2). The running cost includes two terms borrowed from [12]: 
+
+L0(ζ) ≜ wt + wc ˙δ2 (60) where wt is the time-to-goal weight, wc is the control weight, and ˙δ is the steering rate. The terminal cost is the weighted 2D Euclidean distance to the goal: 
+
+Φ( ξ) ≜ wg
+
+q
+
+(x − xg )2 + ( y − yg )2 (61) where wg is the distance-to-goal weight, x and y describe the position of the vehicle’s CoM, and xg and yg describe the position of the goal. The baseline running cost, L0, minimizes time to goal and steering actuator usage, and the terminal cost penalizes terminal distance to the goal. In this study wt is 5 cost-units/s, 
+
+wc is to 8 cost-units/s per (rad/s) 2, and wg is 15 cost-units/m. These values were selected by manual tuning and observing the vehicle’s navigation behavior on flat, level ground. The full running cost, L, incorporates an additional term, 
+
+Lsoft , which is the sum of several soft constraint cost rates and enables the implementation of safety constraints: 
+
+L ≜ L0 + Lsoft (62) Fig. 5 illustrates the normalized soft constraint formulation used in this work in comparison with a hard constraint approach. Hard constraints are boolean functions, where all violations are equivalent. In contrast, soft constraints provide a differential between violations of different magnitudes, pro-moting minimal constraint violation if a violation is inevitable. Several types of soft constraints are applied, and they are expressed as normalized quadratic costs: 
+
+Lsoft ≜ X
+
+> c∈C
+
+σc max 
+
+
+
+0, 1 + πc
+
+ϵc
+
+2
+
+(63) where C is the set of all applied constraints. For constraint 
+
+c ∈ C , πc measures the extent of violation, and ϵc and σc are normalizing factors, shown in Fig. 5 for a single constraint. The lateral-acceleration constraint is applied to the extended single-track model, and the ESM constraint is applied to the single rigid body model. Both formulations also have a common set of distance-based constraints that prevent colli-sion with obstacles and path boundaries. The set of applied constraints for each formulation is therefore 
+
+CEST ≜ Cdist ∪ { cB ay } (64) 
+
+CSRB ≜ Cdist ∪ { cESM } (65) 10 
+
+> Fig. 5. Normalized soft constraint formulation: The additional cost rate added by incremental violation of a soft constraint is shown and compared to the equivalent additional cost of violating a hard constraint.
+
+where subscripts EST and SRB stand for the extended single-track and single rigid body models, respectively. Cdist is the set of collision-avoidance constraints, cB ay is the lateral-acceleration constraint, and cESM is the ESM constraint. Letting P denote the set of obstacle and path boundary perimeters and cdist i,p denote a distance constraint between wheel i and geometric feature p,
+
+Cdist ≜ {cdist i,p : i, p ∈ { f l, f r, rl, rr } × P} (66) Thus, each geometric feature generates a constraint for each wheel of the vehicle This is done to approximate a constraint placed on the entire footprint of the vehicle. The constraints, in their nominal, hard-constraint form, are 
+
+cdist i,p ≜ dist i,p > 0 (67) 
+
+cB ay ≜ |B ay − B gy | < B ¯ay (68) 
+
+cESM ≜ UESM > 0 (69) where dist i,p is the minimum 2D Euclidean distance between wheel i and perimeter p, the right-hand side of (68) is a simplified form of (26), and the right-hand side of (69) is identical to (55). To implement the above as soft constraints, a measure of violation is defined for each: 
+
+πdist i,p = −sdist i,p (70) 
+
+πB ay = |B ay − B gy | − B ¯ay (71) 
+
+πESM = −UESM (72) where sdist i,p is the signed minimum 2D Euclidean distance between wheel i and perimeter p. For an obstacle, a signed distance is negative when the test point falls inside the perime-ter and is positive otherwise. For a path boundary, the reverse is true. The perimeters may be any arbitrary geometry so long as the signed distance can be computed for any test point. For the rollover constraints, lateral-acceleration and ESM, the normalizing factors, ϵB ay and ϵESM , are set such that each soft constraint begins contributing cost at a 10% safety factor. This is shown in Fig. 6, and aims to minimize bias due to the disparate constraint types between the two formulations. 
+
+> Fig. 6. Safety constraint implementations: The rollover prevention constraints are normalized equivalently to minimize bias. Each constraint begins con-tributing cost at 10% safety factor and has an identical value at full violation. The ESM constraint is shown with the top axis, and the lateral-acceleration constraint is shown on the bottom one.
+
+For both formulations, the obstacle and path boundary constraints use a normalizing factor, ϵdist i,p , of 0.25 m. This means they begin contributing cost when a wheel enters the region formed by inflating all perimeters by the same radius. For all formulations and soft constraint types, the cost at exact violation, σc, is set to 10 6 cost-units/s. A large value is selected so that avoiding a constraint will always take prece-dence over other costs, such as actuator usage. Additionally, this means that obstacle and path boundary constraints are treated as being equally important to rollover constraints. The final constraint considered is the maximum element-wise magnitude of the control input, ζ. The first term, ˙δ,is constrained by the actuation limits of the vehicle to a maximum magnitude of 1 rad/s. The second term, B ˙vx, is constrained by the experimental design (discussed in Sec. V) to always be zero. Rather than treating these as constraints in the formulation, they can be satisfied by configuring the optimizer to only consider inputs from the set {ζ : | ˙δ| ≤ 
+
+1 rad/s , B ˙vx = 0 m/s 2}.The navigation task is completed when the vehicle reaches the goal, which is specified as a circle in the horizontal plane; i.e., the task is complete when the following is true: 
+
+q
+
+(x − xg )2 + ( y − yg )2 ≤ rg (73) where rg is the goal radius, 2.5 m in this study. The planning horizon is broken into nt segments of length 
+
+∆t, and the control inputs for the planning horizon are parameterized by a sequence of length nt:
+
+[ζ]nt 
+
+> i=1
+
+≜ [ζ1, ζ2, ..., ζnt−1, ζnt ] (74) The control inputs are fed to the plant via a zero-order hold (ZOH), where each ζi is held for a duration of ∆t, producing a step function. ∆t is distinct from the internal period of any numerical integration schemes and from the period of the outer MPC loop. In this study, nt is 16, and ∆t is 0.25 s, resulting in a planning horizon of 4 s. A longer time horizon 11 
+
+or shorter ∆t may result in better planning, but it increases the computational complexity of solving the OCP. The solution to the overall OCP formulation is given by 
+
+[ζ∗]nt 
+
+> i=1
+
+≜ argmin 
+
+> [ζ]nti=1
+
+J([ ζ]nt
+
+> i=1
+
+) s.t. ˙ξ(t) = f (ξ(t), ζ(t)) 
+
+ξ(t0) = ξ0
+
+(75) where f is the model-specific vehicle dynamics function and 
+
+ξ0 is the most recent vehicle state estimation. Additionally, when integrating cost as defined in (59), tf is the lesser of 
+
+t0 + nt ∆t or the minimum time such that (73) is satisfied. 
+
+D. Real-Time Implementation 
+
+The MPC implementation uses a sampling method to find an approximate solution to each OCP. Each solution is found by drawing N i.i.d. samples from the set of valid control actions, then independently computing the resulting cost, given in (59), for each sample. The sample with the minimum cost is found and returned. This operation is denoted an “empirical argmin,” and as N increases, the empirical solution becomes a closer approximation of the true optimal solution. Notably, this approach bears many similarities to MPPI [26], which also uses random samples to approximate solutions to OCPs. One key difference is that MPPI generates its solution as a weighted average of multiple samples, and the empirical-argmin optimizer uses only a single sample. In effect, the latter’s approach is mathematically similar to setting λ, a configuration parameter of MPPI, to zero. Another is that MPPI is typically implemented with warm-starting, but this work uses a uniform distribution for each iteration. These differences can be beneficial in sample-constrained settings, but they are not necessary for the current work. The GPGPU implementation of the proposed method is sufficiently computationally efficient to enable real-time closed-loop op-eration of the empirical-argmin optimizer. Compared to CPUs, GPUs have a much larger number of cores, each core has multiple resident threads that it can instantly switch between, and there is specialized texture memory hardware to perform bilinear interpolation and spatial caching [29]. The implementation of the proposed method is written using a homogeneous multi-threading model where each thread independently simulates a vehicle trajectory and evaluates cost through numerical integration. A key limiting factor for this application is the register usage. Multiple threads may share time on a single core, but they do not share registers. Meaning, the combined register usage of all threads resident to a core must not exceed the hardware-limited register count. Given this limitation, the total number of threads that may be simultaneously resident on a given GPU is 
+
+Nresident ,max =
+
+ registers per core registers per sample 
+
+
+
+core count (76) assuming an even distribution of registers between cores and threads. The total number of samples can be expressed in terms of this quantity: N = k N resident ,max , and, in theory, maximum sampling bandwidth is achieved with an integer k.A CUDA C++ implementation of this algorithm compiled with the CUDA 12.8.0 toolkit requires 38 and 72 registers per sample for the extended single-track and single rigid body models, respectively. Recent NVIDIA GPU architectures have 512 32-bit registers available to each core under ahomogeneous workload [29], so Nresident ,max is 7 times the number of cores for the single rigid body model. The integration routines on the GPU are performed using a forward Euler method with a timestep of 5 ms. Comparisons performed with various timesteps and an alterative 4 th -order Runge-Kutta method revealed this method and timestep to of-fer the best real-time performance while maintaining accuracy for the single rigid body model. Notably, the extended single-track model requires fewer registers than the single rigid body model and may be capable of a coarser timestep. The former is simply caused by the computations being less complex, and the latter is caused by a lack of suspension modeling in the dynamics. Therefore, the extended single-track model may be capable of larger sample sizes for the same runtime, but this study is performed with an identical number of samples and timestep for each formulation. This is done to ensure similar convergence properties and to minimize differences between the formulations. To enable efficient computation on the GPU, the sdist 
+
+function specified in (70) is pre-computed and summed for all features. This is saved to a costmap that is interpolated at runtime, greatly improving efficiency. Additionally, the randomly sampled controls are directly generated on the GPU via the cuRAND library, and the argmin operation is also performed on the GPU through a parallelized algorithm. Real-time suitability of the proposed formulation is evalu-ated using Dell Precision 5690 laptop with an Intel Core Ultra 9 185H CPU, 64 GiB RAM, and an NVIDIA RTX 5000 Ada Mobile GPU. This GPU has 9728 cores, making Nresident ,max 
+
+68 096. k is set to 3, making N , the total number of samples per OCP, 204 288. Under this configuration, the CUDA C++ implementation achieves a maximum execution rate of 80 Hz with a corresponding total system power draw of 140 W, while using the single rigid body model. Equivalently stated, the implementation is capable of eval-uating over 11 million trajectory samples per second on this hardware. It is possible to increase or decrease the update rate by varying the number of samples per OCP. The specific value of k used in these experiments was selected to maximize con-vergence for challenging OCPs by providing an overestimate of the required number of samples. The sampling rate is also dependent on the number of cores available on the GPU. For example, this formulation achieves approximately 21 million trajectory samples per second on the NVIDIA RTX 6000 Ada Generation desktop GPU with 18 176 cores. V. S ETUP OF NAVIGATION TRIALS 
+
+Multiple trials of several closed-loop navigation tasks are used to evaluate the relative performance of the proposed formulation compared to the state-of-the-art approach. The tasks require the traversal of rugged off-road terrain, at speeds ranging from 4 to 10 m/s. To assess how well rollover and 12  
+
+> Fig. 7. The physical location and vehicle used for navigation trials
+
+obstacle collision are avoided as a function of speed, the prescribed longitudinal velocity is fixed for each trial, making it an independent variable in the analysis. This is achieved by using a PID controller to maintain speed via throttle actuation. The MPC formulation is used to control steering only, meaning all candidate controls are generated with the second term of (2) set to zero. Trials are performed both in simulation and with a full-size physical vehicle, and the simulations are configured to closely mimic the real-world testing conditions. This enables both a larger number of trials to be performed and the trials to be carried out at higher speeds than is safely possible with the real vehicle. A total of 9900 simulated trials are conducted at speeds ranging from 5 to 10 m/s, and a total of 48 physical trials are conducted at speeds ranging from 4 to 5.5 m/s The navigation trials take place in a hilly and rugged area with many intersecting off-road trails. This location, found at the Bundy Hill Off-Road Park in Jerome, Michigan, is shown in Fig. 7 along with the experimental vehicle. To perform the simulated trials, a 3D reconstruction of the physical terrain is created by MTRI Inc. Images are captured by a UAV and processed with the Propellor photogrammetry software. Obstacles and path boundaries are manually identi-fied in the scanned data. The trials include three scenarios, two of which are the same route, but run in opposite directions. The simulated trials use all three scenarios equally, whereas the physical trials use one scenario. The navigation scenarios and terrain are described and shown in Sec. V-A. The scanned terrain provides the trajectory planners with 
+
+a priori terrain maps, and it is also used by the plant co-simulator in the simulated trials. Due to the assumptions made by each model, it is necessary to artificially smooth rough terrain before using it with the MPC formulation. Further justification for this step, the procedure, and visualizations of the terrain representations are provided in Sec. V-B. The trials are designed to emulate complete autonomous vehicle systems that are identical except for the MPC formu-lation. The required supporting software and hardware tools and the plant vehicle are described in Secs. V-C and V-D for the simulated and physical trials, respectively. 
+
+A. Scenario Descriptions 
+
+The three scenarios are constructed as follows: Scenario 1) primary route, forward direction Scenario 2) primary route, reverse direction Scenario 3) secondary route, forward direction The secondary route is more challenging, and experiments running it in a reverse direction are not included since neither formulation was able to complete it at any speed without obstacle violation. Each forward route begins with a climb up the hill pictured in Fig. 7, followed by traversal over a series of bumps as it follows the ridge also pictured in Fig. 7. The two forward routes diverge at this point, with the primary route making an earlier, banked right turn before straightening out to reach the goal, and the secondary route making a later, sharper right turn to follow a second, rougher path to the goal. The reverse route follows an identical path to the primary forward route, but the location of the start and goal is switched. Turns are made in opposite directions, and the route ends with a descent down the hill. Each scenario starts with the vehicle already in motion at the starting point (due to the prescribed constant longitudinal velocity), and lasts 20 to 30 seconds depending on speed. The route geometries for scenarios 1 and 3 are visualized via bird’s-eye views in Fig. 8, and Fig. 9 provides images of the physical terrain on scenario 1 as the vehicle navigates it. 
+
+B. Terrain Smoothing 
+
+It is incorrect to simulate the models on terrains that do not meet the level of smoothness assumed for the model. If planning is required over terrain that is too rough for the model, and the terrain estimation captures this roughness, then it must be artificially smoothed before performing planning. The reasoning for this is as follows: the extended single-track model considers the chassis to be constantly aligned with the terrain’s normal and permanently offset from the terrain by a fixed distance along the normal. This offset is performed relative to the terrain directly below the CoM. If the terrain is not smooth relative to the length of the chassis, the model may improperly roll and pitch the chassis due to the local variation below the CoM. The single rigid body model computes suspension deflection by projecting a vector from the wheel location onto a virtual plane located and linearized beneath the wheel. Similarly, if the terrain is not smooth relative to the size of the wheel, the model may improperly compute suspension deflection, leading to incorrect suspension behavior. Both models require the terrain to be smooth, albeit to different extents, such that a point measurement describes the average behavior over a certain length scale. The reconstructed terrain captures fine details and is too rough for either model. Therefore, a Gaussian smoothing kernel with a model-dependent standard deviation is used to artificially smooth the terrain. Gaussian kernels act as low-pass filters, removing the incompatible high-frequency components of the terrain profile while leaving the compatible low-frequencies. A 1.5 m standard deviation is used for the extended single-track model, since it assumes terrain to be planar at the length-scale of the vehicle; and a 0.3 m standard deviation is used for the single rigid body model, since it assumes terrain to be planar at the length-scale of a wheel. 13 E a stin g ( m)                          
+
+> −10 0−50 0N o r t hing (m)
+> −200204060Sc ena rio1Eastin g(m)
+> −10 0−50 0N o r t hing (m)
+> −200204060Sc ena rio3
+> Fig. 8. Route geometry for scenarios 1 and 3, visualized over reconstructed terrain imagery. The vehicle must navigate from the starting point (white circle) to the goal (green circle), while staying inside the path boundary (black polygon) and outside all obstacles (red polygons).
+
+This procedure generates two additional representations of the terrain geometry, which are referred to as levels-of-detail (LODs). The ground-truth terrain representation, before any modifications are performed, is denoted as the plant LOD. The model-specific terrains generated by the smoothing procedures are denoted as the single rigid body and extended single-track LODs. Each of the terrain LODs are visualized in Fig. 10. 
+
+C. Plant Co-Simulator 
+
+The simulated trials are performed using CM Labs’ Vortex Studio multi-body simulator [30]. The tool provides a high-fidelity vehicle representation, including drivetrain, tire, and suspension modeling. The plant vehicle model is created by Traxara Robotics as a digital replica of the full-scale vehicle used in physical tests (see Sec. V-D). The simulated trials use an off-road tire model tuned by Traxara Robotics to match measurements from navigation on the fine-grained dry soil at Keweenaw Research Center in Calumet, MI. The inputs to the simulated vehicle are steering, throttle, and brake actuator efforts. The steering effort is produced by integrating and scaling the steering rate-of-change output from the MPC formulation, and a PID controller maintains the longitudinal speed of the vehicle via throttle effort control. The simulated brake actuator is not used. The output from the simulated vehicle is a 3D odometry measurement of the chassis at a rate of 100 Hz. The odometry measurement is used to form the vehicle state vector, which is provided to the planner as-is. There is no simulated sensor noise or communication latency. The planner runs at a fixed frequency of 25 Hz, signifi-cantly under the maximum real-time rate measured in Sec. IV-D. This adjustment is made to simplify synchronization with the 100 Hz plant simulator and to prevent full GPU utilization, leaving room for expansion via additional modules such as vision processing. Simulation consists of a number of iterations, where at each iteration, a state measurement is provided to the planner from the plant, the planner computes a control action, and the plant simulates 40 ms of motion. This procedure enables synchronized, repeatable simulations that may run faster than real-time, but it does not model the computational delay of the planner. The simulation is configured such that collision with ob-stacles do not halt the simulation. If the vehicle violates an obstacle constraint, the collision is noted, but the simulated trial proceeds without modification. The collision physics of the obstacles are not simulated, and they have no effect on the vehicle dynamics. The simulated vehicle states and control actions are logged during simulation, along with the final outcome of the trial. The possible outcomes are (i) success, meaning the vehicle reached the goal without experiencing rollover nor collision with obstacles or the path boundary; (ii) non-successful goal acquisition, meaning the vehicle reached the goal without experiencing rollover, but collision with obstacles or the path boundary occurred; (iii) rollover, meaning the chassis roll or pitch exceeded 72° 1; and (iv) timeout, meaning 60 s of simulated time elapsed without rollover or reaching the goal. 
+
+D. Experimental Off-Road Vehicle 
+
+The physical experiments are performed using the full-scale Polaris MRZR D4 ultra-light off-road vehicle shown in Fig. 7. The vehicle is configured for autonomous control of the throttle, brake, and steering actuators via a ROS1 Noetic interface. Identical to the simulated trials, steering effort is controlled by the MPC formulation, and a PID controller maintains the longitudinal speed of the vehicle. The 3D odometry measurements are produced at 100 Hz by an Oxford Technical Services RT3000v3 GNSS/INS. The sensor is configured with dual antennas and uses NTRIP for RTK corrections. During testing, the unit’s self-reported accuracies (1 standard deviation) are 3.6 cm for position and 2 cm/s for velocity. The GNSS/INS sensor is the only sensor used during the experiments; terrain and obstacle data is known a priori from the 3D terrain reconstruction.   
+
+> 1The selected value of this threshold must be sufficiently high to ensure the vehicle has rolled over with no chance of recovery, but it must also be low enough to trigger before the simulation is terminated for other reasons. So long as both conditions are satisfied, the approach is robust to variation in this parameter, as the roll angle of vehicles experiencing unrecoverable rollover will grow rapidly. 14
+> Fig. 9. Snapshots of terrain encountered while autonomously driving scenario 1 (viewed left-to-right, top-to-bottom). The images span approximately 25 seconds of footage from a physical trial of the proposed formulation carried out at a speed of 5 m/s.
+> Fig. 10. 3D rendering of terrain at three levels-of-detail (LODs). Left: plant LOD, Center: single rigid body LOD, Right: extended single-track LOD.
+
+The local trajectory planner is run from a Dell Precision 5570 laptop with an Intel i7-12700H CPU, 64 GiB RAM, and an NVIDIA RTX A2000 Mobile GPU mounted in the passenger seat. This system is several generations older than that used for the real-time feasibility studies in Sec. IV-D, so the extended single-track and single rigid body formulations have execution rates of 10.42 Hz and 8.48 Hz, respectively, when run at their maximum hardware-supported frequencies. These speeds are still sufficient for real-time performance, but better integration of computer resources onto the experimental vehicle could reduce these discrepancies in the future. Experiments are performed using an in-vehicle safety driver. Once each trial begins, the only action available to the oper-ators is to terminate the trial by taking full manual control. It is not possible for operators to partially override or influence the trial without a full takeover. The vehicle states and control actions are logged during trials, along with an outcome of either success or takeover. Takeovers are reserved for extreme circumstances; if it is determined that manual control is taken prematurely, the trial is repeated or removed from the dataset. VI. R ESULTS 
+
+A. Simulated Closed-Loop Trials 
+
+The simulated trials consider 9900 individual runs. Each of the three scenarios are performed at 11 speeds evenly spaced between 5 and 10 m/s, yielding 33 combinations. Each of these is simulated across three setups, producing 99 configurations. Each configuration is simulated 50 times per formulation with randomly generated initial conditions. The random initial conditions are matched to ensure the results reflect each formulation’s general ability to complete the task, rather than being influenced by small changes in initial conditions that a given formulation may find favorable or unfavorable. Since the single rigid body model requires less smoothing compared to the extended single-track model, its formulation receives a more detailed representation of rough terrain. This may disadvantage the extended single-track formulation, since it is subjected to increased disturbance. To prevent such biasing of the results, the terrain LOD provided to the planners and plant is varied across the three setups. The three setups are described in Table I. To summarize, setup 1 is the most realistic for replicating the physical scenario, but it results in the formulations being provided different information. Setup 3 provides both formulations with identical information, eliminating that factor from the analysis, but it is the least realistic, as can be seen in Fig. 10. Setup 2 provides a middle ground between the two extremes. Fig. 11 presents the results of the simulated trials, plotting each formulation’s proportion of trials resulting in rollover as a function of speed. The three columns show the results from each of the three scenarios, and the three rows show the results from each of the three setups. The sample mean is indicated with a solid line, and uncertainty bounds ( ±1 standard error) are indicated via the shaded regions. It is evident in Fig. 11 that in all areas where a visible difference beyond the bounds of uncertainty exists, the single rigid body formulation experiences the same or better per-formance compared to the extended single-track formulation. That is, at a given speed, the proposed approach is found to meet or exceed the state-of-the-art baseline’s ability to prevent rollover. This difference is attributed to the proposed 15 
+
+TABLE I TERRAIN LEVELS OF DETAIL (LOD S) USED IN EACH SETUP OF THE SIMULATED STUDY 
+
+Setup Plant Co-Simulator Single Rigid Body Formulation Extended Single-Track Formulation 1 plant LOD single rigid body LOD extended single-track LOD 2 single rigid body LOD single rigid body LOD extended single-track LOD 3 extended single-track LOD extended single-track LOD extended single-track LOD Rollover Proportion 0% 20% 40% 60% 80% 100%                    
+
+> Scenario 1 Scenario 2 Scenario 3
+> Rollover Proportion 0% 20% 40% 60% 80% 100%
+> Target Speed (m/s) 5678910 Rollover Proportion 0% 20% 40% 60% 80% 100%
+> Target Speed (m/s) 5678910
+> Target Speed (m/s) 5678910
+> Rollover Proportion During Simulated Trials Setup 1 Setup 2 Setup 3 Formulation Extended Single-Track Single Rigid Body
+
+Fig. 11. Results of simulated trials evaluating local trajectory planner performance. Rollover proportion is plotted as a function of speed, and each row provides results of a single setup, ranging from most realistic (top) to most equivalent (bottom). The single rigid body formulation consistently outperforms the extended single-track formulation in regions where a visible difference beyond the bounds of uncertainty exists, indicating that it has superior ability to ensure safety against rollover. 
+
+approach’s capacity to model and mitigate a larger set of rollover types. This result also shows that the additionally modeled rollover types are indeed relevant for high-speed off-road vehicles traveling on rugged non-planar terrain. The first row, the most realistic setup, shows this result to be true for a high-fidelity simulation of an autonomous vehicle system on realistic rough off-road terrain. The second and third rows, which reduce fidelity in order to eliminate discrepancies in comparative terrain knowledge, show that the result is not purely caused by the proposed approach’s ability to use higher fidelity terrain representations. The ability to use higher fidelity terrain representations may be a contributing factor to increased safety, but it is not the sole cause. Rollover proportion is the key metric of interest in this comparison, simply because the proposed approach primarily differs in its theoretical ability to prevent rollover. However, success proportion is also important to consider, as it can sometimes appear in a trade-off with safety, such as discussed in Sec. III-C. Therefore, Fig. 12 plots each formulation’s proportion of trials resulting in success as a function of speed. Fig. 12 indicates that the single rigid body formulation has a higher success proportion than the extended single-track formulation more often than the reverse (52% compared to 8%, respectively; they are equal in the remaining 40%). A non-success can be caused by antecedents other than rollover, so Success Proportion 0% 20% 40% 60% 80% 100%                    
+
+> Scenario 1 Scenario 2 Scenario 3
+> Success Proportion 0% 20% 40% 60% 80% 100%
+> Target Speed (m/s) 5678910 Success Proportion 0% 20% 40% 60% 80% 100%
+> Target Speed (m/s) 5678910
+> Target Speed (m/s) 5678910
+> Success Proportion During Simulated Trials Setup 1 Setup 2 Setup 3 Formulation Extended Single-Track Single Rigid Body
+
+Fig. 12. Results of simulated trials evaluating local trajectory planner performance, Success proportion is plotted as a function of speed, and each row provides results of a single setup, ranging from most realistic (top) to most equivalent (bottom). Superior performance is more often achieved by the single rigid body formulation than the extended single-track formulation, indicating that its superior ability to ensure safety against rollover does not come at the expense of success. 
+
+the lack of absolute consistency is not a detractor. These data indicate that the enhanced rollover prevention of the proposed formulation does not come at the expense of mobility. Notably, both formulations tend to experience low success proportions at the top speeds of the trials. This indicates that the scenarios are appropriately challenging to capture the upper limit of performance in extreme environments. Interestingly, the plots decrease non-monotonically, meaning that increasing speed sometimes improves success proportion rather than worsening it. This is not unexpected; the closed-loop behavior is complex due to the extreme terrain and nonlinear vehicle and suspension dynamics captured in the plant simulator. For example, vibrations from traversing rough terrain may primarily manifest in the chassis at low speed then move to the wheels as the speed, and therefore excitation frequency, increases. The decreased chassis vibration may make navigation easier, and this could be a potential cause of the non-monotonicity. 
+
+B. Physical Closed-Loop Trials 
+
+As opposed to the simulated trials, the physical trials consist of only scenario 1. This decision is made for safety purposes, as the primary route is less challenging, and an autonomous hill ascent is deemed less dangerous than descent. 16                
+
+> TABLE II DISTRIBUTION OF TRIALS DURING PHYSICAL EXPERIMENTS
+> Target Speed Trials per Formulation 4.0 m/s 54.5 m/s 95.0 m/s 55.5 m/s 5TABLE III OUTCOMES OF TRIALS DURING PHYSICAL EXPERIMENTS
+> Target Speed Extended Single-Track Single Rigid Body 4.0 m/s 5 successes, 0 failures 5 successes, 0 failures 4.5 m/s 9 successes, 0 failures 9 successes, 0 failures 5.0 m/s 4 successes, 1 failure 5 successes, 0 failures 5.5 m/s 5 successes, 0 failures 5 successes, 0 failures
+
+Notably, the empirical value of B ¯ay , the maximum lateral acceleration the vehicle may support without rollover, is 5.0 m/s 2 for the experimental vehicle. Dividing by 9.81 m/s 2,the right-hand side of (33) is found to be 0.51. Additionally, μ
+
+is estimated as 0.4 at the testing location. This is less than 0.51, so as discussed in III-B2, the rollover-prevention constraint is permanently inactive for the baseline approach during the physical experiments. The trials are run at speeds from 4 to 5.5 m/s, with the exact distribution shown in Table II. Due to time limitations in the testing area, the number of trials per speed vary. Out of 24 trials each, the extended single-track formulation experienced one failure while the single rigid body experi-enced none. The outcomes are shown in Table III, and a composite time-lapse image of the failure is shown in Fig. 13. In the failed trial, the vehicle slips left after navigating the ridge, leading to inability to make the banked right turn required to stay on the primary path. Instead, the vehicle begins to drive into the trees separating the primary and secondary paths, requiring a manual takeover and application of brakes to avoid collision. As is visible in Fig. 14, the trees are marked as obstacles, and as discussed in Sec. IV-C, both formulations are equally charged with avoiding them. In the failed trial, the vehicle experiences non-negligible vertical dynamics while navigating the ridge that occurs im-mediately after the hill. Fig. 1 is taken shortly before the failure and shows the tire liftoff that occurs along with rapid changes in pitch due to the terrain roughness. As previously discussed, the extended single-track vehicle model does not model these dynamics: the vertical and suspension dynamics act as disturbances. The inability to model and sufficiently compensate for these dynamics is believed to be the primary cause of failure. The measured vehicle trajectories for all physical trials are shown in Fig. 14. Notably, the extended single track formulation experiences consistent overshoot after the rough ridge and before the banked right turn. Even though only one manual takeover occurs, when the CoM clearly violates the path boundary and collides with an obstacle, the plot demonstrates a consistent pattern: the extended single-track formulation’s route is less consistent, indicating poorer au-thority over the vehicle’s trajectory. The single rigid body                                       
+
+> Fig. 13. Composite time-lapse image of the failure experienced by the extended single-track formulation during a scenario 1 trial at 5 m/s Eastin g(m)
+> −10 0−50 0N o r t hing (m)
+> −200204060Vehic leTraj ectorie sDuring Physic alTri al s
+> Form ulat ion
+> Ex te nded Si ngle-Track Sin gle Rigid Bod y
+> Fig. 14. Measured vehicle trajectories during physical trials. The extended single-track formulation experienced one failure, where the vehicle exited the path boundary and collided with an obstacle. The single rigid body formulation’s route is also more consistent, indicating greater authority over the vehicle’s trajectory.
+
+formulation is comparatively more consistent, and it does a superior job of keeping the vehicle aligned on the most direct trajectory to the goal. Additionally, the total accrued cost of each successful trial is plotted in Fig. 15. The cost formulation given in (59) is integrated over a horizon equal to the full run-time of the trial. Among a set of successful trials, this enables comparison of how well the vehicle completed the navigation task. The primary contributor to the plotted costs is integrated obstacle violation. The MPC formulation adds cost for each wheel that intersects with a set of inflated obstacles. The amount of cost rises as more wheels are in contact, as the contact increases in duration, or as the depth of contact grows. Fig 14 plots the trajectory of the CoM, so it delivers a less accurate view of obstacle violation compared to Fig. 15. An exact Mann-Whitney U test is performed for each target speed, testing the null hypothesis that the cost measurements for each formulation come from the same distribution. The null hypothesis is rejected at the α = 0.05 level for the 4.5 m/s trials. This indicates the visible reduction in median cost delivered by the single rigid body formulation is statistically significant. 17 Target Speed (m/s) 4.0 4.5 5.0 5.5 Total Cost 10 410 610 8   
+
+> Total Cost During Physical Experiments
+> **
+> Formulation Extended Single-Track Single Rigid Body
+> Fig. 15. Total accrued costs during physical trials (note: the x-axis is categorical; deviation from the axis ticks is for visual clarity only). The single rigid body formulation has a statistically significant reduction in cost in the 4.5 m/s trials.
+
+The p-value is 0.0040. No statistically significant differences are found at other speeds, likely due to the decreased number of trials conducted at speeds other than 4.5 m/s. VII. C ONCLUSION 
+
+This work proposes an MPC formulation that uses an analytical vehicle dynamics model with increased degrees-of-freedom compared to similar approaches and an energy-based rollover-prevention constraint. It aims to enable safe and capable local trajectory planning for high-speed off-road autonomous vehicles in rugged environments. The formulation is made real-time feasible through GPGPU programming, and it is found to have a decreased proportion of rollovers and an increased proportion of successes compared to a state-of-the-art baseline, indicating it increases safety without reducing mobility. Trials evaluate autonomous navigation performance at the extreme limits of mobility in a real off-road environment and comprise both simulated runs and full-scale physical experiments. Additionally, state-of-the-art approaches leveraging planar vehicle models are analytically shown to only protect against rollovers caused by excessive handling on terrain with suf-ficient traction. This type of rollover is inapplicable to some vehicle-terrain combinations, meaning imposing a state-of-the-art rollover-prevention constraint in these cases amounts to an unnecessary computational burden since it is numerically im-possible to violate. This is found to be true of the vehicle and terrain used in the experimental trials performed in this work. If closed-loop rollover-prevention constraints are not required, e.g., due to low speed operation or mild terrain, the constraint may be dropped from the formulation. Otherwise, the proposed approach may be used to provide such a constraint. Several limitations of the proposed approach and analysis are identified, which may be addressed by future work. Re-garding the approach: First, the current formulation does not consider uncertainty. Several influential parameters, such as the terrain’s coefficient of friction, may not be fully known and can only be estimated with a degree of uncertainty. In this setting, rollover occurrence is no longer a fixed outcome of control; instead it is an uncertain event with a certain risk. Adopting a stochastic MPC approach may yield superior abil-ity to provide safe, extreme local trajectory plans. Second, the empirical-argmin optimizer does not leverage warm starting or weighted averaging. While this is demonstrated to be real-time feasible, methods using these techniques may be capable of providing similar or better performance with a smaller number of samples. This may enable faster update rates or implementation on resource-constrained hardware. Regarding the analysis: First, longitudinal velocity is held constant, and the formulations attempt to minimize cost via steering only. At especially high speeds, it is possible that no steering policy is capable of preventing rollover, and an optimal policy would instead choose to decrease speed. Providing the formulations this option via simultaneous op-timization of speed and steering would present additional context to evaluate their abilities to predict and mitigate risk. Second, the simulated trials provided the vehicle with perfect 
+
+a priori map knowledge and odometry measurements, and the physical experiments provided low-noise estimates of the same. However, this may not be the case for all fielded conditions: terrain and obstacles may need to be estimated online, and odometry estimators may not have access to RTK-corrected GNSS signals. Continued work on developing the simulation tools and experimental equipment may provide additional insight into the performance of these algorithms under more information-constrained fielded conditions. VIII. A CKNOWLEDGMENTS 
+
+The authors thank Junsik Eom and Austin Buchan for assistance in performing physical experiments, MTRI Inc. for photogrammetry services, and Martin Hirschkorn of Traxara Robotics for vehicle modeling support. The authors acknowl-edge use of the Makie.jl plotting package [31]. APPENDIX ANOTATION 
+
+Vectors, denoted in bold, are resolved in one of two coordi-nate frames. W is the world-fixed coordinate frame, with basis vectors wx, wy , and wz , where wz points up. B is the body-fixed coordinate frame, rigidly attached to the vehicle chassis. It is spanned by bx, by , and bz , which point forward, left, and up, relative to the chassis, respectively. Left subscripts indicate the frame a vector is resolved in, and right subscripts indicate the component of such a vector:  
+
+> F
+
+qi ≜ q · fi (77)  
+
+> F
+
+q ≜ F qx F qy F qz
+
+T (78) where q is an arbitrary vector and F is an arbitrary frame. Additionally, notation for common inertial and geometric parameters is summarized in Table IV. 18 
+
+TABLE IV NOTATION FOR COMMON INERTIAL AND GEOMETRIC PARAMETERS 
+
+Parameter Meaning 
+
+M vehicle mass 
+
+Jxx vehicle moment of inertia about bx
+
+Jyy vehicle moment of inertia about by
+
+Jzz vehicle moment of inertia about bz
+
+Lf long. distance from CoM to front axle 
+
+Lr long. distance from CoM to rear axle 
+
+e wheel track 
+
+h vertical distance from CoM to axles 
+
+R tire radius TABLE V MODEL PARAMETERS 
+
+Parameter Value 
+
+M 969 kg 
+
+Jxx 280.9 kg · m2
+
+Jyy 692.1 kg · m2
+
+Jzz 810.7 kg · m2
+
+Lf 1.565 m 
+
+Lr 1.148 m 
+
+e 1.280 m 
+
+h 0.380 m 
+
+R 0.291 m 
+
+kf 4.2 × 10 4 N/m 
+
+kr 5.8 × 10 4 N/m 
+
+bf 3.1 × 10 3 N · s/m 
+
+br 4.3 × 10 3 N · s/m 
+
+δmax 0.639 rad 
+
+˙δmax 1 rad/s 
+
+APPENDIX BVEHICLE MODEL PARAMETERS 
+
+Parameters describing the Polaris MRZR D4 ultra-light off-road vehicle used in this work are given in Table V. For parameters common to both models, the same numerical values are used in each. Geometric parameters are measured at rest on level ground, and inertial properties describe the entire vehicle. Suspension parameters are found through a system-identification procedure. In addition, each model requires parameters for the tire model. The simulated experiments use the parameters given in Table VI, which are found through a model fitting process performed on the fine-grained dry soil tire model used within the plant simulator. The plant tire model is fit to data from physical experiments performed at Keweenaw Research Center in Calumet, MI. The physical experiments use the parameters given in Table VII, which are found through a model fitting process performed on the data-driven tire model used in [27]. The data-driven tire model’s training data consists of measurements from physical experiments performed with a highly-similar vehicle in the same off-road testing location. APPENDIX COPEN -L OOP ANALYSIS 
+
+52 146 total simulated trajectories are used to evaluate the open-loop performance of the two models studied in this work. Each trajectory is created by simulating both models and the high-fidelity plant with identical initial conditions and controls. Each simulation lasts 4 s, the duration of the prediction hori-zon, and the initial conditions and controls leverage the plant 
+
+TABLE VI TIRE PARAMETERS FOR SIMULATED TRIALS 
+
+Parameter Value 
+
+C 6.1 rad −1 
+
+μ 0.6 TABLE VII TIRE PARAMETERS FOR PHYSICAL TRIALS 
+
+Parameter Value 
+
+C 1.7 rad −1 
+
+μ 0.4 
+
+trajectories generated by the simulated closed-loop analysis described in Sec. VI-A. Specifically, scenario 1 trajectories conducted at 7.5 m/s and terminating in success are used. A subset of the open-loop trajectories are plotted in Fig. 16. Error is computed for location and ESM, respectively, via location error = 1
+
+tf − t0
+
+Z tf
+
+> t0
+
+p(ˆ x − x)2 + (ˆ y − y)2dt (79) ESM error = 1
+
+tf − t0
+
+Z tf
+
+> t0
+
+| ˆUESM − UESM |dt (80) where ˆx and x refer to values computed by the model and plant, respectively, and other variables are similarly denoted. The testing found 10.1% and 3.1% relative improvements in median prediction error for location and ESM, respectively, when using the single rigid body model over the extended single-track model. An approximate Mann-Whitney U test finds that both error reductions are statistically significant, with p-values less than 0.0001 in each case. However, it is emphasized that the primary advantage of the single rigid body formulation over the extended single-track formulation is the increased ability to guarantee safety against rollover. Open-loop performance improvements, especially to non-rollover-related states such as location, are supplementary to this. Easting (m)         
+
+> −55 −50 −45 −40 −35 −30 −25 Northing (m) 10 15 20 25
+> Simulated Open-Loop Trajectories
+> Model Extended Single-Track Single Rigid Body
+
+Fig. 16. Subset of simulated trajectories used for open-loop analysis, focusing on the ridge and turn included in scenario 1 where the extended single-track formulation experienced a failure during physical testing. The plant trajectory is shown as a black line, open-loop model predictions are shown as colored lines, and black points mark the locations where the former originate. The trajectories display decreased overshoot error by the single rigid body model. 19 
+
+REFERENCES [1] T. Han, A. Liu, A. Li, A. Spitzer, G. Shi, and B. Boots, “Model Predictive Control for Aggressive Driving Over Uneven Terrain,” Jun. 2024, arXiv:2311.12284 .[2] J. Bezanson, A. Edelman, S. Karpinski, and V. B. Shah, “Julia: A Fresh Approach to Numerical Computing,” SIAM Rev. , vol. 59, no. 1, pp. 65– 98, Jan. 2017. [3] M. Quigley, B. Gerkey, K. Conley, J. Faust, T. Foote, J. Leibs, E. Berger, R. Wheeler, and A. Ng, “ROS: An open-source Robot Operating System,” in Proc. IEEE Int. Conf. Robot. Automat. , 2009. [4] C. Shen, S. Yu, B. I. Epureanu, and T. Ersal, “An Efficient Global Trajectory Planner for Highly Dynamical Nonholonomic Autonomous Vehicles on 3-D Terrains,” IEEE Trans. Robot. , vol. 40, pp. 1309–1326, 2024. [5] P. Kr¨ usi, P. Furgale, M. Bosse, and R. Siegwart, “Driving on Point Clouds: Motion Planning, Trajectory Optimization, and Terrain Assess-ment in Generic Nonplanar Environments: Driving on Point Clouds,” J. Field Robotics , vol. 34, no. 5, pp. 940–984, Aug. 2017. [6] M. McNaughton, C. Urmson, J. M. Dolan, and J.-W. Lee, “Motion plan-ning for autonomous driving with a conformal spatiotemporal lattice,” in Proc. IEEE Int. Conf. Robot. Automat. Shanghai, China: IEEE, May 2011, pp. 4889–4895. [7] T. M. Howard and A. Kelly, “Optimal Rough Terrain Trajectory Gener-ation for Wheeled Mobile Robots,” Int. J. Rob. Res. , vol. 26, no. 2, pp. 141–166, Feb. 2007. [8] S. Shimoda, Y. Kuroda, and K. Iagnemma, “Potential Field Navigation of High Speed Unmanned Ground Vehicles on Uneven Terrain,” in Proc. IEEE Int. Conf. Robot. Automat. , Apr. 2005, pp. 2828–2833. [9] K. Iagnemma, S. Shimoda, and Z. Shiller, “Near-optimal navigation of high speed mobile robots on uneven terrain,” in Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. , Sep. 2008, pp. 4098–4103. [10] Y. Pan, C.-A. Cheng, K. Saigol, K. Lee, X. Yan, E. A. Theodorou, and B. Boots, “Imitation learning for agile autonomous driving,” Int. J. Rob. Res. , vol. 39, no. 2-3, pp. 286–302, Mar. 2020. [11] G. Williams, P. Drews, B. Goldfain, J. M. Rehg, and E. A. Theodorou, “Information-Theoretic Model Predictive Control: Theory and Applica-tions to Autonomous Driving,” IEEE Trans. Robot. , vol. 34, no. 6, pp. 1603–1622, Dec. 2018. [12] S. Yu, C. Shen, and T. Ersal, “Nonlinear Model Predictive Planning and Control for High-Speed Autonomous Vehicles on 3D Terrains,” in IFAC-PapersOnLine , vol. 54. Amsterdam: Elsevier, Oct. 2021, pp. 412–417. [13] J. Liu, P. Jayakumar, J. L. Overholt, J. L. Stein, and T. Ersal, “The Role of Model Fidelity in Model Predictive Control Based Hazard Avoidance in Unmanned Ground Vehicles Using LIDAR Sensors,” in Proc. Dyn. Syst. Control Conf. New York: American Society of Mechanical Engineers Digital Collection, Oct. 2013. [14] A. Eick and D. Bevly, “Nonlinear Model Predictive Controller for an Unmanned Ground Vehicle on Variable Terrain,” in Proc. Dyn. Syst. Control Conf. Columbus, Ohio, USA: American Society of Mechanical Engineers, Oct. 2015, p. V003T44A004. [15] T. Shim and C. Ghike, “Understanding the limitations of different vehicle models for roll dynamics studies,” Veh. Syst. Dyn. , vol. 45, no. 3, pp. 191–216, Mar. 2007. [16] A. Datar, C. Pan, and X. Xiao, “Learning to Model and Plan for Wheeled Mobility on Vertically Challenging Terrain,” Sep. 2023, 
+
+arXiv:2306.11611 .[17] H. Lee, T. Kim, J. Mun, and W. Lee, “Learning Terrain-Aware Kino-dynamic Model for Autonomous Off-Road Rally Driving With Model Predictive Path Integral Control,” IEEE Robot. Automat. Lett. , vol. 8, no. 11, pp. 7663–7670, Nov. 2023. [18] J. Liu, P. Jayakumar, J. L. Stein, and T. Ersal, “A nonlinear model predictive control formulation for obstacle avoidance in high-speed autonomous ground vehicles in unstructured environments,” Veh. Syst. Dyn. , vol. 56, no. 6, pp. 853–882, Jun. 2018. [19] ——, “Combined Speed and Steering Control in High-Speed Au-tonomous Ground Vehicles for Obstacle Avoidance Using Model Predic-tive Control,” IEEE Trans. Veh. Technol. , vol. 66, no. 10, pp. 8746–8763, Oct. 2017. [20] S. Peters and K. Iagnemma, “An analysis of rollover stability measure-ment for high-speed mobile robots,” in Proc. IEEE Int. Conf. Robot. Automat. , May 2006, pp. 3711–3716. [21] E. A. Papadopoulos and D. A. Rey, “A new measure of tipover stability margin for mobile manipulators,” in Proc. IEEE Int. Conf. Robot. Automat. , vol. 4. Minneapolis, MN, USA: IEEE, 1996, pp. 3111–3116. [22] ——, “The Force-Angle Measure of Tipover Stability Margin for Mobile Manipulators,” Veh. Syst. Dyn. , vol. 33, no. 1, pp. 29–48, Jan. 2000. [23] D. Messuri and C. Klein, “Automatic body regulation for maintaining stability of a legged vehicle during rough-terrain locomotion,” IEEE J. Robot. Automat. , vol. 1, no. 3, pp. 132–141, Sep. 1985. [24] A. Ghasempoor and N. Sepehri, “A measure of machine stability for moving base manipulators,” in Proc. IEEE Int. Conf. Robot. Automat. ,vol. 3, May 1995, pp. 2249–2254 vol.3. [25] A. G. Nalecz, Z. Lu, and K. L. d’Entremont, “An Investigation into Dynamic Measures of Vehicle Rollover Propensity,” SAE International, Warrendale, PA, SAE Technical Paper 930831, Mar. 1993. [26] G. Williams, P. Drews, B. Goldfain, J. M. Rehg, and E. A. Theodorou, “Aggressive driving with model predictive path integral control,” in Proc. IEEE Int. Conf. Robot. Automat. , May 2016, pp. 1433–1440. [27] S. Yu, C. Shen, J. Dallas, B. I. Epureanu, P. Jayakumar, and T. Ersal, “A Real-Time Terrain-Adaptive Local Trajectory Planner for High-Speed Autonomous Off-Road Navigation on Deformable Terrains,” 
+
+IEEE Trans. Intell. Transp. Syst. , vol. 26, no. 3, pp. 3324–3340, Mar. 2025. [28] M. Doumiati, A. Victorino, A. Charara, and D. Lechner, “Lateral load transfer and normal forces estimation for vehicle safety: Experimental test,” Veh. Syst. Dyn. , vol. 47, no. 12, pp. 1511–1533, Dec. 2009. [29] “NVIDIA Ada GPU Architecture,” NVIDIA Corp., Santa Clara, CA, USA, Tech. Rep., Nov. 2023. [30] “Vortex Studio.” [Online]. Available: https://www.cm-labs.com/en/ vortex-studio/ [31] S. Danisch and J. Krumbiegel, “Makie.jl: Flexible high-performance data visualization for Julia,” J. Open Source Softw. , vol. 6, no. 65, p. 3349, Sep. 2021. 
+
+James R. Baxter received the B.Sc. degree in me-chanical engineering from Purdue University, West Lafayette, IN, USA, in 2022, and the M.S.E. degree in mechanical engineering from the University of Michigan, Ann Arbor, MI, USA, in 2024, where he is currently working toward the Ph.D. degree in me-chanical engineering. His research interests include motion planning and control for highly dynamical systems, with applications to autonomous robotics. 
+
+Bogdan I. Epureanu received the Ph.D. degree in mechanical engineering from Duke University, Durham, NC, USA, in 1999. He is currently the Roger L. McCarthy Professor and an Arthur F. Thur-nau Professor with the Department of Mechanical Engineering, University of Michigan, Ann Arbor, MI, USA. He has a courtesy appointment in elec-trical engineering and computer science, and he is the Director of the Automotive Research Center. His research focuses on nonlinear dynamics of complex systems, such as teaming of autonomous vehicles, enhanced aircraft safety and performance, and aeromechanics. 
+
+Paramsothy Jayakumar received the M.S. and Ph.D. degrees in structural dynamics from California Institute of Technology, Pasadena, CA, USA, and the B.S.E. degree from the University of Peradeniya, Sri Lanka. He is a Senior Technical Expert in Analytics at U.S. Army Ground Vehicle Systems Center. He is a Fellow of SAE and ASME. He is an Associate Editor of the ASME Journal of Autonomous Vehi-cles and Systems, and Editorial Board Member of the International Journal of Vehicle Performance and the ISTVS Journal of Terramechanics. 
+
+Tulga Ersal received the B.S.E. degree from the Istanbul Technical University, Istanbul, Turkey, in 2001, and the M.S. and Ph.D. degrees from the University of Michigan, Ann Arbor, MI, USA, in 2003 and 2007, respectively, all in mechanical en-gineering. He is currently an Associate Professor with the Department of Mechanical Engineering, University of Michigan. His research interests in-clude modeling, simulation, and control of dynamic systems, with applications to vehicle and energy systems.

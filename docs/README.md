@@ -6,61 +6,66 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-03-26
-- 运行时间：2026-03-26 20:04:32 UTC
+- 最新运行日期：2026-03-27
+- 运行时间：2026-03-27 20:14:50 UTC
 - 运行状态：成功
-- 本次总论文数：13
-- 精读区：2
+- 本次总论文数：15
+- 精读区：4
 - 速读区：11
 
 ### 今日简报（AI）
-今日聚焦自动驾驶前沿，深度解析潜世界模型（Latent World Model）在端到端决策中的核心突破。
-重点推荐 Latent-WAM 与 DreamerAD，揭示了潜空间动作建模与强化学习如何显著提升驾驶系统的效率与鲁棒性。
-建议关注潜空间表征技术，这是理解端到端自动驾驶从“感知”向“世界建模”演进的关键切入点。
-- 详情：[/202603/26/README](/202603/26/README)
+今日精选 15 篇论文，深度解析时间解耦扩散规划与语言驱动驾驶等自动驾驶核心突破。
+重点关注
+- 详情：[/202603/27/README](/202603/27/README)
 
 ### 精读区论文标签
-1. [Latent-WAM: Latent World Action Modeling for End-to-End Autonomous Driving](/202603/26/2603.24581v1-latent-wam-latent-world-action-modeling-for-end-to-end-autonomous-driving)  
+1. [Temporally Decoupled Diffusion Planning for Autonomous Driving](/202603/27/2603.25462v1-temporally-decoupled-diffusion-planning-for-autonomous-driving)  
+   标签：评分：10.0/10、query:diffusion-conf-uncertainty
+   evidence：自动驾驶中的时间解耦扩散规划
+2. [Vega: Learning to Drive with Natural Language Instructions](/202603/27/2603.25741v1-vega-learning-to-drive-with-natural-language-instructions)  
+   标签：评分：9.0/10、query:diffusion-conf-uncertainty
+   evidence：利用扩散范式生成自动驾驶未来轨迹
+3. [Dreaming the Unseen: World Model-regularized Diffusion Policy for Out-of-Distribution Robustness](/202603/27/2603.21017v1-dreaming-the-unseen-world-model-regularized-diffusion-policy-for-out-of-distribution-robustness)  
    标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：通过潜空间世界表示进行轨迹规划
-2. [DreamerAD: Efficient Reinforcement Learning via Latent World Model for Autonomous Driving](/202603/26/2603.24587v1-dreamerad-efficient-reinforcement-learning-via-latent-world-model-for-autonomous-driving)  
+   evidence：扩散策略通过检测真实与想象的差异来应对分布外鲁棒性
+4. [TIGFlow-GRPO: Trajectory Forecasting via Interaction-Aware Flow Matching and Reward-Driven Optimization](/202603/27/2603.24936v1-tigflow-grpo-trajectory-forecasting-via-interaction-aware-flow-matching-and-reward-driven-optimization)  
    标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：用于自动驾驶世界模型的扩散模型
+   evidence：通过流匹配进行自动驾驶轨迹预测
 
 ### 速读区论文标签
-1. [ManiDreams: An Open-Source Library for Robust Object Manipulation via Uncertainty-aware Task-specific Intuitive Physics](/202603/26/2603.18336v2-manidreams-an-open-source-library-for-robust-object-manipulation-via-uncertainty-aware-task-specific-intuitive-physics)  
+1. [TrajLoom: Dense Future Trajectory Generation from Video](/202603/27/2603.22606v1-trajloom-dense-future-trajectory-generation-from-video)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：不确定性感知操作规划和状态表示
-2. [Time-Reversed BSDEs for Accurate Gradient Estimation in Diffusion Models](/202603/26/2603.20455v1-time-reversed-bsdes-for-accurate-gradient-estimation-in-diffusion-models)  
+   evidence：基于视频上下文的稠密未来轨迹生成生成流
+2. [Goal-Oriented Reactive Simulation for Closed-Loop Trajectory Prediction](/202603/27/2603.24155v1-goal-oriented-reactive-simulation-for-closed-loop-trajectory-prediction)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：扩散模型与生成策略中的梯度估计
-3. [GHOST: Ground-projected Hypotheses from Observed Structure-from-Motion Trajectories](/202603/26/2603.20583v1-ghost-ground-projected-hypotheses-from-observed-structure-from-motion-trajectories)  
+   evidence：闭环轨迹预测与反应式交通协商
+3. [FODMP: Fast One-Step Diffusion of Movement Primitives Generation for Time-Dependent Robot Actions](/202603/27/2603.24806v1-fodmp-fast-one-step-diffusion-of-movement-primitives-generation-for-time-dependent-robot-actions)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：为自动驾驶分割可行的车辆轨迹
-4. [Dual-Gated Epistemic Time-Dilation: Autonomous Compute Modulation in Asynchronous MARL](/202603/26/2603.23722v1-dual-gated-epistemic-time-dilation-autonomous-compute-modulation-in-asynchronous-marl)  
+   evidence：用于轨迹生成和运动原语的扩散模型
+4. [DCARL: A Divide-and-Conquer Framework for Autoregressive Long-Trajectory Video Generation](/202603/27/2603.24835v1-dcarl-a-divide-and-conquer-framework-for-autoregressive-long-trajectory-video-generation)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：解释执行频率的偶然和认知触发因素
-5. [Uncertainty-Aware Vision-based Risk Object Identification via Conformal Risk Tube Prediction](/202603/26/2603.23919v1-uncertainty-aware-vision-based-risk-object-identification-via-conformal-risk-tube-prediction)  
+   evidence：用于长轨迹生成的视频扩散模型
+5. [The Anatomy of Uncertainty in LLMs](/202603/27/2603.24967v1-the-anatomy-of-uncertainty-in-llms)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：智能驾驶中的时空风险不确定性
-6. [SafeFlow: Real-Time Text-Driven Humanoid Whole-Body Control via Physics-Guided Rectified Flow and Selective Safety Gating](/202603/26/2603.23983v1-safeflow-real-time-text-driven-humanoid-whole-body-control-via-physics-guided-rectified-flow-and-selective-safety-gating)  
-   标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：用于运动生成和不确定性下安全门控的修正流
-7. [FoMo X: Modular Explainability Signals for Outlier Detection Foundation Models](/202603/26/2603.17570v1-fomo-x-modular-explainability-signals-for-outlier-detection-foundation-models)  
+   evidence：偶然-认知不确定性二分法与不确定性分解
+6. [Exact and Approximate Convex Reformulation of Linear Stochastic Optimal Control with Chance Constraints](/202603/27/2603.19454v1-exact-and-approximate-convex-reformulation-of-linear-stochastic-optimal-control-with-chance-constraints)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：在安全关键决策的零样本推理中捕获认知不确定性
-8. [EVA: Aligning Video World Models with Executable Robot Actions via Inverse Dynamics Rewards](/202603/26/2603.17808v1-eva-aligning-video-world-models-with-executable-robot-actions-via-inverse-dynamics-rewards)  
+   evidence：带机会约束的四旋翼轨迹生成
+7. [High-Speed, All-Terrain Autonomy: Ensuring Safety at the Limits of Mobility](/202603/27/2603.20525v1-high-speed-all-terrain-autonomy-ensuring-safety-at-the-limits-of-mobility)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于机器人技术的视频世界模型及推演中的运动学一致性
-9. [VLM-AutoDrive: Post-Training Vision-Language Models for Safety-Critical Autonomous Driving Events](/202603/26/2603.18178v1-vlm-autodrive-post-training-vision-language-models-for-safety-critical-autonomous-driving-events)  
+   evidence：自动驾驶越野车辆的局部轨迹规划器
+8. [Confidence-Based Decoding is Provably Efficient for Diffusion Language Models](/202603/27/2603.22248v1-confidence-based-decoding-is-provably-efficient-for-diffusion-language-models)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：安全关键的自动驾驶事件和异常检测
-10. [Diffusion Model for Manifold Data: Score Decomposition, Curvature, and Statistical Complexity](/202603/26/2603.20645v1-diffusion-model-for-manifold-data-score-decomposition-curvature-and-statistical-complexity)  
+   evidence：扩散模型中基于置信度的解码
+9. [Gau-Occ: Geometry-Completed Gaussians for Multi-Modal 3D Occupancy Prediction](/202603/27/2603.22852v1-gau-occ-geometry-completed-gaussians-for-multi-modal-3d-occupancy-prediction)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：扩散模型中的得分分解与统计复杂性
-11. [KHMP: Frequency-Domain Kalman Refinement for High-Fidelity Human Motion Prediction](/202603/26/2603.21327v1-khmp-frequency-domain-kalman-refinement-for-high-fidelity-human-motion-prediction)  
+   evidence：用于自动驾驶占用预测的激光雷达补全扩散器
+10. [AeroScene: Progressive Scene Synthesis for Aerial Robotics](/202603/27/2603.23224v1-aeroscene-progressive-scene-synthesis-for-aerial-robotics)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：随机人体运动预测
+   evidence：用于机器人场景合成的分层扩散模型
+11. [Neural ODE and SDE Models for Adaptation and Planning in Model-Based Reinforcement Learning](/202603/27/2603.23245v1-neural-ode-and-sde-models-for-adaptation-and-planning-in-model-based-reinforcement-learning)  
+   标签：评分：6.0/10、query:diffusion-conf-uncertainty
+   evidence：用于建模随机动力学的神经SDE
 
 
 <div class="dpr-home-promo-card">
