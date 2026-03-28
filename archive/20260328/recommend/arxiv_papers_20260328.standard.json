@@ -1,0 +1,431 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-03-28T20:05:35.446742+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 13,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2603.25370v1",
+      "title": "A Distribution-to-Distribution Neural Probabilistic Forecasting Framework for Dynamical Systems",
+      "abstract": "Probabilistic forecasting provides a principled framework for uncertainty quantification in dynamical systems by representing predictions as probability distributions rather than deterministic trajectories. However, existing forecasting approaches, whether physics-based or neural-network-based, remain fundamentally trajectory-oriented: predictive distributions are usually accessed through ensembles or sampling, rather than evolved directly as dynamical objects. A distribution-to-distribution (D2D) neural probabilistic forecasting framework is developed to operate directly on predictive distributions. The framework introduces a distributional encoding and decoding structure around a replaceable neural forecasting module, using kernel mean embeddings to represent input distributions and mixture density networks to parameterise output predictive distributions. This design enables recursive propagation of predictive uncertainty within a unified end-to-end neural architecture, with model training and evaluation carried out directly in terms of probabilistic forecast skill. The framework is demonstrated on the Lorenz63 chaotic dynamical system. Results show that the D2D model captures nontrivial distributional evolution under nonlinear dynamics, produces skillful probabilistic forecasts without explicit ensemble simulation, and remains competitive with, and in some cases outperforms, a simplified perfect model benchmark. These findings point to a new paradigm for probabilistic forecasting, in which predictive distributions are learned and evolved directly rather than reconstructed indirectly through ensemble-based uncertainty propagation.",
+      "authors": [
+        "Tianlin Yang",
+        "Hailiang Du",
+        "Louis Aslett"
+      ],
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG"
+      ],
+      "published": "2026-03-26T12:19:12+00:00",
+      "link": "https://arxiv.org/pdf/2603.25370v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "probabilistic forecasting for uncertainty quantification in dynamical systems",
+      "llm_evidence_cn": "动力系统不确定性量化的概率预测框架",
+      "llm_evidence": "动力系统不确定性量化的概率预测框架",
+      "canonical_evidence": "动力系统不确定性量化的概率预测框架",
+      "llm_tldr_en": "A framework for evolving predictive distributions directly to improve uncertainty quantification in dynamical systems.",
+      "llm_tldr_cn": "一种直接演化预测分布的框架，旨在改进动力系统中的不确定性量化。",
+      "llm_tldr": "一种直接演化预测分布的框架，旨在改进动力系统中的不确定性量化。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.21291v1",
+      "title": "Closed-form conditional diffusion models for data assimilation",
+      "abstract": "We propose closed-form conditional diffusion models for data assimilation. Diffusion models use data to learn the score function (defined as the gradient of the log-probability density of a data distribution), allowing them to generate new samples from the data distribution by reversing a noise injection process. While it is common to train neural networks to approximate the score function, we leverage the analytical tractability of the score function to assimilate the states of a system with measurements. To enable the efficient evaluation of the score function, we use kernel density estimation to model the joint distribution of the states and their corresponding measurements. The proposed approach also inherits the capability of conditional diffusion models of operating in black-box settings, i.e., the proposed data assimilation approach can accommodate systems and measurement processes without their explicit knowledge. The ability to accommodate black-box systems combined with the superior capabilities of diffusion models in approximating complex, non-Gaussian probability distributions means that the proposed approach offers advantages over many widely used filtering methods. We evaluate the proposed method on nonlinear data assimilation problems based on the Lorenz-63 and Lorenz-96 systems of moderate dimensionality and nonlinear measurement models. Results show the proposed approach outperforms the widely used ensemble Kalman and particle filters when small to moderate ensemble sizes are used.",
+      "authors": [
+        "Brianna Binder",
+        "Assad Oberai"
+      ],
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG",
+        "physics.comp-ph"
+      ],
+      "published": "2026-03-22T15:25:23+00:00",
+      "link": "https://arxiv.org/pdf/2603.21291v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "closed-form conditional diffusion for state assimilation",
+      "llm_evidence_cn": "用于状态同化的闭式条件扩散模型",
+      "llm_evidence": "用于状态同化的闭式条件扩散模型",
+      "canonical_evidence": "用于状态同化的闭式条件扩散模型",
+      "llm_tldr_en": "Uses analytical score functions in diffusion models to assimilate system states with measurements.",
+      "llm_tldr_cn": "利用扩散模型中的解析评分函数，将系统状态与测量值进行同化。",
+      "llm_tldr": "利用扩散模型中的解析评分函数，将系统状态与测量值进行同化。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.22430v1",
+      "title": "Model Predictive Control with Differentiable World Models for Offline Reinforcement Learning",
+      "abstract": "Offline Reinforcement Learning (RL) aims to learn optimal policies from fixed offline datasets, without further interactions with the environment. Such methods train an offline policy (or value function), and apply it at inference time without further refinement. We introduce an inference time adaptation framework inspired by model predictive control (MPC) that utilizes a pretrained policy along with a learned world model of state transitions and rewards. While existing world model and diffusion-planning methods use learned dynamics to generate imagined trajectories during training, or to sample candidate plans at inference time, they do not use inference-time information to optimize the policy parameters on the fly. In contrast, our design is a Differentiable World Model (DWM) pipeline that enables endto-end gradient computation through imagined rollouts for policy optimization at inference time based on MPC. We evaluate our algorithm on D4RL continuous-control benchmarks (MuJoCo locomotion tasks and AntMaze), and show that exploiting inference-time information to optimize the policy parameters yields consistent gains over strong offline RL baselines.",
+      "authors": [
+        "Rohan Deb",
+        "Stephen J. Wright",
+        "Arindam Banerjee"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-23T18:05:29+00:00",
+      "link": "https://arxiv.org/pdf/2603.22430v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion-planning methods for generating imagined trajectories",
+      "llm_evidence_cn": "用于生成想象轨迹的扩散规划方法",
+      "llm_evidence": "用于生成想象轨迹的扩散规划方法",
+      "canonical_evidence": "用于生成想象轨迹的扩散规划方法",
+      "llm_tldr_en": "Introduces an MPC-based adaptation framework for offline RL using learned world models and diffusion planning.",
+      "llm_tldr_cn": "介绍了一种基于 MPC 的自适应框架，利用学习到的世界模型和扩散规划进行离线强化学习。",
+      "llm_tldr": "介绍了一种基于 MPC 的自适应框架，利用学习到的世界模型和扩散规划进行离线强化学习。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.23783v1",
+      "title": "Probabilistic Geometric Alignment via Bayesian Latent Transport for Domain-Adaptive Foundation Models",
+      "abstract": "Adapting large-scale foundation models to new domains with limited supervision remains a fundamental challenge due to latent distribution mismatch, unstable optimization dynamics, and miscalibrated uncertainty propagation. This paper introduces an uncertainty-aware probabilistic latent transport framework that formulates domain adaptation as a stochastic geometric alignment problem in representation space. A Bayesian transport operator is proposed to redistribute latent probability mass along Wasserstein-type geodesic trajectories, while a PAC-Bayesian regularization mechanism constrains posterior model complexity to mitigate catastrophic overfitting. The proposed formulation yields theoretical guarantees on convergence stability, loss landscape smoothness, and sample efficiency under distributional shift. Empirical analyses demonstrate substantial reduction in latent manifold discrepancy, accelerated transport energy decay, and improved covariance calibration compared with deterministic fine-tuning and adversarial domain adaptation baselines. Furthermore, bounded posterior uncertainty evolution indicates enhanced probabilistic reliability during cross-domain transfer. By establishing a principled connection between stochastic optimal transport geometry and statistical generalization theory, the proposed framework provides new insights into robust adaptation of modern foundation architectures operating in heterogeneous environments. These findings suggest that uncertainty-aware probabilistic alignment constitutes a promising paradigm for reliable transfer learning in next-generation deep representation systems.",
+      "authors": [
+        "Kuepon Aueawatthanaphisut",
+        "Kuepon Aueawatthanaphisut"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "math.OC",
+        "math.PR",
+        "stat.ML"
+      ],
+      "published": "2026-03-24T23:35:08+00:00",
+      "link": "https://arxiv.org/pdf/2603.23783v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "uncertainty-aware probabilistic latent transport framework",
+      "llm_evidence_cn": "不确定性感知的概率潜变量传输框架",
+      "llm_evidence": "不确定性感知的概率潜变量传输框架",
+      "canonical_evidence": "不确定性感知的概率潜变量传输框架",
+      "llm_tldr_en": "Introduces a Bayesian transport framework for domain adaptation with uncertainty propagation guarantees.",
+      "llm_tldr_cn": "引入一种用于领域自适应的贝叶斯传输框架，具有不确定性传播保证。",
+      "llm_tldr": "引入一种用于领域自适应的贝叶斯传输框架，具有不确定性传播保证。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.24133v1",
+      "title": "Accelerated Spline-Based Time-Optimal Motion Planning with Continuous Safety Guarantees for Non-Differentially Flat Systems",
+      "abstract": "Generating time-optimal, collision-free trajectories for autonomous mobile robots involves a fundamental trade-off between guaranteeing safety and managing computational complexity. State-of-the-art approaches formulate spline-based motion planning as a single Optimal Control Problem (OCP) but often suffer from high computational cost because they include separating hyperplane parameters as decision variables to enforce continuous collision avoidance. This paper presents a novel method that alleviates this bottleneck by decoupling the determination of separating hyperplanes from the OCP. By treating the separation theorem as an independent classification problem solvable via a linear system or quadratic program, the proposed method eliminates hyperplane parameters from the optimisation variables, effectively transforming non-convex constraints into linear ones. Experimental validation demonstrates that this decoupled approach reduces trajectory computation times up to almost 60% compared to fully coupled methods in obstacle-rich environments, while maintaining rigorous continuous safety guarantees.",
+      "authors": [
+        "Dries Dirckx",
+        "Jan Swevers",
+        "Wilm Decré"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-25T09:53:04+00:00",
+      "link": "https://arxiv.org/pdf/2603.24133v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "time-optimal motion planning and trajectory generation",
+      "llm_evidence_cn": "时间最优运动规划与轨迹生成",
+      "llm_evidence": "时间最优运动规划与轨迹生成",
+      "canonical_evidence": "时间最优运动规划与轨迹生成",
+      "llm_tldr_en": "Accelerates spline-based motion planning by decoupling separating hyperplanes from the optimal control problem.",
+      "llm_tldr_cn": "通过将分离超平面与最优控制问题解耦，加速基于样条的运动规划。",
+      "llm_tldr": "通过将分离超平面与最优控制问题解耦，加速基于样条的运动规划。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.24254v1",
+      "title": "Embracing Heteroscedasticity for Probabilistic Time Series Forecasting",
+      "abstract": "Probabilistic time series forecasting (PTSF) aims to model the full predictive distribution of future observations, enabling both accurate forecasting and principled uncertainty quantification. A central requirement of PTSF is to embrace heteroscedasticity, as real-world time series exhibit time-varying conditional variances induced by nonstationary dynamics, regime changes, and evolving external conditions. However, most existing non-autoregressive generative approaches to PTSF, such as TimeVAE and $K^2$VAE, rely on MSE-based training objectives that implicitly impose a homoscedastic assumption, thereby fundamentally limiting their ability to model temporal heteroscedasticity. To address this limitation, we propose the Location-Scale Gaussian VAE (LSG-VAE), a simple but effective framework that explicitly parameterizes both the predictive mean and time-dependent variance through a location-scale likelihood formulation. This design enables LSG-VAE to faithfully capture heteroscedastic aleatoric uncertainty and introduces an adaptive attenuation mechanism that automatically down-weights highly volatile observations during training, leading to improved robustness in trend prediction. Extensive experiments on nine benchmark datasets demonstrate that LSG-VAE consistently outperforms fifteen strong generative baselines while maintaining high computational efficiency suitable for real-time deployment.",
+      "authors": [
+        "Yijun Wang",
+        "Qiyuan Zhuang",
+        "Xiu-Shen Wei"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-03-25T12:48:50+00:00",
+      "link": "https://arxiv.org/pdf/2603.24254v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "modeling heteroscedasticity and time-varying conditional variances for uncertainty quantification",
+      "llm_evidence_cn": "建模异方差性和随时间变化的条件方差以进行不确定性量化",
+      "llm_evidence": "建模异方差性和随时间变化的条件方差以进行不确定性量化",
+      "canonical_evidence": "建模异方差性和随时间变化的条件方差以进行不确定性量化",
+      "llm_tldr_en": "Addresses heteroscedasticity in probabilistic time series to improve uncertainty quantification in generative models.",
+      "llm_tldr_cn": "针对概率时间序列预测中的异方差性进行建模，提升了生成模型的不确定性量化能力。",
+      "llm_tldr": "针对概率时间序列预测中的异方差性进行建模，提升了生成模型的不确定性量化能力。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "modeling aleatoric uncertainty in autonomous driving scenarios",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.24489v1",
+      "title": "Model Predictive Path Integral Control as Preconditioned Gradient Descent",
+      "abstract": "Model Predictive Path Integral (MPPI) control is a popular sampling-based method for trajectory optimization in nonlinear and nonconvex settings, yet its optimization structure remains only partially understood. We develop a variational, optimization-theoretic interpretation of MPPI by lifting constrained trajectory optimization to a KL-regularized problem over distributions and reducing it to a negative log-partition (free-energy) objective over a tractable sampling family. For a general parametric family, this yields a preconditioned gradient method on the distribution parameters and a natural multi-step extension of MPPI. For the fixed-covariance Gaussian family, we show that classical MPPI is recovered exactly as a preconditioned gradient descent step with unit step size. This interpretation enables a direct convergence analysis: under bounded feasible sets, we derive an explicit upper bound on the smoothness constant and a simple sufficient condition guaranteeing descent of exact MPPI. Numerical experiments support the theory and illustrate the effect of key hyperparameters on performance.",
+      "authors": [
+        "Mahyar Fazlyab",
+        "Sina Sharifi",
+        "Jiarui Wang"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "eess.SY"
+      ],
+      "published": "2026-03-25T16:30:05+00:00",
+      "link": "https://arxiv.org/pdf/2603.24489v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "sampling-based method for trajectory optimization over distributions",
+      "llm_evidence_cn": "基于采样的分布轨迹优化方法",
+      "llm_evidence": "基于采样的分布轨迹优化方法",
+      "canonical_evidence": "基于采样的分布轨迹优化方法",
+      "llm_tldr_en": "Provides an optimization-theoretic interpretation of MPPI by lifting trajectory optimization to distributions.",
+      "llm_tldr_cn": "通过将轨迹优化提升到分布层面，为 MPPI 提供了优化理论解释。",
+      "llm_tldr": "通过将轨迹优化提升到分布层面，为 MPPI 提供了优化理论解释。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.24524v1",
+      "title": "No Single Metric Tells the Whole Story: A Multi-Dimensional Evaluation Framework for Uncertainty Attributions",
+      "abstract": "Research on explainable AI (XAI) has frequently focused on explaining model predictions. More recently, methods have been proposed to explain prediction uncertainty by attributing it to input features (uncertainty attributions). However, the evaluation of these methods remains inconsistent as studies rely on heterogeneous proxy tasks and metrics, hindering comparability. We address this by aligning uncertainty attributions with the well-established Co-12 framework for XAI evaluation. We propose concrete implementations for the correctness, consistency, continuity, and compactness properties. Additionally, we introduce conveyance, a property tailored to uncertainty attributions that evaluates whether controlled increases in epistemic uncertainty reliably propagate to feature-level attributions. We demonstrate our evaluation framework with eight metrics across combinations of uncertainty quantification and feature attribution methods on tabular and image data. Our experiments show that gradient-based methods consistently outperform perturbation-based approaches in consistency and conveyance, while Monte-Carlo dropconnect outperforms Monte-Carlo dropout in most metrics. Although most metrics rank the methods consistently across samples, inter-method agreement remains low. This suggests no single metric sufficiently evaluates uncertainty attribution quality. The proposed evaluation framework contributes to the body of knowledge by establishing a foundation for systematic comparison and development of uncertainty attribution methods.",
+      "authors": [
+        "Emily Schiller",
+        "Teodor Chiaburu",
+        "Marco Zullich",
+        "Luca Longo"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-03-25T17:02:13+00:00",
+      "link": "https://arxiv.org/pdf/2603.24524v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "evaluation framework for uncertainty attributions and correctness",
+      "llm_evidence_cn": "不确定性归因与正确性的评估框架",
+      "llm_evidence": "不确定性归因与正确性的评估框架",
+      "canonical_evidence": "不确定性归因与正确性的评估框架",
+      "llm_tldr_en": "Proposes a multi-dimensional framework to evaluate methods that attribute prediction uncertainty to inputs.",
+      "llm_tldr_cn": "提出了一个多维框架，用于评估将预测不确定性归因于输入特征的方法。",
+      "llm_tldr": "提出了一个多维框架，用于评估将预测不确定性归因于输入特征的方法。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.24938v1",
+      "title": "Infinite Gaze Generation for Videos with Autoregressive Diffusion",
+      "abstract": "Predicting human gaze in video is fundamental to advancing scene understanding and multimodal interaction. While traditional saliency maps provide spatial probability distributions and scanpaths offer ordered fixations, both abstractions often collapse the fine-grained temporal dynamics of raw gaze. Furthermore, existing models are typically constrained to short-term windows ($\\approx$ 3-5s), failing to capture the long-range behavioral dependencies inherent in real-world content. We present a generative framework for infinite-horizon raw gaze prediction in videos of arbitrary length. By leveraging an autoregressive diffusion model, we synthesize gaze trajectories characterized by continuous spatial coordinates and high-resolution timestamps. Our model is conditioned on a saliency-aware visual latent space. Quantitative and qualitative evaluations demonstrate that our approach significantly outperforms existing approaches in long-range spatio-temporal accuracy and trajectory realism.",
+      "authors": [
+        "Jenna Kang",
+        "Colin Groth",
+        "Tong Wu",
+        "Finley Torrens",
+        "Patsorn Sangkloy",
+        "Gordon Wetzstein",
+        "Qi Sun"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-26T02:02:08+00:00",
+      "link": "https://arxiv.org/pdf/2603.24938v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "autoregressive diffusion for gaze trajectory generation",
+      "llm_evidence_cn": "用于视线轨迹生成的自回归扩散模型",
+      "llm_evidence": "用于视线轨迹生成的自回归扩散模型",
+      "canonical_evidence": "用于视线轨迹生成的自回归扩散模型",
+      "llm_tldr_en": "Uses autoregressive diffusion to generate long-term gaze trajectories in videos.",
+      "llm_tldr_cn": "利用自回归扩散模型生成视频中的长期视线轨迹。",
+      "llm_tldr": "利用自回归扩散模型生成视频中的长期视线轨迹。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.25366v1",
+      "title": "Integrating Deep RL and Bayesian Inference for ObjectNav in Mobile Robotics",
+      "abstract": "Autonomous object search is challenging for mobile robots operating in indoor environments due to partial observability, perceptual uncertainty, and the need to trade off exploration and navigation efficiency. Classical probabilistic approaches explicitly represent uncertainty but typically rely on handcrafted action-selection heuristics, while deep reinforcement learning enables adaptive policies but often suffers from slow convergence and limited interpretability. This paper proposes a hybrid object-search framework that integrates Bayesian inference with deep reinforcement learning. The method maintains a spatial belief map over target locations, updated online through Bayesian inference from calibrated object detections, and trains a reinforcement learning policy to select navigation actions directly from this probabilistic representation. The approach is evaluated in realistic indoor simulation using Habitat 3.0 and compared against developed baseline strategies. Across two indoor environments, the proposed method improves success rate while reducing search effort. Overall, the results support the value of combining Bayesian belief estimation with learned action selection to achieve more efficient and reliable objectsearch behavior under partial observability.",
+      "authors": [
+        "João Castelo-Branco",
+        "José Santos-Victor",
+        "Alexandre Bernardino"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-03-26T12:15:12+00:00",
+      "link": "https://arxiv.org/pdf/2603.25366v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Bayesian inference for uncertainty representation in mobile robotics navigation",
+      "llm_evidence_cn": "移动机器人导航中不确定性表示的贝叶斯推理",
+      "llm_evidence": "移动机器人导航中不确定性表示的贝叶斯推理",
+      "canonical_evidence": "移动机器人导航中不确定性表示的贝叶斯推理",
+      "llm_tldr_en": "Integrates Bayesian inference with RL to handle perceptual uncertainty in autonomous object search.",
+      "llm_tldr_cn": "将贝叶斯推理与强化学习结合，以处理自主目标搜索中的感知不确定性。",
+      "llm_tldr": "将贝叶斯推理与强化学习结合，以处理自主目标搜索中的感知不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.25395v1",
+      "title": "UMBRELLA: Uncertainty-aware Multi-robot Reactive Coordination under Dynamic Temporal Logic Tasks",
+      "abstract": "Multi-robot systems can be extremely efficient for accomplishing team-wise tasks by acting concurrently and collaboratively. However, most existing methods either assume static task features or simply replan when environmental changes occur. This paper addresses the challenging problem of coordinating multi-robot systems for collaborative tasks involving dynamic and moving targets. We explicitly model the uncertainty in target motion prediction via Conformal Prediction(CP), while respecting the spatial-temporal constraints specified by Linear Temporal Logic (LTL). The proposed framework (UMBRELLA) combines the Monte Carlo Tree Search (MCTS) over partial plans with uncertainty-aware rollouts, and introduces a CP-based metric to guide and accelerate the search. The objective is to minimize the Conditional Value at Risk (CVaR) of the average makespan. For tasks released online, a receding-horizon planning scheme dynamically adjusts the assignments based on updated task specifications and motion predictions. Spatial and temporal constraints among the tasks are always ensured, and only partial synchronization is required for the collaborative tasks during online execution. Extensive large-scale simulations and hardware experiments demonstrate substantial reductions in both the average makespan and its variance by 23% and 71%, compared with static baselines.",
+      "authors": [
+        "Qisheng Zhao",
+        "Meng Guo",
+        "Hengxuan Du",
+        "Lars Lindemann",
+        "Zhongkui Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.MA"
+      ],
+      "published": "2026-03-26T12:40:04+00:00",
+      "link": "https://arxiv.org/pdf/2603.25395v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "uncertainty-aware multi-robot coordination and motion prediction",
+      "llm_evidence_cn": "不确定性感知多机器人协作与运动预测",
+      "llm_evidence": "不确定性感知多机器人协作与运动预测",
+      "canonical_evidence": "不确定性感知多机器人协作与运动预测",
+      "llm_tldr_en": "Proposes UMBRELLA for multi-robot coordination under uncertainty using Conformal Prediction and MCTS.",
+      "llm_tldr_cn": "提出UMBRELLA框架，利用符合性预测和MCTS在不确定性下进行多机器人协作。",
+      "llm_tldr": "提出UMBRELLA框架，利用符合性预测和MCTS在不确定性下进行多机器人协作。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
