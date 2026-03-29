@@ -1,0 +1,271 @@
+Title: Future-Interactions-Aware Trajectory Prediction via Braid Theory
+
+URL Source: https://arxiv.org/pdf/2603.22035v1
+
+Published Time: Tue, 24 Mar 2026 02:27:12 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# Future-Interactions-Aware Trajectory Prediction via Braid Theory 
+
+Caio Azevedo 1,2, Stefano Sabatini 1, Sascha Hornauer 2, Fabien Moutarde 2
+
+Abstract — To safely operate, an autonomous vehicle must know the future behavior of a potentially high number of interacting agents around it, a task often posed as multi-agent trajectory prediction. Many previous attempts to model social interactions and solve the joint prediction task either add extensive com-putational requirements or rely on heuristics to label multi-agent behavior types. Braid theory, in contrast, provides apowerful exact descriptor of multi-agent behavior by projecting future trajectories into braids that express how trajectories cross with each other over time; a braid then corresponds to a specific mode of coordination between the multiple agents in the future. In past work, braids have been used lightly to reason about interacting agents and restrict the attention window of predicted agents. We show that leveraging more fully the expressivity of the braid representation and using it to condition the trajectories themselves leads to even further gains in joint prediction performance, with negligible added complexity either in training or at inference time. We do so by proposing anovel auxiliary task, braid prediction, done in parallel with the trajectory prediction task. By classifying edges between agents into their correct crossing types in the braid representation, the braid prediction task is able to imbue the model with improved social awareness, which is reflected in joint predictions that more closely adhere to the actual multi-agent behavior. This simple auxiliary task allowed us to obtain significant improvements in joint metrics on three separate datasets. We show how the braid prediction task infuses the model with future intention awareness, leading to more accurate joint predictions. Code is available at 
+
+github.com/caiocj1/traj-pred-braid-theory .
+
+I. I NTRODUCTION 
+
+An autonomous vehicle (AV), to navigate safely towards its goal, must be aware of the future movement of surrounding agents in the scene, a task often formulated as multi-agent trajectory prediction [1], [2], [3]. These surrounding agents, however, also wish to advance towards their goals in a safe manner, and to achieve so, they must coordinate and take part in complex future social interactions which must be taken into account if the AV is to have a realistic estimate of the future development of the traffic scene. Several proposals have been put forward to take social inter-actions into account when outputting multi-agent predictions [4], [5], [6], [7], [8], [9], [10]. Among these, some methods heuristically label edges between pairs of agents based on time to intersection point, and use these edges to conditionally decode agent trajectories [5], [6]. These methods fall short, however, because traffic scene interactions often involve more than two agents, and furthermore because one agent may influence another even though their trajectories never intersect on the xy plane. Having a model reason about future agent interactions explicitly [5], [6], [8], [9] has clearly shown improvements, but always comes with the burden of added  
+
+> 1Stellantis, Poissy, France.
+> 2´Ecole des Mines de Paris, Paris, France.
+
+computational expense, or relies on heuristics that are limited as mentioned above. In contrast, braid theory has been used to offer compact and powerful descriptions of the exact multi-agent behavior, and to measure interactivity [11]. It allows the future trajectories of agents in a traffic scene to be compactly represented by looking at how these trajectories cross with one another when projected onto a given reference frame. Their projection forms what is called a braid, with each trajectory being a strand. This braid is an efficient topological descriptor of global multi-agent behavior; by knowing the types of crossings between projected trajectories for all agents, one can infer their intention without the need for heuristics. From this fact it is natural to ask: can prediction models benefit from such a descriptor for more accurate multi-agent prediction? 
+
+In this line of inquiry, [9] has applied braid theory to extract binary interaction labels based on the presence or absence of crossings between the future ground-truth trajectory of a single predicted agent and its surrounding agents. During decoding, the predicted agent is then only influenced by cross-attention to agents with high predicted interaction score. However, this approach presents conceptual difficulties: (i) the mere presence of a crossing does not necessarily imply interaction, as high agent-to-agent distance or other corner cases can show; (ii) knowing what kind of crossing happens between agents is necessary to properly understand if, for example, one agent is yielding to or overtaking another; (iii) the label of an edge between two agents other than the predicted agent may influence the behavior of the predicted agent, and so the entire interaction graph must be taken into account for interaction-aware prediction of any particular agent in the scene. We aim to address these difficulties while also using braid information to condition the predictions of all agents of interest directly. To do so, we propose braid prediction, a novel and simple auxiliary task that explicitly predicts crossing labels between all pairs of agents in the scene while simultaneously producing trajectories that are consistent with these predicted crossings. Both tasks share the same scene embeddings during training, which naturally aligns the representations of interaction rea-soning and future motion prediction. As a result, the model becomes effectively infused with future social awareness, leading to more accurate and socially coherent multi-agent behaviors. Finally, the interaction graph representation we use for braid prediction also allows for quantitatively measuring how compliant a set of joint trajectory predictions is with the actual multi-agent behavior observed (e.g., yielding, overtak-ing, etc). Our contributions are therefore the following:  
+
+> •
+
+We propose braid prediction, a multi-task framework that shows reliable improvements on joint prediction               
+
+> arXiv:2603.22035v1 [cs.AI] 23 Mar 2026 Fig. 1. Schematics of our method. During inference, initial mode embeddings mkcorresponding to different behaviors are updated with scene context; the resulting final mode embeddings from the decoder are passed to both braid and trajectory prediction tasks. In braid prediction, final mode embeddings m′
+> i,k ,
+> m′
+> j,k that started from the same initial embedding mkare fused for each pair of agents (i, j )into edge features fi→j,k that are classified into their correct class from the corresponding braid representation. During training, the cross-entropy loss Lbraid is applied to the mode with least joint displacement error.
+
+tasks across three separate datasets, without degrading other aspects of prediction such as marginal metrics or trajectory diversity;  
+
+> •
+
+We propose a new metric, braid similarity, that measures how close any of the set of joint predictions come to capturing the accurate joint behavior among agents in the traffic scene, beyond usual distance-based metrics;  
+
+> •
+
+We show how joint predictions increase in braid similarity when using braid prediction, demonstrating increased adherence to precise social interactions. II. R ELATED WORK 
+
+Multi-agent trajectory prediction. Several methods at-tempt to introduce social awareness when decoding multi-agent trajectories. M2I [5] and FJMP [6] heuristically label edges between pairs of agents based on time to crossing point, and use these edges to conditionally decode agent trajectories. Traffic scene interactions, however, often involve more than two agents, and furthermore may be very complex even though no two future trajectories intersect in the xy plane. MTR++ [8] introduces future interaction awareness by letting each agent attend to the intention points of other agents in the scene. It requires, however, extensive hyperparameter tuning for its post-processing of trajectories, and optimal hyperparameters might vary with different traffic situations. Our work, in contrast, builds on the architectures of QCNet [12] and its joint improvement QCNeXt [7]. The latter introduces social awareness by having the mode embeddings of one agent attend to those of other agents, so that information about future trajectories can be passed between them. QCNeXt is able to directly output diverse multi-agent trajectories in parallel without the need for post-processing. Although we apply our method to these models, the proposed auxiliary task can be applied to a variety of different models after simple proper modifications. 
+
+Braid theory and applications. Braid theory [13] has been applied for navigation planning that reasons about joint strategies for collision avoidance [14], and to furnish efficient descriptors of multi-agent behavior that allows for interactivity measurements [11]. In trajectory prediction, braids have been used by BeTop [9] to create interaction edge labels based on the presence of strand crossings, that the model predicts during the decoding phase and that restricts the attention-window over exo-agents. It suffers, however, from the conceptual difficulties mentioned in Section I. Our work proposes utilizing a more complete braid representation for improved interaction aware-ness. SRefiner [15] was done concurrently with our work and demonstrates the effectiveness of applying a fuller treatment of braid theory by proposing iterating trajectory embeddings through refinement layers that attend to a soft approximation of the braid representation, significantly improving joint metrics. This comes, however, with an extra computational burden from the added attention-based layers. Our work, in contrast, proposes an auxiliary task done in parallel with trajectory pre-diction and that uses the braid representation with negligible added computational requirements during training or inference due to minimal architectural modifications. III. P RELIMINARIES 
+
+Trajectory prediction. Taking as input map elements M =
+
+{1, ..., N M } representing the geometry of the traffic scene, processed from an HD-map more commonly into vectorized format [16], and agents A = {1, ..., N A} with features for each timestep in the past horizon {− TH + 1 , ..., 0}, the trajectory prediction task aims to output sequences of 2D points, aiming at capturing the actual future movement si = {sti}TF 
+
+> t=1
+
+for each agent i ∈ A , TH and TF being the past and future time horizons respectively. To capture the inherent uncertainty in the future of each agent, prediction models are made to output several different possible future trajectories bsi,k = {bsti,k }TF
+
+> t=1
+
+, k ∈ { 1, ..., K }.Each possible future k is called a mode. In joint prediction, i.e. when we aim to accurately capture the future trajectories of multiple agents at once, we take one prediction from each Fig. 2. On the left, example of composition operation with generators, and of a braid b ∈ B6. Notice that b can be described as a composition of braid generators resulting from crossings in the xt plane, and that the kind of crossing is determined by relative depth in the y axis at crossing points. On the right, example of braid computation from traffic scene’s future ground-truth trajectories. Note that, for instance, the green trajectory crossing under the red one implies agent 2 yielding to agent 3. 
+
+agent to form a single joint mode {bsi,k }i∈A .
+
+Braid theory. Agents in a traffic scene must coordinate with each other to progress towards their own goals while avoiding collisions. The resulting interactions arising from this coordination process (e.g. yielding or overtaking) lead to distinct topological signatures [11]. These can be captured by representing the particular multi-agent behavior of the traffic scene through a topological braid, a compact symbolic descriptor of the particular social interaction. A braid b = ( f1, ..., f n) is a set of curves fi : [0 , 1] →
+
+R2 × [0 , 1] called strands that embed the unit interval into 3D space (ˆ x, ˆy, ˆt). Strands have as starting points their relative position within the braid: fi(0) = ( i, 0, 0) ; they have as final points a certain permutation pb of that relative position on the 
+
+ˆx axis, fi(1) = ( pb(i), 0, 1) ; they are monotonically increasing along ˆt and do not intersect each other for i̸ = j. Coupled with a composition operation, the set of all braids on n strands form the braid group on n strands, Bn. Any braid can be represented as a composition of a subset of the n − 1 fundamental braids 
+
+σ1, ..., σ n−1 called generators; an example of a braid and the composition operation is shown in Fig. 2. The key observation is that one can use braids to describe the multi-agent behavior in a traffic scene, including interac-tions such as yielding or overtaking. This is done by computing the braid induced by the trajectories of the agents: first, one adopts any given reference frame for the traffic scene; then embeds the future multi-agent 2D trajectories into 3D (ˆ x, ˆy, ˆt)
+
+space by extending the trajectories in the time dimension; and finally looks at the projections of these trajectories on xt . The resulting projections are equivalent to an element of the braid group on NA strands, i.e. a braid having each agent trajectory as a strand. This is shown on the right in Fig. 2: the resulting braid corresponds to the mode of coordination adopted by the four agents in the scene to advance towards their goals without collisions. IV. M ETHODOLOGY 
+
+Our goal is to introduce future braid awareness into the trajectory prediction model, so that final predictions are con-sistent with the ground-truth braid, i.e. exhibit the correct joint behavior. For this we propose braid prediction, an auxiliary task done in parallel with trajectory prediction, both optimized with a combined loss, and which we detail in the following subsections. 
+
+A. Calculating Braids 
+
+We aim to create an interaction graph G = ( A, E) using agents as nodes A = {1, ..., N A} and which has implicitly in its edges the multi-agent behavior, taking advantage of the representational power of braid theory. To achieve this, for each edge (i, j ) ∈ E, from source agent i to target agent j, we assign a label ci→j depending on whether the projected ground-truth future trajectories of i and j cross or not when they are both projected onto the xt plane in the reference frame of j, and taking x to be the longitudinal direction. Each edge will therefore have one of three classes: 
+
+ci→j ∈ { below , over , no crossing }. We can distinguish between below and over labels simply by checking the sign of the difference along the y dimension at the crossing point. Fig. 3 illustrates how edges are labeled. Having the label of both edges ( 1 → 2 and 2 → 1) is important since for our purposes using a single reference frame leads to ambiguities: distinct behaviors can have the same projection if only one reference frame is taken into account. Additionally, differentiating between below and over classes is essential to univocally understand the joint behavior: for example, in the above scenario of Fig. 3, we could have had the blue trajectory going below the red one on the xt projection for edge 1 → 2, and this would indicate that agent 1 accelerates and passes the resulting xy intersection point before agent 2. Both cases would contain a crossing, but their below or over 
+
+label would differ, with consequences on how to interpret the multi-agent behavior. Finally, note also that edge labels can stay the same even if one of the agents is moved far away, such that it does not influence the predicted agent: for example, in the above scenario of Fig. 3, suppose that agent 2 performs the same movement but much farther away in x1 coordinates; both edges keep their label even though agent 2 would cease to influence agent 1. In order to populate the interaction graph Fig. 3. Illustrative example of crossing labels in two separate traffic scenes with different behaviors for a pair of agents. Lines with final circles indicate future ground-truth trajectories. 
+
+only with edges between agents that could influence each other, we only assign edges between agents closer than a certain distance threshold δ to each other. The resulting interaction graph G contains implicitly in the entirety of its edge labels a description of the multi-agent behavior closely related to the braid representation of the traffic scene. 
+
+B. Braid Prediction 
+
+We aim to perform multi-class classification on the edges of the interaction graph, but have this task guide the tra-jectory predictions themselves towards being compliant with the expected crossing labels. Building from the QCNet and QCNeXt architectures [12], [7], we do this by initializing edge features from scene aware mode embeddings used to output trajectories, as follows. 
+
+K random mode embeddings {mk}Kk=1 are initialized, representing different behaviors. These are initially repeated for all agents, then updated by cross-attention modules so that they are particularized for each agent and imbued with scene awareness, then lastly updated by self-attention to promote multi-modality, resulting in final mode embeddings m′ 
+
+> i,k
+
+for each agent i and mode k. The decoding process is schematized in Fig. 4. We produce features for each edge i → j and for a given mode k by taking the mode embeddings corresponding to each agent m′
+
+> i,k
+
+, m′
+
+> j,k
+
+, as well as the relative information feature vector rt=0  
+
+> i→j
+
+. These are concatenated along the feature dimension to form the final feature vector of edge i → j in mode k; the features of each mode are then gathered into a single feature tensor for the edge: 
+
+fi→j,k = [ m′
+
+> i,k
+
+; m′
+
+> j,k
+
+; rt=0  
+
+> i→j
+
+] ∈ R3D , (1) 
+
+fi→j = {fi→j,k }Kk=1 ∈ RK×3D . (2)      
+
+> Fig. 4. Decoding final mode embeddings for agents iand j, assuming
+> K= 2 . Final updated mode embeddings are then used in both braid and trajectory prediction tasks.
+
+The logits for the three classes are then obtained by simply passing fi→j through an MLP: 
+
+bci→j = MLP (fi→j ) ∈ RK×3. (3) Notice that we have K predictions for the same edge, corresponding to K possible joint behaviors. We apply the crossing classification loss only on the mode that leads to the best joint trajectory prediction in terms of joint average displacement error for that pair of agents, i.e. only on 
+
+k∗ = argmin 
+
+> k
+
+1
+
+TFTFX
+
+> t=1
+
+ ∥bsti,k − sti∥ + ∥bstj,k − stj ∥ . (4) By restricting the loss application to the best mode we aim to make the auxiliary task strongly condition only a few joint trajectories, such that multi-modality is preserved. Fig. 5 illustrates the decoding process for a single edge. Our proposed auxiliary task lends itself naturally to the modern framework of QCNet and QCNeXt, which decode in parallel mode embeddings that can be used to directly output trajectories for all agents in the scene. By using these same mode embeddings also in the braid prediction task, the model naturally learns to output representations aligned with both tasks, imbued with future interaction awareness and adapted for future motion prediction. The complete pipeline of our method is shown in Fig. 1. Note that the auxiliary task is not restricted to our choice of models; it can be applied to any model with DETR-like decoding and more broadly, with a few modifications, to any model that shares agent encodings across agent predictions, as will be explained in Section V. 
+
+C. Multi-Task Objective 
+
+The braid prediction task is optimized with a simple cross-entropy loss: 
+
+Lbraid (i → j) = CE (bci→j,k ∗ , c i→j ), (5) applied to all edges in the scene up to a distance threshold between agents and limited to a maximum number of neigh-bors per agent for computational efficiency. Weights for classes Fig. 5. Example decoding crossing probabilities softmax (bci→j ) for the edge from agent i to j, assuming K = 2 . Best mode k∗ is the one that minimizes the joint displacement error of i and j.
+
+below and over , i.e., edges with crossings, have higher weight in the loss as these are rarer. The final objective simply combines the trajectory regres-sion and classification losses with the new braid prediction loss: 
+
+L = Lreg + Lcls + λLbraid , (6) with λ a weighting factor for the braid loss, and Lreg , Lcls the same as in [12] and [7], i.e. a loss minimizing the NLL of a mixture of Laplace distributions at the agent or scene levels respectively. As will be shown in Section V, the braid loss is effectively able to guide joint predictions towards braid compliant multi-agent behaviors. 
+
+D. Evaluating Braid Compliance 
+
+Our braid-theory based interaction graph representation also allows us to evaluate the adherence to the correct joint behavior beyond standard distance-based joint metrics. This is because each joint trajectory prediction {bsi,k }i∈A , k ∈ { 1, ..., K },leads to its own set of crossing labels for the edges E in the interaction graph, induced by the predicted trajectories themselves; just as we were able to retrieve crossing labels for the ground-truth trajectories as explained in Section IV-A, here we do the same but using predicted trajectories within the same mode. By comparing the graph induced by each joint trajectory prediction to the ground-truth graph, we are able to measure its compliance to the actual multi-agent behavior. Let c∗ 
+
+> i→j,k
+
+be the crossing label induced on each edge 
+
+(i, j ) ∈ E by the trajectory predictions bsi,k and bsj,k . We can then compare {c∗
+
+> i→j,k
+
+}e∈E with {ci→j }e∈E to know how closely the correct joint behavior was captured by mode k. We do this comparison and aggregate the metric for all modes by defining Braid Similarity (BrSim K ) as follows: BrSim K = max 
+
+> k∈{ 1,...,K }
+
+1
+
+|E| 
+
+X
+
+> (i,j )∈E
+
+I{c∗  
+
+> i→j,k =ci→j}
+
+, (7) 
+
+I being the indicator function, checking whether induced and ground-truth labels match. BrSim K expresses, for a single scene, how close do any of the joint predictions get to fully capturing the correct joint behavior, which is tracked as the accuracy on the crossing labels of the interaction graph edges. Taking the max ensures that modes that exhibit other joint behaviors are not penalized; our goal is to measure if at least one of the joint modes captures the correct multi-agent interaction. When taking K =1, we select the joint prediction with highest joint likelihood, as is done for other metrics. Improving on these metrics must lead to significant improvements in MinJointFDE K for example, as it implies that the correct joint behavior is captured more often. V. E XPERIMENTS 
+
+A. Experimental Settings 
+
+Datasets. We test the effect of braid prediction as an auxiliary task on three separate datasets, namely the smaller Interaction [1] dataset with a prediction horizon of 3s on around 47k training scenes; Argoverse 2 [2] with a horizon of 6s and 200k scenes; and the interactive subsets of the Waymo Open Motion Dataset (WOMD) [3] with a horizon of 8s and around 487k scenes. These all, but especially the latter, contain diverse scenarios in which properly understanding complex social interactions between the agents in the scene is essential. 
+
+Models. As explained in Section IV-B, we choose to train QCNet and QCNeXt as baselines and with braid prediction, as the task lends itself naturally to their framework. We also use BeTop [9] as a baseline for comparison in the WOMD online submissions. All models are trained from scratch, with and without braid prediction. Since there is currently no publicly available QCNeXt implementation or checkpoint, we attempt to reproduce it ourselves, which explains its difference in performance with respect to its reported results. QCNet and BeTop are both trained from scratch, the former so that we can have a fair comparison with the results using braid prediction; the latter since it does not have public checkpoints. Since QCNet is a marginal model, it needs to be coupled with some way to aggregate scores and predictions into joint modes. In the results that follow, “QCNet” implies directly aggregating trajectories that are output from the same initial mode embedding, while “QCNet (R)” refers to reordering the predictions of each agent by decreasing score and assigning each joint mode following that order. 
+
+Metrics. We evaluate our models using standard metrics for joint trajectory prediction, such as MinJointFDE K and MinJointADE K : within each mode, the final and average displacement error respectively is averaged across all agents, and the mode with the lowest value is chosen to give the metric for a single scene. To ensure that marginal performance is not penalized by applying the braid prediction task, which aims to improve joint predictions, we also track MinFDE K , which first takes the mode with lowest final displacement error for each agent individually and then averages across all predicted agents in the dataset. In the Interaction dataset, metrics are calculated on all agents present at the current timestep and which have at least one observed future timestep. On Argoverse 2, we evaluate scored and focal agents, and in WOMD, the two interacting agents of each scene. WOMD’s online submissions calculate their own metrics; we report those in Table II. Fig. 6. Qualitative cases showing the benefit of braid prediction, on QCNet in WOMD. Ground-truths in gray , vehicles and past trajectories in cyan .Baseline trajectory predictions in pink . For the model with braid awareness, prediction k of agent j is colored according to the predicted crossing class probabilities bci→j,k : {below , over , no crossing }. In (a-d), the model with braid prediction is able to capture the correct multi-agent behavior, precisely in the modes in which the predicted crossing labels correspond to the ground-truth crossing label. Scene (e) shows a failure case, in which the model with braids is overconfident on the over label for most modes, and therefore does not output the possibility of agent 1 going straight and 2 taking a left turn. TABLE I IMPROVEMENTS FROM MULTI -TASK TRAININGS ON VALIDATION SPLIT OF SEPARATE DATASETS . L OWER IS BETTER FOR ALL METRICS .Model MinJointFDE 6 MinJointADE 6 MinJointFDE 1 MinFDE 6
+
+> Int
+
+QCNet 0.650 0.202 0.802 0.229 QCNet+Braids 0.635 (-2%) 0.193 (-5%) 0.780 (-3%) 0.220 (-4%) 
+
+QCNeXt 0.542 0.168 0.670 0.380 QCNeXt+Braids 0.535 (-1%) 0.164 (-2%) 0.675 (+1%) 0.362 (-5%) AV2  QCNet 1.460 0.654 3.054 0.628 QCNet+Braids 1.430 (-2%) 0.647 (-1%) 3.093 (+1%) 0.626 (-.3%) 
+
+QCNeXt 1.284 0.594 2.800 0.859 QCNeXt+Braids 1.258 (-2%) 0.587 (-1%) 2.771 (-1%) 0.843 (-2%) WOMD  QCNet 4.533 1.714 8.478 2.730 QCNet+Braids 4.319 (-5%) 1.633 (-5%) 7.950 (-6%) 2.580 (-5%) 
+
+QCNeXt 3.988 1.505 7.480 3.248 QCNeXt+Braids 3.948 (-1%) 1.483 (-1%) 7.429 (-1%) 3.218 (-1%) 
+
+Implementation details. We train all models with the AdamW optimizer [17] and a learning rate of 5 · 10 −4 that decays to 0 following the Cosine Annealing scheduler, across 48 epochs for the Interaction dataset, 64 for Argoverse 2, 32 for WOMD. In all cases we use λ = 1 for the weight of the braid loss, and fix δ = 50 m for the distance threshold between pairs of agents with edges. Hyperparameters for the models’ architectures follow the original papers’. We apply weight 8.0 for the over and below classes in the cross-entropy braid loss since these are rarer in the dataset. 
+
+B. Results and Discussion 
+
+Braid prediction improves joint prediction metrics. As shown in Tables I and II, performing braid prediction alongside the main task provides consistent gains in metrics: in the In-teraction dataset, QCNet, though a marginal model, improves 
+
+TABLE II RESULTS OF ONLINE SUBMISSIONS TO THE WAYMO INTERACTION 
+
+CHALLENGE .Model Soft mAP ( ↑) MinFDE ( ↓) MinADE ( ↓)
+
+> Val
+
+BeTop (our checkpoint) 0.236 2.317 0.995 QCNet 0.158 2.302 1.010 QCNet + BraidPred 0.167 (+6%) 2.190 (-5%) 0.966 (-4%) 
+
+QCNet (R) 0.165 2.243 0.974 QCNet (R) + BraidPred 0.173 (+5%) 2.103 (-6%) 0.919 (-6%) Test  BeTop (official, ensemble) 0.257 2.281 0.978 QCNet (R) 0.177 2.240 0.973 QCNet (R) + BraidPred 0.192 (+8%) 2.095 (-6%) 0.916 (-6%) 
+
+enough to achieve close to state-of-the-art performance as measured by MinJointFDE 6, compared to FJMP [6] which has 0.623 on all agents. Having already previously achieved impressive performance in the Argoverse 2 marginal dataset, QCNet also benefits from braid prediction when used in the joint task, though to a lesser extent. On WOMD, where scenes specifically evaluate two interacting agents, we see significant improvements of 21.4 cm for QCNet, equivalent to as much as 11 cm of improvement in the online submission, and 14 cm when rearranging predictions according to score with QCNet (R). As also shown in Table II, the improvements observed are also present on the test set of WOMD. Note that though QCNet is a marginal model, when coupled with braid prediction it is able to achieve 2 nd place in terms of joint MinADE on the full 2025 leaderboard. For all the results, it is important to note that these gains are achieved without sacrificing per-agent accuracy (as measured by MinFDE 6); rather, the gains are also reflected in marginal performance. It is also noteworthy that at inference time one TABLE III IMPROVEMENTS OF BRAID SIMILARITY , ON VALIDATION SET OF WOMD. Model MinJointFDE 6 (↓) BrSim 6 (↑) BrSim 1 (↑)QCNet 4.533 0.951 0.860 QCNet + BraidPred 4.319 (-5%) 0.952 (+.1%) 0.870 (+1%) 
+
+may simply deactivate the crossing prediction head to achieve the same latency as the base model. Fig. 6 shows qualitatively the effect of braid prediction. For scene (a), the baseline is not aware of the correct 
+
+no crossing label for both edges 1 → 2 and 2 → 1, and is therefore not capable of capturing the correct joint behavior. This is fixed by the model with braid prediction which is aware of the no crossing labels as is clearly shown by the blue predictions. A similar effect happens in the other scenes; the baseline clearly misses the correct interaction and multi-agent behavior, which is captured by the addition of braid prediction. Even if the joint predictions themselves might still deviate from the ground-truth in terms of MinJointFDE 6 for example, as is the case in scene (b), at least the correct multi-agent behavior is captured by one of the joint predictions, namely mode 1 in this case. 
+
+Braid prediction leads to more GT interaction compliant predictions. In Table III we present the improvements in braid similarity in WOMD, with QCNet. We calculate BrSim for K = 1 , i.e. taking the most likely joint mode, and for 
+
+K = 6 . We observe that BrSim 6 indeed slightly increases from 0.951 to 0.952 (+.1%) and BrSim 1 shows a more substantive improvement from 0.860 to 0.870 (+1%). It is important to remark that the baseline value is high in absolute terms because QCNet is a model with excellent multi-modality, and therefore it would not be uncommon to have at least one of the joint modes with correct crossing labels directly. As said in Section IV-D, this increase in braid similarity explains a significant part of the joint metric improvements. To show this, we take scenes in which braid similarity increases and evaluate the corresponding impact on MinJointFDE 6. Still for WOMD, with QCNet, we are able to retrieve 793 scenes in which BrSim 6 improves when performing braid prediction— around 2% of the dataset—and 2856 where BrSim 1 improves, around 7% of the data. As expected, scenes in which BrSim 6
+
+increases show remarkable improvements in MinJointFDE 6,as much as 1.544 m, when modes that previously did not reflect the actual social interaction are guided by braid pre-diction towards the accurate joint behavior. This can be seen visually in Fig. 6; for scenes (a-d), the model with braid prediction outputs at least one joint corresponding to the correct interaction, greatly improving MinJointFDE 6. On the scenes where BrSim 1 improves, we also get as much as 79.2 cm improvement in MinJointFDE 6, which indicates that, by being more capable of correctly predicting the multi-agent behavior of the most likely mode, the model is guided towards outputting more joint modes that also present the same correct joint behavior. 
+
+Braid prediction performance correlates with joint pre-                                                    
+
+> TABLE IV BRAID PREDICTION RESULTS FOR DIFFERENT VALUES OF λ. T RAINED ON
+> 10% OF WOMD. Model MinJointFDE 6MinJointADE 6MinJointFDE 1
+> QCNet 5.426 2.016 9.982 QCNet + BraidPred 5.291 (-2%) 1.974 (-2%) 9.711 (-3%)
+> (λ= 0 .1)QCNet + BraidPred 5.245 (-3%) 1.962 (-3%) 9.504 (-5%)
+> (λ= 1 )QCNet + BraidPred 5.405 (-.3%) 2.007 (-.4%) 9.895 (-.9%)
+> (λ= 10 )TABLE V BRAID PREDICTION WITH MODE EMBEDDINGS VS .AGENT ENCODINGS .TRAINED ON 10% OF WOMD. Model MinJointFDE 6MinJointADE 6MinJointFDE 1
+> QCNet 5.426 2.016 9.982 QCNet + BraidPred 5.324 (-2%) 1.982 (-2%) 9.774 (-2%)
+> (agent encodings) QCNet + BraidPred 5.245 (-3%) 1.962 (-3%) 9.504 (-5%)
+> (mode embeddings)
+
+diction metric improvement. Often, when performing multi-tasks, the auxiliary task merely helps the model in finding overall better feature representations for the main task, and higher accuracy in the auxiliary task does not necessarily correlate to higher accuracy in the main task on a sample-by-sample basis. Interestingly, we find that there is correlation between performance in braid prediction and improvements in the trajectory prediction task. To show this, we take the scenes in which the edges between the two interacting agents in WOMD are both correctly classified. These two edges are not the only ones that affect their future behavior, but they most strongly condition their behavior. On scenes in which both edges are labeled correctly on at least one of the modes, we get around 22 cm of improvements, with lesser improvements when this is not the case. This gives evidence that, the better the model is able to correctly predict the interaction graph, the more accurate its joint predictions will be; this is made possible by sharing the final mode embeddings and therefore aligning their representations for both tasks, and is also seen in Fig. 6: in scene (c), for example, the model is capable of predicting for edge 2 → 1 the correct over label in mode 
+
+k = 6 , and because of this it is also capable of outputting, for that mode, a trajectory in which agent 1 accelerates and induces the over label. 
+
+C. Ablation Studies 
+
+Sensitivity to λ. We analyze how the performance improve-ments from braid prediction depend on carefully tuning the 
+
+λ hyperparameter which balances the losses of both tasks. Results are shown in Table IV: note that all configurations show improvement over the baseline, showing the robustness of the advantages brought by the auxiliary task across three orders of magnitude. The improvements are largest for λ = 1 ,which was also the case in all our experiments for different datasets. Mode embeddings vs. agent encodings. We choose to use the final mode embeddings from the decoder to create edge features for braid prediction, applying the loss on the best mode. This is done both to more strongly condition the trajectory outputs themselves with the predicted crossings, and to only affect one of the joint behaviors each time, so as not to harm multi-modality. However, this approach limits the applicability of braid prediction to DETR-like architectures such as QCNet and QCNeXt. To avoid this limitation, we may also simply create edge features from agent encodings at the current timestep, and use those instead of the mode embeddings to create edge features that will be decoded into crossing class logits: 
+
+fi→j = [ ai; aj ; rt=0  
+
+> i→j
+
+] ∈ R3D , (8) 
+
+bci→j = MLP (fi→j ) ∈ R3. (9) with ai being the encoding of agent i at t = 0 . Note that the K
+
+dimension is gone with respect to (3) since agent encodings are common across modes; we then simply apply the cross entropy loss on the single class probability vector softmax (bci→j ).By performing braid prediction with agent encodings, one is able to apply the task on a wide variety of models; namely any model that shares agent encodings for decoding multiple agents. Table V shows that this alternative, more flexible version of braid prediction still shows improvements over the baseline, even if not as much as when using mode embeddings. VI. C ONCLUSION 
+
+In this work, inspired by the powerful and compact descrip-tion of multi-agent behavior made available by braid theory, we propose an auxiliary task done in parallel with trajectory prediction called braid prediction, which is effectively able to guide joint predictions towards accurate and realistic social interactions. It consists of making the model predict, for each pair of source and target agents, the crossing label of their future trajectories in the braid of the target agent’s frame of reference, starting from mode embeddings that are also used for trajectory prediction. This way the model naturally aligns the representations for both tasks, implicitly learning the likely kind of interaction between the multiple agents in each scene and by this very fact improving in the trajectory prediction task. We also propose a metric for evaluating adherence to the correct future multi-agent behavior based on the interaction graph induced by joint trajectory predictions. Our experiments on three separate datasets show consistent improvements on joint metrics, with minor added complexity in the training and negligible added inference latency. 
+
+Limitations and future work. We use an interaction graph representation closely related to the braids that describe the scene from multiple viewpoints; our representation however still misses the time of crossing to completely correspond to the information present in braid words. Future work would include studying how to incorporate time of crossing reasoning into the model for more complete use of the representational power of braids. Another extension would be to take into ac-count how agents’ future trajectories cross with the position of map elements for enhanced map understanding and adherence. REFERENCES [1] W. Zhan, L. Sun, D. Wang, H. Shi, A. Clausse, M. Naumann, J. Kum-merle, H. Konigshof, C. Stiller, A. de La Fortelle et al. , “Interaction dataset: An international, adversarial and cooperative motion dataset in interactive driving scenarios with semantic maps,” arXiv preprint arXiv:1910.03088 , 2019. [2] B. Wilson, W. Qi, T. Agarwal, J. Lambert, J. Singh, S. Khandelwal, B. Pan, R. Kumar, A. Hartnett, J. K. Pontes et al. , “Argoverse 2: Next generation datasets for self-driving perception and forecasting,” in Thirty-fifth Conference on Neural Information Processing Systems Datasets and Benchmarks Track (Round 2) , 2021. [3] S. Ettinger, S. Cheng, B. Caine, C. Liu, H. Zhao, S. Pradhan, Y. Chai, B. Sapp, C. R. Qi, Y. Zhou et al. , “Large scale interactive motion forecasting for autonomous driving: The waymo open motion dataset,” in Proceedings of the IEEE/CVF international conference on computer vision , 2021, pp. 9710–9719. [4] J. Ngiam, V. Vasudevan, B. Caine, Z. Zhang, H.-T. L. Chiang, J. Ling, R. Roelofs, A. Bewley, C. Liu, A. Venugopal et al. , “Scene transformer: A unified architecture for predicting future trajectories of multiple agents,” in International Conference on Learning Representations , 2022. [5] Q. Sun, X. Huang, J. Gu, B. C. Williams, and H. Zhao, “M2i: From factored marginal trajectory prediction to interactive prediction,” in 
+
+Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2022, pp. 6543–6552. [6] L. Rowe, M. Ethier, E.-H. Dykhne, and K. Czarnecki, “Fjmp: Factorized joint multi-agent motion prediction over learned directed acyclic interac-tion graphs,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2023, pp. 13 745–13 755. [7] Z. Zhou, Z. Wen, J. Wang, Y.-H. Li, and Y.-K. Huang, “Qcnext: A next-generation framework for joint multi-agent trajectory prediction,” arXiv preprint arXiv:2306.10508 , 2023. [8] S. Shi, L. Jiang, D. Dai, and B. Schiele, “Mtr++: Multi-agent motion prediction with symmetric scene modeling and guided intention query-ing,” IEEE Transactions on Pattern Analysis and Machine Intelligence ,vol. 46, no. 5, pp. 3955–3971, 2024. [9] H. Liu, L. Chen, Y. Qiao, C. Lv, and H. Li, “Reasoning multi-agent behavioral topology for interactive autonomous driving,” Advances in Neural Information Processing Systems , vol. 37, pp. 92 605–92 637, 2024. [10] J. Sun, X. Yue, J. Li, T. Shen, C. Yuan, S. Sun, S. Guo, Q. Zhou, and M. H. Ang Jr, “Impact: Behavioral intention-aware multimodal trajectory prediction with adaptive context trimming,” arXiv preprint arXiv:2504.09103 , 2025. [11] C. Mavrogiannis, J. DeCastro, and S. S. Srinivasa, “Analyzing mul-tiagent interactions in traffic scenes via topological braids,” in 2022 International Conference on Robotics and Automation (ICRA) . IEEE, 2022, pp. 5806–5813. [12] Z. Zhou, J. Wang, Y.-H. Li, and Y.-K. Huang, “Query-centric trajectory prediction,” in Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , 2023, pp. 17 863–17 873. [13] E. Artin, “Theory of braids,” Annals of Mathematics , vol. 48, no. 1, pp. 101–126, 1947. [14] C. I. Mavrogiannis and R. A. Knepper, “Multi-agent path topology in support of socially competent navigation planning,” The International Journal of Robotics Research , vol. 38, no. 2-3, pp. 338–356, 2019. [15] L. Xiao, Z. Pan, Z. Wang, Z. Cao, and W. Li, “Srefiner: Soft-braid attention for multi-agent trajectory refinement,” in Proceedings of the IEEE/CVF International Conference on Computer Vision , 2025, pp. 960–969. [16] J. Gao, C. Sun, H. Zhao, Y. Shen, D. Anguelov, C. Li, and C. Schmid, “Vectornet: Encoding hd maps and agent dynamics from vectorized rep-resentation,” in Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , 2020, pp. 11 525–11 533. [17] I. Loshchilov and F. Hutter, “Decoupled weight decay regularization,” in 
+
+7th International Conference on Learning Representations, ICLR , 2019.
