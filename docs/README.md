@@ -6,50 +6,52 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-03-29
-- 运行时间：2026-03-29 19:37:09 UTC
+- 最新运行日期：2026-03-30
+- 运行时间：2026-03-30 20:21:51 UTC
 - 运行状态：成功
-- 本次总论文数：9
-- 精读区：0
-- 速读区：9
+- 本次总论文数：10
+- 精读区：2
+- 速读区：8
 
 ### 今日简报（AI）
-今日速览 9 篇前沿论文，聚焦拓扑学与大模型技术在交通预测与仿真中的跨界应用。
-重点关注利用辫子论（Braid Theory）建模未来交互轨迹，以及借鉴 R1 风格的 Token 化交通仿真模型。
-建议深入探索拓扑几何与大模型推理机制如何提升复杂场景下的预测精度与仿真真实感。
-- 详情：[/202603/29/README](/202603/29/README)
+今日聚焦扩散模型在物理感知手部运动与机器人导航抓取中的前沿应用，深度解析 10 篇最新成果。
+重点关注 PAD-Hand 如何通过物理一致性优化手部动作恢复，以及 DiffusionAnything 实现的端到端导航与预抓取统一框架。
+建议关注扩散模型与具身智能的深度融合，了解 AI 如何在复杂物理环境中实现更精准的交互。
+- 详情：[/202603/30/README](/202603/30/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [PAD-Hand: Physics-Aware Diffusion for Hand Motion Recovery](/202603/30/2603.26068v1-pad-hand-physics-aware-diffusion-for-hand-motion-recovery)  
+   标签：评分：8.0/10、query:diffusion-conf-uncertainty
+   evidence：物理感知扩散用于运动恢复并估计物理方差
+2. [DiffusionAnything: End-to-End In-context Diffusion Learning for Unified Navigation and Pre-Grasp Motion](/202603/30/2603.26322v1-diffusionanything-end-to-end-in-context-diffusion-learning-for-unified-navigation-and-pre-grasp-motion)  
+   标签：评分：8.0/10、query:diffusion-conf-uncertainty
+   evidence：用于导航和运动规划的扩散策略
 
 ### 速读区论文标签
-1. [Future-Interactions-Aware Trajectory Prediction via Braid Theory](/202603/29/2603.22035v1-future-interactions-aware-trajectory-prediction-via-braid-theory)  
+1. [MMaDA-VLA: Large Diffusion Vision-Language-Action Model with Unified Multi-Modal Instruction and Generation](/202603/30/2603.25406v2-mmada-vla-large-diffusion-vision-language-action-model-with-unified-multi-modal-instruction-and-generation)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶汽车的多智能体轨迹预测
-2. [Learning Rollout from Sampling:An R1-Style Tokenized Traffic Simulation Model](/202603/29/2603.24989v1-learning-rollout-from-samplingan-r1-style-tokenized-traffic-simulation-model)  
-   标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶中的标记化交通模拟和运动标记不确定性
-3. [Directional Mollification for Controlled Smooth Path Generation](/202603/29/2603.21831v1-directional-mollification-for-controlled-smooth-path-generation)  
+   evidence：用于机器人控制和轨迹生成的扩散VLA大模型
+2. [REALITrees: Rashomon Ensemble Active Learning for Interpretable Trees](/202603/30/2603.22750v1-realitrees-rashomon-ensemble-active-learning-for-interpretable-trees)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：自主机器人和非圆柱系统的平滑路径生成
-4. [Decoupling Exploration and Policy Optimization: Uncertainty Guided Tree Search for Hard Exploration](/202603/29/2603.22273v1-decoupling-exploration-and-policy-optimization-uncertainty-guided-tree-search-for-hard-exploration)  
+   evidence：通过模型集成表征认知不确定性
+3. [Decentralized End-to-End Multi-AAV Pursuit Using Predictive Spatio-Temporal Observation via Deep Reinforcement Learning](/202603/30/2603.24238v1-decentralized-end-to-end-multi-aav-pursuit-using-predictive-spatio-temporal-observation-via-deep-reinforcement-learning)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：不确定性引导的搜索探索
-5. [Efficient Hybrid SE(3)-Equivariant Visuomotor Flow Policy via Spherical Harmonics for Robot Manipulation](/202603/29/2603.23227v1-efficient-hybrid-se3-equivariant-visuomotor-flow-policy-via-spherical-harmonics-for-robot-manipulation)  
+   evidence：感知不确定性下自主空中集群的预测性时空观测
+4. [Teacher-Student Diffusion Model for Text-Driven 3D Hand Motion Generation](/202603/30/2603.24407v1-teacher-student-diffusion-model-for-text-driven-3d-hand-motion-generation)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于机器人操作和流式规划的等变扩散策略
-6. [Toward Generalist Neural Motion Planners for Robotic Manipulators: Challenges and Opportunities](/202603/29/2603.24318v1-toward-generalist-neural-motion-planners-for-robotic-manipulators-challenges-and-opportunities)  
+   evidence：用于动作生成的扩散模型
+5. [DRiffusion: Draft-and-Refine Process Parallelizes Diffusion Models with Ease](/202603/30/2603.25872v1-driffusion-draft-and-refine-process-parallelizes-diffusion-models-with-ease)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：神经运动规划器与分布外规划设置
-7. [Toward Physically Consistent Driving Video World Models under Challenging Trajectories](/202603/29/2603.24506v1-toward-physically-consistent-driving-video-world-models-under-challenging-trajectories)  
+   evidence：用于扩散模型的并行采样框架以降低延迟
+6. [GLU: Global-Local-Uncertainty Fusion for Scalable Spatiotemporal Reconstruction and Forecasting](/202603/30/2603.26023v1-glu-global-local-uncertainty-fusion-for-scalable-spatiotemporal-reconstruction-and-forecasting)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：以驾驶轨迹为条件的扩散世界模型
-8. [MMaDA-VLA: Large Diffusion Vision-Language-Action Model with Unified Multi-Modal Instruction and Generation](/202603/29/2603.25406v1-mmada-vla-large-diffusion-vision-language-action-model-with-unified-multi-modal-instruction-and-generation)  
+   evidence：用于预测的不确定性驱动重要性场
+7. [DFM-VLA: Iterative Action Refinement for Robot Manipulation via Discrete Flow Matching](/202603/30/2603.26320v1-dfm-vla-iterative-action-refinement-for-robot-manipulation-via-discrete-flow-matching)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于机器人控制和动作生成的扩散模型
-9. [LILAC: Language-Conditioned Object-Centric Optical Flow for Open-Loop Trajectory Generation](/202603/29/2603.25481v1-lilac-language-conditioned-object-centric-optical-flow-for-open-loop-trajectory-generation)  
+   evidence：用于动作令牌迭代细化的离散流匹配VLA
+8. [DTP-Attack: A decision-based black-box adversarial attack on trajectory prediction](/202603/30/2603.26462v1-dtp-attack-a-decision-based-black-box-adversarial-attack-on-trajectory-prediction)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：基于流的机器人轨迹生成
+   evidence：针对自动驾驶汽车安全的轨迹预测对抗攻击
 
 
 <div class="dpr-home-promo-card">

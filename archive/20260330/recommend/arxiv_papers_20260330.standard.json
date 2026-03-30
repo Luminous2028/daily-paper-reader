@@ -1,0 +1,406 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-03-30T20:20:21.550025+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 8,
+    "quick_skim_target": 11,
+    "quick_selected": 8
+  },
+  "deep_dive": [
+    {
+      "id": "2603.26068v1",
+      "title": "PAD-Hand: Physics-Aware Diffusion for Hand Motion Recovery",
+      "abstract": "Significant advancements made in reconstructing hands from images have delivered accurate single-frame estimates, yet they often lack physics consistency and provide no notion of how confidently the motion satisfies physics. In this paper, we propose a novel physics-aware conditional diffusion framework that refines noisy pose sequences into physically plausible hand motion while estimating the physics variance in motion estimates. Building on a MeshCNN-Transformer backbone, we formulate Euler-Lagrange dynamics for articulated hands. Unlike prior works that enforce zero residuals, we treat the resulting dynamic residuals as virtual observables to more effectively integrate physics. Through a last-layer Laplace approximation, our method produces per-joint, per-time variances that measure physics consistency and offers interpretable variance maps indicating where physical consistency weakens. Experiments on two well-known hand datasets show consistent gains over strong image-based initializations and competitive video-based methods. Qualitative results confirm that our variance estimations are aligned with the physical plausibility of the motion in image-based estimates.",
+      "authors": [
+        "Elkhan Ismayilzada",
+        "Yufei Zhang",
+        "Zijun Cui"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-27T04:39:21+00:00",
+      "link": "https://arxiv.org/pdf/2603.26068v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "physics-aware diffusion for motion recovery while estimating physics variance",
+      "llm_evidence_cn": "物理感知扩散用于运动恢复并估计物理方差",
+      "llm_evidence": "物理感知扩散用于运动恢复并估计物理方差",
+      "canonical_evidence": "物理感知扩散用于运动恢复并估计物理方差",
+      "llm_tldr_en": "A diffusion framework for physically plausible motion recovery that estimates uncertainty via Laplace approximation.",
+      "llm_tldr_cn": "一种物理感知扩散框架，用于物理合理的运动恢复，并通过拉普拉斯近似估计不确定性。",
+      "llm_tldr": "一种物理感知扩散框架，用于物理合理的运动恢复，并通过拉普拉斯近似估计不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2603.26322v1",
+      "title": "DiffusionAnything: End-to-End In-context Diffusion Learning for Unified Navigation and Pre-Grasp Motion",
+      "abstract": "Efficiently predicting motion plans directly from vision remains a fundamental challenge in robotics, where planning typically requires explicit goal specification and task-specific design. Recent vision-language-action (VLA) models infer actions directly from visual input but demand massive computational resources, extensive training data, and fail zero-shot in novel scenes. We present a unified image-space diffusion policy handling both meter-scale navigation and centimeter-scale manipulation via multi-scale feature modulation, with only 5 minutes of self-supervised data per task. Three key innovations drive the framework: (1) Multi-scale FiLM conditioning on task mode, depth scale, and spatial attention enables task-appropriate behavior in a single model; (2) trajectory-aligned depth prediction focuses metric 3D reasoning along generated waypoints; (3) self-supervised attention from AnyTraverse enables goal-directed inference without vision-language models and depth sensors. Operating purely from RGB input (2.0 GB memory, 10 Hz), the model achieves robust zero-shot generalization to novel scenes while remaining suitable for onboard deployment.",
+      "authors": [
+        "Iana Zhura",
+        "Yara Mahmoud",
+        "Jeffrin Sam",
+        "Hung Khang Nguyen",
+        "Didar Seyidov",
+        "Miguel Altamirano Cabrera",
+        "Dzmitry Tsetserukou"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-27T11:40:13+00:00",
+      "link": "https://arxiv.org/pdf/2603.26322v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "diffusion policy for navigation and motion planning",
+      "llm_evidence_cn": "用于导航和运动规划的扩散策略",
+      "llm_evidence": "用于导航和运动规划的扩散策略",
+      "canonical_evidence": "用于导航和运动规划的扩散策略",
+      "llm_tldr_en": "Presents an end-to-end diffusion learning framework for unified robot navigation and pre-grasp motion.",
+      "llm_tldr_cn": "提出一个用于统一机器人导航和抓取前运动的端到端扩散学习框架。",
+      "llm_tldr": "提出一个用于统一机器人导航和抓取前运动的端到端扩散学习框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2603.25406v2",
+      "title": "MMaDA-VLA: Large Diffusion Vision-Language-Action Model with Unified Multi-Modal Instruction and Generation",
+      "abstract": "Vision-Language-Action (VLA) models aim to control robots for manipulation from visual observations and natural-language instructions. However, existing hierarchical and autoregressive paradigms often introduce architectural overhead, suffer from temporal inconsistency and long-horizon error accumulation, and lack a mechanism to capture environment dynamics without extra modules. To this end, we present MMaDA-VLA, a fully native pre-trained large diffusion VLA model that unifies multi-modal understanding and generation in a single framework. Our key idea is a native discrete diffusion formulation that embeds language, images, and continuous robot controls into one discrete token space and trains a single backbone with masked token denoising to jointly generate a future goal observation and an action chunk in parallel. Iterative denoising enables global, order-free refinement, improving long-horizon consistency while grounding actions in predicted future visual outcomes without auxiliary world models. Experiments across simulation benchmarks and real-world tasks show state-of-the-art performance, achieving 98.0% average success on LIBERO and 4.78 average length on CALVIN.",
+      "authors": [
+        "Yang Liu",
+        "Pengxiang Ding",
+        "Tengyue Jiang",
+        "Xudong Wang",
+        "Wenxuan Song",
+        "Minghui Lin",
+        "Han Zhao",
+        "Hongyin Zhang",
+        "Zifeng Zhuang",
+        "Wei Zhao",
+        "Siteng Huang",
+        "Jinkui Shi",
+        "Donglin Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-26T12:55:51+00:00",
+      "link": "https://arxiv.org/pdf/2603.25406v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "large diffusion VLA model for robot control and trajectory generation",
+      "llm_evidence_cn": "用于机器人控制和轨迹生成的扩散VLA大模型",
+      "llm_evidence": "用于机器人控制和轨迹生成的扩散VLA大模型",
+      "canonical_evidence": "用于机器人控制和轨迹生成的扩散VLA大模型",
+      "llm_tldr_en": "A native discrete diffusion VLA model that unifies multi-modal understanding and robot control generation.",
+      "llm_tldr_cn": "一种原生离散扩散VLA模型，统一了多模态理解与机器人控制生成。",
+      "llm_tldr": "一种原生离散扩散VLA模型，统一了多模态理解与机器人控制生成。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.22750v1",
+      "title": "REALITrees: Rashomon Ensemble Active Learning for Interpretable Trees",
+      "abstract": "Active learning reduces labeling costs by selecting samples that maximize information gain. A dominant framework, Query-by-Committee (QBC), typically relies on perturbation-based diversity by inducing model disagreement through random feature subsetting or data blinding. While this approximates one notion of epistemic uncertainty, it sacrifices direct characterization of the plausible hypothesis space. We propose the complementary approach: Rashomon Ensembled Active Learning (REAL) which constructs a committee by exhaustively enumerating the Rashomon Set of all near-optimal models. To address functional redundancy within this set, we adopt a PAC-Bayesian framework using a Gibbs posterior to weight committee members by their empirical risk. Leveraging recent algorithmic advances, we exactly enumerate this set for the class of sparse decision trees. Across synthetic and established active learning baselines, REAL outperforms randomized ensembles, particularly in moderately noisy environments where it strategically leverages expanded model multiplicity to achieve faster convergence.",
+      "authors": [
+        "Simon D. Nguyen",
+        "Hayden McTavish",
+        "Kentaro Hoffman",
+        "Cynthia Rudin",
+        "Tyler H. McCormick"
+      ],
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG"
+      ],
+      "published": "2026-03-24T03:27:44+00:00",
+      "link": "https://arxiv.org/pdf/2603.22750v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "characterization of epistemic uncertainty through model ensembles",
+      "llm_evidence_cn": "通过模型集成表征认知不确定性",
+      "llm_evidence": "通过模型集成表征认知不确定性",
+      "canonical_evidence": "通过模型集成表征认知不确定性",
+      "llm_tldr_en": "A method for active learning that characterizes epistemic uncertainty by enumerating near-optimal models.",
+      "llm_tldr_cn": "一种通过枚举近优模型来表征认知不确定性的主动学习方法。",
+      "llm_tldr": "一种通过枚举近优模型来表征认知不确定性的主动学习方法。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "estimating epistemic uncertainty in neural motion planners",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.24238v1",
+      "title": "Decentralized End-to-End Multi-AAV Pursuit Using Predictive Spatio-Temporal Observation via Deep Reinforcement Learning",
+      "abstract": "Decentralized cooperative pursuit in cluttered environments is challenging for autonomous aerial swarms, especially under partial and noisy perception. Existing methods often rely on abstracted geometric features or privileged ground-truth states, and therefore sidestep perceptual uncertainty in real-world settings. We propose a decentralized end-to-end multi-agent reinforcement learning (MARL) framework that maps raw LiDAR observations directly to continuous control commands. Central to the framework is the Predictive Spatio-Temporal Observation (PSTO), an egocentric grid representation that aligns obstacle geometry with predictive adversarial intent and teammate motion in a unified, fixed-resolution projection. Built on PSTO, a single decentralized policy enables agents to navigate static obstacles, intercept dynamic targets, and maintain cooperative encirclement. Simulations demonstrate that the proposed method achieves superior capture efficiency and competitive success rates compared to state-of-the-art learning-based approaches relying on privileged obstacle information. Furthermore, the unified policy scales seamlessly across different team sizes without retraining. Finally, fully autonomous outdoor experiments validate the framework on a quadrotor swarm relying on only onboard sensing and computing.",
+      "authors": [
+        "Yude Li",
+        "Zhexuan Zhou",
+        "Huizhe Li",
+        "Yanke Sun",
+        "Yenan Wu",
+        "Yichen Lai",
+        "Yiming Wang",
+        "Youmin Gong",
+        "Jie Mei"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-25T12:23:35+00:00",
+      "link": "https://arxiv.org/pdf/2603.24238v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "predictive spatio-temporal observation for autonomous aerial swarms under perceptual uncertainty",
+      "llm_evidence_cn": "感知不确定性下自主空中集群的预测性时空观测",
+      "llm_evidence": "感知不确定性下自主空中集群的预测性时空观测",
+      "canonical_evidence": "感知不确定性下自主空中集群的预测性时空观测",
+      "llm_tldr_en": "A MARL framework for multi-AAV pursuit using predictive spatio-temporal grids to handle perceptual uncertainty.",
+      "llm_tldr_cn": "一种用于多无人机追踪的强化学习框架，利用预测性时空网格处理感知不确定性。",
+      "llm_tldr": "一种用于多无人机追踪的强化学习框架，利用预测性时空网格处理感知不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.24407v1",
+      "title": "Teacher-Student Diffusion Model for Text-Driven 3D Hand Motion Generation",
+      "abstract": "Generating realistic 3D hand motion from natural language is vital for VR, robotics, and human-computer interaction. Existing methods either focus on full-body motion, overlooking detailed hand gestures, or require explicit 3D object meshes, limiting generality. We propose TSHaMo, a model-agnostic teacher-student diffusion framework for text-driven hand motion generation. The student model learns to synthesize motions from text alone, while the teacher leverages auxiliary signals (e.g., MANO parameters) to provide structured guidance during training. A co-training strategy enables the student to benefit from the teacher's intermediate predictions while remaining text-only at inference. Evaluated using two diffusion backbones on GRAB and H2O, TSHaMo consistently improves motion quality and diversity. Ablations confirm its robustness and flexibility in using diverse auxiliary inputs without requiring 3D objects at test time.",
+      "authors": [
+        "Ching-Lam Cheng",
+        "Bin Zhu",
+        "Shengfeng He"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-25T15:21:04+00:00",
+      "link": "https://arxiv.org/pdf/2603.24407v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion model for motion generation",
+      "llm_evidence_cn": "用于动作生成的扩散模型",
+      "llm_evidence": "用于动作生成的扩散模型",
+      "canonical_evidence": "用于动作生成的扩散模型",
+      "llm_tldr_en": "A teacher-student diffusion framework for generating 3D hand motions from text.",
+      "llm_tldr_cn": "一种用于从文本生成3D手部动作的师生扩散模型框架。",
+      "llm_tldr": "一种用于从文本生成3D手部动作的师生扩散模型框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.25872v1",
+      "title": "DRiffusion: Draft-and-Refine Process Parallelizes Diffusion Models with Ease",
+      "abstract": "Diffusion models have achieved remarkable success in generating high-fidelity content but suffer from slow, iterative sampling, resulting in high latency that limits their use in interactive applications. We introduce DRiffusion, a parallel sampling framework that parallelizes diffusion inference through a draft-and-refine process. DRiffusion employs skip transitions to generate multiple draft states for future timesteps and computes their corresponding noises in parallel, which are then used in the standard denoising process to produce refined results. Theoretically, our method achieves an acceleration rate of $\\tfrac{1}{n}$ or $\\tfrac{2}{n+1}$, depending on whether the conservative or aggressive mode is used, where $n$ denotes the number of devices. Empirically, DRiffusion attains 1.4$\\times$-3.7$\\times$ speedup across multiple diffusion models while incur minimal degradation in generation quality: on MS-COCO dataset, both FID and CLIP remain largely on par with those of the original model, while PickScore and HPSv2.1 show only minor average drops of 0.17 and 0.43, respectively. These results verify that DRiffusion delivers substantial acceleration and preserves perceptual quality.",
+      "authors": [
+        "Runsheng Bai",
+        "Chengyu Zhang",
+        "Yangdong Deng"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-26T19:58:42+00:00",
+      "link": "https://arxiv.org/pdf/2603.25872v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "parallel sampling framework for diffusion models to reduce latency",
+      "llm_evidence_cn": "用于扩散模型的并行采样框架以降低延迟",
+      "llm_evidence": "用于扩散模型的并行采样框架以降低延迟",
+      "canonical_evidence": "用于扩散模型的并行采样框架以降低延迟",
+      "llm_tldr_en": "Introduces DRiffusion, a parallel sampling framework that accelerates diffusion model inference via a draft-and-refine process.",
+      "llm_tldr_cn": "引入 DRiffusion，一种通过草图-细化过程加速扩散模型推理的并行采样框架。",
+      "llm_tldr": "引入 DRiffusion，一种通过草图-细化过程加速扩散模型推理的并行采样框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.26023v1",
+      "title": "GLU: Global-Local-Uncertainty Fusion for Scalable Spatiotemporal Reconstruction and Forecasting",
+      "abstract": "Digital twins of complex physical systems are expected to infer unobserved states from sparse measurements and predict their evolution in time, yet these two functions are typically treated as separate tasks. Here we present GLU, a Global-Local-Uncertainty framework that formulates sparse reconstruction and dynamic forecasting as a unified state-representation problem and introduces a structured latent assembly to both tasks. The central idea is to build a structured latent state that combines a global summary of system-level organization, local tokens anchored to available measurements, and an uncertainty-driven importance field that weights observations according to the physical informativeness. For reconstruction, GLU uses importance-aware adaptive neighborhood selection to retrieve locally relevant information while preserving global consistency and allowing flexible query resolution on arbitrary geometries. Across a suite of challenging benchmarks, GLU consistently improves reconstruction fidelity over reduced-order, convolutional, neural operator, and attention-based baselines, better preserving multi-scale structures. For forecasting, a hierarchical Leader-Follower Dynamics module evolves the latent state with substantially reduced memory growth, maintains stable rollout behavior and delays error accumulation in nonlinear dynamics. On a realistic turbulent combustion dataset, it further preserves not only sharp fronts and broadband structures in multiple physical fields, but also their cross-channel thermo-chemical couplings. Scalability tests show that these gains are achieved with substantially lower memory growth than comparable attention-based baselines. Together, these results establish GLU as a flexible and computationally practical paradigm for sparse digital twins.",
+      "authors": [
+        "Linzheng Wang",
+        "Jason Chen",
+        "Nicolas Tricard",
+        "Zituo Chen",
+        "Sili Deng"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-27T02:40:58+00:00",
+      "link": "https://arxiv.org/pdf/2603.26023v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "uncertainty-driven importance field for forecasting",
+      "llm_evidence_cn": "用于预测的不确定性驱动重要性场",
+      "llm_evidence": "用于预测的不确定性驱动重要性场",
+      "canonical_evidence": "用于预测的不确定性驱动重要性场",
+      "llm_tldr_en": "Unified framework for spatiotemporal reconstruction and forecasting using uncertainty-driven weighting.",
+      "llm_tldr_cn": "提出GLU框架，利用不确定性驱动的重要性场统一时空重建与动态预测任务。",
+      "llm_tldr": "提出GLU框架，利用不确定性驱动的重要性场统一时空重建与动态预测任务。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.26320v1",
+      "title": "DFM-VLA: Iterative Action Refinement for Robot Manipulation via Discrete Flow Matching",
+      "abstract": "Vision--Language--Action (VLA) models that encode actions using a discrete tokenization scheme are increasingly adopted for robotic manipulation, but existing decoding paradigms remain fundamentally limited. Whether actions are decoded sequentially by autoregressive VLAs or in parallel by discrete diffusion VLAs, once a token is generated, it is typically fixed and cannot be revised in subsequent iterations, so early token errors cannot be effectively corrected later. We propose DFM-VLA, a discrete flow matching VLA for iterative refinement of action tokens. DFM-VLA~models a token-level probability velocity field that dynamically updates the full action sequence across refinement iterations. We investigate two ways to construct the velocity field: an auxiliary velocity-head formulation and an action-embedding-guided formulation. Our framework further adopts a two-stage decoding strategy with an iterative refinement stage followed by deterministic validation for stable convergence. Extensive experiments on CALVIN, LIBERO, and real-world manipulation tasks show that DFM-VLA consistently outperforms strong autoregressive, discrete diffusion, and continuous diffusion baselines in manipulation performance while retaining high inference efficiency. In particular, DFM-VLA achieves an average success length of 4.44 on CALVIN and an average success rate of 95.7\\% on LIBERO, highlighting the value of action refinement via discrete flow matching for robotic manipulation. Our project is available \\url{https://chris1220313648.github.io/DFM-VLA/}",
+      "authors": [
+        "Jiayi Chen",
+        "Wenxuan Song",
+        "Shuai Chen",
+        "Jingbo Wang",
+        "Zhijun Li",
+        "Haoang Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-03-27T11:38:43+00:00",
+      "link": "https://arxiv.org/pdf/2603.26320v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "discrete flow matching VLA for iterative refinement of action tokens",
+      "llm_evidence_cn": "用于动作令牌迭代细化的离散流匹配VLA",
+      "llm_evidence": "用于动作令牌迭代细化的离散流匹配VLA",
+      "canonical_evidence": "用于动作令牌迭代细化的离散流匹配VLA",
+      "llm_tldr_en": "Uses discrete flow matching for iterative action refinement in robot manipulation, improving temporal consistency.",
+      "llm_tldr_cn": "在机器人操作中使用离散流匹配进行动作迭代细化，提高了时间一致性。",
+      "llm_tldr": "在机器人操作中使用离散流匹配进行动作迭代细化，提高了时间一致性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.26462v1",
+      "title": "DTP-Attack: A decision-based black-box adversarial attack on trajectory prediction",
+      "abstract": "Trajectory prediction systems are critical for autonomous vehicle safety, yet remain vulnerable to adversarial attacks that can cause catastrophic traffic behavior misinterpretations. Existing attack methods require white-box access with gradient information and rely on rigid physical constraints, limiting real-world applicability. We propose DTP-Attack, a decision-based black-box adversarial attack framework tailored for trajectory prediction systems. Our method operates exclusively on binary decision outputs without requiring model internals or gradients, making it practical for real-world scenarios. DTP-Attack employs a novel boundary walking algorithm that navigates adversarial regions without fixed constraints, naturally maintaining trajectory realism through proximity preservation. Unlike existing approaches, our method supports both intention misclassification attacks and prediction accuracy degradation. Extensive evaluation on nuScenes and Apolloscape datasets across state-of-the-art models including Trajectron++ and Grip++ demonstrates superior performance. DTP-Attack achieves 41 - 81% attack success rates for intention misclassification attacks that manipulate perceived driving maneuvers with perturbations below 0.45 m, and increases prediction errors by 1.9 - 4.2 for accuracy degradation. Our method consistently outperforms existing black-box approaches while maintaining high controllability and reliability across diverse scenarios. These results reveal fundamental vulnerabilities in current trajectory prediction systems, highlighting urgent needs for robust defenses in safety-critical autonomous driving applications.",
+      "authors": [
+        "Jiaxiang Li",
+        "Jun Yan",
+        "Daniel Watzenig",
+        "Huilin Yin"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-27T14:30:37+00:00",
+      "link": "https://arxiv.org/pdf/2603.26462v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "adversarial attack on trajectory prediction for autonomous vehicle safety",
+      "llm_evidence_cn": "针对自动驾驶汽车安全的轨迹预测对抗攻击",
+      "llm_evidence": "针对自动驾驶汽车安全的轨迹预测对抗攻击",
+      "canonical_evidence": "针对自动驾驶汽车安全的轨迹预测对抗攻击",
+      "llm_tldr_en": "Proposes a black-box adversarial attack framework to evaluate the robustness of trajectory prediction systems.",
+      "llm_tldr_cn": "提出了一种黑盒对抗攻击框架，用于评估轨迹预测系统的鲁棒性。",
+      "llm_tldr": "提出了一种黑盒对抗攻击框架，用于评估轨迹预测系统的鲁棒性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
