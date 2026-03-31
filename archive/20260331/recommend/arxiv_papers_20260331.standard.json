@@ -1,0 +1,529 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-03-31T19:49:44.012597+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 17,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2603.25741v2",
+      "title": "Vega: Learning to Drive with Natural Language Instructions",
+      "abstract": "Vision-language-action models have reshaped autonomous driving to incorporate languages into the decision-making process. However, most existing pipelines only utilize the language modality for scene descriptions or reasoning and lack the flexibility to follow diverse user instructions for personalized driving. To address this, we first construct a large-scale driving dataset (InstructScene) containing around 100,000 scenes annotated with diverse driving instructions with the corresponding trajectories. We then propose a unified Vision-Language-World-Action model, Vega, for instruction-based generation and planning. We employ the autoregressive paradigm to process visual inputs (vision) and language instructions (language) and the diffusion paradigm to generate future predictions (world modeling) and trajectories (action). We perform joint attention to enable interactions between the modalities and use individual projection layers for different modalities for more capabilities. Extensive experiments demonstrate that our method not only achieves superior planning performance but also exhibits strong instruction-following abilities, paving the way for more intelligent and personalized driving systems.",
+      "authors": [
+        "Sicheng Zuo",
+        "Yuxuan Li",
+        "Wenzhao Zheng",
+        "Zheng Zhu",
+        "Jie Zhou",
+        "Jiwen Lu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.RO"
+      ],
+      "published": "2026-03-26T17:59:56+00:00",
+      "link": "https://arxiv.org/pdf/2603.25741v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "diffusion paradigm to generate future trajectories in autonomous driving",
+      "llm_evidence_cn": "利用扩散范式生成自动驾驶未来轨迹",
+      "llm_evidence": "利用扩散范式生成自动驾驶未来轨迹",
+      "canonical_evidence": "利用扩散范式生成自动驾驶未来轨迹",
+      "llm_tldr_en": "A unified model using diffusion to generate future trajectories for instruction-based autonomous driving.",
+      "llm_tldr_cn": "一种利用扩散模型为指令驱动的自动驾驶生成未来轨迹的统一模型。",
+      "llm_tldr": "一种利用扩散模型为指令驱动的自动驾驶生成未来轨迹的统一模型。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2603.26068v2",
+      "title": "PAD-Hand: Physics-Aware Diffusion for Hand Motion Recovery",
+      "abstract": "Significant advancements made in reconstructing hands from images have delivered accurate single-frame estimates, yet they often lack physics consistency and provide no notion of how confidently the motion satisfies physics. In this paper, we propose a novel physics-aware conditional diffusion framework that refines noisy pose sequences into physically plausible hand motion while estimating the physics variance in motion estimates. Building on a MeshCNN-Transformer backbone, we formulate Euler-Lagrange dynamics for articulated hands. Unlike prior works that enforce zero residuals, we treat the resulting dynamic residuals as virtual observables to more effectively integrate physics. Through a last-layer Laplace approximation, our method produces per-joint, per-time variances that measure physics consistency and offers interpretable variance maps indicating where physical consistency weakens. Experiments on two well-known hand datasets show consistent gains over strong image-based initializations and competitive video-based methods. Qualitative results confirm that our variance estimations are aligned with the physical plausibility of the motion in image-based estimates.",
+      "authors": [
+        "Elkhan Ismayilzada",
+        "Yufei Zhang",
+        "Zijun Cui"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-27T04:39:21+00:00",
+      "link": "https://arxiv.org/pdf/2603.26068v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "estimating physics variance and uncertainty in diffusion-based motion recovery",
+      "llm_evidence_cn": "在基于扩散的运动恢复中估计物理方差和不确定性",
+      "llm_evidence": "在基于扩散的运动恢复中估计物理方差和不确定性",
+      "canonical_evidence": "在基于扩散的运动恢复中估计物理方差和不确定性",
+      "llm_tldr_en": "A physics-aware diffusion framework that recovers motion while estimating uncertainty via Laplace approximation.",
+      "llm_tldr_cn": "一种物理感知的扩散框架，在恢复运动的同时通过拉普拉斯近似估计不确定性。",
+      "llm_tldr": "一种物理感知的扩散框架，在恢复运动的同时通过拉普拉斯近似估计不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2603.26747v1",
+      "title": "From Diffusion To Flow: Efficient Motion Generation In MotionGPT3",
+      "abstract": "Recent text-driven motion generation methods span both discrete token-based approaches and continuous-latent formulations. MotionGPT3 exemplifies the latter paradigm, combining a learned continuous motion latent space with a diffusion-based prior for text-conditioned synthesis. While rectified flow objectives have recently demonstrated favorable convergence and inference-time properties relative to diffusion in image and audio generation, it remains unclear whether these advantages transfer cleanly to the motion generation setting. In this work, we conduct a controlled empirical study comparing diffusion and rectified flow objectives within the MotionGPT3 framework. By holding the model architecture, training protocol, and evaluation setup fixed, we isolate the effect of the generative objective on training dynamics, final performance, and inference efficiency. Experiments on the HumanML3D dataset show that rectified flow converges in fewer training epochs, reaches strong test performance earlier, and matches or exceeds diffusion-based motion quality under identical conditions. Moreover, flow-based priors exhibit stable behavior across a wide range of inference step counts and achieve competitive quality with fewer sampling steps, yielding improved efficiency--quality trade-offs. Overall, our results suggest that several known benefits of rectified flow objectives do extend to continuous-latent text-to-motion generation, highlighting the importance of the training objective choice in motion priors.",
+      "authors": [
+        "Jaymin Ban",
+        "JiHong Jeon",
+        "SangYeop Jeong"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-03-23T09:44:07+00:00",
+      "link": "https://arxiv.org/pdf/2603.26747v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "diffusion-based prior for motion generation",
+      "llm_evidence_cn": "基于扩散模型的运动生成先验",
+      "llm_evidence": "基于扩散模型的运动生成先验",
+      "canonical_evidence": "基于扩散模型的运动生成先验",
+      "llm_tldr_en": "Compares diffusion and rectified flow for efficient motion generation in a continuous latent space.",
+      "llm_tldr_cn": "在连续潜空间中比较扩散模型与修正流以实现高效的运动生成。",
+      "llm_tldr": "在连续潜空间中比较扩散模型与修正流以实现高效的运动生成。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.22273v2",
+      "title": "Decoupling Exploration and Policy Optimization: Uncertainty Guided Tree Search for Hard Exploration",
+      "abstract": "The process of discovery requires active exploration -- the act of collecting new and informative data. However, efficient autonomous exploration remains a major unsolved problem. The dominant paradigm addresses this challenge by using Reinforcement Learning (RL) to train agents with intrinsic motivation, maximizing a composite objective of extrinsic and intrinsic rewards. We suggest that this approach incurs unnecessary overhead: while policy optimization is necessary for precise task execution, employing such machinery solely to expand state coverage may be inefficient. In this paper, we propose a new paradigm that explicitly separates exploration from exploitation and bypasses RL during the exploration phase. Our method uses a tree-search strategy inspired by the Go-With-The-Winner algorithm, paired with a measure of epistemic uncertainty to systematically drive exploration. By removing the overhead of policy optimization, our approach explores an order of magnitude more efficiently than standard intrinsic motivation baselines on hard Atari benchmarks. Further, we demonstrate that the discovered trajectories can be distilled into deployable policies using existing supervised backward learning algorithms, achieving state-of-the-art scores by a wide margin on Montezuma's Revenge, Pitfall!, and Venture without relying on domain-specific knowledge. Finally, we demonstrate the generality of our framework in high-dimensional continuous action spaces by solving the MuJoCo Adroit dexterous manipulation and AntMaze tasks in a sparse-reward setting, directly from image observations and without expert demonstrations or offline datasets. To the best of our knowledge, this has not been achieved before for the Adroit tasks.",
+      "authors": [
+        "Zakaria Mhammedi",
+        "James Cohan"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-23T17:56:52+00:00",
+      "link": "https://arxiv.org/pdf/2603.22273v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "uncertainty guided search and decoupling exploration",
+      "llm_evidence_cn": "不确定性引导的搜索与探索解耦",
+      "llm_evidence": "不确定性引导的搜索与探索解耦",
+      "canonical_evidence": "不确定性引导的搜索与探索解耦",
+      "llm_tldr_en": "Separates exploration from policy optimization using uncertainty-guided tree search.",
+      "llm_tldr_cn": "利用不确定性引导的树搜索将探索与策略优化分离。",
+      "llm_tldr": "利用不确定性引导的树搜索将探索与策略优化分离。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty decoupling in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.27270v1",
+      "title": "Quantification of Credal Uncertainty: A Distance-Based Approach",
+      "abstract": "Credal sets, i.e., closed convex sets of probability measures, provide a natural framework to represent aleatoric and epistemic uncertainty in machine learning. Yet how to quantify these two types of uncertainty for a given credal set, particularly in multiclass classification, remains underexplored. In this paper, we propose a distance-based approach to quantify total, aleatoric, and epistemic uncertainty for credal sets. Concretely, we introduce a family of such measures within the framework of Integral Probability Metrics (IPMs). The resulting quantities admit clear semantic interpretations, satisfy natural theoretical desiderata, and remain computationally tractable for common choices of IPMs. We instantiate the framework with the total variation distance and obtain simple, efficient uncertainty measures for multiclass classification. In the binary case, this choice recovers established uncertainty measures, for which a principled multiclass generalization has so far been missing. Empirical results confirm practical usefulness, with favorable performance at low computational cost.",
+      "authors": [
+        "Xabier Gonzalez-Garcia",
+        "Siu Lun Chau",
+        "Julian Rodemann",
+        "Michele Caprio",
+        "Krikamol Muandet",
+        "Humberto Bustince",
+        "Sébastien Destercke",
+        "Eyke Hüllermeier",
+        "Yusuf Sale"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "stat.ML"
+      ],
+      "published": "2026-03-28T13:50:48+00:00",
+      "link": "https://arxiv.org/pdf/2603.27270v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "quantify aleatoric and epistemic uncertainty for credal sets",
+      "llm_evidence_cn": "量化信度集的偶然和认知不确定性",
+      "llm_evidence": "量化信度集的偶然和认知不确定性",
+      "canonical_evidence": "量化信度集的偶然和认知不确定性",
+      "llm_tldr_en": "A distance-based approach to quantify total, aleatoric, and epistemic uncertainty in machine learning.",
+      "llm_tldr_cn": "一种基于距离的方法，用于量化机器学习中的总不确定性、偶然不确定性和认知不确定性。",
+      "llm_tldr": "一种基于距离的方法，用于量化机器学习中的总不确定性、偶然不确定性和认知不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "aleatoric and epistemic uncertainty decomposition in diffusion trajectory models",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.24024v1",
+      "title": "Sensing-Assisted Adaptive Beam Probing with Calibrated Multimodal Priors and Uncertainty-Aware Scheduling",
+      "abstract": "Highly directional mmWave/THz links require rapid beam alignment, yet exhaustive codebook sweeps incur prohibitive training overhead. This letter proposes a sensing-assisted adaptive probing policy that maps multimodal sensing (radar/LiDAR/camera) to a calibrated prior over beams, predicts per-beam reward with a deep Q-ensemble whose disagreement serves as a practical epistemic-uncertainty proxy, and schedules a small probe set using a Prior-Q upper-confidence score. The probing budget is adapted from prior entropy, explicitly coupling sensing confidence to communication overhead, while a margin-based safety rule prevents low signal-to-noise ratio (SNR) locks. Experiments on DeepSense-6G (train: scenarios 42 and 44; test:43) with a 21-beam discrete Fourier transform (DFT) codebook achieve Top-1/Top-3 of 0.81/0.99 with expected beam probe of 2 per sweep and zero observed outages at θ = 0 dB with margin Δ = 3 dB. The results show that multimodal priors with ensemble uncertainty match link quality and improve reliability compared to ablations while cutting overhead with better predictive model.",
+      "authors": [
+        "Abidemi Orimogunje",
+        "Vukan Ninkovic",
+        "Ognjen Kundacina",
+        "Hyunwoo Park",
+        "Sunwoo Kim",
+        "Dejan Vukobratovic",
+        "Evariste Twahirwa",
+        "Gaspard Gashema"
+      ],
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "published": "2026-03-25T07:35:23+00:00",
+      "link": "https://arxiv.org/pdf/2603.24024v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "epistemic-uncertainty proxy via ensemble disagreement",
+      "llm_evidence_cn": "通过集成差异实现认知不确定性代理",
+      "llm_evidence": "通过集成差异实现认知不确定性代理",
+      "canonical_evidence": "通过集成差异实现认知不确定性代理",
+      "llm_tldr_en": "Uses deep Q-ensemble disagreement as an epistemic uncertainty proxy for adaptive scheduling.",
+      "llm_tldr_cn": "利用深度Q集成差异作为认知不确定性代理，用于自适应调度。",
+      "llm_tldr": "利用深度Q集成差异作为认知不确定性代理，用于自适应调度。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "estimating epistemic uncertainty in neural motion planners",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.27287v1",
+      "title": "Uni-World VLA: Interleaved World Modeling and Planning for Autonomous Driving",
+      "abstract": "Autonomous driving requires reasoning about how the environment evolves and planning actions accordingly. Existing world-model-based approaches typically predict future scenes first and plan afterwards, resulting in open-loop imagination that may drift from the actual decision process. In this paper, we present Uni-World VLA, a unified vision-language-action (VLA) model that tightly interleaves future frame prediction and trajectory planning. Instead of generating a full world rollout before planning, our model alternates between predicting future frames and ego actions step by step, allowing planning decisions to be continuously conditioned on the imagined future observations. This interleaved generation forms a closed-loop interaction between world modeling and control, enabling more adaptive decision-making in dynamic traffic scenarios. In addition, we incorporate monocular depth information into frames to provide stronger geometric cues for world modeling, improving long-horizon scene prediction. Experiments on the NAVSIM benchmark show that our approach achieves competitive closed-loop planning performance while producing high-fidelity future frame predictions. These results demonstrate that tightly coupling world prediction and planning is a promising direction for scalable VLA driving systems.",
+      "authors": [
+        "Qiqi Liu",
+        "Huan Xu",
+        "Jingyu Li",
+        "Bin Sun",
+        "Zhihui Hao",
+        "Dangen She",
+        "Xiatian Zhu",
+        "Li Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-03-28T14:39:51+00:00",
+      "link": "https://arxiv.org/pdf/2603.27287v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "interleaved world modeling and trajectory planning for autonomous driving",
+      "llm_evidence_cn": "自动驾驶的交织世界建模与轨迹规划",
+      "llm_evidence": "自动驾驶的交织世界建模与轨迹规划",
+      "canonical_evidence": "自动驾驶的交织世界建模与轨迹规划",
+      "llm_tldr_en": "Presents a VLA model that interleaves future frame prediction and trajectory planning for closed-loop driving.",
+      "llm_tldr_cn": "提出一种交织未来帧预测与轨迹规划的VLA模型，用于闭环驾驶。",
+      "llm_tldr": "提出一种交织未来帧预测与轨迹规划的VLA模型，用于闭环驾驶。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.25473v1",
+      "title": "Causal-INSIGHT: Probing Temporal Models to Extract Causal Structure",
+      "abstract": "Understanding directed temporal interactions in multivariate time series is essential for interpreting complex dynamical systems and the predictive models trained on them. We present Causal-INSIGHT, a model-agnostic, post-hoc interpretation framework for extracting model-implied (predictor-dependent), directed, time-lagged influence structure from trained temporal predictors. Rather than inferring causal structure at the level of the data-generating process, Causal-INSIGHT analyzes how a fixed, pre-trained predictor responds to systematic, intervention-inspired input clamping applied at inference time.   From these responses, we construct directed temporal influence signals that reflect the dependencies the predictor relies on for prediction, and introduce Qbic, a sparsity-aware graph selection criterion that balances predictive fidelity and structural complexity without requiring ground-truth graph labels. Experiments across synthetic, simulated, and realistic benchmarks show that Causal-INSIGHT generalizes across diverse backbone architectures, maintains competitive structural accuracy, and yields significant improvements in temporal delay localization when applied to existing predictors.",
+      "authors": [
+        "Benjamin Redden",
+        "Hui Wang",
+        "Shuyan Li"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-26T14:16:37+00:00",
+      "link": "https://arxiv.org/pdf/2603.25473v1",
+      "tags": [
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "extracting causal structure and tracing influence in temporal models",
+      "llm_evidence_cn": "在时间模型中提取因果结构并追溯影响",
+      "llm_evidence": "在时间模型中提取因果结构并追溯影响",
+      "canonical_evidence": "在时间模型中提取因果结构并追溯影响",
+      "llm_tldr_en": "A post-hoc framework for extracting and tracing directed influence structure from trained temporal predictors.",
+      "llm_tldr_cn": "一种用于从训练好的时间预测器中提取和追溯有向影响结构的后验框架。",
+      "llm_tldr": "一种用于从训练好的时间预测器中提取和追溯有向影响结构的后验框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.27371v1",
+      "title": "HMPDM: A Diffusion Model for Driving Video Prediction with Historical Motion Priors",
+      "abstract": "Video prediction is a useful function for autonomous driving, enabling intelligent vehicles to reliably anticipate how driving scenes will evolve and thereby supporting reasoning and safer planning. However, existing models are constrained by multi-stage training pipelines and remain insufficient in modeling the diverse motion patterns in real driving scenes, leading to degraded temporal consistency and visual quality. To address these challenges, this paper introduces the historical motion priors-informed diffusion model (HMPDM), a video prediction model that leverages historical motion priors to enhance motion understanding and temporal coherence. The proposed deep learning system introduces three key designs: (i) a Temporal-aware Latent Conditioning (TaLC) module for implicit historical motion injection; (ii) a Motion-aware Pyramid Encoder (MaPE) for multi-scale motion representation; (iii) a Self-Conditioning (SC) strategy for stable iterative denoising. Extensive experiments on the Cityscapes and KITTI benchmarks demonstrate that HMPDM outperforms state-of-the-art video prediction methods with efficiency, achieving a 28.2% improvement in FVD on Cityscapes under the same monocular RGB input configuration setting. The implementation codes are publicly available at https://github.com/KELISBU/HMPDM.",
+      "authors": [
+        "Ke Li",
+        "Tianjia Yang",
+        "Kaidi Liang",
+        "Xianbiao Hu",
+        "Ruwen Qin"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-28T18:37:08+00:00",
+      "link": "https://arxiv.org/pdf/2603.27371v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "diffusion model for driving video prediction and planning",
+      "llm_evidence_cn": "用于驾驶视频预测和规划的扩散模型",
+      "llm_evidence": "用于驾驶视频预测和规划的扩散模型",
+      "canonical_evidence": "用于驾驶视频预测和规划的扩散模型",
+      "llm_tldr_en": "A diffusion model leveraging historical motion priors for video prediction to support autonomous driving planning.",
+      "llm_tldr_cn": "一种利用历史运动先验进行视频预测的扩散模型，旨在支持自动驾驶规划。",
+      "llm_tldr": "一种利用历史运动先验进行视频预测的扩散模型，旨在支持自动驾驶规划。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.27632v1",
+      "title": "ContraMap: Contrastive Uncertainty Mapping for Robot Environment Representation",
+      "abstract": "Reliable robot perception requires not only predicting scene structure, but also identifying where predictions should be treated as unreliable due to sparse or missing observations. We present ContraMap, a contrastive continuous mapping method that augments kernel-based discriminative maps with an explicit uncertainty class trained using synthetic noise samples. This formulation treats unobserved regions as a contrastive class, enabling joint environment prediction and spatial uncertainty estimation in real time without Bayesian inference. Under a simple mixture-model view, we show that the probability assigned to the uncertainty class is a monotonic function of a distance-aware uncertainty surrogate. Experiments in 2D occupancy mapping, 3D semantic mapping, and tabletop scene reconstruction show that ContraMap preserves mapping quality, produces spatially coherent uncertainty estimates, and is substantially more efficient than Bayesian kernelmap baselines.",
+      "authors": [
+        "Chi Cuong Le",
+        "Weiming Zhi"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-03-29T11:06:45+00:00",
+      "link": "https://arxiv.org/pdf/2603.27632v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "spatial uncertainty estimation for robot environment representation",
+      "llm_evidence_cn": "机器人环境表示的空间不确定性估计",
+      "llm_evidence": "机器人环境表示的空间不确定性估计",
+      "canonical_evidence": "机器人环境表示的空间不确定性估计",
+      "llm_tldr_en": "Introduces ContraMap for real-time spatial uncertainty estimation in robot environment mapping.",
+      "llm_tldr_cn": "介绍了用于机器人环境建图中实时空间不确定性估计的 ContraMap 方法。",
+      "llm_tldr": "介绍了用于机器人环境建图中实时空间不确定性估计的 ContraMap 方法。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.28049v1",
+      "title": "Drift-AR: Single-Step Visual Autoregressive Generation via Anti-Symmetric Drifting",
+      "abstract": "Autoregressive (AR)-Diffusion hybrid paradigms combine AR's structured semantic modeling with diffusion's high-fidelity synthesis, yet suffer from a dual speed bottleneck: the sequential AR stage and the iterative multi-step denoising of the diffusion vision decode stage. Existing methods address each in isolation without a unified principle design. We observe that the per-position \\emph{prediction entropy} of continuous-space AR models naturally encodes spatially varying generation uncertainty, which simultaneously governing draft prediction quality in the AR stage and reflecting the corrective effort required by vision decoding stage, which is not fully explored before. Since entropy is inherently tied to both bottlenecks, it serves as a natural unifying signal for joint acceleration. In this work, we propose \\textbf{Drift-AR}, which leverages entropy signal to accelerate both stages: 1) for AR acceleration, we introduce Entropy-Informed Speculative Decoding that align draft--target entropy distributions via a causal-normalized entropy loss, resolving the entropy mismatch that causes excessive draft rejection; 2) for visual decoder acceleration, we reinterpret entropy as the \\emph{physical variance} of the initial state for an anti-symmetric drifting field -- high-entropy positions activate stronger drift toward the data manifold while low-entropy positions yield vanishing drift -- enabling single-step (1-NFE) decoding without iterative denoising or distillation. Moreover, both stages share the same entropy signal, which is computed once with no extra cost. Experiments on MAR, TransDiff, and NextStep-1 demonstrate 3.8--5.5$\\times$ speedup with genuine 1-NFE decoding, matching or surpassing original quality. Code will be available at https://github.com/aSleepyTree/Drift-AR.",
+      "authors": [
+        "Zhen Zou",
+        "Xiaoxiao Ma",
+        "Mingde Yao",
+        "Jie Huang",
+        "LinJiang Huang",
+        "Feng Zhao"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-30T05:29:00+00:00",
+      "link": "https://arxiv.org/pdf/2603.28049v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "prediction entropy encodes generation uncertainty",
+      "llm_evidence_cn": "预测熵编码生成不确定性",
+      "llm_evidence": "预测熵编码生成不确定性",
+      "canonical_evidence": "预测熵编码生成不确定性",
+      "llm_tldr_en": "Explores how prediction entropy in AR-Diffusion models encodes spatially varying generation uncertainty.",
+      "llm_tldr_cn": "探讨AR扩散模型中的预测熵如何编码空间变化的生成不确定性。",
+      "llm_tldr": "探讨AR扩散模型中的预测熵如何编码空间变化的生成不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.27756v1",
+      "title": "Heracles: Bridging Precise Tracking and Generative Synthesis for General Humanoid Control",
+      "abstract": "Achieving general-purpose humanoid control requires a delicate balance between the precise execution of commanded motions and the flexible, anthropomorphic adaptability needed to recover from unpredictable environmental perturbations. Current general controllers predominantly formulate motion control as a rigid reference-tracking problem. While effective in nominal conditions, these trackers often exhibit brittle, non-anthropomorphic failure modes under severe disturbances, lacking the generative adaptability inherent to human motor control. To overcome this limitation, we propose Heracles, a novel state-conditioned diffusion middleware that bridges precise motion tracking and generative synthesis. Rather than relying on rigid tracking paradigms or complex explicit mode-switching, Heracles operates as an intermediary layer between high-level reference motions and low-level physics trackers. By conditioning on the robot's real-time state, the diffusion model implicitly adapts its behavior: it approximates an identity map when the state closely aligns with the reference, preserving zero-shot tracking fidelity. Conversely, when encountering significant state deviations, it seamlessly transitions into a generative synthesizer to produce natural, anthropomorphic recovery trajectories. Our framework demonstrates that integrating generative priors into the control loop not only significantly enhances robustness against extreme perturbations but also elevates humanoid control from a rigid tracking paradigm to an open-ended, generative general-purpose architecture.",
+      "authors": [
+        "Zelin Tao",
+        "Zeran Su",
+        "Peiran Liu",
+        "Jingkai Sun",
+        "Wenqiang Que",
+        "Jiahao Ma",
+        "Jialin Yu",
+        "Jiahang Cao",
+        "Pihai Sun",
+        "Hao Liang",
+        "Gang Han",
+        "Wen Zhao",
+        "Zhiyuan Xu",
+        "Yijie Guo",
+        "Jian Tang",
+        "Qiang Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-03-29T16:21:01+00:00",
+      "link": "https://arxiv.org/pdf/2603.27756v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion middleware for motion tracking and generative synthesis",
+      "llm_evidence_cn": "用于动作跟踪和生成合成的扩散中间件",
+      "llm_evidence": "用于动作跟踪和生成合成的扩散中间件",
+      "canonical_evidence": "用于动作跟踪和生成合成的扩散中间件",
+      "llm_tldr_en": "Introduces a state-conditioned diffusion middleware to bridge precise motion tracking and generative synthesis.",
+      "llm_tldr_cn": "引入了一种状态条件扩散中间件，连接精确的动作跟踪与生成式合成。",
+      "llm_tldr": "引入了一种状态条件扩散中间件，连接精确的动作跟踪与生成式合成。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.28116v1",
+      "title": "$AutoDrive\\text{-}P^3$: Unified Chain of Perception-Prediction-Planning Thought via Reinforcement Fine-Tuning",
+      "abstract": "Vision-language models (VLMs) are increasingly being adopted for end-to-end autonomous driving systems due to their exceptional performance in handling long-tail scenarios. However, current VLM-based approaches suffer from two major limitations: 1) Some VLMs directly output planning results without chain-of-thought (CoT) reasoning, bypassing crucial perception and prediction stages which creates a significant domain gap and compromises decision-making capability; 2) Other VLMs can generate outputs for perception, prediction, and planning tasks but employ a fragmented decision-making approach where these modules operate separately, leading to a significant lack of synergy that undermines true planning performance. To address these limitations, we propose ${AutoDrive\\text{-}P^3}$, a novel framework that seamlessly integrates $\\textbf{P}$erception, $\\textbf{P}$rediction, and $\\textbf{P}$lanning through structured reasoning. We introduce the ${P^3\\text{-}CoT}$ dataset to facilitate coherent reasoning and propose ${P^3\\text{-}GRPO}$, a hierarchical reinforcement learning algorithm that provides progressive supervision across all three tasks. Specifically, ${AutoDrive\\text{-}P^3}$ progressively generates CoT reasoning and answers for perception, prediction, and planning, where perception provides essential information for subsequent prediction and planning, while both perception and prediction collectively contribute to the final planning decisions, enabling safer and more interpretable autonomous driving. Additionally, to balance inference efficiency with performance, we introduce dual thinking modes: detailed thinking and fast thinking. Extensive experiments on both open-loop (nuScenes) and closed-loop (NAVSIMv1/v2) benchmarks demonstrate that our approach achieves state-of-the-art performance in planning tasks. Code is available at https://github.com/haha-yuki-haha/AutoDrive-P3.",
+      "authors": [
+        "Yuqi Ye",
+        "Zijian Zhang",
+        "Junhong Lin",
+        "Shangkun Sun",
+        "Changhao Peng",
+        "Wei Gao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-03-30T07:28:41+00:00",
+      "link": "https://arxiv.org/pdf/2603.28116v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "unified perception-prediction-planning for autonomous driving",
+      "llm_evidence_cn": "自动驾驶的统一感知-预测-规划",
+      "llm_evidence": "自动驾驶的统一感知-预测-规划",
+      "canonical_evidence": "自动驾驶的统一感知-预测-规划",
+      "llm_tldr_en": "Presents a unified VLM-based chain for autonomous driving perception, prediction, and planning via reinforcement learning.",
+      "llm_tldr_cn": "提出了一种基于VLM的统一链条，通过强化学习进行自动驾驶感知、预测和规划。",
+      "llm_tldr": "提出了一种基于VLM的统一链条，通过强化学习进行自动驾驶感知、预测和规划。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

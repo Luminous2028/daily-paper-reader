@@ -1,0 +1,1203 @@
+Title: Quantification of Credal Uncertainty: A Distance-Based Approach
+
+URL Source: https://arxiv.org/pdf/2603.27270v1
+
+Published Time: Tue, 31 Mar 2026 01:10:49 GMT
+
+Number of Pages: 24
+
+Markdown Content:
+# QUANTIFICATION OF CREDAL UNCERTAINTY : A DISTANCE -B ASED APPROACH 
+
+A P REPRINT 
+
+Xabier Gonzalez-Garcia 1∗
+
+, Siu Lun Chau 2, Julian Rodemann 3,4 , Michele Caprio 5,6 , Krikamol Muandet 3,Humberto Bustince 1, Sébastien Destercke 7, Eyke Hüllermeier 8,9,10 , Yusuf Sale 8,9 
+
+> 1
+
+Dept. of Statistics, Computer Science and Mathematics, Public University of Navarre 
+
+> 2
+
+Epistemic Intelligence & Computation Lab, College of Computing & Data Science, Nanyang Technological University 
+
+> 3
+
+Rational Intelligence Lab, CISPA Helmholtz Center for Information Security 4Dept. of Statistics, LMU Munich 
+
+> 5
+
+Dept. of Computer Science, The University of Manchester 6Manchester Centre for AI Fundamentals 
+
+> 7
+
+Université de Technologie de Compiègne, CNRS, Heudiasyc 
+
+> 8
+
+Institute of Computer Science, LMU Munich 9Munich Center for Machine Learning (MCML) 
+
+> 10
+
+German Research Center for Artificial Intelligence (DFKI, DSA) 
+
+# ABSTRACT 
+
+Credal sets, i.e., closed convex sets of probability measures, provide a natural framework to represent aleatoric and epistemic uncertainty in machine learning. Yet how to quantify these two types of uncertainty for a given credal set, particularly in multiclass classification, remains underexplored. In this paper, we propose a distance-based approach to quantify total, aleatoric, and epistemic uncertainty for credal sets. Concretely, we introduce a family of such measures within the framework of Integral Probability Metrics (IPMs). The resulting quantities admit clear semantic interpretations, satisfy natural theoretical desiderata, and remain computationally tractable for common choices of IPMs. We instantiate the framework with the total variation distance and obtain simple, efficient uncertainty measures for multiclass classification. In the binary case, this choice recovers established uncertainty measures, for which a principled multiclass generalization has so far been missing. Empirical results confirm practical usefulness, with favorable performance at low computational cost. 
+
+Keywords Credal Uncertainty Quantification · Machine Learning · Integral Probability Metrics 
+
+# 1 Introduction 
+
+The growing impact of machine learning in societal and scientific applications has intensified the need for predictive models that are not only accurate but also uncertainty-aware. Central to this discussion is the distinction between 
+
+aleatoric and epistemic uncertainty [Hüllermeier and Waegeman, 2021]. The former refers to variability that is inherent in the data-generating process and hence irreducible, whereas the latter reflects limited knowledge about the predictive mechanism. This distinction is also operationally important, as only epistemic uncertainty is reducible — for instance, by collecting more data or improving the model. Accordingly, a broad range of methods has been developed to learn predictive models that can represent both types of uncertainty, often by means of higher-order formalisms such as second-order distributions [Gal and Ghahramani, 2016, Lakshminarayanan et al., 2017, Malinin and Gales, 2018, Sensoy et al., 2018], or through the framework of 
+
+imprecise probability [Walley, 1991, Augustin et al., 2014], which extends classical probability theory beyond the precise, axiomatic setting of Kolmogorov. Within the latter, credal sets , i.e., (convex) sets of probability measures [Levi, 1980, Walley, 1991], offer a natural and intuitive alternative for machine learning [cf. Caprio et al., 2024a, Wang et al., 2025a, Löhr et al., 2025]: randomness within each probability measure captures aleatoric uncertainty, while the extent of the set itself reflects epistemic uncertainty. 
+
+> ∗
+
+Corresponding author: xabier.gonzalez@unavarra.es 
+
+> arXiv:2603.27270v1 [cs.AI] 28 Mar 2026
+
+Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+Q 
+
+> TU F(Q)
+
+δ3
+
+δ1 δ2
+
+> (a) Total Uncertainty
+
+δ3
+
+δ1 δ2
+
+Q 
+
+> AU F(Q)
+
+p
+
+> (b) Aleatoric Uncertainty
+
+Q 
+
+> EU F(Q)
+
+δ3
+
+δ1 δ2
+
+> (c) Epistemic Uncertainty
+
+Figure 1: Geometric illustration of the proposed distance-based framework on the simplex ∆K−1 (K = 3 ). Dirac measures {δ1, δ 2, δ 3} represent full certainty. (a) Total uncertainty: distance of Q to full certainty, measured as the worst-case distance to the nearest vertex δy . (b) Aleatoric uncertainty: the distance of a precise predictive distribution 
+
+p from full certainty, measured by its proximity to the nearest vertex. For a credal prediction Q, aleatoric uncertainty is set-valued, giving a range over p ∈ Q . (c) Epistemic uncertainty: the imprecision of the credal set Q, quantified as half its maximal diameter, i.e., the largest distance between any two distributions in Q. Distances ( ←→ ) are defined via IPMs over F.In this paper, we address the complementary task of (credal) uncertainty quantification : given a prediction in the form of a credal set, we seek summaries ( viz. uncertainty measures) that capture the extent of predictive uncertainty. A central and nontrivial challenge is disaggregation , i.e., how to decompose (total) uncertainty into its aleatoric and epistemic components. While the literature offers numerous measures of total, aleatoric, and epistemic uncertainty for credal sets [e.g. Abellán and Moral, 2000, 2005, Abellán et al., 2006, Chau et al., 2025a], comparatively little work addresses the requirements of modern machine learning. In particular, many existing proposals either lack a clear semantic interpretation of the decomposed components, often relying on an assumed additive decomposition, or they are computationally too costly for use in (large-scale) machine learning pipelines. In this spirit, Hüllermeier et al. [2022] provide a critical discussion of uncertainty measures and highlight several pitfalls that arise when such notions are used for credal uncertainty quantification, especially in machine learning settings. Moreover, they propose measures that satisfy natural axiomatic desiderata and whose theoretical expectations align well with empirical behavior, for instance in selective prediction experiments. A key limitation, however, is that their treatment is restricted to the binary case, and a principled extension to multiclass classification has so far been missing. More generally, credal uncertainty quantification in the multiclass setting has received comparatively little attention in machine learning, arguably due to the additional conceptual and computational challenges [Sale et al., 2023a]. This gap motivates the present work. 
+
+Contributions. We present a principled framework for multiclass credal uncertainty quantification that yields a family of measures of total, aleatoric, and epistemic uncertainty with clear semantics and strong computational properties. Our approach is distance-based, partly inspired by Sale et al. [2023b], but formulated for credal sets rather than second-order distributions, and grounded in the framework of Integral Probability Metrics (IPMs) [Müller, 1997]. We instantiate the framework with the total variation distance, which yields particularly simple and efficient measures for multiclass classification. In the binary case, this choice recovers the uncertainty measures of Hüllermeier et al. [2022]. Empirical results on standard benchmarks show that the resulting measures are competitive with existing baselines, thereby making them well tailored to machine learning needs. 
+
+Paper organization. In Section 2, we introduce the learning setting and notation. In Section 3, we review existing approaches to credal uncertainty quantification, discuss their limitations, and position our proposal in relation to recent work. In Section 4, we present our distance-based framework and derive a novel family of measures for total, aleatoric, and epistemic uncertainty. In Section 5, we report empirical results, and in Section 6 we conclude. 
+
+# 2 Preliminaries 
+
+We consider supervised classification with instance space X and finite label set Y = {1, . . . , K }. Further, we assume that the learner has access to (i.i.d.) training data Dtrain = {(x(n), y (n))}Nn=1 ⊂ X × Y . Hypotheses are probabilistic predictors h : X → ∆K−1, mapping each x ∈ X to a distribution p(· | x, h ) over Y, where ∆K−1 denotes the probability simplex on Y. Our focus is predictive uncertainty at a query xq , i.e., uncertainty about the predicted label ˆyq . While h(xq ) = p(· | xq , h ) accounts for aleatoric uncertainty, it leaves uncertainty about the ground truth 2Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+distribution itself implicit. To make this explicit, we move from point predictions in ∆K−1 to set-valued predictions 
+
+H : X → V (∆ K−1), where V(∆ K−1) is a suitable family of subsets of the simplex (e.g., nonempty closed sets). The prediction at xq is the set H(xq ) = Qxq ⊆ ∆K−1, a credal prediction . When the context is clear, we simply write Q.Often, we consider finitely generated credal predictions, i.e., sets of the form Q = conv {p(1) , . . . , p (M )} ⊆ ∆K−1,
+
+where p(m) ∈ ∆K−1 are a finite collection of predictive distributions (e.g., induced by an ensemble of probabilistic classifiers), and conv( ·) denotes the convex hull. Given Q and A ⊆ Y , the lower and upper probabilities are 
+
+pQ(A) = inf  
+
+> p∈Q
+
+p(A), pQ(A) = sup 
+
+> p∈Q
+
+p(A),
+
+which summarize the range of plausible probabilities assigned to A [Walley, 1991]. For finitely generated credal sets, these quantities can be computed from the generators: since p 7 → p(A) is linear, the extrema over Q are attained at extreme points, and hence 
+
+pQ(A) = min   
+
+> m∈[M]
+
+p(m)(A), pQ(A) = max   
+
+> m∈[M]
+
+p(m)(A).
+
+# 3 Uncertainty Quantification 
+
+Empirical evaluation remains indispensable, but an axiomatic perspective is equally valuable, as it clarifies what qualitative behavior one should expect from a measure and whether such expectations align with its formal properties. This is particularly important in light of recent critiques of uncertainty quantification methods, which have highlighted that some widely used approaches fail to satisfy basic properties one would reasonably expect [Wimmer et al., 2023]. Following Abellán and Klir [2005], Jiroušek and Shenoy [2018], we consider a generic measure f : V(∆ K−1) → R
+
+that maps a credal set Q to a scalar, and we recall a collection of common axioms for uncertainty measures: A1 Boundedness: There exists C > 0 such that we have f (Q) ∈ [0 , C ] for all credal sets Q.A2 Continuity: The functional f is continuous (with respect to an appropriate topology on V(∆ K−1)). A3 Monotonicity: If Q ⊆ M , then f (Q) ≤ f (M).A4 Probability consistency: If Q = {p} is precise, then f (Q) reduces to a functional of the single distribution p, i.e., the measure carries no residual set-level structure when the credal set is a singleton. A5 Subadditivity: For a joint credal set Q on Y1 × Y 2 with marginals Q1 and Q2,
+
+f (Q) ≤ f (Q1) + f (Q2).
+
+A6 Additivity: Under (imprecise) probabilistic independence, equality holds in (A5) [see Couso et al., 2000]. We emphasize that A5–A6 are conditional desiderata tied to notions of (imprecise) independence, whereas A1–A4 are regularity and consistency requirements. In particular, monotonicity and probability consistency formalize that enlarging the set of plausible distributions should not reduce uncertainty and that the framework agrees with the precise case. Moreover, machine learning applications often impose computational constraints, especially in multiclass settings with many labels. This motivates complementing the above desiderata with an additional requirement. A7 Extreme-point characterization: Let ext( Q) denote the set of extreme points of Q. Then f (Q) = f (ext( Q)) .Axiom A7 formalizes an invariance principle with respect to convexification. When a credal set is specified via a set of generators and then closed under convex combinations, A7 ensures that the uncertainty measure depends only on the extreme points and is unaffected by the particular interior representation of Q. This property can substantially simplify computation by reducing evaluation of f (Q) to ext( Q), for example when Q is induced by a finite collection of predictive models such as an ensemble of probabilistic classifiers. 
+
+3.1 Existing Measures 
+
+In the following, we briefly review prominent existing approaches to credal uncertainty quantification. We focus on measures most commonly used in machine learning practice. For each family, we highlight key limitations that motivate our distance-based framework. For additional critical discussion, see e.g. Hüllermeier et al. [2022], Sale et al. [2023a]. 3Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+3.1.1 Entropy Measures 
+
+Arguably the most prominent measure of uncertainty for a (precise) probability measure p ∈ ∆K−1 is the Shannon entropy [Shannon, 1948], S(p) = − P 
+
+> y∈Y
+
+p(y) log 2 p(y). Entropy is minimal when p assigns all probability mass to a single label and maximal when p is the uniform distribution on Y, while also enjoying well-known axiomatic and operational justifications [Csiszár, 2008]. Shannon entropy can be lifted from precise distributions to credal sets by taking its upper and lower envelopes over Q [Abellán and Moral, 2005, Abellán et al., 2006]. Concretely, define 
+
+S∗(Q) := sup 
+
+> p∈Q
+
+S(p), S∗(Q) := inf  
+
+> p∈Q
+
+S(p).
+
+The upper envelope S∗(Q) is commonly interpreted as a measure of total uncertainty, while the lower envelope S∗(Q)
+
+captures a notion of aleatoric uncertainty. Assuming an additive decomposition, epistemic uncertainty is then quantified by the residual gap S∗(Q) − S∗(Q).
+
+Criticism. The upper envelope S∗(Q) is known to satisfy the classical axioms (A1)–(A6) under standard assumptions. From a machine learning perspective, however, its practical use can be limited, since computing S∗(Q) = sup p∈Q S(p)
+
+is a nontrivial optimization problem that has no closed-form solution and may require iterative solvers at prediction time. Moreover, apart from falling off as a “residual” from the additive decomposition of total uncertainty, S∗(Q) − S∗(Q) is lacking a theoretical (axiomatic) grounding and clear semantic interpretation [Hüllermeier et al., 2022]. 
+
+3.1.2 Hartley Measures 
+
+In contrast, set-theoretic approaches model uncertainty by defining a subset A ⊆ Y of possible outcomes, distinguishing between what is plausible and what is ruled out. A standard way to quantify the uncertainty associated to the set A is Hartley’s non-specificity [Hartley, 1928], H(A) = log |A|, which depends only on how many (equally likely) outcomes remain possible. To lift Hartley-type non-specificity to credal sets, one can combine log |A| with a set function derived from the lower probability pQ via a Möbius transform [Abellán and Moral, 2000]. Concretely, define 
+
+GH( Q) := X
+
+> A⊆Y
+
+log |A| mQ(A),
+
+where mQ(A) := P
+
+> B⊆A
+
+(−1) |A\B| pQ(B) is the Möbius inverse of pQ. In the literature, GH( Q) is commonly interpreted as a measure of epistemic uncertainty. Total uncertainty can again be quantified by S∗(Q). Assuming an additive decomposition, one then defines the corresponding aleatoric component as the residual S∗(Q) − GH( Q).
+
+Criticism. The quantity GH( Q) captures a notion of imprecision by quantifying, in a set-theoretic manner, how many alternatives remain plausible, largely independent of the shape of the distributions in Q. It vanishes for precise predictions ( Q = {p}) and satisfies several desirable axiomatic properties in the imprecise probability literature [Abellán and Moral, 2000]. From a machine learning perspective, however, its practical use is limited by unfavorable scaling. Evaluation requires summation over the power set 2Y and thus becomes prohibitive even for moderate K.Moreover, the associated aleatoric component defined via the residual S∗(Q) − GH( Q) inherits the general drawback of additive disaggregation schemes, namely that it is specified by subtraction rather than by an independent semantic principle. 
+
+3.1.3 Other Approaches 
+
+Recently, distance-based notions of uncertainty [e.g. Sale et al., 2023b, Apostolopoulou et al., 2024, Chau et al., 2025a] have attracted attention in the literature. For instance, Sale et al. [2023b] develop uncertainty measures for second-order distributions by comparing a distribution-over-distributions to a reference notion of certainty via probability metrics. Our work is aligned with this perspective, but is formulated for credal predictions and thus conceptually extends the distance-based idea to credal sets. In a related line of work, Chau et al. [2025a] study extensions of IPMs [Müller, 1997] to imprecise models. An IPM is a discrepancy between probability measures defined through a class F of measurable test functions (typically bounded, and often chosen to enforce additional regularity such as Lipschitz continuity). For two probability measures p and q on a measurable space (Y, A), the IPM is 
+
+dF (p, q ) := sup  
+
+> f∈F
+
+Z
+
+f dp −
+
+Z
+
+f dq .
+
+Intuitively, dF (p, q ) measures how well p and q can be distinguished by tests in F, namely by the largest discrepancy in expected function values. Many standard distances are special cases of IPMs, obtained by choices of the test-function 4Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+class F. To extend IPM-type discrepancies beyond precise probabilities, Chau et al. [2025a] replace the Lebesgue integral by the Choquet integral, which integrates a function with respect to a capacity (a non-additive set function). This yields a class of Integral Imprecise Probability Metrics (IIPMs). Within this framework, they propose the Maximum Mean Imprecision (MMI) to quantify epistemic uncertainty. While MMI is formulated for capacities, it can be adapted to credal sets by evaluating induced lower and upper probabilities. Concretely, one considers 
+
+dF
+
+ pQ, p Q
+
+ := sup  
+
+> f∈F
+
+Z
+
+c f dpQ −
+
+Z
+
+c f dpQ
+
+
+
+,
+
+where R
+
+cf dν denotes the Choquet integral of f with respect to the set function ν [Choquet, 1954, Denneberg, 1994]. 
+
+Criticism. First, passing from a credal set Q to its lower and upper probabilities (pQ, p Q) is not injective, since distinct credal sets can induce the same envelopes, so envelope-based quantities may fail to distinguish different credal sets. Second, evaluating Choquet-integral-based discrepancies for general set functions can be computationally demanding. For instance, Chau et al. [2025a] propose computable upper bounds to mitigate this intractability for the total variation instantiation. Recently, Chau et al. [2026] extend MMI to plausibility measures and derive closed-form expressions computable in linear time. However, this result applies to plausibility measures, a restricted subclass of upper probabilities, and thus does not cover the general credal set setting. Alternative notions of total variation for non-additive set functions have also been proposed recently in the imprecise-probability literature [Nieto-Barba et al., 2025a,b]. Additional discussion of related work is provided in Appendix A. 
+
+# 4 A Family of Novel Measures 
+
+As we highlighted in the preceding section, current approaches to credal uncertainty quantification have limitations. They often rely on additive decompositions, so the resulting components lack direct semantic meaning, or scale poorly. In this section, we propose a distance-based framework for credal uncertainty quantification. 
+
+Total uncertainty. From a distance-based perspective, total uncertainty quantifies how far a credal set Q is from full certainty . We identify fully certain predictions with the vertices of the K-simplex, i.e., with the Dirac measures 
+
+E(∆ K−1) = { δy : y ∈ Y , δ y (A) = 1{y}(A) },
+
+each representing complete certainty about a single class. Since closeness to one vertex necessarily implies greater distance from others, it is natural to take the nearest Dirac measure as the reference point of zero uncertainty. To measure the distance of the credal set (as a set-valued object) full certainty, we compute the Hausdorff-type distance from Q to each Dirac measure and select the closest one: 
+
+TU F (Q) := inf  
+
+> y∈Y
+
+sup 
+
+> p∈Q
+
+dF (p, δ y ) (1) For fixed y, the inner supremum measures the worst-case distance to δy over all elements of Q. The outer infimum then selects the deterministic state that is closest to Q in this worst-case sense. Thus, (1) captures how far every probabilistic model in Q is from some state of full certainty. 
+
+Aleatoric uncertainty. For credal predictions Q, aleatoric uncertainty is generally not uniquely determined, since different p ∈ Q may exhibit different levels of randomness. Consequently, any scalar quantification of aleatoric uncertainty for Q reflects an additional modeling (or summarization) choice and necessarily loses information. Yet, scalar summaries are often needed in downstream applications that require a total ordering or thresholding of predictions. We first consider the precise setting and then lift this notion to credal predictions. For a single predictive distribution 
+
+p, aleatoric uncertainty quantifies its intrinsic randomness and is obtained as the distance to full certainty, i.e., to the nearest Dirac measure. Equivalently, this is the special case of (1) in which the credal set reduces to {p}:
+
+AU F (p) := inf  
+
+> y∈Y
+
+dF (p, δ y ) . (2) Rather than forcing a scalar summary, we therefore define aleatoric uncertainty on the quantification level as the set of all plausible randomness values induced by elements of Q:
+
+AU F (Q) := AU F (p) : p ∈ Q . (3) This set-valued quantification is not merely a formal convenience, but a principled consequence of the credal representa-tion. Indeed, any direct aggregation of (3) into a single scalar implicitly selects or combines elements of Q and thereby resolves part of the uncertainty that the credal set is meant to represent. 5Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+To make the set-valued quantification operational in downstream tasks, we explicitly separate the quantification level from the summary level. Let A denote the class of all aleatoric uncertainty sets attainable from credal predictions, i.e., 
+
+A := AU F (Q) : Q ⊆ ∆K−1 .
+
+A (task-dependent) summary operator is a mapping 
+
+Φ : A → Z ,
+
+where Z is an application-specific output space (e.g., R, R2, or another ordered space). Given such a Φ, we define the corresponding actionable aleatoric summary by 
+
+AU Φ 
+
+> F
+
+(Q) := Φ  AU F (Q).
+
+This formalizes that any scalar (or vector-valued) aleatoric score used in practice is not part of quantification itself, but results from an additional summarization choice. A summary operator Φ is called lossless (on A) if it is injective, i.e., if 
+
+Φ( A) = Φ( B) = ⇒ A = B for all A, B ∈ A.
+
+In that case, Φ(AU F (Q)) retains the full information contained in the set-valued aleatoric uncertainty AU F (Q).A canonical choice in our setting is the endpoint summary 
+
+Φint (A) :=  inf A, sup A,
+
+which yields AU Φint  
+
+> F
+
+(Q) =  AU F (Q), AU F (Q), where 
+
+AU F (Q) := inf  
+
+> p∈Q
+
+AU F (p), AU F (Q) := sup 
+
+> p∈Q
+
+AU F (p).
+
+Under mild conditions (e.g., if Q is convex and compact and p 7 → AU F (p) is continuous), the image AU F (Q) ⊆ R≥0
+
+is a compact interval, so that 
+
+AU F (Q) = AU F (Q), AU F (Q).
+
+Hence, in this case, the endpoint summary is lossless and provides an exact finite-dimensional representation of the set-valued aleatoric uncertainty. When a downstream task requires a total ordering (as in selective prediction), an ordering rule can be imposed on top of the endpoint summary (e.g., lexicographically), without changing the underlying set-valued aleatoric quantification. 
+
+Epistemic uncertainty. Our aim is to quantify the imprecision represented by a credal set. Intuitively, a larger credal set corresponds to greater ignorance about the data-generating mechanism. Although quantities like the volume of a credal set have been considered, they show limited effectiveness in multiclass classification tasks [Sale et al., 2023a]. We instead quantify epistemic uncertainty via the (half) maximal pairwise distance within the credal set, i.e., via half its maximal diameter [Chambers and Melkonyan, 2007, Stewart and Nielsen, 2022, Caprio et al., 2024b]: 
+
+EU F (Q) := 12 sup 
+
+> p,q ∈Q
+
+dF (p, q )= 12 sup  
+
+> f∈F
+
+
+
+sup 
+
+> p∈Q
+
+Ep[f ] − inf  
+
+> q∈Q
+
+Eq [f ]
+
+
+
+.
+
+(4) In contrast to volume-based notions, the diameter depends only on the maximal discrepancy among plausible predictive distributions, not on the overall size of the set. A large diameter means that Q contains at least two distributions with strongly conflicting predictions. This disagreement captures ignorance about the ground truth and is independent of the intrinsic randomness of the individual elements of Q (cf. Proposition 4.4). The factor 12 provides a convenient normalization and, in particular, ensures that epistemic uncertainty is bounded by total uncertainty (Proposition 4.3). 
+
+4.1 Theoretical Properties 
+
+Since the axioms introduced earlier are formulated for scalar-valued functionals on credal sets, they apply directly to total and epistemic uncertainty. By contrast, aleatoric uncertainty is quantified by the set-valued object (3) . To connect it to the axiomatic framework, we therefore consider scalar summaries of (3) . In the following, we focus on the canonical endpoint summaries AU F (Q) and AU F (Q).6Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+Remark 4.1 . The properties established below rely on two standing assumptions on the function class F: First, we assume that F is rich enough to separate probability measures, so that the IPM dF defines a metric on ∆K−1 (rather than only a pseudo-metric). For example, if F = Fk is the unit ball of an RKHS with characteristic kernel k, then the corresponding MMD is a metric on a suitable class of probability distributions; see, e.g., Muandet et al. [2016, Sec. 3.3.1 and Sec. 3.5]. Second, we assume that F is a uniform class with respect to weak convergence [Müller, 1997, Rachev, 1991], i.e., F is equicontinuous and has uniformly bounded span, 
+
+sup  
+
+> f∈F
+
+ sup f − inf f  < ∞.
+
+By Müller [1997, Theorem 4.3], this ensures good continuity properties of the induced IPM. On a finite label space Y,equicontinuity is automatic. 
+
+Proposition 4.2. Let F be a uniform class with respect to weak convergence such that dF is a metric on ∆K−1. Then 
+
+TU F (Q) and EU F (Q) satisfy A1–A4 and A7; AU F (Q) satisfies A1, A2, and A4; and AU F (Q) satisfies A1–A4. 
+
+While we focus here on endpoint summaries, the same perspective extends to any scalar summary operator Φ. Which axioms hold for the resulting aleatoric summary AU Φ 
+
+> F
+
+(Q) = Φ(AU F (Q)) depends on the choice of Φ.We next show several structural properties that further strengthen the interpretation of the proposed framework. First, total uncertainty is no smaller than epistemic uncertainty and any element of AU F (Q).
+
+Proposition 4.3. Let Q ⊆ ∆K−1 be a credal set. Then, for every p ∈ Q ,
+
+EU F (Q) ≤ TU F (Q) and AU F (p) ≤ TU F (Q).
+
+Second, epistemic uncertainty does not depend on the location of the credal set in the simplex (i.e., it is translation-invariant within ∆K−1). 
+
+Proposition 4.4. For any two credal sets Q, Q′ ⊆ ∆K−1 that are translates of each other within the simplex, 
+
+EU F (Q) = EU F (Q′).
+
+Finally, we relate our epistemic quantification to MMI based on lower and upper envelopes. Unlike MMI, our measure operates directly on the credal set, while remaining related. 
+
+Proposition 4.5. Let Q ⊆ ∆K−1 be a credal set. Then the maximal diameter is upper bounded by the MMI of its lower probability: 
+
+EU F (Q) ≤ 12 dF
+
+ pQ, p Q
+
+.
+
+Equality holds whenever the lower expectation over Q coincides with the Choquet integral with respect to pQ, e.g., when pQ is convex [Shapley, 1971]. 
+
+Closed-form expressions and computational properties depend on the specific choice of F. In the next section, we specialize to the total variation test class, which satisfies the assumptions of Remark 4.1 on finite label spaces and yields explicit formulas for all proposed quantities. 
+
+4.2 Total Variation Instantiation 
+
+We instantiate the proposed framework with total variation (TV), using the test class FTV := {1A : A ⊆ Y} . Then, for all p, q ∈ ∆K−1, the induced IPM coincides with the total variation distance 
+
+dFTV (p, q ) = sup 
+
+> A⊆Y
+
+ p(A) − q(A).
+
+This choice is natural in multiclass classification because it requires no additional geometric structure on the label space and yields following simple closed-form expressions. 
+
+Proposition 4.6. Let Q ⊆ ∆K−1 be a credal set. Then, instantiating (1) , (2) , and (4) with the test class F = FTV 
+
+yields the following closed-form expressions: 
+
+TU FTV (Q) = 1 − sup 
+
+> y∈Y
+
+pQ({y}),
+
+AU FTV (p) = 1 − sup 
+
+> y∈Y
+
+p({y}),
+
+EU FTV (Q) = 14 sup 
+
+> p,q ∈Q
+
+X
+
+> y∈Y
+
+p({y}) − q({y}) .
+
+7Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT                    
+
+> Component Measure Complexity
+> Total Ours (TV) O(M K )
+> Entropy O(Tconv M K )
+> Aleatoric Ours ( AU FTV )Ω( M K ),O(Tlp M K )
+> Ours ( AU FTV )O(M K )
+> Entropy O(M K )
+> Hartley O(M K + 3 K)
+> Epistemic Ours (TV) O(M2K)
+> Entropy O(Tconv M K )
+> Hartley O(3 K)
+
+Table 1: Computational complexity of uncertainty measures for finitely generated credal sets, where M is the number of generators, K the number of classes, and Tconv / Tlp the iterations of a convex / linear optimization routine. For 
+
+AU FTV , we report asymptotic lower and upper bounds. For a precise model p, AU FTV (p) = 1 − max y p({y}), i.e., the pointwise Bayes error under 0–1 loss. Moreover, 
+
+TU FTV (Q) and AU FTV (p) depend only on singleton masses and can therefore be evaluated in linear time. The epistemic component EU FTV (Q) is a maximal pairwise TV distance over Q (equivalently, a maximal ℓ1 distance up to the factor 12 ), and for compact convex credal sets the supremum is attained at extreme points. Hence, for finitely generated credal sets, EU FTV (Q) reduces to the maximum pairwise TV distance among ensemble members. In addition to its computational appeal, the TV instantiation admits a connection to the MMI, as the next result shows. 
+
+Corollary 4.7. For F = FTV , the following identity holds: 
+
+EU FTV (Q) = 12 dFTV 
+
+ pQ, p Q
+
+. (5) 
+
+Proposition 4.8. Let Q ⊆ ∆K−1 be a credal set and let ext( Q) denote its extreme points. For F = FTV , the lower endpoint AU FTV (Q) satisfies A7. If there exists a class y⋆ ∈ Y such that y⋆ ∈ arg max y∈Y p({y}) for every 
+
+p ∈ ext( Q), then AU FTV (Q) is attained at an extreme point. Remark 4.9 . The choice of F determines the semantics of the uncertainty measures. For example, a Wasserstein–1 class (1-Lipschitz functions) incorporates a ground metric on Y and thus distinguishes “near” from “far” label confusions in ordinal, hierarchical, or cost-sensitive settings. The TV instantiation is also computationally attractive, since the closed forms in Proposition 4.6 and the extreme-point reductions above yield simple evaluation procedures. Table 1 summarizes the resulting complexities and compares them with those of alternative uncertainty measures. Finally, in the binary case, choosing the lower-endpoint summary AU F (Q) recovers the decomposition of Hüllermeier et al. [2022]. More precisely, using Φmin (A) = inf A yields the following identities. 
+
+Proposition 4.10. Let Y = {0, 1} and let Q ⊆ ∆1 be a credal set with 
+
+a := inf  
+
+> p∈Q
+
+p({0}), b := sup 
+
+> p∈Q
+
+p({0}), 0 ≤ a ≤ b ≤ 1.
+
+Then, for F = FTV ,
+
+TU FTV (Q) = min {1 − a, b },
+
+AU FTV (Q) = min {a, 1 − b},
+
+EU FTV (Q) = 12 (b − a),
+
+and in particular 
+
+TU FTV (Q) = AU FTV (Q) + 2 EU FTV (Q).
+
+This shows that the proposed framework extends the binary decomposition to general credal sets and multiclass settings, and makes the summarization step explicit. 
+
+# 5 Experiments 
+
+Empirically assessing uncertainty quantification is difficult, especially because there is no ground truth. We therefore conduct selective prediction experiments, where the model may abstain on inputs it deems uncertain. Accuracy–rejection 8Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+curves (ARCs) Hühn and Hüllermeier [2008] visualize this: sort test points in decreasing order by decreasing uncertainty score, reject the top r%, and compute accuracy on the remaining. For an uncertainty-aware learner that can distinguish certain from less certain cases, accuracy should be an increasing function of the rejection rate r.We benchmark TV-instantiated measures against entropy and Hartley baselines. The endpoint summary is chosen for aleatoric uncertainty owing to its lossless guarantees, and instances are ranked lexicographically. The rationale is grounded in selective prediction: an instance whose minimum attainable uncertainty across the credal set is already high should be rejected before one that admits at least some low-uncertainty explanation. Implementation details and experimental setup are described in Appendices C and D. Figure 2 extends Chau et al. [2025a] by reporting ARCs for total, aleatoric, and epistemic uncertainty on CIFAR -10 and 
+
+> CIFAR
+
+-100 , computed from ensemble-induced credal sets. Across all three components, our measures consistently match or outperform the baselines on both datasets. Table 2 presents overall performance on a broader collection of KEEL datasets (detailed in Appendix D). Alongside the Area Under the Curve (AUC), we report the Monotonicity Ratio (MR), defined as the percentage of bins in which the AR curve does not decrease, capturing shape differences AUC may overlook. Competitive performance together with low computation times highlights a key benefit of our approach. Additional experiments are provided in Appendix E. 
+
+Limitations. We identified a pathological case, though it stems from a representational artifact rather than a deficiency of the measures themselves. An adversarial or miscalibrated model in the credal set can shift the zero uncertainty reference point, and the resulting quantities inherit this effect. An illustrative example is given in Appendix E. 
+
+# 6 Conclusion 
+
+In this paper, we proposed a distance-based framework for credal uncertainty quantification in multiclass classification. It yields principled measures of total, aleatoric, and epistemic uncertainty. We showed that the measures admit clear semantics, satisfy natural desiderata under mild assumptions, and recover established binary measures. For the total variation instantiation, we derived closed-form expressions with favorable complexity. Empirically, our measures are competitive with entropy and Hartley baselines while offering substantial runtime gains. A natural direction for future work is to further study alternative IPM classes (e.g., Wasserstein or kernel-based variants) as well as extensions beyond classification to structured prediction and decision-making under imprecision. 9Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+Figure 2: Accuracy–rejection curves on CIFAR -10 (left) and CIFAR -100 (right) for credal set predictors: (a) Total uncertainty with ⟨TU FTV ⟩ and ⟨S∗⟩; (b) Aleatoric uncertainty with ⟨[AU FTV , AU FTV ]⟩, ⟨S∗⟩, and ⟨S∗ − GH ⟩; (c) Epistemic uncertainty with ⟨EU FTV ⟩, ⟨S∗ − S∗⟩, and ⟨GH ⟩. At rejection rate r, test points are sorted by uncertainty and the top r% most-uncertain are discarded; accuracy is computed on the remainder. Solid lines show the mean over seeds; shaded bands denote ±1 s.d. The AUC of each curve ( ↑ higher is better) is printed next to the corresponding label. Our framework is consistently competitive across both datasets. 
+
+Table 2: Performance comparison of uncertainty quantification measures across datasets from the KEEL repository. Results are averaged over 64 datasets, 59 with K ≤ 10 classes and 5 with K > 10 . The table reports the mean ± standard deviation of the Area Under the AR Curve (AUC), Monotonicity Ratio (MR) and time (in seconds) for each uncertainty measure. Time refers to the total computation of the uncertainty measure over the entire test set. Bold values show the best mean per component–metric– K group. All values are expressed as percentages.                                                                                                                                                     
+
+> Uncertainty Component Measure Low number of classes (K≤10 )High number of classes (K > 10 )AUC MR Time (s) AUC MR Time (s) AU Hartley 83.8 ±11.5 52.4 ±18.6 18.054 ±49.815 –––Entropy 89.2 ±9.5 77.6 ±15.1 0.001 ±0.004 92.9 ±4.2 89.9 ±6.9 0.006 ±0.007 Ours 89.2 ±9.5 77.6 ±15.0 0.323 ±0.998 92.9 ±4.1 90.0 ±7.3 1.249 ±1.769 EU Hartley 87.1 ±11.5 65.9 ±17.5 8.725 ±32.504 –––Entropy 79.5 ±17.0 46.7 ±23.0 9.291 ±26.570 84.5 ±11.3 49.2 ±17.1 11.669 ±13.941 Ours 86.8 ±12.0 64.6 ±17.9 0.004 ±0.012 89.8 ±7.1 69.0 ±13.8 0.018 ±0.024 TU Entropy 88.4 ±10.3 73.0 ±16.2 9.290 ±26.567 90.6 ±5.9 78.1 ±10.6 11.663 ±13.934 Ours 88.6 ±10.2 73.2 ±16.2 0.001 ±0.003 91.0 ±5.8 79.8 ±9.3 0.002 ±0.003
+
+10 Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+References 
+
+Eyke Hüllermeier and Willem Waegeman. Aleatoric and epistemic uncertainty in machine learning: An introduction to concepts and methods. Machine Learning , 110(3):457–506, 2021. Yarin Gal and Zoubin Ghahramani. Dropout as a bayesian approximation: Representing model uncertainty in deep learning. In Maria-Florina Balcan and Kilian Q. Weinberger, editors, Proceedings of the 33nd International Conference on Machine Learning, ICML 2016, New York City, NY, USA, June 19-24, 2016 , volume 48 of JMLR Workshop and Conference Proceedings , pages 1050–1059. JMLR.org, 2016. Balaji Lakshminarayanan, Alexander Pritzel, and Charles Blundell. Simple and scalable predictive uncertainty estimation using deep ensembles. In Isabelle Guyon, Ulrike von Luxburg, Samy Bengio, Hanna M. Wallach, Rob Fergus, S. V. N. Vishwanathan, and Roman Garnett, editors, Advances in Neural Information Processing Systems 30: Annual Conference on Neural Information Processing Systems 2017, December 4-9, 2017, Long Beach, CA, USA ,pages 6402–6413, 2017. Andrey Malinin and Mark J. F. Gales. Predictive uncertainty estimation via prior networks. In Samy Bengio, Hanna M. Wallach, Hugo Larochelle, Kristen Grauman, Nicolò Cesa-Bianchi, and Roman Garnett, editors, Advances in Neural Information Processing Systems 31: Annual Conference on Neural Information Processing Systems 2018, NeurIPS 2018, December 3-8, 2018, Montréal, Canada , pages 7047–7058, 2018. Murat Sensoy, Lance M. Kaplan, and Melih Kandemir. Evidential deep learning to quantify classification uncertainty. In Samy Bengio, Hanna M. Wallach, Hugo Larochelle, Kristen Grauman, Nicolò Cesa-Bianchi, and Roman Garnett, editors, Advances in Neural Information Processing Systems 31: Annual Conference on Neural Information Processing Systems 2018, NeurIPS 2018, December 3-8, 2018, Montréal, Canada , pages 3183–3193, 2018. Peter Walley. Statistical reasoning with imprecise probabilities , volume 42. Springer, 1991. Thomas Augustin, Frank PA Coolen, Gert De Cooman, and Matthias CM Troffaes. Introduction to imprecise probabilities . John Wiley & Sons, 2014. Isaac Levi. The enterprise of knowledge: An essay on knowledge, credal probability, and chance . MIT press, 1980. Michele Caprio, Souradeep Dutta, Kuk Jin Jang, Vivian Lin, Radoslav Ivanov, Oleg Sokolsky, and Insup Lee. Credal bayesian deep learning. Trans. Mach. Learn. Res. , 2024, 2024a. Kaizheng Wang, Fabio Cuzzolin, Keivan Shariatmadar, David Moens, and Hans Hallez. Credal wrapper of model averaging for uncertainty estimation in classification. In The Thirteenth International Conference on Learning Representations, ICLR 2025, Singapore, April 24-28, 2025 . OpenReview.net, 2025a. Timo Löhr, Paul Hofman, Felix Mohr, and Eyke Hüllermeier. Credal prediction based on relative likelihood. arXiv preprint arXiv:2505.22332 , 2025. Joaquín Abellán and Serafín Moral. A non-specificity measure for convex sets of probability distributions. International journal of uncertainty, fuzziness and knowledge-based systems , 8(03):357–367, 2000. Joaquín Abellán and Serafín Moral. Difference of entropies as a non-specificity function on credal sets. International journal of general systems , 34(3):201–214, 2005. Joaquín Abellán, George J Klir, and Serafín Moral. Disaggregated total uncertainty measure for credal sets. International Journal of General Systems , 35(1):29–44, 2006. Siu Lun Chau, Michele Caprio, and Krikamol Muandet. Integral imprecise probability metrics. In The Thirty-ninth Annual Conference on Neural Information Processing Systems , 2025a. Eyke Hüllermeier, Sébastien Destercke, and Mohammad Hossein Shaker. Quantification of credal uncertainty in machine learning: A critical analysis and empirical comparison. In Uncertainty in Artificial Intelligence , pages 548–557. PMLR, 2022. Yusuf Sale, Michele Caprio, and Eyke Hüllermeier. Is the volume of a credal set a good measure for epistemic uncertainty? In Uncertainty in Artificial Intelligence , pages 1795–1804. PMLR, 2023a. Yusuf Sale, Viktor Bengs, Michele Caprio, and Eyke Hüllermeier. Second-order uncertainty quantification: A distance-based approach. arXiv preprint arXiv:2312.00995 , 2023b. Alfred Müller. Integral probability metrics and their generating classes of functions. Advances in applied probability ,29(2):429–443, 1997. Lisa Wimmer, Yusuf Sale, Paul Hofman, Bern Bischl, and Eyke Hüllermeier. Quantifying aleatoric and epistemic uncertainty in machine learning: Are conditional entropy and mutual information appropriate measures?, 2023. Joaquín Abellán and George J Klir. Additivity of uncertainty measures on credal sets. International Journal of General Systems , 34(6):691–713, 2005. 11 Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+Radim Jiroušek and Prakash P Shenoy. A new definition of entropy of belief functions in the dempster–shafer theory. 
+
+International Journal of Approximate Reasoning , 92:49–65, 2018. Inés Couso, Serafín Moral, and Peter Walley. A survey of concepts of independence for imprecise probabilities. Risk, Decision and Policy , 5(2):165–181, 2000. Claude E Shannon. A mathematical theory of communication. The Bell system technical journal , 27(3):379–423, 1948. Imre Csiszár. Axiomatic characterizations of information measures. Entropy , 10(3):261–273, 2008. Ralph VL Hartley. Transmission of information 1. Bell System technical journal , 7(3):535–563, 1928. Ifigeneia Apostolopoulou, Benjamin Eysenbach, Frank Nielsen, and Artur Dubrawski. A rate-distortion view of uncertainty quantification. arXiv preprint arXiv:2406.10775 , 2024. Gustave Choquet. Theory of capacities. In Annales de l’institut Fourier , volume 5, pages 131–295, 1954. Dieter Denneberg. Non-additive measure and integral , volume 27. Springer Science & Business Media, 1994. Siu Lun Chau, Soroush H Zargarbashi, Yusuf Sale, and Michele Caprio. Quantifying epistemic predictive uncertainty in conformal prediction. arXiv preprint arXiv:2602.01667 , 2026. David Nieto-Barba, Enrique Miranda, and Ignacio Montes. The total variation distance for comparing non-additive measures. International Journal of Uncertainty, Fuzziness and Knowledge-Based Systems , 33(07):827–853, 2025a. David Nieto-Barba, Ignacio Montes, and Enrique Miranda. The imprecise total variation model and its connections with game theory. Fuzzy Sets and Systems , page 109448, 2025b. Robert G Chambers and Tigran Melkonyan. Degree of imprecision: Geometric and algorithmic approaches. Interna-tional journal of approximate reasoning , 45(1):106–122, 2007. Rush T Stewart and Michael Nielsen. Distention for sets of probabilities. Philosophy of Science , 89(3):604–620, 2022. Michele Caprio, Maryam Sultana, Eleni G Elia, and Fabio Cuzzolin. Credal learning theory. Advances in Neural Information Processing Systems , 37:38665–38694, 2024b. K. Muandet, K. Fukumizu, B. K. Sriperumbudur, and B. Schölkopf. Kernel mean embedding of distributions: A review and beyonds. Foundations and Trends in Machine Learning , 10(1-2):1–141, 2016. Svetlozar Todorov Rachev. Probability metrics and the stability of stochastic models. Wiley , 1991. Lloyd S Shapley. Cores of convex games. International journal of game theory , 1(1):11–26, 1971. Jens Christian Hühn and Eyke Hüllermeier. Fr3: A fuzzy rule learner for inducing reliable classifiers. IEEE Transactions on Fuzzy Systems , 17(1):138–149, 2008. Isaac Levi. On indeterminate probabilities. The Journal of Philosophy , 71(13):391–418, 1975. Kurt Weichselberger. The theory of interval-probability as a unifying concept for uncertainty. International Journal of Approximate Reasoning , 24(2-3):149–170, 2000. Kurt Weichselberger and Sigrid Pöhlmann. A Methodology for Uncertainty in Knowledge-based Systems . Springer, Heidelberg, 1990. Matthias CM Troffaes and Gert De Cooman. Lower previsions . John Wiley & Sons, 2014. Michele Caprio, Souradeep Dutta, Radoslav Ivanov, Kuk Jang, Vivian Lin, Oleg Sokolsky, and Insup Lee. Imprecise Bayesian Neural Networks. arXiv preprint arXiv:2302.09656 , 2023. Julian Rodemann and Thomas Augustin. Imprecise bayesian optimization. Knowledge-Based Systems , 300:112186, 2024. Siu Lun Chau, Antonin Schrab, Arthur Gretton, Dino Sejdinovic, and Krikamol Muandet. Credal two-sample tests of epistemic uncertainty. In International Conference on Artificial Intelligence and Statistics , pages 127–135. PMLR, 2025b. Michele Caprio, Yusuf Sale, and Eyke Hüllermeier. Conformal prediction regions are imprecise highest density regions. 
+
+arXiv preprint arXiv:2502.06331 , 2025. Michele Caprio. The joys of categorical conformal prediction. arXiv preprint arXiv:2507.04441 , 2025. Vu-Linh Nguyen, Haifei Zhang, and Sébastien Destercke. Credal ensembling in multi-class classification. Machine Learning , 114(1):19, 2025. Kaizheng Wang, Keivan Shariatmadar, Shireen Kudukkil Manchingal, Fabio Cuzzolin, David Moens, and Hans Hallez. Creinns: Credal-set interval neural networks for uncertainty estimation in classification tasks. Neural Networks , 185: 107198, 2025b. 12 Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+Yusuf Sale, Paul Hofman, Timo Löhr, Lisa Wimmer, Thomas Nagler, and Eyke Hüllermeier. Label-wise aleatoric and epistemic uncertainty quantification. In The 40th Conference on Uncertainty in Artificial Intelligence , 2024. Paul Hofman, Yusuf Sale, and Eyke Hüllermeier. Quantifying aleatoric and epistemic uncertainty: A credal approach. In ICML 2024 Workshop on Structured Probabilistic Inference {\ &} Generative Modeling , 2024. Nikhil R Pal, James C Bezdek, and Rohan Hemasinha. Uncertainty measures for evidential reasoning i: A review. 
+
+International Journal of Approximate Reasoning , 7(3-4):165–183, 1992. Nikhil R Pal, James C Bezdek, and Rohan Hemasinha. Uncertainty measures for evidential reasoning ii: A new measure of total uncertainty. International Journal of Approximate Reasoning , 8(1):1–16, 1993. Serafin Moral. Calculating uncertainty intervals from conditional convex sets of probabilities. In Uncertainty in Artificial Intelligence , pages 199–206. Elsevier, 1992. Peter Walley and Serafin Moral. Upper probabilities based only on the likelihood function. Journal of the Royal Statistical Society: Series B (Statistical Methodology) , 61(4):831–847, 1999. Joaquin Abellan and Serafin Moral. Maximum of entropy for credal sets. International journal of uncertainty, fuzziness and knowledge-based systems , 11(05):587–597, 2003. Joaquín Abellán and Manuel Gómez. Measures of divergence on credal sets. Fuzzy sets and systems , 157(11): 1514–1531, 2006. Andrey Bronevich and George J Klir. Axioms for uncertainty measures on belief functions and credal sets. In NAFIPS 2008-2008 Annual Meeting of the North American Fuzzy Information Processing Society , pages 1–6. IEEE, 2008. Heinz Bauer. Minimalstellen von funktionen und extremalpunkte. Archiv der Mathematik , 9(4):389–393, 1958. Stephen Boyd and Lieven Vandenberghe. Convex optimization . Cambridge university press, 2004. Alex Krizhevsky, Geoffrey Hinton, et al. Learning multiple layers of features from tiny images. 2009. J Derrac, S Garcia, L Sanchez, and F Herrera. Keel data-mining software tool: Data set repository, integration of algorithms and experimental analysis framework. J. Mult. Valued Logic Soft Comput , 17:255–287, 2015. 13 Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+# Supplementary Material 
+
+We structure the appendix as follows: 
+
+A Related work 15 B Proofs 16 C Implementation Details 19 D Experimental Setup 21 
+
+D.1 Datasets . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21 D.2 Models . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22 D.3 Compute Resources . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22 
+
+E Additional Experimental Results 23 
+
+E.1 Credal Set Construction via Relative Likelihood . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23 E.2 Pathological Case . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23 14 Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+# A Related work 
+
+The idea behind credal sets (and the terminology) originates from Levi [1975] and was later popularized and given a solid theoretical foundation by Walley [1991]. As introduced in Section 4, credal sets usually—not always—refer to closed and convex sets of probability measures. This is due to the fact that under “coherence” axioms, the representing set of dominating probabilities is automatically closed and convex, see §3.3 in Walley [1991, Chapter 3]. Notably, credal sets are only one of several imprecise probabilistic models [Augustin et al., 2014], alongside capacities [Choquet, 1954], interval probabilities [Weichselberger, 2000, Weichselberger and Pöhlmann, 1990], and lower previsions [Walley, 1991, Troffaes and De Cooman, 2014], to name only a few. A credal set makes the distinction between sources of uncertainty explicit: randomness within each probability measure captures aleatoric uncertainty, while the extent of the set itself reflects epistemic uncertainty. Due to their intuitive appeal and their generality, credal sets have received increasing attention in the machine learning and statistics community recently. Methodological applications range from Bayesian neural networks [Caprio et al., 2023] and optimization [Rodemann and Augustin, 2024] to hypothesis testing [Chau et al., 2025b] and conformal prediction [Caprio et al., 2025, Caprio, 2025]. How to learn credal sets algorithmically has also attracted growing attention in recent years, with several complementary lines of work. Prominent directions include relative-likelihood approaches (e.g., CreRL), which define plausibility via a likelihood-ratio budget and search for a diverse set of high-likelihood hypotheses [Löhr et al., 2025]; wrapper-style methods (Credal Wrapper) that aggregate independently trained models to obtain classwise lower/upper probability bounds and hence box credal sets [Wang et al., 2025a]; distance-filtered ensembles (Credal Ensembling) that retain only the closest predictions under a chosen metric when forming the set [Nguyen et al., 2025]; credal deep ensembles that learn per-class lower/upper bounds with specialized heads and losses [Wang et al., 2025b]; and credal Bayesian deep learning, which aggregates BNNs trained under diverse priors and takes the convex hull of sampled posteriors [Caprio et al., 2024a]. A central question for machine learning practitioners is how to extract from it meaningful summaries of total, aleatoric, and epistemic uncertainty that can drive downstream tasks such as selective prediction, out-of-distribution detection, or active learning. Several recent works have addressed this challenge. Hüllermeier et al. [2022] provided a comparison of existing credal uncertainty measures, identifying issues such as ad hoc additive decompositions and violations of desirable axiomatic properties; notably, the measures they found to be best justified are limited to the binary classification setting, leaving the multiclass case underexplored. Sale et al. [2023a] investigated whether the geometric volume of the credal set is a meaningful measure of epistemic uncertainty, finding it to be of limited effectiveness in multiclass classification. Sale et al. [2024] proposed a label-wise decomposition of aleatoric and epistemic uncertainty, moving from global scalar summaries toward per-class quantification better suited to the structure of multiclass problems. Hofman et al. [2024] proposed uncertainty measures for credal sets grounded in proper scoring rules. These newer contributions build on a rich foundation in imprecise probability theory and uncertainty quantification Pal et al. [1992, 1993], Moral [1992], Walley and Moral [1999], Abellan and Moral [2003], Abellán and Klir [2005], Abellán et al. [2006], Abellán and Gómez [2006], Bronevich and Klir [2008]. In contrast to the existing approaches discussed above, our work departs from the current literature in three key respects. First, we abandon the additive decomposition convention and instead provide independent, semantically grounded definitions for each uncertainty component—total, aleatoric, and epistemic—based on distance-based principles within the IPM framework. Second, rather than reducing credal aleatoric uncertainty to a single scalar, we characterize it as the set of aleatoric uncertainty values attainable across the credal set, thereby preserving the ambiguity encoded by the credal prediction; when a summary is needed for downstream tasks, we provide aggregation strategies that are lossless in a well-defined sense, e.g., the endpoint summary. Third, we place particular emphasis on computational tractability: the resulting family of measures is designed to scale to modern multiclass classification settings, yielding closed-form expressions with favorable complexity for common IPM choices such as total variation. 15 Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+# B Proofs 
+
+Proposition 4.2. Let F be a uniform class with respect to weak convergence such that dF is a metric on ∆K−1. Then 
+
+TU F (Q) and EU F (Q) satisfy A1–A4 and A7; AU F (Q) satisfies A1, A2, and A4; and AU F (Q) satisfies A1–A4. 
+
+Proof. A1–A2 (Non-negativity, boundedness, and continuity). Under the assumption that F is a uniform class with respect to weak convergence (Remark 4.1), dF satisfies 0 ≤ dF (p, q ) ≤ sup f ∈F (sup f − inf f ) < ∞ and is jointly continuous in (p, q ) [Müller, 1997, Theorem 4.3]. All four quantities inherit boundedness directly. For continuity, note that on a finite label space the map p 7 → min y∈Y dF (p, δ y ) is continuous. Since TU F , EU F , AU F , and AU F are then obtained by composing finitely many suprema, infima, and minima of continuous functions over compact sets, continuity follows. 
+
+A3 (Monotonicity). Let Q ⊆ M . Taking the supremum over a larger set is non-decreasing, so TU F (Q) ≤ TU F (M)
+
+and AU F (Q) ≤ AU F (M). Taking the infimum over a larger set is non-increasing, so AU F (Q) ≥ AU F (M). For 
+
+EU F , we use the equivalent form EU F (Q) = 12 sup f ∈F 
+
+ sup p∈Q Ep[f ] − inf q∈Q Eq [f ]: enlarging Q to M can only increase each inner supremum and decrease each inner infimum, so EU F (Q) ≤ EU F (M).
+
+A4 (Probability consistency). When Q = {p}, TU F ({p}) = AU F ({p}) = AU F ({p}) = inf y dF (p, δ y ) = AU F (p),and EU F ({p}) = 12 sup p,q ∈{ p} dF (p, q ) = 0 .
+
+A7 (Extreme point characterization). Since Q is convex and compact, the Bauer maximum principle [Bauer, 1958] applies: the supremum (resp. infimum) of a convex (resp. concave) and continuous function on Q is attained at an extreme point. For any fixed y ∈ Y and f ∈ F , the map p 7 → Ep[f ] − f (y) is affine, so p 7 → | Ep[f ] − f (y)| is convex. Then, by standard results in convex analysis [Boyd and Vandenberghe, 2004], (i) TU F : pointwise supremum of convex functions, so convex in p.(ii) EU F : for fixed q, p 7 → dF (p, q ) is convex by the same argument, and by symmetry the same holds for q.
+
+Proposition 4.3. Let Q ⊆ ∆K−1 be a credal set. Then, for every p ∈ Q ,
+
+EU F (Q) ≤ TU F (Q) and AU F (p) ≤ TU F (Q).
+
+Proof. Epistemic Uncertainty. For any p, q ∈ Q and any y ∈ Y , the triangle inequality gives dF (p, q ) ≤ dF (p, δ y ) + 
+
+dF (δy , q ) . Taking the supremum over p, q ∈ Q and using that the two terms depend on different variables, 
+
+sup 
+
+> p,q ∈Q
+
+dF (p, q ) ≤ sup 
+
+> p∈Q
+
+dF (p, δ y ) + sup 
+
+> q∈Q
+
+dF (δy , q ) = 2 sup 
+
+> p∈Q
+
+dF (p, δ y ) .
+
+Then, taking inf y∈Y on the right-hand side yields 
+
+12 sup 
+
+> p,q ∈Q
+
+dF (p, q ) ≤ inf  
+
+> y∈Y
+
+sup 
+
+> p∈Q
+
+dF (p, δ y ) ,
+
+which is precisely EU F (Q) ≤ TU F (Q).
+
+Aleatoric Uncertainty. Since p ∈ Q , we have dF (p, δ y ) ≤ sup q∈Q dF (q, δ y ) for every y ∈ Y . Taking inf y∈Y on both sides preserves the inequality, yielding AU F (p) ≤ TU F (Q).
+
+Proposition 4.4. For any two credal sets Q, Q′ ⊆ ∆K−1 that are translates of each other within the simplex, it holds that 
+
+EU F (Q) = EU F (Q′).
+
+Proof. For a fixed t ∈ [−1, 1] K with P 
+
+> y∈Y
+
+ty = 0 , define Q′ = {p′ ∈ ∆K−1 : p′({y}) = p({y}) + ty , ∀y ∈Y, for some p ∈ Q} . Expanding the expectation of f ∈ F under p′ gives Ep′ [f ] = Ep[f ] + P 
+
+> y
+
+f (y) ty . Hence, 
+
+sup 
+
+> p′∈Q ′
+
+Ep′ [f ] − inf  
+
+> q′∈Q ′
+
+Eq′ [f ] = sup 
+
+> p∈Q
+
+Ep[f ] − inf  
+
+> q∈Q
+
+Eq [f ].
+
+Halving both sides and taking sup f ∈F yields EU F (Q′) = EU F (Q).16 Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+Proposition 4.5. Let Q ⊆ ∆K−1 be a credal set. Then the maximal diameter is upper bounded by the MMI of its lower probability: 
+
+EU F (Q) ≤ 12 dF
+
+ pQ, p Q
+
+.
+
+Equality holds whenever the lower expectation over Q coincides with the Choquet integral with respect to pQ, e.g., when pQ is convex [Shapley, 1971]. 
+
+Proof. By Lemma 5 of Chau et al. [2025a], R
+
+cf dpQ ≤ inf p∈Q Ep[f ] for every f ∈ F , with equality when pQ is convex (2-monotone). Similarly, by using the asymmetry property [Denneberg, 1994] R
+
+cf dpQ = −R
+
+c( −f ) d pQ, yields 
+
+R
+
+cf dpQ ≥ sup p∈Q Ep[f ]. Subtracting and taking sup f ∈F :
+
+dF
+
+ pQ, p Q
+
+ = sup  
+
+> f∈F
+
+Z
+
+c f dpQ −
+
+Z
+
+c f dpQ
+
+
+
+≥ sup  
+
+> f∈F
+
+
+
+sup 
+
+> p∈Q
+
+Ep[f ] − inf  
+
+> q∈Q
+
+Eq [f ]
+
+
+
+= sup 
+
+> p,q ∈Q
+
+dF (p, q ).
+
+Halving both sides yields the claim. 
+
+Proposition 4.6. Let Q ⊆ ∆K−1 be a credal set. Then, instantiating (1) , (2) , and (4) with the test class F = FTV 
+
+yields the following closed-form expressions: 
+
+TU FTV (Q) = 1 − sup 
+
+> y∈Y
+
+pQ({y}),
+
+AU FTV (p) = 1 − sup 
+
+> y∈Y
+
+p({y}),
+
+EU FTV (Q) = 14 sup 
+
+> p,q ∈Q
+
+X
+
+> y∈Y
+
+p({y}) − q({y}) .
+
+Proof. We derive each expression separately for the test class FTV = {1A : A ⊆ Y} .
+
+Total Uncertainty. The total variation distance between a probability measure p and a Dirac measure δy reduces to 
+
+dFTV (p, δ y ) = sup 
+
+> A⊆Y
+
+|p(A) − δy (A)| = 1 − p({y}).
+
+Indeed, since δy (A) ∈ { 0, 1} for every A ⊆ Y , the supremum is attained at both A = {y} and A = {y}c, giving 
+
+1 − p({y}). Substituting into the definition of total uncertainty, 
+
+T U FTV (Q) = inf  
+
+> y∈Y
+
+sup 
+
+> p∈Q
+
+ 1 − p({y}) = inf 
+
+> y∈Y
+
+ 1 − inf  
+
+> p∈Q
+
+p({y}) = 1 − sup 
+
+> y∈Y
+
+pQ({y}).
+
+Aleatoric Uncertainty. The same identity dFTV (p, δ y ) = 1 − p({y}) applied to a single probability measure gives 
+
+AU FTV (p) = inf 
+
+> y∈Y
+
+ 1 − p({y}) = 1 − sup 
+
+> y∈Y
+
+p({y}).
+
+Epistemic Uncertainty. The total variation distance between two probability measures on Y satisfies 
+
+dFTV (p, q ) = sup 
+
+> A⊆Y
+
+|p(A) − q(A)| = 12
+
+X
+
+> y∈Y
+
+|p({y}) − q({y})|,
+
+Substituting into (4), 
+
+EU FTV (Q) = 12 sup 
+
+> p,q ∈Q
+
+dFTV (p, q ) = 12 sup 
+
+> p,q ∈Q
+
+12
+
+X
+
+> y∈Y
+
+|p({y}) − q({y})| = 14 sup 
+
+> p,q ∈Q
+
+X
+
+> y∈Y
+
+|p({y}) − q({y})|.
+
+Corollary 4.7. For F = FTV , the following identity holds: 
+
+EU FTV (Q) = 12 dFTV 
+
+ pQ, p Q
+
+. (6) 
+
+Proof. For any p, q ∈ Q and any A ⊆ Y , pQ(A) ≤ p(A), q (A) ≤ pQ(A), so |p(A) − q(A)| ≤ pQ(A) − pQ(A). Since 
+
+Y is finite, the infimum and supremum defining pQ(A) and pQ(A) are attained for each A, so taking the supremum over p, q ∈ Q and A ⊆ Y yields 
+
+sup 
+
+> p,q ∈Q
+
+dFTV (p, q ) = sup 
+
+> A⊆Y
+
+ pQ(A) − pQ(A) = dFTV (pQ, p Q).
+
+Dividing both sides by 2 gives the result. 17 Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+Proposition 4.8. Let Q ⊆ ∆K−1 be a credal set and let ext( Q) denote its extreme points. For F = FTV , the lower endpoint AU FTV (Q) satisfies A7. If there exists a class y⋆ ∈ Y such that y⋆ ∈ arg max y∈Y p({y}) for every 
+
+p ∈ ext( Q), then AU FTV (Q) is attained at an extreme point. 
+
+Proof. Lower endpoint. Similarly to the proof of Proposition 4.2, the map p 7 → 1 − max y p({y}) is concave, as the pointwise maximum of affine functions is convex [Boyd and Vandenberghe, 2004]. By the Bauer minimum principle [Bauer, 1958], its infimum over the convex compact set Q is attained at an extreme point. 
+
+Upper endpoint. If δy∗ is the closest Dirac to every extreme point in ext( Q), then it remains so for every p ∈ Q , and thus AU FTV (Q) = sup p∈Q (1 − p({y∗})) = 1 − pQ({y∗}), which depends only on ext( Q).
+
+Proposition 4.10. Let Y = {0, 1} and let Q ⊆ ∆1 be a credal set with 
+
+a := inf  
+
+> p∈Q
+
+p({0}), b := sup 
+
+> p∈Q
+
+p({0}), 0 ≤ a ≤ b ≤ 1.
+
+Then, for F = FTV ,
+
+TU FTV (Q) = min {1 − a, b },
+
+AU FTV (Q) = min {a, 1 − b},
+
+EU FTV (Q) = 12 (b − a),
+
+and in particular 
+
+TU FTV (Q) = AU FTV (Q) + 2 EU FTV (Q).
+
+Proof. The result follows by restricting Proposition 4.6 to Y = {0, 1}.
+
+Total Uncertainty. From (4.6), T U FTV (Q) = 1 − sup y∈Y inf p∈Q p({y}). Evaluating for each class: 
+
+T U FTV (Q) = 1 − max { inf  
+
+> p∈Q
+
+p({0}), 1 − sup 
+
+> p∈Q
+
+p({0})} = min {1 − a, b }.
+
+Aleatoric Uncertainty. In the binary case, max {p({0}), p ({1})} = max {p({0}), 1 − p({0})}, so from (4.6), 
+
+AU FTV (Q) = 1 − sup 
+
+> p∈Q
+
+max {p({0}), 1 − p({0})} = 1 − max {b, 1 − a} = min {a, 1 − b}.
+
+Epistemic Uncertainty. In the binary case, |p({0}) − q({0})| = |p({1}) − q({1})|, so the ℓ1 sum in TV reduces to 
+
+2|p({0}) − q({0})|. By (4.6), 
+
+EU FTV (Q) = 14 sup 
+
+> p,q ∈Q
+
+2|p({0}) − q({0})| = 12
+
+
+
+sup 
+
+> p∈Q
+
+p({0}) − inf  
+
+> q∈Q
+
+q({0})
+
+
+
+= 12 (b − a).
+
+Additive decomposition. Direct verification: min {a, 1 − b} + 2 · 12 (b − a) = min {a, 1 − b} + b − a = min {1 − a, b }.18 Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+# C Implementation Details 
+
+We provide pseudocode for computing both the proposed measures and the baseline methods. Let Q ⊆ ∆K−1 be a finitely generated credal prediction derived from an ensemble of M models, i.e. ext( Q) = {p(1) , . . . , p (M )}, where each p(j) is a probability measure over the class labels. We denote by p(j)({y}) the probability that model j assigns to class y. All algorithms described below refer to the computation for a single instance; in practice, they are applied independently to each of the N instances. 
+
+B.1 Total Uncertainty Algorithm 1 Total Uncertainty — Ours ( TU FTV )
+
+Require: ext( Q)
+
+1: for y = 1 , . . . , K do 
+
+2: p({y}) ← min j=1 ,...,M p(j)({y}) ▷ Lower probability 
+
+3: end for 
+
+4: return 1 − max y=1 ,...,K p({y})
+
+Algorithm 2 Total Uncertainty — Entropy ( S∗)
+
+Require: ext( Q)
+
+1: Solve w∗ ← arg max  
+
+> w∈∆M−1
+
+S
+
+PMj=1 wj p(j)
+
+
+
+▷ Convex optimisation over ∆M −1
+
+2: return S P Mj=1 w∗ 
+
+> j
+
+p(j)
+
+B.2 Aleatoric Uncertainty Algorithm 3 Aleatoric Uncertainty — Ours, lower endpoint ( AU FTV )
+
+Require: ext( Q)
+
+1: for j = 1 , . . . , M do 
+
+2: AU j ← 1 − max y=1 ,...,K p(j)({y})
+
+3: end for 
+
+4: return min j=1 ,...,M AU j ▷ Lower endpoint of AU FTV (Q)
+
+Algorithm 4 Aleatoric Uncertainty — Ours, upper endpoint ( AU FTV )
+
+Require: ext( Q)
+
+1: y∗ 
+
+> j
+
+← arg max y=1 ,...,K p(j)({y}) for each j = 1 , . . . , M 
+
+2: if y∗ 
+
+> 1
+
+= y∗ 
+
+> 2
+
+= · · · = y∗ 
+
+> M
+
+then ▷ All models agree on argmax 
+
+3: return max j=1 ,...,M 
+
+ 1 − max y=1 ,...,K p(j)({y})
+
+4: else ▷ Models disagree → solve Linear programming 
+
+5: Solve t∗ ← min w∈∆M −1
+
+> t≥0
+
+t s.t. PMj=1 wj p(j)({y}) ≤ t ∀ y = 1 , . . . , K 
+
+6: return 1 − t∗
+
+7: end if 
+
+19 Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+Algorithm 5 Aleatoric Uncertainty — Entropy ( S∗)
+
+Require: ext( Q)
+
+1: for j = 1 , . . . , M do 
+
+2: Sj ← − PKy=1 p(j)({y}) log p(j)({y}) ▷ Shannon entropy of model j
+
+3: end for 
+
+4: return min j=1 ,...,M Sj ▷ Lower entropy 
+
+Algorithm 6 Aleatoric Uncertainty — Hartley ( GH )
+
+Require: ext( Q)
+
+1: Compute S via Algorithm 2 ▷ Upper entropy 
+
+2: Compute GH via Algorithm 9 ▷ Generalised Hartley 
+
+3: return S − GH 
+
+B.3 Epistemic Uncertainty Algorithm 7 Epistemic Uncertainty — Ours ( EU FTV )
+
+Require: ext( Q)
+
+1: dmax ← 0
+
+2: for j = 1 , . . . , M − 1 do ▷ Upper-triangular pairs 
+
+3: for i = j + 1 , . . . , M do 
+
+4: d ← PKy=1 |p(j)({y}) − p(i)({y})| ▷ l 1 distance 
+
+5: dmax ← max( dmax , d )
+
+6: end for 
+
+7: end for 
+
+8: return 14 dmax 
+
+Algorithm 8 Epistemic Uncertainty — Entropy ( S∗ − S∗)
+
+Require: ext( Q)
+
+1: Compute S via Algorithm 2 ▷ Upper entropy 
+
+2: Compute S via Algorithm 5 ▷ Lower entropy 
+
+3: return S − S
+
+Algorithm 9 Epistemic Uncertainty — Hartley ( S∗ − GH )
+
+Require: Lower probability of Q: pQ(A) for all A ⊆ Y 
+
+1: for each A ⊆ Y do ▷ Möbius transform of pQ
+
+2: m(A) ← P
+
+> B⊆A
+
+(−1) |A\B| pQ(B)
+
+3: end for 
+
+4: return P 
+
+> A⊆Y
+
+m(A) log |A| ▷ Convention: log |∅| = 0 
+
+20 Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+# D Experimental Setup 
+
+The experimental setup follows that of Chau et al. [2025a]. We construct the credal set from an ensemble of 10 classifiers, and predictions are obtained by voting among the models and breaking ties with the average probabilities. In Figure 2, each classifier generates predictions over 10 test data batches, which are assigned uncertainty values by each measure, and Accuracy Rejection (AR) curves illustrate the measures’ performance. In AR curves, predictions with the highest uncertainty are progressively rejected, and the accuracy on the remaining samples is recorded. By plotting the accuracy against the fraction of rejected examples, we visualize how well the uncertainty measure separates easy (high-confidence) from hard (low-confidence) predictions. A steeper curve indicates a more informative uncertainty measure, as rejecting uncertain examples leads to a faster increase in accuracy. Results are averaged over batches to provide a robust evaluation. The experimental setup runs with AR curves discretized into 30 equal-width bins. Beyond visual comparison, AR performance is commonly summarized through the Area Under the Curve (AUC), which provides a compact measure of overall ranking quality. However, its expressiveness is inherently limited, as it fails to account for the shape of the curve: two AR curves may yield identical areas while exhibiting different behaviors. Since, by construction, accuracy should not decrease as increasingly certain samples are retained, we complement the AUC with a shape sensitive indicator of monotonicity. Specifically, we define the Monotonicity Ratio (MR) as the proportion of bins in which the AR curve does not decrease. Intuitively, high MR indicates that rejecting uncertain samples never harms accuracy. 
+
+Monotonicity Ratio (MR). Let s = ( s1, . . . , s B ) denote an AR curve evaluated over B bins. We define the successive differences as 
+
+∆i = si+1 − si, i = 1 , . . . , B − 1.
+
+The Monotonicity Ratio (MR) is defined as MR = 1
+
+B − 1
+
+> B−1
+
+X
+
+> i=1
+
+1{∆i≥0}, (7) where 1{·} denotes the indicator function. Table 2 complements the visual analysis by reporting average metrics across all considered datasets. We next describe the datasets, models, and computational resources used in the experiments. 
+
+D.1 Datasets 
+
+The experiments in this work are conducted on the CIFAR -10 and CIFAR -100 image datasets, as well as on tabular classification datasets from the KEEL repository. In Appendix E, we use the Fashion-MNIST and SVHN datasets from PyTorch. 
+
+CIFAR datasets The CIFAR datasets comprising CIFAR -10 and CIFAR -100 Krizhevsky et al. [2009], are widely used benchmarks in computer vision for evaluating image classification algorithms. Both datasets contain color images of size 32×32 pixels, split into 50,000 training images and 10,000 test images. The small image size and relatively limited number of samples per class make both datasets particularly challenging. CIFAR -10 comprises 10 broad object classes, whereas CIFAR -100 includes 100 more fine-grained classes organized into 20 superclasses. 
+
+KEEL repository Knowledge Extraction based on Evolutionary Learning (KEEL) Derrac et al. [2015] is an open-source (GPLv3) Java software tool maintained by the SCI2S research group at the University of Granada 2. It provides a comprehensive platform for a wide range of knowledge discovery and data mining tasks. Additionally, it includes a dataset repository covering diverse learning paradigms such as supervised classification, regression, time series analysis, and unsupervised learning, including specialized types such as imbalanced datasets, multi-instance, multi-label, semi-supervised, and low-quality data. Table 3 reports the 64 datasets that we considered for the work. A problem with more than ten classes is considered a high-class setting. This results in a total of 59 datasets with a low number of classes (K ≤ 10 ) and 5 with a high number of classes ( K > 10 ). For each dataset, the experiment is repeated over 10 random stratified splits of the data (batches), with models trained and validated on 70% of the samples and the remaining 30% used to evaluate the measures. 
+
+> 2https://sci2s.ugr.es/keel/datasets.php
+
+21 Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+Table 3: Summary of the 64 datasets from the KEEL repository, grouped by number of classes: 59 with K ≤ 10 and 5 with K > 10 . Preprocessing removed instances with missing values and numerically encoded categorical attributes.              
+
+> Category Datasets Samples (range) Features (range)
+> k≤10 (59 datasets) adult; appendicitis; australian; automobile; balance; banana; bands; breast; bupa; car; chess; cleve-land; coil2000; connect-4; contraceptive; crx; dermatology; fars; flare; german; glass; haberman; hayes-roth; heart; hepatitis; housevotes; ionosphere; iris; led7digit; magic; mammographic; mar-keting; monk-2; newthyroid; optdigits; page-blocks; penbased; phoneme; pima; ring; saheart; satimage; segment; shuttle; sonar; spambase; spectfheart; splice; tae; thyroid; tic-tac-toe; titanic; twonorm; vehicle; wdbc; wine; wisconsin; yeast; zoo 80–100,968 2–85
+> k > 10 (5 datasets) kr-vs-k; letter; movement-libras; texture; vowel 360–28,056 6–90
+
+Other Vision datasets PyTorch provides an open-access repository of computer vision datasets with predefined training and test splits. 3 In the experiments reported in Appendix E, we consider the Fashion-MNIST and SVHN datasets. Fashion-MNIST is a more challenging alternative to the original MNIST dataset, consisting of 60,000 training samples and 10,000 test samples. Images are grayscale with a resolution of 28 × 28 pixels and are categorized into 10 classes corresponding to different types of clothing. SVHN (Street View House Numbers) contains color images of house numbers extracted from Google Street View. Images have a resolution of 32 × 32 pixels, and the dataset includes 26,032 test samples spanning 10 digit classes. 
+
+D.2 Models 
+
+We employ pretrained neural network models for the CIFAR10 and CIFAR100 datasets, available at https://github.com/chenyaofo/pytorch-cifar-models. These models differ in size and architecture, introducing diversity into the ensemble. For the tabular KEEL datasets (Table 2), 10 random forest models are trained per dataset with randomly selected hyperparameters, following the approach in Chau et al. [2025a]. In Appendix E, we adopt a Vision Transformer (ViT-Base/16) model with 86 million parameters, pretrained on ImageNet-21K. 4 All input images are resized to 224 × 224 pixels and normalized using the standard preprocessing pipeline. 
+
+D.3 Compute Resources 
+
+The runtimes reported in Table 2 were obtained using an AMD Ryzen 7 5800X CPU (16 cores) running at 4.20,GHz. The additional experiment presented in Appendix E was conducted on a proprietary computing cluster equipped with four NVIDIA A100 GPUs. Inference for the CIFAR models can be performed on a standard desktop GPU. 
+
+> 3
+
+https://docs.pytorch.org/vision/0.12/datasets.html 
+
+> 4
+
+https://huggingface.co/google/vit-base-patch16-224 
+
+22 Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+# E Additional Experimental Results 
+
+This appendix extends the empirical validation of Section 5. We evaluate the proposed measures on selective prediction using Vision Transformer models as a state-of-the-art architecture for image classification combined with the relative likelihood credal set construction of Löhr et al. [2025], a recent methodology that offers principled control over the composition and size of the credal set. Beyond the performance validation, we reproduce and analyze in detail the pathological case identified in Section 5. 
+
+E.1 Credal Set Construction via Relative Likelihood 
+
+The central question behind credal set construction is to keep every model that fits the data sufficiently well, measured relative to the best available fit. Given a hypothesis h and a dataset {(xi, y i)}Ni=1 , the likelihood is defined as 
+
+L(h) = 
+
+> N
+
+Y
+
+> i=1
+
+p(yi | xi, h ). (8) Following Löhr et al. [2025], the model that maximizes L over the hypothesis space H serves as the empirical MLE and acts as the reference point of best fit. The credal set at a query x is then constructed by retaining all models whose likelihood remains within a prescribed ratio of this reference: 
+
+Qx,α =
+
+
+
+p(· | x, h ) : L(h)sup h′∈H L(h′) ≥ α
+
+
+
+, (9) where α ∈ [0 , 1] controls the size of the credal set: values close to 1 yield low imprecision (only models whose likelihood is close to the MLE are retained), while values approaching 0 admit nearly all probabilistic models. For the experiment, we consider an ensemble of nine models with likelihood thresholds uniformly spanning α ∈ [0 , 1] ,namely {h0.1, . . . , h 1.0}, where hα denotes a model whose relative likelihood is at least α. In this way, even when using the same transformer architecture, we force a credal predictor generated by models with different states of knowledge. To ensure sufficient variability across the likelihood spectrum, the neural networks are initialized with TOBIAS [Löhr et al., 2025]. Figure 3 shows that the proposed measures are again competitive with the baselines on both FASHION -MNIST and SVHN .In the entropy and Hartley frameworks, the component derived from the additive decomposition tends to underperform, whereas all three components of our framework yield monotonic AR curves with slightly higher AUC values overall. 
+
+E.2 Pathological Case 
+
+We now augment the ensemble with an additional member h0.0. Since this threshold imposes no constraint on the likelihood, h0.0 is free to be any model regardless of its fit to the data. We set h0.0 to predict a fixed class y∗ for every input x, i.e., p(· | x, h 0.0) = δy∗ . This model produces predictions entirely disconnected from the training data, corrupting the credal set and, consequently, any uncertainty quantification derived from it. As observed in Figure 4, the proposed measures appear more sensitive to this pathological case than the baselines. We next analyze the reason behind. When a Dirac measure δy∗ belongs to Q, we have pQ({y}) = 0 for all y̸ = y∗, since δy∗ ({y}) = 0 for y̸ = y∗. The closed-form expression (4.6) then reduces to T U FTV (Q) = 1 − pQ({y∗}).The total uncertainty measure becomes anchored entirely to the class y∗, regardless of whether y∗ is the correct label. Even when the majority of plausible models in Q agree on a different class with high confidence, the single Dirac measure suffices to redirect the reference vertex from the consensus class to y∗, distorting the semantic interpretation of the measure. A similar effect propagates to the epistemic uncertainty. The maximal diameter of Q becomes dominated by the pair (δy∗ , p ) for whichever p ∈ Q is furthest from δy∗ . This explains the inverted AR curves in Figure 4: since the models with higher α assign near zero probability to y∗ for most instances, pQ({y∗}) ≈ 0 and T U, EU ≈ 1
+
+almost everywhere, as the cumulative distributions confirm. The few instances with slightly lower uncertainty (e.g., 
+
+T U, EU ≈ 0.99 ) are those where high-likelihood models place some residual mass on y∗—paradoxically indicating lower model confidence, yet ranked as less uncertain. 23 Quantification of Credal Uncertainty: A Distance-Based Approach A P REPRINT 
+
+Figure 3: Selective prediction for credal sets constructed via relative likelihood, on FASHION -MNIST and SVHN . Left panels: 
+
+Accuracy–rejection (AR) curves for (a) total uncertainty, (b) aleatoric uncertainty, and (c) epistemic uncertainty. Area Under the Curve (AUC, ↑ higher is better) is reported in each legend. Right panels: Cumulative distribution of uncertainty scores across all test instances. The vertical dashed line marks the median uncertainty value. 
+
+Figure 4: Selective prediction for credal sets constructed via relative likelihood, including h0.0, on FASHION -MNIST and SVHN .
+
+Left panels: Accuracy–rejection (AR) curves for (a) total uncertainty, (b) aleatoric uncertainty, and (c) epistemic uncertainty. Area Under the Curve (AUC, ↑ higher is better) is reported in each legend. Right panels: Cumulative distribution of uncertainty scores across all test instances. The vertical dashed line marks the median uncertainty value. The inclusion of h0.0—a deterministic model assigning probability 1 to a fixed class—causes pathological behavior. 
+
+24
