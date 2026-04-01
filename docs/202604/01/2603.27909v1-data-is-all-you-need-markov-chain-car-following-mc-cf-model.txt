@@ -1,0 +1,723 @@
+Title: Data is All You Need: Markov Chain Car-Following (MC-CF) Model
+
+URL Source: https://arxiv.org/pdf/2603.27909v1
+
+Published Time: Tue, 31 Mar 2026 01:46:39 GMT
+
+Number of Pages: 33
+
+Markdown Content:
+# Data is All You Need: Markov Chain Car-Following (MC-CF) Model 
+
+Sungyong Chung 1, Yanlin Zhang 1, Nachuan Li 2, Dana Monzer 2, and Alireza Talebpour *1 
+
+> 1
+
+Department of Civil and Environmental Engineering, University of Illinois Urbana-Champaign 
+
+> 2
+
+Northwestern University Transportation Center, Northwestern University 
+
+Abstract 
+
+Car-following behavior is fundamental to traffic flow theory, yet traditional models often fail to capture the stochasticity of naturalistic driving. This paper introduces a new car-following modeling category called the empirical probabilistic paradigm, which bypasses conventional parametric assumptions. Within this paradigm, we propose the Markov Chain Car-Following (MC-CF) model, which represents state transitions as a Markov process and predicts behavior by randomly sampling accelerations from empirical distributions within discretized state bins. Eval-uation of the MC-CF model trained on the Waymo Open Motion Dataset (WOMD) demonstrates that its variants significantly outperform physics-based models including IDM, Gipps, FVDM, and SIDM in both one-step and open-loop trajectory prediction accuracy. Statistical analysis of transition probabilities confirms that the model-generated trajectories are indistinguishable from real-world behavior, successfully reproducing the probabilistic structure of naturalistic driving across all interaction types. Zero-shot generalization on the Naturalistic Phoenix (PHX) dataset further confirms the model’s robustness. Finally, microscopic ring road simulations validate the framework’s scalability. By incrementally integrating unconstrained free-flow trajectories and high-speed freeway data (TGSIM) alongside a conservative inference strategy, the model drasti-cally reduces collisions, achieving zero crashes in multiple equilibrium and shockwave scenarios, while successfully reproducing naturalistic and stochastic shockwave propagation. Overall, the proposed MC-CF model provides a robust, scalable, and calibration-free foundation for high-fidelity stochastic traffic modeling, uniquely suited for the data-rich future of intelligent trans-portation. 
+
+Keywords: Markov Chain, Empirical, Car-Following Model, Waymo Open Motion Dataset 
+
+# 1. INTRODUCTION 
+
+Car-following behavior analysis forms a cornerstone of traffic flow theory, providing the microscopic foun-dation for understanding traffic dynamics, from individual vehicle interactions to large-scale congestion patterns. For decades, this understanding has relied on models developed from limited, often experimental 
+
+> *
+
+Corresponding author. Email: ataleb@illinois.edu 
+
+1
+
+> arXiv:2603.27909v1 [eess.SY] 29 Mar 2026
+
+datasets. However, the recent emergence of large-scale, high-fidelity trajectory datasets such as Waymo Open Motion Dataset (WOMD) [1, 2], Lyft level-5 Open Dataset [3], and Argoverse Dataset [4], has trans-formed this landscape. These datasets capture millions of real-world interactions in complex urban environ-ments at high temporal resolution, encompassing both automated vehicles (AVs) and human-driven vehicles (HDVs). This data revolution presents a unique opportunity to build a new generation of car-following models that are more accurate, robust, and representative of real-world driving complexity. Traditionally, car-following research has been dominated by parametric, physics-based formulations such as the Gipps model [5] and the Intelligent Driver Model (IDM) [6], along with stochastic variants like the Stochastic IDM (SIDM) [7]. These models have been invaluable for their interpretability, as they frame driving behavior through well-defined rules and parameters related to safety, speed, and spacing. However, their reliance on simplified assumptions and limited number of parameters limits their capacity to exploit the richness of modern trajectory data. As a result, they often fall short in capturing behavioral heterogeneity, the stochastic nature of human driving, and the emergent dynamics in mixed traffic of AVs and HDVs. Recent developments in data-driven modeling, powered by machine learning techniques such as neural networks, have brought remarkable advances [8–14]. These models excel at capturing complex, nonlinear relationships directly from data, frequently achieving higher predictive accuracy than traditional approaches. However, they often function as black boxes, offering limited insight into the behavioral mechanisms be-hind their predictions. This opacity poses challenges for interpretability and safety validation in simulation environments. To address this gap, this paper introduces a novel, purely data-driven car-following modeling cate-gory called the empirical probabilistic paradigm. This paradigm retains the transparency of classical state based logic while abandoning restrictive physics or psychology based parametric assumptions about driver behavior. Building on recent empirical evidence from Li et al. [15], which provides rigorous statistical validation for the Markov property in car-following state transitions where the state is defined by follower speed, leader speed, and spacing, this new category represents car-following dynamics entirely through (i) empirical transition probabilities between discrete traffic states and (ii) state conditional empirical accelera-tion distributions learned directly from trajectory data. As a result, behavioral interpretation is statistically grounded. Each traffic state is associated with an observable acceleration profile, enabling direct inference of mean response and variability across regimes without invoking latent parameters. As a concrete realization of this paradigm, we propose the Markov Chain Car-Following (MC-CF) model and its variants. Specifically, the MC-CF model learns state transition probabilities directly from tra-jectory data over a discretized state space and predicts behavior by sampling accelerations from the empiri-cal acceleration distribution of the estimated next state. By synthesizing a statistically validated Markovian structure with pure data-driven sampling, the MC-CF model provides a simple yet powerful nonparametric framework explicitly designed to leverage large scale naturalistic driving data. We note that the MC-CF model is particularly suited for the data-rich era ahead. As AV deployment accelerates, the volume of high-quality driving data collected from onboard sensors is expected to grow exponentially. Unlike parametric models that require complete recalibration when new data arrive, the inherent structure of the MC-CF model allows continuous refinement. Specifically, new trajectory data can be seamlessly incorporated by updating transition probabilities and adding acceleration samples to each state’s empirical acceleration distribution. This scalability and adaptability make the MC-CF model a future-proof tool for data-driven transportation analysis, capable of becoming more accurate and robust as more data becomes available. The remainder of this paper is organized as follows. Section 2 reviews physics-based and data-driven car-following models and positions the proposed approach within the broader modeling landscape. Section 3 describes the trajectory dataset and preprocessing procedures used for empirical implementation. Section 4 presents the MC-CF paradigm, including state definition, transition probability estimation, and construction 
+
+2of state-conditional acceleration distributions. Section 5 evaluates the proposed framework against repre-sentative car-following model baselines in terms of trajectory accuracy with empirical data. We then discuss model scalability in microscopic simulation and its implications for data-rich transportation systems. Fi-nally, Section 6 concludes the paper and outlines directions for future research. 
+
+# 2. LITERATURE REVIEW 
+
+The landscape of car-following modeling has continuously evolved in pursuit of balancing empirical realism with structural transparency. Traditionally, this domain has been dominated by parametric, physics-based equations. While these classical models offer clear theoretical insights, they often struggle to capture the full spectrum of naturalistic human driving. In response, data-driven models emerged, offering a more accurate and reliable representation of real-world behaviors by directly leveraging trajectory datasets without restrictive parametric constraints [8]. However, these machine learning approaches are frequently criticized for functioning as black boxes; they offer limited insight into traffic flow theory and present challenges for safety validation and transferability across different traffic conditions [8]. To navigate these competing challenges, the modeling landscape currently spans classical physics-based models and complex machine learning architectures, both of which struggle to find an ideal middle ground between empirical flexibility and behavioral interpretability. 
+
+2.1. Physics-Based Car-Following Models 
+
+Physics-based car-following models have long served as foundational tools for simulating driver behavior and traffic dynamics by employing well-defined mathematical rules. For instance, the Gipps model [5], an extensively used framework, operates on the assumption that individuals have a limited range of desirable acceleration and deceleration rates, enforcing strict collision-avoidance constraints. However, it has been heavily criticized for its inability to replicate metastability, often resulting in unconditionally stable traffic states [16, 17]. Seeking to capture smoother, more continuous car-following dynamics, the IDM [6] became highly adopted. Despite its popularity, the IDM struggles to simulate reaction delays and lacks the psychological human-factors necessary to reproduce heterogeneous, real-world reactions, sometimes yielding unrealistic vehicle dynamics [18, 19]. To address this deterministic rigidity, the SIDM [7] introduced time-varying stochastic fluctuations to reproduce flow oscillations and driver indifference. Nevertheless, adding random noise to deterministic equations is generally criticized, as it can inadvertently cause negative vehicle speeds [20]. Parallel to the IDM family, the Full Velocity Difference Model (FVDM) [21] was introduced to improve the generalized force model (GFM) [22] by incorporating the impacts of both positive and negative relative speeds. Variants of the FVDM, such as those utilizing constant time headways (FVDM-CTH) or non-linear sigmoids (FVDM-sigmoid), have been used to model AVs. Yet, empirical evaluations have shown that sim-pler models like Gipps can sometimes outperform these FVDM variants in AV modeling [23]. Extending these physics-based principles to connected environments, Van Arem [24] modeled cooperative adaptive cruise control systems utilizing vehicle-to-vehicle communication to allow for smaller following spacings. However, similar to its predecessors, this model enforces specific safety constraints and desired traffic vari-ables without allowing for the flexible, heterogeneous objective prioritization seen in actual driving [25]. Recognizing the limitations of static parameters in these traditional equations, a recent evolution within physics-based modeling has employed Markovian frameworks to capture the dynamic, multi-modal nature of driving. These studies conceptualize driving as a sequence of transitions between discrete behavioral states or latent regimes. For instance, Zaky and Gomaa [26] applied a Markov switching regression model to classify regimes such as stable following and braking. Zou et al. [27] utilized a Coupled Hidden Markov Model (CHMM) to segment driving into primitive patterns, while Yao et al. [28] introduced the concept of 
+
+3action-chains using coupled Markov chains. More recently, Zhang et al. [29] proposed a Factorial Hidden Markov Model (FHMM) integrated directly with the IDM, calibrating a unique set of IDM parameters for each latent driving regime. While this study significantly enhances accuracy by modeling regime switching with a larger set of calibrated parameters, it remains fundamentally anchored in the physics-based paradigm, as the underlying vehicle dynamics within each state are still dictated by rigid parametric equations. 
+
+2.2. Data-Driven Car-Following Models 
+
+To bypass the restrictive assumptions of parametric equations, researchers have increasingly turned to data-driven techniques. Papathanasopoulou and Antoniou [8] developed an improved weighted regression (loess) technique to model car-following behavior and compared it with the Gipps model to find that it outperformed the latter. The model was based on the dataset collected in Naples by Punzo et al. [30]. However, the model needs more validation before being integrated in traffic simulation [8]. He et al. [9] introduced a nonparametric car-following model using k-nearest neighbor (kNN) and field data, avoiding assumptions about driver behavior parameters or fundamental diagrams. Based on the idea that drivers respond to traffic stimuli in consistent, learned patterns, the model accurately reproduced empirical traffic features like stop-and-go oscillations. However, because the kNN approach predicts vehicle movement by taking the strict average of the most similar historical cases, it inherently smooths out the natural, heterogeneous variability of driver responses. Consequently, to capture stochastic driving errors and test traffic instability, the model relies on the artificial injection of white Gaussian noise, rather than deriving the true probabilistic distribution of driving behaviors directly from the empirical data. Artificial neural networks (ANNs) have also brought remarkable advances. Panwai and Dia [10] devel-oped an ANN-based model that demonstrated superior performance compared to Gipps and psychophysical models. A more recent paper presented a deep neural network-based model using a Gated Recurrent Unit (GRU) [11], incorporating temporal dependencies to achieve higher simulation accuracy than Forward Neu-ral Network (FNN)-based models and the IDM. Another direction focuses on learning-based models, such as sequence-to-sequence (seq2seq) approaches that account for memory effects and driver reaction delays [13]. While these data-driven models excel at capturing complex, nonlinear relationships and achieving high predictive accuracy, they frequently function as black boxes. This opacity poses significant challenges for behavioral interpretability and safety validation in simulation environments. 
+
+2.3. The Empirical Probabilistic Paradigm 
+
+To bridge the gap between the transparency of classical physics-based logic and the flexibility of data-driven approaches, this paper introduces a novel modeling category called the empirical probabilistic paradigm. Models in this class avoid restrictive physics-based parametric assumptions and instead derive behavioral dynamics directly from observed data distributions. The foundation for this paradigm relies on the rigorous statistical validation of state transitions. Arecent study by [15] confirmed that the Markov property holds for vehicle state transitions, where a state is explicitly defined by the leader vehicle’s speed, the follower vehicle’s speed, and the spacing between them. Building directly on this validated principle, we propose the MC-CF model. Crucially, the MC-CF model diverges from the regime-switching approaches discussed in Section 2.1. Instead of identifying latent behavioral regimes and calibrating separate parametric equations within them, the MC-CF model learns the state transition probabilities directly from trajectory data over a discretized state space. Furthermore, rather than assuming any deterministic acceleration function for a given state, our model embraces the inherent stochasticity of driving by representing acceleration as an empirical proba-bility distribution learned from the data for each discrete state. By making no assumptions other than the statistically validated Markov property of state transitions, the new modeling category provides a simple and transparent framework that derives both state dynamics and action distributions entirely from empirical 
+
+4evidence. 
+
+# 3. DATA DESCRIPTION 
+
+This study primarily draws on the WOMD [2] in order to train the proposed models. WOMD captures car-following interactions near the Waymo vehicles (AVs), and provides a data volume that is unprecedented compared to other datasets commonly used for car-following analysis, thereby enabling the introduction of the proposed empirical probabilistic paradigm. The dataset includes all interaction types: AV-following-HDV, HDV-following-AV, and HDV-following-HDV. For each interaction type, 90% of the extracted car-following pairs are used for training, and the remaining 10% are reserved for testing to evaluate the perfor-mance of the proposed and baseline models. In addition, we employ the Naturalistic Phoenix (PHX) dataset [31] to assess zero-shot generalization. Here, zero-shot generalization refers to a model’s ability to generate motion predictions for time series originating from previously unseen datasets [32]. Specifically, for the zero-shot generalization analysis, the models are trained on WOMD training dataset and validated on the entire PHX dataset. From each dataset, we extract key variables relevant to car-following modeling, including follower and leader positions (x and y coordinates), speeds, accelerations, spacings, and relative speeds. Trajectories in both datasets are sampled at 10 Hz. Preprocessing involves filtering for valid car-following pairs based on the following criteria: a minimum duration of 10 seconds, a maximum spacing of 45 m, and a minimum speed threshold of 3 m/s (that is, the maximum speed within each car-following pair must exceed 3 m/s to ensure that at least one vehicle is moving). Time steps with accelerations outside the range of -10 m/s2 to 5 m/s2 are removed, as they likely stem from sensor noise; these accounted for approximately 0.81% of the WOMD and 1.26% of the PHX. Additionally, the first and last 2 seconds of each pair are discarded to minimize non car-following behavior related to lane changes or merging. The resulting car-following pairs are then partitioned into three groups based on interaction type within each dataset. 
+
+3.1. Waymo Open Motion Dataset 
+
+The WOMD provides a large-scale benchmark for motion forecasting, comprising over 100,000 interactive 20 second scenes across 1,750 km of roadways in six US cities [2]. The dataset provides information includ-ing scenario IDs, unique tracking IDs for objects, object types (vehicles, pedestrians, and cyclists), Waymo vehicle identifiers, and detailed object attributes including position (x, y, z), dimensions (length, width, height), heading, and velocity. In addition, the dataset offers map-related features for each scenario repre-sented as 3D polylines, including lane centers, lane boundaries, and road boundaries. These map features also specify the travel direction associated with each lane center ID and describe its connections to other lane center IDs, such as exit lanes and adjacent left and right lanes. However, in contrast to the traditional NGSIM trajectory dataset [33], which is one of the most widely used in car-following studies, WOMD does not include assigned lane center IDs for each vehicle, a key element for identifying leader–follower pairs. To systematically extract all possible car-following pairs, vehicles were assigned to lanes by mapping their position to the nearest point on lane centers. As vehicles moved, lane assignments were updated based on the closest point from the (i) current lane center ID, (ii) any exit lane center IDs, or (iii) neighboring left and right lane center IDs. After assigning lane centers to each vehicle at each time step, we identified leaders as the closest vehicles to the follower in the direction of travel, either within the same lane center as the follower or in lane centers connected to it. This procedure, consistent with the methodology described in [34], enabled us to extract all candidate car-following pairs from the dataset. Following extraction, we applied the preprocessing steps described earlier to obtain the final car-following pairs for analysis. Table 1 summarizes the trajectory durations, in seconds, and the number of car-following pairs for each interaction type extracted from the WOMD. As noted, because each WOMD scenario has a maximum length of 20 seconds, the mean duration of car-following pairs is around 9.5 seconds across all interaction types. 
+
+5TABLE 1: Descriptive statistics of trajectory durations in seconds and number of car-following (CF) pairs for different interaction types in WOMD. Dataset Interaction Type CF Pairs Mean (s) Std (s) Max (s) Min (s) WOMD (Train) AV-following-HDV 3,778 9.28 2.67 15.7 5.1 WOMD (Test) AV-following-HDV 420 9.34 2.80 15.8 5.4 WOMD (Train) HDV-following-AV 4,896 9.65 2.74 15.7 5.8 WOMD (Test) HDV-following-AV 544 9.67 2.78 15.7 6.0 WOMD (Train) HDV-following-HDV 29,477 9.43 2.63 15.8 5.2 WOMD (Test) HDV-following-HDV 3,276 9.48 2.65 15.7 5.9 Specifically, 4,198 car-following pairs were extracted for AV-following-HDV interactions, while 5,440 and 32,753 pairs were extracted for HDV-following-AV and HDV-following-HDV interactions, respectively. 
+
+3.2. Naturalistic Phoenix Dataset 
+
+The Naturalistic PHX Dataset was developed to capture detailed Waymo vehicle trajectories and behavioral interactions in real-world traffic conditions across the Phoenix metropolitan area. High-resolution aerial videos were collected using a stabilized camera mounted on a helicopter, covering major arterial corridors with varying geometric and control features. These raw videos were processed through a multi-stage extrac-tion pipeline [35]. The resulting dataset provides precise, continuous trajectories at 0.1 second resolution. Compared with the WOMD, the PHX dataset offers longer trajectory durations, enabling the analysis of dynamic scenarios such as queue formation, dissipation, and heterogeneous car-following behaviors. To ensure high-fidelity trajectory reconstruction, all vehicle positions in the PHX dataset were trans-formed into a unified, ground-fixed coordinate system. Following the data collection procedure in Am-mourah et al. [35], the image coordinates of the moving aerial platform were mapped to a consistent spatial reference frame, ensuring high-precision tracking across the study area. Object detections extracted from the aerial video were projected into this same fixed coordinate system, ensuring spatial consistency across all frames. Each detected vehicle was assigned to its corresponding lane region based on its centroid location. After establishing lane assignment, the longitudinal ordering of vehicles within each lane was used to identify leader–follower pairs dynamically over time. This procedure allowed every vehicle’s immediate leader and follower at any given moment to be determined with high spatial accuracy, forming the foundation for robust model calibration and behavioral analysis. The resulting pairs were then further processed using the identical preprocessing steps described earlier to obtain the final set of car-following pairs used in the analysis. Table 2 shows summary statistics of trajectory durations and the number of car-following pairs for different interaction types in the PHX dataset. Compared to WOMD, PHX provides substantially longer trajectories, with mean durations exceeding 25 seconds and greater variability in length, making it partic-ularly suitable for evaluating zero-shot generation. Given that AV behaviors may differ between WOMD and PHX [31], we restrict the zero-shot generation analysis to the 106 HDV-following-HDV pairs in PHX in order to assess whether the proposed and baseline models can reproduce heterogeneous HDV behaviors in a completely new dataset. 
+
+3.3. Third Generation Simulation Dataset 
+
+The Third Generation Simulation (TGSIM) dataset [35, 36] represents a recent effort to generate high–fidelity vehicle trajectories that capture interactions among HDVs and partially AVs under naturalistic traffic condi-tions. In contrast to the primarily urban environments of the WOMD and PHX datasets, TGSIM includes extensive data from freeway segments, such as I–294, I–90, and I–94. In this study, we specifically utilize 
+
+6TABLE 2: Descriptive statistics of trajectory durations in seconds and number of car-following (CF) pairs in PHX. Dataset Interaction Type CF Pairs Mean (s) Std (s) Max (s) Min (s) PHX AV-following-HDV 16 26.41 19.28 74.6 6.1 PHX HDV-following-AV 20 28.22 23.05 100.9 7.2 PHX HDV-following-HDV 106 25.60 18.16 89.2 4.9 the I–294 dataset to evaluate the scalability of the proposed MC-CF model when augmented with high speed freeway dynamics. The trajectories were extracted using a unified pipeline incorporating image stabilization, deep-learning-based vehicle detection, multi-frame tracking, and Kalman-filter-based smoothing. The moving–helicopter approach used to collect the dataset provides long continuous trajectories of the vehicles, and the result-ing trajectories cover a wide range of operational scenarios, including free-flow, slow-and-go, congested shockwaves, forced merges, discretionary lane changes, and AV responses to surrounding traffic. 
+
+# 4. METHODOLOGY 
+
+In this section, we present the novel MC-CF model, the first within the empirical probabilistic paradigm of car-following models. Instead of prescribing a deterministic acceleration function as in classical physics-based car-following models, this study adopts a probabilistic formulation that treats state transitions as a Markov chain. We also summarize the baseline models and the calibration method used for comparison. 
+
+4.1. Markov Chain Car-Following Model 
+
+The evolution of the follower vehicle is represented in discrete time with step size ∆t. At each time step 
+
+t, the state of the system is described by the triplet st =  vt , ∆vt , dt
+
+, where vt is the speed of the follower, 
+
+∆vt = vt − vlead  
+
+> t
+
+is the relative speed with respect to the leader, and dt = xlead  
+
+> t
+
+− xt − l is the spacing. Here, l
+
+represents the average length of the leader and follower vehicles. The acceleration of the follower at time step t is denoted by at .The stochastic dynamics of the system are modeled as a first-order Markov chain on the discretized state space S . The continuous state space is partitioned into a three-dimensional grid of bins using the Freedman–Diaconis rule for automatic bandwidth selection [37, 38], which adapts the number of bins to the data distribution while minimizing bias. The bin width h is computed as 
+
+h = 2 · IQR (X)
+
+n1/3 , (1) where IQR (X) is the interquartile range of the data X and n is the sample size. The number of bins is then calculated as 
+
+k =
+
+ xmax − xmin 
+
+h
+
+
+
+. (2) The ranges for each dimension, relative speed ∆vt ∈ [−10 , 10 ] m/s, spacing dt ∈ [0, 45 ] m, and follower speed vt ∈ [0, 20 ] m/s, were set based on the dataset to ensure all data samples fall within the grid and are classified into a bin. Table 3 summarizes the binning results across the three interaction types. Due to the larger number of samples in HDV-following-HDV, the Freedman–Diaconis rule yields a much smaller step size, resulting in a significantly larger number of bins. To characterize driving behavior, one could theoretically estimate transition probabilities directly be-tween the discretized bins defined based on the Freedman-Diaconis rule (Table 3). However, given the high 
+
+7TABLE 3: Binning results for different car-following cases using the Freedman–Diaconis rule. Dimension Range AV-following-HDV HDV-following-AV HDV-following-HDV # bins Step size # bins Step size # bins Step size Relative Speed (m/s) (−10 , 10 ) 394 ∼ 0.05 444 ∼ 0.05 1,041 ∼ 0.02 Spacing (m) (0, 45 ) 109 ∼ 0.41 139 ∼ 0.32 357 ∼ 0.13 Follower Speed (m/s) (0, 20 ) 89 ∼ 0.22 90 ∼ 0.22 230 ∼ 0.09 dimensionality of the state space, many bins may contain insufficient samples for reliable statistical estima-tion. To address this sparsity while preserving local behavioral fidelity, we employ a spatially constrained state clustering algorithm, detailed in Algorithm 1. This approach structurally refines the state space during the training phase. We first define a minimum sample threshold Nmin = 10. This value was selected to maintain a balance between behavioral resolution and statistical reliability: an excessively high threshold risks merging distinct states that are far apart, while an overly low threshold may have bins dominated by sensor noise. The algorithm identifies sparse bins that fall below this threshold and iteratively merges them into their nearest neighbor. Importantly, to ensure that the distance metric accounts for the different scales of the three state variables, the nearest neighbor search is performed using Euclidean distance in a normalized feature space, where each dimension is scaled by its range. This process yields a refined set of robust state clusters C and a mapping function M : S → C that assigns a raw discretized state s ∈ S to a specific cluster C ∈ C . Consequently, the effective state space of the MC-CF model becomes the set of these validated clusters. By design, every cluster contains at least 
+
+Nmin acceleration samples without the need for synthetic imputation. Empirically, this procedure significantly mitigates state space sparsity. For instance, in the HDV-following-HDV case, the Freedman-Diaconis rule-based discretization yields a theoretical grid of over 85.4 million bins (=1041 × 357 × 230 ). However, observed driving behaviors occupy only 1.46 million of these bins (approximately 1.7%). The clustering algorithm further merges these active bins into 123,235 clusters, achieving a compression ratio of 11.89. This process effectively isolates the relevant behavioral subspace, ensuring that every cluster meets the minimum acceleration sample requirement for reliable statistical esti-mation. The driving dynamics are modeled as a Markov chain over the clusters. The transition probability is defined as the probability of moving from cluster C to cluster C′ in one time step: 
+
+P(C′ | C) = ∑(st ,st+1)∈D I(M (st ) = C ∧ M (st+1) = C′)
+
+∑(st ,st+1)∈D I(M (st ) = C) . (3) Simultaneously, we construct an empirical acceleration distribution A (C) for each cluster using the pooled acceleration samples from the merged bins. Once the sample set is gathered, it is refined by removing outliers using the interquartile range (IQR) rule, retaining only values within the standard IQR bounds (Q1-1.5 ·IQR to Q3+1.5 ·IQR). This process yields a robust, localized acceleration distribution A (C) for each cluster, ensuring statistical validity while removing sensor noise. In the inference phase, at time t, we determine the current cluster Ct for state st using the mapping function M (st ). However, to handle rare or previously unseen states that were not populated during training, we employ a nearest-neighbor fallback mechanism: Ct is assigned to the cluster with the closest centroid 
+
+8Algorithm 1: Spatially Constrained State Clustering Training Procedure 
+
+Input: Trajectory Data D, Bin Edges Br, Bs, B f , Min Samples Nmin = 10 
+
+Output: Cluster Map M , Transition Matrix P, Acceleration Distributions A
+
+// 1. Initialization 
+
+Discretize D into 3D grid bins using Br, Bs, B f ;Initialize set of clusters C where each unique grid bin is a cluster Ci;
+
+for each cluster C i ∈ C do 
+
+Calculate sample count ni, centroid μi, and collected accelerations Ai;Calculate normalized centroid ˆ μi based on feature ranges; 
+
+end 
+
+// 2. Iterative Merging 
+
+Identify sparse clusters S = {Ci ∈ C | ni < Nmin };
+
+while S̸ = /0 do for each sparse cluster C src ∈ S do 
+
+Find nearest neighbor cluster Cdst ∈ C \ { Csrc } minimizing || ˆμsrc − ˆμdst || 2;Record potential merge tuple (Csrc ,Cdst , dist );
+
+end 
+
+Sort merge tuples by source count (ascending) and distance (ascending); 
+
+for each valid merge tuple (Csrc ,Cdst ) do if Csrc or C dst has been removed in current batch then 
+
+Continue; 
+
+end 
+
+// Merge Source into Destination 
+
+ndst ← ndst + nsrc ;
+
+μdst ← WeightedAvg (μdst , μsrc );ˆμdst ← WeightedAvg ( ˆμdst , ˆμsrc );
+
+Adst ← Adst ∪ Asrc ;Remove Csrc from C ;Update map M : original_bins (Csrc ) → Cdst ;
+
+end 
+
+Update sparse set S based on new counts; 
+
+end 
+
+// 3. Transition Probability Calculation 
+
+for each transition (Ct ,Ct+1) in D using M do 
+
+Increment transition count TCt →Ct+1 ;
+
+end 
+
+Compute row-normalized probabilities P(C′ | C);
+
+return M , P, A
+
+in the normalized feature space. This ensures that a valid current cluster for the current state is always identified, preventing model failure in edge cases. We utilize this framework in two modes. In the deterministic version, namely, MC-CF (det), the most probable next cluster is selected, and the acceleration is the conditional mean: 
+
+Ct+1 = arg max 
+
+> C′
+
+P(C′ | Ct ), at = E[A (Ct+1)] . (4) 
+
+9In the stochastic version, denoted as MC-CF (stoch), the next cluster is sampled from the transition distribution, and the acceleration is drawn from the empirical distribution: 
+
+Ct+1 ∼ P(· | Ct ), at ∼ A (Ct+1), (5) allowing the model to capture both the stochasticity of state evolution and the variability of driver responses within a given traffic state. We evaluate the proposed models in two usage modes: one-step prediction and open-loop prediction. In one-step prediction, the update is performed for a single step and compared directly with the observed states. 
+
+vt+1 = max  vt + at ∆t, 0 (6) 
+
+xt+1 = xt + 12 (vt + vt+1)∆t (7) 
+
+dt+1 = xlead  
+
+> t+1
+
+− xt+1 − l (8) In open-loop prediction, the procedure is applied recursively to generate an entire follower trajectory given the sequence of ground truth leader states and the initial follower state, thereby assessing long-term predictive consistency. 
+
+4.2. Baseline Model Calibration and Implementation 
+
+To benchmark the proposed MC-CF model, six representative car-following models are considered: the IDM [6], the SIDM [7], the Van Arem’s model [24], the FVDM-CTH [21, 23], the FVDM-Sigmoid [21, 23], and the Gipps model [5]. Together, these models span a diverse range of behavioral paradigms. This collection provides a comprehensive baseline covering deterministic and stochastic dynamics, against which the proposed MC-CF model can be systematically evaluated. 
+
+4.2.1. IDM 
+
+The IDM proposed by Treiber et al. [6] specifies acceleration as 
+
+at = amax 
+
+"
+
+1 −
+
+ vt
+
+v0
+
+δ
+
+−
+
+ s∗(vt , ∆vt )
+
+dt
+
+2#
+
+, (9) where v0 is the desired speed, amax is the maximum acceleration, δ is an acceleration exponent, ∆vt is the follower speed ( vt ) minus the leader speed ( vlead t ), and dt is the spacing. The desired gap function is 
+
+s∗(vt , ∆vt ) = s0 + vt T + vt ∆vt
+
+2√amax b , (10) with s0 the minimum gap, T the desired time headway, and b the comfortable deceleration. 
+
+4.2.2. SIDM 
+
+To capture oscillatory traffic dynamics, Treiber and Kesting [7] extended the IDM by introducing stochastic fluctuations (SIDM): 
+
+at = aIDM  
+
+> t
+
++ σ ξ t , (11) where aIDM  
+
+> t
+
+is the deterministic IDM acceleration, ξt is a Gaussian random variable with zero mean and unit variance, and σ controls the strength of stochasticity. This variant reflects heterogeneity in driver responses and reproduces traffic flow instabilities. 
+
+10 4.2.3. Van Arem Model 
+
+Van Arem et al. [24] proposed a control-oriented formulation for cooperative adaptive cruise control sys-tems. The acceleration of the follower is determined as the minimum of a speed-based demand ( at_v) and a distance/speed-based demand ( at_d ): 
+
+at = min (at_v, at_d ). (12) The speed-based demand is given by 
+
+at_v = k · (vint − vt ), (13) where vint is the driver’s intended speed and k is a positive feedback gain. The distance/speed-based demand is given by 
+
+at_d = kaalead t − kv ∆vt + kd (dt − dref  
+
+> t
+
+), (14) where alead  
+
+> t
+
+is the acceleration of the leader, dref  
+
+> t
+
+is a dynamic desired spacing derived from time headway and safety considerations, and ka, kv, kd are positive feedback gains. The reference clearance dref  
+
+> t
+
+is defined as the maximum of three values: 
+
+dref  
+
+> t
+
+= max (rsa f e , rsystem , rmin ) (15) where rmin is the minimum spacing. The safe following distance ( rsa f e ) is computed based on the speed of the follower and the deceleration capabilities of leader ( dp) and follower ( d): 
+
+rsa f e = (∆vt )2
+
+2
+
+ 1
+
+dp
+
+− 1
+
+d
+
+
+
+, (16) and the system time-gap distance ( rsystem ) is a function of the ego vehicle’s speed and a system time headway setting tsystem :
+
+rsystem = tsystem · vt (17) 
+
+4.2.4. FVDM-CTH 
+
+The FVDM by Jiang et al. [21] combines a desired velocity rule with a velocity difference term. In the constant time headway variant proposed by Punzo et al. [23], namely FVDM-CTH, the acceleration is 
+
+at = K1
+
+ V (dt ) − vt
+
+ − K2 ∆vt , (18) where K1 and K2 are positive feedback gains. The desired velocity is given by 
+
+V (dt ) = 
+
+(0, dt ≤ s0,
+
+min 
+
+
+
+Vmax , dt −s0
+
+> T
+
+
+
+, dt > s0, (19) with s0 the minimum spacing, T the desired time headway, and Vmax the maximum speed. 
+
+4.2.5. FVDM-Sigmoid 
+
+A smooth alternative, namely FVDM-Sigmoid, is to represent the desired velocity with a sigmoid profile [23]: 
+
+V (dt ) = 
+
+
+
+0, dt ≤ s0,
+
+> Vmax
+> 2
+
+h
+
+1 − cos 
+
+ π(dt −s0)
+
+> TV max
+
+i 
+
+, s0 < dt < s0 + TV max ,
+
+Vmax , dt ≥ s0 + TV max .
+
+(20) The acceleration structure remains the same as in the CTH formulation, with the sigmoid desired speed replacing the piecewise linear function. 
+
+11 4.2.6. Gipps 
+
+Finally, the Gipps model [5] balances free-flow acceleration with collision-avoidance constraints. The fol-lower’s speed at the next time step is determined by 
+
+vt+1 = min vt + 2.5 amax τ
+
+
+
+1 − vt
+
+Vmax 
+
+ r 
+
+0.025 + vt
+
+Vmax 
+
+,
+
+− b
+
+ τ
+
+2 + θ
+
+
+
++
+
+s
+
+b2
+
+ τ
+
+2 + θ
+
+2
+
++ b
+
+h
+
+2(dt − s0) − τvt + (vlead  
+
+> t
+
+)2
+
+ˆb
+
+i! (21) where amax denotes the maximum acceleration, b is the comfortable deceleration, τ is the reaction time, θ is an additional anticipation parameter, s0 is the minimum spacing, Vmax is the desired speed, and ˆ b represents the expected deceleration capability of the leader vehicle. The resulting acceleration is approximated as 
+
+at = ( vt+1 − vt )/τ.The parameters for all six baseline car-following models were calibrated using a trajectory-based op-timization approach. This method minimizes the root mean squared error (RMSE) between the simulated follower speed ( vsim ) and the actual follower speed ( vtrue ) over the entire time series for all segments in the training dataset. The objective function for calibration is: Minimize RMSE v =
+
+vuut 1
+
+∑Mj=1 TjM
+
+# ∑
+
+> j=1
+> Tj
+
+# ∑
+
+> t=1
+
+(vsim , j,t − vtrue , j,t )2 (22) where M is the total number of distinct car-following pairs in the training dataset, Tj is the number of time steps of the j-th car-following pair, and vsim , j,t is the simulated speed of the follower in pair j at time t. The minimization is performed by simulating the follower’s trajectory over the entire trajectory using only the true initial conditions (position and speed) of the follower vehicle, allowing simulation errors to propagate throughout the time series. The optimization was performed using the Differential Evolution (DE) algorithm [39] to effectively explore the parameter space. Specifically, the DE algorithm was implemented using the SciPy optimization library ( scipy.optimize.differential_evolution ). The DE parameters were configured as follows: strategy = best1bin , population size = 15, mutation factor in [0.5, 1.0], recombination probability = 0.7, maximum iterations = 50, and convergence tolerance = 0.01. The calculated acceleration for all models was constrained within a practical range of [−10 , 5] m/s 2 to reflect real-world vehicle limitations. Table 4 summarizes the parameter bounds used for each model. This rigorous setup ensures a fair and systematic baseline comparison against the proposed MC-CF models. 
+
+# 5. RESULTS AND DISCUSSION 
+
+In this section, we first compare the trajectory prediction accuracy of the proposed MC-CF (det) and MC-CF (stoch) models against the baseline models across the three interaction types: AV-following-HDV, HDV-following-AV, and HDV-following-HDV. All models are trained using the WOMD training dataset and eval-uated on the WOMD test dataset. We then compare the distribution of probabilities of obtaining the gener-ated follower trajectories from each trained model with that of the ground truth follower trajectories, where probabilities are computed using transition probabilities estimated from the WOMD training dataset. Next, we examine model performance on zero-shot generalization using the PHX dataset. Finally, we demonstrate the framework’s scalability through microscopic ring road simulations. 
+
+12 TABLE 4: Parameter Bounds Applied for Baseline Models Calibration. Model Parameter Symbol Unit [ ]IDM Desired Speed v0 m/s 5.0 50.0 Desired Time Headway T s 0.5 3.0 Maximum Acceleration amax m/s 2 0.1 5.0 Comfortable Decel. b m/s 2 0.1 10.0 Minimum Spacing s0 m 0.5 10.0 Acceleration Exponent δ — 1.0 10.0 SIDM IDM Parameters — — — —Noise Std Dev σ m/s 2 0.01 2.0 Van Arem Acceleration Gain ka — 0.1 5.0 Speed Gain kv s−1 0.1 5.0 Spacing Gain kd s−2 0.1 5.0 System Time Headway tsystem s 0.5 3.0 Intended Speed vint m/s 5.0 50.0 Minimum Spacing rmin m 0.1 5.0 Leader Decel. Capability dp m/s 2 0.1 10.0 Follower Decel. Capability d m/s 2 0.1 10.0 Intended Speed Gain k — 0.1 1.0 FVDM-CTH Spacing Gain K1 s−2 0.1 5.0 Velocity Gain K2 s−1 0.1 5.0 Minimum Spacing s0 m 0.1 10.0 Desired Time Headway T s 0.5 3.0 Maximum Speed Vmax m/s 5.0 50.0 FVDM-Sigmoid Same as FVDM-CTH — — — —Gipps Maximum Acceleration amax m/s 2 0.5 3.0 Comfortable Deceleration b m/s 2 1.0 4.0 Reaction Time τ s 0.1 1.5 Anticipation Time θ s 0.3 1.0 Minimum Spacing s0 m 0.1 10.0 Desired Speed Vmax m/s 5.0 50.0 Expected Leader Decel. ˆb m/s 2 2.0 5.0 
+
+5.1. Trajectory Prediction Analysis 
+
+We present the trajectory prediction performance of the proposed MC-CF (det, stoch) models in comparison with six baseline models (IDM, Van Arem, FVDM-CTH, FVDM-Sigmoid, Gipps, and SIDM). The pro-posed and baseline models are trained on the WOMD training dataset and tested on the WOMD test dataset separately for three interaction types: AV-following-HDV, HDV-following-AV, and HDV-following-HDV. For deterministic models, including MC-CF (det), we generate a single trajectory ( K = 1) since they produce identical follower trajectories for a given leader trajectory. In contrast, stochastic models such as SIDM and MC-CF (stoch) can yield multiple plausible realizations conditioned on the same leader behavior. To capture this variability, we generate K ∈ { 1, 3, 6, 10 , 15 } follower trajectories for each leader trajectory in the test dataset. 
+
+13 5.1.1. Evaluation Metrics 
+
+Model evaluation is conducted in two categories: one-step prediction and open-loop prediction. For the one-step prediction, we compute the RMSE for spacing ( RMSE (s)), speed ( RMSE (v)), and acceleration (RMSE (a)). These metrics quantify how accurately each model estimates the instantaneous spacing, speed, and acceleration of the follower vehicle. Given that each car-following pair contains, on average, more than 90 time steps with 420, 544, and 3,276 test pairs for AV-following-HDV, HDV-following-AV, and HDV-following-HDV cases, respectively (as shown in Table 1), the stochastic models are evaluated with 
+
+K = 1 for the one-step prediction analysis. This provides a robust measure of their instantaneous predictive capability, allowing a direct comparison with the deterministic models. Open-loop prediction, on the other hand, assesses long-term trajectory consistency and spatial accuracy. For stochastic models, evaluation is based on the best-matching realization among the K generated trajecto-ries, acknowledging that multiple follower trajectories may be plausible given the same leader trajectory in real-world driving. We employ five complementary open-loop metrics, each capturing different aspects of trajectory qual-ity. For a fair comparison between models, all open-loop metrics other than the overlapping rate ( OR ) are computed using the car-following pairs without overlapping only. Specifically, to ensure valid pairwise com-parison, given that shorter predicted trajectories starting from the true initial point will naturally be closer to the ground truth, the evaluation set includes only those car-following pairs in the test dataset that (i) do not result in a crash for any deterministic model, (ii) have at least one non-crashing trajectory among the K
+
+SIDM trajectories, and (iii) have at least one non-crashing trajectory among the K MC-CF (stoch) trajecto-ries. As a result, all open-loop metrics are computed over the same time horizon for all models, ensuring a fair comparison. First, the dynamic time warping (DTW) distance computes the minimal cumulative cost required to align two sequences by allowing non-linear time stretching. DTW is particularly effective for time series that are out of phase, as it warps the time axis to find an optimal alignment between two sequences X = [ x1, x2, . . . , xm]
+
+and Y = [ y1, y2, . . . , yn] [40]. This capability is crucial in car-following scenarios where minor temporal shifts in driver behavior or model predictions can lead to large Euclidean distances, even if the overall shape of the trajectory is similar. The DTW distance between X and Y is given by 
+
+DTW (X,Y ) = min  
+
+> W
+
+# ∑ 
+
+> (i,j)∈W
+
+d(xi, y j), (23) where W = [( i1, j1), . . . , (iM , jM )] is a warping path that maps elements of X to elements of Y , and d(·, ·)
+
+denotes the local cost, taken in this study as squared Euclidean distance. We compute DTW for each of the K′ (≤ K) generated non-crashing trajectories and then take the best match realization among them, where K′ = 1 for deterministic models. The minimum DTW is calculated separately for spacing and speed, denoted as minDTW (s) and minDTW (v), respectively. For spacing, let the ground truth spacing sequence be s = [ s1, . . . , sT ] and the kth predicted spacing be ˆsk = [ ˆs1,k, . . . , ˆsT,k]. The DTW cost for the kth sample is 
+
+DTW k
+
+  ˆsk, s = min  
+
+> W
+
+# ∑ 
+
+> (i,j)∈W
+
+d  ˆsi,k, s j
+
+, (24) and the minimum DTW for spacing is then defined as 
+
+minDTW (s) = min  
+
+> k∈{ 1,..., K′}
+
+DTW k
+
+  ˆs:,k, s. (25) Similarly, for speed, let the ground truth speed be v = [ v1, . . . , vT ] and the kth predicted speed be ˆ vk =[ ˆv1,k, . . . , ˆvT,k]. We compute 
+
+minDTW (v) = min  
+
+> k∈{ 1,..., K′}
+
+DTW k
+
+  ˆvk, v. (26) 
+
+14 The third open-loop prediction metric, the minimum average displacement error (minADE), quantifies the mean spatial deviation between predicted and ground truth trajectories while accounting for stochastic predictions. For each non-crashing trajectory sample k ∈ { 1, . . . , K′}, the average displacement error (ADE) is computed as 
+
+ADE k = 1
+
+T
+
+> T
+
+# ∑
+
+> t=1
+
+∥ ˆyt,k − yt ∥2, (27) where yt denotes the ground truth position of the follower vehicle at time step t, ˆ yt,k represents the predicted position at time step t for the kth non-crashing trajectory, and T represents the total number of time steps in the trajectory. For each car-following pair, the minADE across K′ non-crashing trajectories is then taken as 
+
+minADE = min  
+
+> k∈{ 1,..., K′}
+
+ADE k. (28) Next, the minimum final displacement error ( minFDE ) measures the smallest final position error among the K′ non-crashing predicted trajectories: 
+
+minFDE = min 
+
+> k∈{ 1,..., K′}
+
+∥ ˆyT,k − yT ∥2. (29) Finally, the OR evaluates safety-related consistency by computing the ratio of collision events to the total number of car-following pairs in the test dataset. A collision is counted when the follower’s pre-dicted position overlaps with the leader’s position at any time step. To ensure a fair comparison between deterministic and stochastic models, the OR is computed using a single generated trajectory ( K = 1) for each car-following pair. Given the large size of the test dataset as shown in Table 1, using one realization for stochastic models still gives a statistically meaningful estimate of their safety, indicating how often the model produces collisions across the full dataset. Together, the three one-step prediction metrics and the five open-loop prediction metrics provide a com-prehensive evaluation framework that captures both instantaneous accuracy and long-horizon trajectory ac-curacy, allowing fair comparison across deterministic and stochastic car-following models. 
+
+5.1.2. Prediction Results 
+
+Table 5 presents the trajectory prediction performance for the AV-following-HDV case, covering both one-step and open-loop prediction results for deterministic and stochastic car-following models. All performance measures are averaged over the evaluated car-following pairs in the WOMD test dataset. Since all models are evaluated on the same dataset under identical conditions, the averaged measures across pairs can be directly compared. The results clearly highlight the effectiveness of the proposed MC-CF models, both deterministic and stochastic variants, each exhibiting distinct strengths. For the one-step prediction, which evaluates im-mediate next-step accuracy, MC-CF (det) achieves the lowest RMSE in both speed and acceleration (i.e., 
+
+RMSE (v), RMSE (a)), outperforming all baseline models and MC-CF (stoch). This suggests that, for instan-taneous prediction, a deterministic acceleration sampled directly from the next state with highest transition probability provides the most precise estimation of next-step speed and acceleration. In contrast, for spacing estimation (i.e., RMSE(s)), MC-CF (stoch) performs better than MC-CF (det). This can be attributed to the stochastic variability in leader behavior, which is not fully captured by the current state representation ( vt , ∆vt , and dt ). Hence, introducing stochasticity in the acceleration prediction helps capture this uncertainty, leading to more accurate next-step spacing estimates. Moving to the open-loop prediction, where prediction errors can accumulate over time, MC-CF (stoch) consistently outperforms all deterministic models, as well as the baseline SIDM, across all open-loop met-rics: minDTW (s), minDTW (v), minADE and minFDE . This demonstrates that stochastic acceleration 
+
+15 TABLE 5: Trajectory prediction performance for AV-following-HDV. Model One-Step Prediction Open-Loop Prediction                                                                                                                                          
+
+> RMSE (s)RMSE (v)RMSE (a)minDTW (s)minDTW (v)minADE minFDE OR
+> Deterministic IDM 0.0187 0.1755 1.8074 8.3772 4.0860 1.7073 3.4103 0.0024*
+> Van-Arem 0.0183 0.1570 1.5470 9.3201 4.1594 1.8277 3.9218 0.0071 FVDM-CTH 0.0183 0.1575 1.5570 7.8822 3.9071 1.5886 3.5725 0.0095 FVDM-Sigmoid 0.0183 0.1591 1.5732 7.9764 3.9329 1.6255 3.6235 0.0095 Gipps 0.0171 0.0945 0.9357 9.4957 4.2409 2.0343 3.8006 0.0048 MC-CF (det) 0.0168 0.0641* 0.6077* 10.4219 4.8604 1.6112 4.4190 0.0667 Stochastic SIDM (1) 0.0094 0.1584 1.6033 8.4411 4.0760 1.7348 3.4357 0.0024*
+> SIDM (3) ---8.3790 4.0423 1.7210 3.3996 -SIDM (6) ---8.3461 4.0244 1.7136 3.3785 -SIDM (10) ---8.3272 4.0137 1.7099 3.3663 -SIDM (15) ---8.3078 4.0044 1.7060 3.3563 -MC-CF (stoch, 1) 0.0055* 0.0788 0.7698 10.8026 4.9925 1.6319 4.5116 0.0595 MC-CF (stoch, 3) ---8.5198 3.9503 1.3461 3.5654 -MC-CF (stoch, 6) ---7.5889 3.4932 1.2270 3.1517 -MC-CF (stoch, 10) ---7.0738 3.2689 1.1652 2.9118 -MC-CF (stoch, 15) ---6.6274* 3.0995* 1.1037* 2.7329* -
+> Note : * indicates the minimum (best) value within each column. In case of ties, multiple entries are marked.
+
+sampling provides improved long-horizon consistency and adaptability to varying leader dynamics. How-ever, we note that MC-CF (stoch) exhibits an overlapping rate of around 6%, higher than that of all other baselines, whose overlapping rates are below 1%. Addressing this overlapping issue is essential for applying the model in microscopic simulations, as discussed further in Section 5.4. It should be noted that, while FVDM-CTH achieves the best open-loop trajectory prediction perfor-mance for AVs among the deterministic baselines, it exhibits a substantially higher RMSE(a) than the MC-CF variants. This implies that although traditional physics-based car-following models can reproduce vi-sually plausible long-term trajectories with low crash rates and are often used for simulation or stability analysis, their acceleration patterns significantly deviate from the actual behavior of AVs. Consequently, re-lying on such models to analyze AV dynamics or evaluate traffic stability may lead to misleading or incorrect conclusions. For both HDV-following-AV and HDV-following-HDV scenarios, as presented in Tables 6 and 7, re-spectively, the overall performance trends are consistent with those observed in the AV-following-HDV case, reaffirming the superior trajectory prediction accuracy of the proposed MC-CF framework. In the one-step prediction metrics, MC-CF (det) again achieves the lowest RMSE in both speed and acceleration across all models, highlighting its strong short-term predictive accuracy. This suggests that the deterministic variant effectively captures the immediate response behavior of human drivers, whether following AVs or other HDVs. The slight increase in RMSE(a) for HDV-following-AV (0.6729 m/s2) and HDV-following-HDV (0.6357 m/s2) compared to the AV-following-HDV case (0.6077 m/s2) reflects the greater variability in human driving behavior, particularly when drivers interact with the relatively uncommon AVs on the road. In contrast, for the open-loop metrics including minDTW (s), minDTW (v), minADE , and minFDE , MC-CF (stoch) consistently delivers the best performance in both HDV-following-AV and HDV-following-HDV scenarios. However, the overlapping rate of MC-CF (stoch) is again notably higher than that of the physics-based baselines across all interaction types, which often incorporate explicit, hard-coded safety constraints. As discussed further in Section 5.4, this collision rate is not a fixed limitation of the architecture, but rather an issue that can be significantly mitigated through the straightforward addition of more diverse trajectory 
+
+16 TABLE 6: Trajectory prediction performance for HDV-following-AV. Model One-Step Prediction Open-Loop Prediction 
+
+RMSE (s) RMSE (v) RMSE (a) minDTW (s) minDTW (v) minADE minFDE OR 
+
+Deterministic IDM 0.0640 0.2124 2.3341 9.2262 3.6625 2.0941 4.2485 0.0000* 
+
+Van-Arem 0.0636 0.1670 1.6473 8.9135 3.6904 1.9973 4.3032 0.0110 FVDM-CTH 0.0637 0.1720 1.7008 8.5489 3.5743 1.9093 4.1597 0.0147 FVDM-Sigmoid 0.0637 0.1733 1.7141 8.5179 3.5975 1.8915 4.1412 0.0147 Gipps 0.0628 0.1047 1.0450 8.8513 3.6436 2.0944 4.1735 0.0000* 
+
+MC-CF (det) 0.0627 0.0692* 0.6729* 12.9675 4.8780 2.1156 5.5320 0.0202 Stochastic SIDM (1) 0.0272 0.1845 1.9673 9.1456 3.6269 2.0959 4.2512 0.0000* 
+
+SIDM (3) - - - 8.7529 3.4543 2.0191 4.0444 -SIDM (6) - - - 8.5731 3.3751 1.9886 3.9526 -SIDM (10) - - - 8.4476 3.3198 1.9647 3.8928 -SIDM (15) - - - 8.3501 3.2849 1.9478 3.8439 -MC-CF (stoch, 1) 0.0238* 0.0863 0.8520 13.0722 4.9551 2.1032 5.4801 0.0221 MC-CF (stoch, 3) - - - 9.5669 3.7352 1.7273 4.2458 -MC-CF (stoch, 6) - - - 8.5552 3.4034 1.5752 3.7839 -MC-CF (stoch, 10) - - - 7.8877 3.1624 1.4769 3.4561 -MC-CF (stoch, 15) - - - 7.5742* 3.0313* 1.4255* 3.2846* -
+
+> Note : * indicates the minimum (best) value within each column. In case of ties, multiple entries are marked.
+
+TABLE 7: Trajectory prediction performance for HDV-following-HDV. Model One-Step Prediction Open-Loop Prediction 
+
+RMSE (s) RMSE (v) RMSE (a) minDTW (s) minDTW (v) minADE minFDE OR 
+
+Deterministic IDM 0.0343 0.2463 2.7957 8.7098 3.2324 1.8831 3.7673 0.0015* 
+
+Van-Arem 0.0329 0.1543 1.5333 7.8201 3.0488 1.6038 3.5931 0.0085 FVDM-CTH 0.0333 0.1792 1.7777 7.4429 3.0110 1.5510 3.5387 0.0159 FVDM-Sigmoid 0.0333 0.1800 1.7857 7.4039 3.0254 1.5454 3.5211 0.0165 Gipps 0.0316 0.1108 1.1092 9.2229 3.3744 1.9943 3.8893 0.0015* 
+
+MC-CF (det) 0.0314 0.0647* 0.6357* 9.3702 3.4945 1.6104 4.2171 0.0305 Stochastic SIDM (1) 0.0233 0.2205 2.3588 8.6577 3.2725 1.8900 3.7888 0.0015* 
+
+SIDM (3) - - - 8.5213 3.2067 1.8674 3.7216 -SIDM (6) - - - 8.4549 3.1733 1.8559 3.6886 -SIDM (10) - - - 8.4140 3.1532 1.8488 3.6685 -SIDM (15) - - - 8.3862 3.1389 1.8439 3.6549 -MC-CF (stoch, 1) 0.0183* 0.0828 0.8257 9.5923 3.5591 1.6117 4.2469 0.0314 MC-CF (stoch, 3) - - - 7.0735 2.7091 1.3019 3.2248 -MC-CF (stoch, 6) - - - 6.1305 2.4037 1.1643 2.7818 -MC-CF (stoch, 10) - - - 5.6169 2.2351 1.0837 2.5260 -MC-CF (stoch, 15) - - - 5.2924* 2.1337* 1.0302* 2.3622* -
+
+> Note : * indicates the minimum (best) value within each column. In case of ties, multiple entries are marked.
+
+data. As the number of generated stochastic trajectories increases from 1 to 15, the proposed MC-CF (stoch) model shows consistent improvement across all open-loop metrics, as illustrated in Figures 1a-f. This steady improvement reflects the benefit of stochastic sampling in capturing a broader range of realistic driving behaviors. Since each open-loop metric is calculated based on the best trajectory among the K′ non-crashing 
+
+17 generated trajectories, higher K values naturally increase the chance of producing a trajectory closer to the observed ground truth. In contrast, deterministic models produce the identical trajectory for a given leader trajectory, which may substantially deviate from the actual follower trajectory observed in real-world data. SIDM exhibits little improvement as K increases, indicating limited stochasticity in its trajectory gen-eration. In contrast, the MC-CF (stoch) model produces a much more diverse set of possible trajectories conditioned on the same leader trajectory. This diversity better reflects the inherent variability of real-world driving, where a follower’s actual trajectory is only one realization among many plausible outcomes. Such variability arises from differences in individual driving styles as well as contextual factors like road geom-etry, surrounding traffic, and the presence of pedestrians or cyclists. Consequently, with K ≥ 10, MC-CF (stoch) consistently outperforms SIDM across all open-loop metrics and interaction types, as the increased diversity among generated trajectories raises the likelihood that one closely matches the observed ground truth. In addition, the pattern of error reduction shows a clear knee point in the performance curves. As shown in Figures 1b, d, and f, the largest gains in open-loop accuracy appear when K increases from 1 to 6. After K
+
+reaches 6, the improvement becomes modest, and the curves slowly level off as they approach K = 15. This indicates that although stochastic sampling helps the model explore a wide range of plausible outcomes, only a small set of generated trajectories (e.g., K = 10) is required to find a close match to the ground truth. 
+
+5.2. Transition Probability Analysis 
+
+In this subsection, we present a statistical analysis to examine whether the distribution of the probabilities of observing follower trajectories generated by the calibrated models aligns with that of the ground truth follower trajectories. As previously discussed, the probability of observing the ground truth trajectory given a leader trajectory is not one, owing to the inherently stochastic nature of car-following behavior. Therefore, we evaluate and compare the distributions of trajectory probabilities from the generated and ground truth data. Following Zhang et al. [31], we use the geometric mean probability to represent the likelihood of a follower trajectory. Specifically, for each generated or ground truth follower trajectory with T time steps (i.e., T − 1 transitions) in the WOMD test dataset, we compute: GeomMeanProb = exp 1
+
+T − 1 
+
+> T−1
+
+# ∑
+
+> t=1
+
+log P(Ct+1|Ct )
+
+!
+
+, (30) where the transition probability P(Ct+1 | Ct ) is estimated from the WOMD training dataset. We then compare the distributions of these geometric mean probabilities using the Mann–Whitney test. The null hypothesis of the Mann–Whitney test assumes that the model-generated and ground truth transition probability distributions come from the same underlying population, that is, there is no significant difference between them. Note that for stochastic models, we generate one trajectory per leader trajectory since the WOMD test set already provides a sufficiently large number of car-following pairs for statistical comparison, as shown in Table 1. The Mann–Whitney test results in Tables 8a-c indicate that for the proposed MC-CF (stoch) model, we consistently fail to reject the null hypothesis that the generated and ground truth transition probability distributions come from the same population ( p > 0.1). This suggests that the transition dynamics produced by MC-CF (stoch) are statistically indistinguishable from those observed in the ground truth data across all interaction types. In the AV-following-HDV case (Table 8a), MC-CF (stoch) shows strong alignment with the ground truth (p = 0.640), performing comparably to Van-Arem ( p = 0.693) and FVDM variants. In the HDV-following-AV scenario (Table 8b), while baseline models such as IDM, Gipps, and SIDM show statistically significant deviations ( p < 0.001), MC-CF (stoch) maintains a high p-value ( p = 0.832). Finally, in the HDV-following-HDV case (Table 8c), MC-CF (stoch) is one of only two models (along with FDVM-Sigmoid) where the 
+
+18 FIGURE 1: Open-loop performance comparison of SIDM and MC-CF (stoch) across different interaction types as the number of generated stochastic trajectories (K) increases from 1 to 15. (a), (c), and (e) show SIDM results for AV-following-HDV, HDV-following-AV, and HDV-following-HDV cases, respectively, while (b), (d), and (f) present the corresponding results for MC-CF (stoch). 
+
+19 TABLE 8: Comparison of model-generated and ground truth geometric mean probabilities using the Mann–Whitney test across three interaction types: (a) AV-following-HDV, (b) HDV-following-AV, (c) HDV-following-HDV. (a) AV-following-HDV Model Test Statistic p-Value Significant Mean Median Ground Truth – – – 0.388 0.367 IDM 96189 0.019 True 0.367 0.329 Van-Arem 86605 0.693 False 0.390 0.348 FVDM-CTH 85696 0.513 False 0.396 0.354 FVDM-Sigmoid 86296 0.629 False 0.393 0.355 Gipps 108647 0.000 True 0.337 0.281 SIDM 97308 0.008 True 0.366 0.317 MC-CF (det) 83461 0.197 False 0.410 0.369 MC-CF (stoch) 89633 0.640 False 0.382 0.361 (b) HDV-following-AV Model Test Statistic p-Value Significant Mean Median Ground Truth – – – 0.367 0.338 IDM 166801 0.000 True 0.340 0.298 Van-Arem 149486 0.770 False 0.359 0.333 FVDM-CTH 144624 0.519 False 0.371 0.339 FVDM-Sigmoid 147478 0.925 False 0.366 0.329 Gipps 174002 0.000 True 0.331 0.274 SIDM 178042 0.000 True 0.323 0.269 MC-CF (det) 134397 0.009 True 0.388 0.366 MC-CF (stoch) 146871 0.832 False 0.360 0.339 (c) HDV-following-HDV Model Test Statistic p-Value Significant Mean Median Ground Truth – – – 0.211 0.179 IDM 6116751 0.000 True 0.193 0.162 Van-Arem 5199860 0.039 True 0.211 0.183 FVDM-CTH 5039080 0.000 True 0.218 0.186 FVDM-Sigmoid 5246143 0.144 False 0.213 0.182 Gipps 6568550 0.000 True 0.181 0.153 SIDM 6440721 0.000 True 0.186 0.154 MC-CF (det) 4570529 0.000 True 0.232 0.201 MC-CF (stoch) 5259628 0.199 False 0.207 0.182  
+
+> Note : A p-value below 0.1 indicates a statistically significant difference.
+
+null hypothesis is not rejected ( p = 0.199), demonstrating its robustness in capturing heterogeneous human driving behaviors. Overall, the proposed MC-CF (stoch) model demonstrates a robust ability to reproduce the ground truth transition probability distributions across all three interaction types. While the FVDM-Sigmoid model also produces statistically indistinguishable transition distributions in all cases, it falls short in prediction ac-curacy as shown in Section 5.1. Specifically, FVDM-Sigmoid exhibits significantly higher errors in all 
+
+20 TABLE 9: Trajectory prediction performance for HDV-following-HDV (Zero-Shot Generalization on PHX Dataset). Model One-Step Prediction Open-Loop Prediction                                                                                                                                          
+
+> RMSE (s)RMSE (v)RMSE (a)minDTW (s)minDTW (v)minADE minFDE OR
+> Deterministic IDM 0.0703 0.2415 2.9318 76.1685 8.8606 7.5292 11.2900 0.0283*
+> Van-Arem 0.0696 0.1796 1.3496 66.8863 7.1734 6.5011 10.8847 0.0377 FVDM-CTH 0.0697 0.1891 1.4581 57.9536 6.4863 5.6531 10.2218 0.0566 FVDM-Sigmoid 0.0697 0.1891 1.4577 57.3898 6.4440 5.6175 10.1114 0.0755 Gipps 0.0696 0.1660 1.1813 81.3445 9.6482 8.1977 11.7738 0.0283*
+> MC-CF (det) 0.0693 0.1324 0.5983* 60.6580 7.3296 5.4455 10.6478 0.1132 Stochastic SIDM (1) 0.0355 0.2288 2.2997 75.5585 8.6362 7.4993 11.3479 0.0283*
+> SIDM (3) ---75.4169 8.5544 7.4790 11.2933 -SIDM (6) ---75.3266 8.5231 7.4659 11.2653 -SIDM (10) ---75.2699 8.5014 7.4577 11.2502 -SIDM (15) ---75.2262 8.4843 7.4531 11.2341 -MC-CF (stoch, 1) 0.0313* 0.1096* 0.8118 61.3233 7.7300 5.5265 11.0829 0.0943 MC-CF (stoch, 3) ---54.8897 6.5929 4.9122 9.5776 -MC-CF (stoch, 6) ---49.0836 5.8597 4.5823 8.4322 -MC-CF (stoch, 10) ---46.1996 5.3691 4.3422 7.8156 -MC-CF (stoch, 15) ---45.2316* 4.9973* 4.2497* 7.5745* -
+> Note : * indicates the minimum (best) value within each column. In case of ties, multiple entries are marked.
+
+measures ( RMSE (s), RMSE (v), RMSE (a), minADE , and minFDE ) compared to MC-CF (stoch). This in-dicates that MC-CF (stoch) is the only framework evaluated that achieves both statistical validity in state transition dynamics and superior predictive accuracy, effectively balancing behavioral realism with kine-matic precision. 
+
+5.3. Zero-Shot Generalization Analysis 
+
+In this subsection, we evaluate the models’ zero-shot generalization capability. Specifically, we test the models trained on the HDV-following-HDV subset of the WOMD training dataset on 106 HDV-following-HDV car-following pairs from the PHX dataset, as summarized in Table 2, considering both one-step and open-loop performance metrics. We focus on the HDV-following-HDV case because (i) AV behaviors may differ between the two datasets, as noted by Zhang et al. [31], and (ii) the WOMD training dataset contains substantially more HDV-following-HDV samples than the AV-included cases, providing a robust basis for cross-dataset evaluation. The zero-shot results in Table 9 reveal a remarkably consistent pattern with the findings from the WOMD test dataset. Despite being trained exclusively on the WOMD HDV-following-HDV data, the proposed MC-CF models maintain superior predictive performance across all one-step and open-loop metrics when evalu-ated on the PHX dataset. In particular, MC-CF (det) achieves the lowest RMSE for acceleration in one-step prediction, while MC-CF (stoch) attains the lowest RMSE values for spacing and speed and demonstrates continuous improvement in long-horizon metrics ( minDTW (s), minDTW (v), minADE , and minFDE ) as the number of stochastic samples increases, with the best results observed at K = 15. In contrast, all con-ventional physics-based models, including IDM, Van Arem, Gipps, both FVDM variants, and SIDM exhibit significant degradation in both short-term accuracy and long-term trajectory fidelity, consistent with their limited performance observed with the WOMD test dataset. These results reinforce the key insight that the proposed MC-CF models, particularly MC-CF (stoch) for trajectory generation, consistently outperform other models across datasets collected in entirely different 
+
+21 FIGURE 2: Schematic of the ring road simulation geometry ( L = 3, 000 m). The periodic boundary con-dition ensures that x = 3, 000 m and x = 0 m represent the same physical location, creating a closed-loop system for evaluating long-term vehicle interactions. environments, demonstrating strong cross-domain generalization. This suggests that its stochastic formula-tion allows the model to capture the inherent behavioral variability of human drivers rather than overfitting to dataset-specific dynamics. Overall, the findings highlight the robustness and transferability of the Markov chain framework, distinguishing it from conventional car-following models commonly used in transporta-tion research. 
+
+5.4. Microscopic Simulation and Model Scalability 
+
+While the previous sections demonstrate the MC-CF model’s predictive accuracy on real-world short-horizon trajectories, a robust car-following model must also perform reliably in microscopic simulations where errors can accumulate over time. In this section, we evaluate the performance of the proposed model in a ring road simulation, as illustrated in Figure 2. This geometry represents a closed-loop system with a total length of L = 3, 000 m (where the position x = 3, 000 m is identical to x = 0 m), allowing us to assess long-term vehicle interactions and shockwave propagation over a 300-second horizon with a time step of 
+
+∆t = 0.1 s. Since the WOMD contains the largest amount of HDV interaction data, we focus exclusively on a 100% HDV simulation environment. We specifically utilize the MC-CF (stoch) for the simulation, leveraging its superior accuracy in open-loop trajectory prediction. 
+
+5.4.1. Simulation Setup 
+
+To demonstrate how incorporating diverse data and inference strategies systematically improves simulation stability and realism, we conduct an ablation study comparing the baseline physics-based models (IDM and SIDM) against four variants of the proposed MC-CF framework. The components of these variants are summarized in Table 10. The MC-CF (Original) model is trained purely on WOMD car-following pairs, which is identical to the MC-CF (stoch) model evaluated throughout the preceding sections. The MC-CF (Solo) model is augmented with unconstrained solo driving trajectories (free-flow data) to provide appropriate acceleration distributions for large spacings. To incorporate free-flow behavior, we ex-tracted trajectories of vehicles without leaders, or with spacings exceeding 45 m for WOMD and 150 m for 
+
+22 TABLE 10: Ablation study configurations for the evaluated MC-CF models. 
+
+Model Name WOMD CF Data Free-flow (Solo) Data Conservative Inference Freeway (TGSIM) Data 
+
+MC-CF (Original) ✓
+
+MC-CF (Solo) ✓ ✓
+
+MC-CF (Solo+Conservative) ✓ ✓ ✓
+
+MC-CF (Solo+Conservative+TGSIM) ✓ ✓ ✓ ✓
+
+TABLE 11: Configuration of the ring road simulation experiments.                             
+
+> Experiment Vehicles ( N)vstart (m/s) Perturbation Profile (Target Vehicle)
+> Normal Equilibrium 200 5.84 -Standard Shockwave 200 5.84 At t=50 s: −1 m/s 2for 5 s, hold speed for 10 s, then 1 m/s 2for 5 s Severe Shockwave 200 5.84 At t=50 s: −1 m/s 2for 10 s, hold speed for 30 s, then 1 m/s 2for 10 s High-Speed Shockwave 40 30.00 Same severe perturbation profile as the Severe Shockwave experiment
+
+TGSIM. For these cases, we assigned a ghost leader with ∆v = 0 m/s and spacing d = 45 m for the MC-CF (Solo) and MC-CF (Solo+Conservative) models, and d = 150 m for the MC-CF (Solo+Conservative+TGSIM) model. To minimize the impact of urban noise in the WOMD, free-flow trajectories were exclusively sam-pled only from scenarios without traffic signals, stop signs, and crosswalks, which represented approxi-mately 10% of the total WOMD training set scenarios. The MC-CF (Solo+Conservative) model incorporates a safety-oriented inference mode. Specifically, it computes the Time-to-Collision (TTC), defined as spacing /|relative velocity |, when the follower is ap-proaching the leader. If TTC < 3.0 s, the model samples randomly from only the bottom 5 th percentile of the empirical acceleration distribution. If 3 .0 ≤ TTC < 10 .0 s, it samples from the bottom 30 th percentile. Otherwise, it samples from the full distribution. The rationale behind this conservative mode is that the dataset inevitably includes accelerations associated with lane-changing maneuvers, which may otherwise appear as aggressive car-following behavior. Since these outliers can induce artificial crashes that critically disrupt a closed-loop simulation, the conservative filter acts as a necessary safeguard. It should be noted that even when the conservative filter is applied, the sampled acceleration is still drawn from real-world data rather than being a hard coded value. Finally, the MC-CF (Solo+Conservative+TGSIM) model is further augmented with high-speed free-way data from the TGSIM dataset. This addition extends the valid spacing threshold to 150 m (originally 45 m), the relative speed range to [−30 , 30 ] m/s (originally [−10 , 10 ] m/s), and the valid follower speed range to [0, 40 ] m/s (originally [0, 20 ] m/s). This model allows us to evaluate how expanding the state space with higher-speed samples impacts overall performance. Note that the solo driving data from the TGSIM dataset is added only to this specific model. We designed four distinct simulation experiments to stress-test the models. The first three experiments stay within the speed range of the urban WOMD dataset, while the last experiment is introduced to test the models’ capabilities in handling high-speed. The specific configurations, vehicle densities, and perturbation profiles for these scenarios are summarized in Table 11. 
+
+5.4.2. Simulation Results 
+
+For the stochastic models, 20 independent simulation trials were conducted per scenario to evaluate the mean and standard deviation of collision events. Table 12 summarizes these collision statistics. The results show that IDM and SIDM experience no crashes during the simulation. However, the MC-CF (Original) model clearly shows its limitations by resulting in numerous crashes, averaging 37 .05 crashes in the Se-vere Shockwave test. Incorporating the solo driving dataset significantly reduces the number of crashes 
+
+23 TABLE 12: Collision statistics (Mean ± Std) across 20 simulation trials for the four experiments.                                                                               
+
+> Experiment IDM SIDM MC-CF (Original) MC-CF (Solo) MC-CF (Solo+Cons) MC-CF (Solo+Cons+TGSIM)
+> Normal Equilibrium 0.00 ±0.00 0.00 ±0.00 12.05 ±5.34 1.90 ±1.48 0.00 ±0.00 0.25 ±0.55 Standard Shockwave 0.00 ±0.00 0.00 ±0.00 15.90 ±5.30 6.00 ±1.95 0.00 ±0.00 0.00 ±0.00
+> Severe Shockwave 0.00 ±0.00 0.00 ±0.00 37.05 ±6.06 30.75 ±4.83 8.05 ±1.85 9.35 ±2.94 High-Speed Shockwave 0.00 ±0.00 0.00 ±0.00 7.40 ±3.08 11.10 ±2.81 3.20 ±1.47 0.70 ±1.17
+
+in the urban scenarios, and adding the conservative sampling effectively eliminates crashes in both the Normal Equilibrium and Standard Shockwave experiments. In the Severe Shockwave experiment, MC-CF (Solo+Conservative) significantly reduces the number of collisions, though an average of 8 .05 crashes per simulation remains. Notably, while adding the TGSIM dataset significantly reduces high-speed crashes (a mean of 0 .70 crashes compared to 3 .20 without the TGSIM dataset), it slightly degrades performance in the lower-speed, dense urban scenarios compared to the MC-CF (Solo+Conservative) model. This can be attributed to the limited number of samples and the differing data quality in TGSIM compared to the massive WOMD dataset. However, as demonstrated in the high-speed experiment, adding even a small amount of freeway data dras-tically improves performance in high-speed regimes. If larger amounts of high-fidelity naturalistic freeway data (e.g., Waymo highway datasets) are collected in the future, we expect the model to perform exception-ally and organically self-correct across all speed regimes without such trade-offs. Figure 3 illustrates the trajectories of the 200 vehicles on a ring road for an arbitrarily selected random seed in the Normal Equilibrium test. We specifically start the simulation with an initial speed of 5 .84 m/s, which corresponds to the equilibrium speed obtained from the IDM simulation. As shown in Figures 3a and 3b, the IDM and SIDM maintain a perfectly uniform flow. However, we note that such perfect uniformity is highly unrealistic in real-world traffic consisting of heterogeneous human drivers. The MC-CF (Original) model struggles with the urban noise embedded in its training data, resulting in 14 crashes in the plotted equilibrium scenario. It is also interesting to observe that although both the IDM and MC-CF (Original) are calibrated/trained on the same dataset, they do not agree on the equilib-rium speed. Considering that the MC-CF framework demonstrated significantly higher accuracy in both one-step and open-loop trajectory predictions (Section 5.1), this discrepancy suggests that macroscopic conclusions (e.g., equilibrium speed or capacity) drawn from calibrated parametric models may be mis-leading. By adding solo driving data, the MC-CF (Solo) model effectively reduces the number of crashes. More importantly, applying the conservative inference mode (MC-CF (Solo+Conservative) and MC-CF (Solo+Conservative+TGSIM)) completely eliminates crashes in this experiment, matching the safety of the parametric models while simultaneously exhibiting realistic and stochastic speed fluctuations. To empirically validate the structural realism of these stochastic speed fluctuations, we compare them with real-world human driving data from the Nagoya Dome ring road experiment [41]. In this experiment, HDVs traveled continuously on a circular track with a radius of 50 m (circumference approximately 314 m). As illustrated by the ground truth trajectories in Figure 4, naturalistic driving inherently exhibits con-tinuous stochastic speed fluctuations and forward moving shockwaves. This empirical observation directly contradicts the perfectly homogeneous flow predicted by the IDM and SIDM (Figures 3a–b). In contrast, the augmented MC-CF models (Figures 3e–f) successfully reproduce this phenomenon, sustaining stable collision free flow while organically generating the speed variations observed in real-world experiment. The Standard Shockwave test evaluates the response of following vehicles in a platoon with respect to a small perturbation introduced by the leader. As shown in Figures 5a-b, the trajectories produced by the IDM and SIDM exhibit backward shockwave propagation, yet the system fails to recover to the equilibrium speed within the 300-second horizon. The MC-CF (Original) model (Figure 5c) shows that vehicles recover their equilibrium speed in a shorter period of time. However, it fails to efficiently reduce the gap to the leader once the perturbation ends, leading to the formation of an unrealistic platoon. 
+
+24 (a) IDM (b) SIDM   
+
+> (c) MC-CF (Original) (d) MC-CF (Solo)
+> (e) MC-CF (Solo+Conservative) (f) MC-CF (Solo+Conservative+TGSIM)
+
+FIGURE 3: Trajectory plots for the Normal Equilibrium test ( N = 200, vstart = 5.84 m/s). 
+
+FIGURE 4: Ground truth trajectories from the Nagoya Dome ring road experiment (Session 1520, N = 20). The empirical data exhibits naturalistic speed fluctuations and forward moving shockwaves, contrasting with the rigid uniformity predicted by traditional parametric models. 
+
+25 (a) IDM (b) SIDM   
+
+> (c) MC-CF (Original) (d) MC-CF (Solo)
+> (e) MC-CF (Solo+Conservative) (f) MC-CF (Solo+Conservative+TGSIM)
+
+FIGURE 5: Trajectory plots for the Standard Shockwave test. MC-CF models with the conservative mode (e-f) eliminates collisions, while solo data (d-f) ensures proper gap reduction. The MC-CF (Solo) model (Figure 5d) still exhibits collisions (7 crashes in the plotted trial) but suc-cessfully resolves the unrealistic platooning issue observed in the Original model. The inclusion of solo data enables followers to correctly recognize large gaps as free-flow conditions, allowing them to acceler-ate smoothly, close the gap, and return the system to equilibrium. When the conservative mode is applied alongside the solo data, collisions drop to zero (Figures 5e and 5f). This demonstrates the model’s capability to maintain safety as long as the simulation remains within regions of the state space that are sufficiently represented in the training data. In the Severe Shockwave experiment (Figure 6), the IDM and SIDM produce mathematically perfect backward shockwaves that lack naturalistic variation. The MC-CF (Original) model (Figure 6c) fails en-tirely, resulting in heavy pile-ups (31 crashes in the plotted example) and failing once again to reduce the forward gap to the leader. The MC-CF (Solo) model (Figure 6d) solves the gap recovery issue but continues to suffer from major pile-ups. 
+
+26 (a) IDM (b) SIDM   
+
+> (c) MC-CF (Original) (d) MC-CF (Solo)
+> (e) MC-CF (Solo+Conservative) (f) MC-CF (Solo+Conservative+TGSIM)
+
+FIGURE 6: Trajectory plots for the Severe Shockwave test. IDM (a) and SIDM (b) show rigid shockwaves, while the MC-CF models with the conservative mode (e-f) display realistic backward and forward wave propagation. In contrast, both the MC-CF (Solo+Conservative) and MC-CF (Solo+Conservative+TGSIM) models (Figures 6e-f) dramatically reduce the number of crashes (5 and 6 crashes in their respective examples) and reproduce highly realistic traffic dynamics. Specifically, they generate a backward-propagating shock-wave initiated by the controlled vehicle, followed by a forward-moving shockwave as vehicles dynamically accelerate to close the gap once the leader accelerates. A key advantage of the MC-CF framework over deterministic models is its ability to capture the inherent stochasticity of human driving. Figure 7 displays the results of four different random seeds using the MC-CF (Solo+Conservative) model under the exact same severe shockwave perturbation. Visually, the trajectory plots demonstrate that the propagation speed, recovery time, and intensity of the shockwave vary noticeably between trials. This confirms that the model naturally replicates the stochasticity observed in real-world con-gested traffic, where identical leader behavior can trigger different macroscopic traffic outcomes depending 
+
+27 (a) Trial 1 (b) Trial 2  
+
+> (c) Trial 3 (d) Trial 4
+
+FIGURE 7: Four random seed evaluations of the MC-CF (Solo+Conservative) model under the Se-vere Shockwave test. Despite identical leader perturbations, shockwave propagation exhibits naturalistic, stochastic variability. on the probabilistic responses of the following vehicles. Finally, we tested the framework’s scalability to high-speed environments through the High-Speed Shockwave test. Because the WOMD dataset lacks high-speed freeway interactions, Figure 8a shows that the MC-CF (Solo+Conservative) model exhibits unrealistic decelerations and phantom braking, resulting in collisions (3 crashes in the plotted example). By integrating TGSIM data, the MC-CF (Solo+Conservative+ TGSIM) model successfully populates the high-speed state space. As illustrated in Figure 8b, this addition allows vehicles to maintain high speeds reliably, form realistic platoons, and smoothly respond to the shock-wave, dropping the crashes to 0 in the visualized example. This highlights the scalability of the proposed framework, as its performance naturally improves with the incorporation of new and diverse data. We note that the current variants of the MC-CF model are not perfect, as they still suffer from occa-sional crashes in the Severe Shockwave and High-Speed Shockwave scenarios. However, the presented framework achieves these realistic traffic dynamics without relying on predefined physical equations, in-stead sampling accelerations purely from empirical data distributions. As AVs collect increasingly vast, high-fidelity datasets across diverse operational design domains including freeways, the proposed model can organically ingest these new samples into its state bins without requiring structural recalibration. This inherent scalability ensures that the model will continuously improve, generating increasingly robust and realistic trajectories across both urban and freeway scenarios. 
+
+# 6. CONCLUSION 
+
+The enduring study of car-following behavior remains central to transportation engineering, informing crit-ical applications from microscopic simulation to macroscopic traffic flow analysis. The emergence of ex-
+
+28 (a) MC-CF (Solo+Conservative) (b) MC-CF (Solo+Cons+TGSIM) 
+
+FIGURE 8: Trajectory plots for the High-Speed Shockwave test. (a) MC-CF (Solo+Conservative) exhibits phantom braking due to a lack of high-speed training data, while (b) MC-CF (Solo+Conservative+TGSIM) successfully maintains high speeds and forms realistic platoons. tensive, high-fidelity datasets like the WOMD has the potential to fundamentally reshape our understanding of these dynamics. Building on this foundation, this paper introduces a new modeling category called the empirical probabilistic paradigm. Within this class of models, we propose the MC-CF model, which empiri-cally derives state transitions and acceleration distributions directly from real-world trajectory data, thereby obviating the need for explicit calibration or restrictive parametric assumptions. Our comprehensive evaluation underscores the superior performance of the proposed MC-CF model. The deterministic variant, MC-CF (det), consistently achieved the lowest RMSE in next-step follower accel-eration prediction, significantly outperforming traditional physics-based models (IDM, Van-Arem, FVDM variants, Gipps, and SIDM). This immediate predictive accuracy was robustly demonstrated on both the WOMD test dataset and on the entirely unseen PHX dataset, highlighting its exceptional zero-shot general-ization capabilities. Furthermore, the stochastic variant, MC-CF (stoch), demonstrated superior performance in open-loop trajectory prediction. When given only initial conditions, MC-CF (stoch) surpassed all baseline models across trajectory-level metrics ( minDTW , minADE , minFDE ), while keeping the overlapping rate below 6%. Notably, transition probability analysis showed that MC-CF (stoch) successfully reproduces the ground truth transition probability distributions across all examined interaction types (AV-following-HDV, HDV-following-AV, and HDV-following-HDV). It also achieved the highest performance in zero-shot generaliza-tion for trajectory-level prediction. These results highlight that MC-CF (stoch) not only delivers accurate trajectory predictions but also effectively captures the underlying probabilistic structure of real-world driv-ing behavior. Beyond trajectory prediction, the proposed framework’s inherent scalability allows it to evolve into a ro-bust microscopic simulation tool. As demonstrated through the ring road ablation study, the straightforward aggregation of diverse data, such as unconstrained free-flow trajectories and high-speed freeway samples from TGSIM, alongside a safety-oriented conservative inference strategy, successfully mitigated the limi-tations of the baseline model. The enhanced MC-CF framework significantly reduced collision rates, and accurately reproduced naturalistic and stochastic shockwave propagation across both urban and high-speed regimes. This future-proof structure ensures that as larger, high-fidelity datasets covering diverse operational design domains become available, the model can continuously self-correct and improve. Future work will leverage our model’s robust representation of driving behavior for probabilistic stability analysis. This is a critical next step, given that most of the existing stability studies rely heavily on calibrated car-following models that we have demonstrated to deviate significantly from empirical ground truth. 
+
+29 DECLARATION OF CONFLICTING INTERESTS 
+
+All other authors declare no potential conflicts of interest with respect to the research, authorship, and publication of this article. 
+
+# ACKNOWLEDGMENTS 
+
+This work was supported by the National Science Foundation under Grant No. 2047937. 
+
+# DECLARATION OF GENERATIVE AI AND AI-ASSISTED TECHNOLO-GIES IN THE WRITING PROCESS 
+
+The authors acknowledge the use of AI-assisted tools (such as ChatGPT) for language editing and grammar refinement during manuscript preparation. No AI tool was used for generating novel content, data analysis, or drawing conclusions. All responsibility for the accuracy and integrity of the manuscript remains with the authors. 
+
+# AUTHOR CONTRIBUTIONS 
+
+Sungyong Chung: Conceptualization, data curation, formal analysis, investigation, methodology, soft-ware, visualization, Writing – original draft. Yanlin Zhang: Conceptualization, methodology, validation, Writing – review & editing. Nachuan Li: Validation, visualization, Writing – review & editing. Dana Monzer: Validation, Writing – review & editing. Alireza Talebpour: Conceptualization, funding acquisi-tion, methodology, project administration, supervision, validation, Writing – review & editing. 
+
+30 REFERENCES 
+
+[1] Chen, K., R. Ge, H. Qiu, R. Ai-Rfou, C. R. Qi, X. Zhou, Z. Yang, S. Ettinger, P. Sun, Z. Leng, M. Mustafa, I. Bogun, W. Wang, M. Tan, and D. Anguelov, WOMD-LiDAR: Raw Sensor Dataset Benchmark for Motion Forecasting. In Proceedings of the IEEE International Conference on Robotics and Automation (ICRA) , 2024. [2] Ettinger, S., S. Cheng, B. Caine, C. Liu, H. Zhao, S. Pradhan, Y. Chai, et al., Large scale interactive motion forecasting for autonomous driving: The waymo open motion dataset. In Proceedings of the IEEE/CVF International Conference on Computer Vision , 2021, pp. 9710–9719. [3] Houston, J., G. Zuidhof, L. Bergamini, Y. Ye, L. Chen, A. Jain, S. Omari, V. Iglovikov, and P. On-druska, One thousand and one hours: Self-driving motion prediction dataset. In Conference on Robot Learning , PMLR, 2021, pp. 409–418. [4] Chang, M.-F., J. Lambert, P. Sangkloy, J. Singh, S. Bak, A. Hartnett, D. Wang, P. Carr, S. Lucey, D. Ramanan, et al., Argoverse: 3d tracking and forecasting with rich maps. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , 2019, pp. 8748–8757. [5] Gipps, P. G., A behavioural car-following model for computer simulation. Transportation research part B: methodological , Vol. 15, No. 2, 1981, pp. 105–111. [6] Treiber, M., A. Hennecke, and D. Helbing, Congested traffic states in empirical observations and microscopic simulations. Physical review E , Vol. 62, No. 2, 2000, p. 1805. [7] Treiber, M. and A. Kesting, The intelligent driver model with stochasticity-new insights into traffic flow oscillations. Transportation research procedia , Vol. 23, 2017, pp. 174–187. [8] Papathanasopoulou, V. and C. Antoniou, Towards data-driven car-following models. Transportation Research Part C: Emerging Technologies , Vol. 55, 2015, pp. 496–509. [9] He, Z., L. Zheng, and W. Guan, A simple nonparametric car-following model driven by field data. 
+
+Transportation Research Part B: Methodological , Vol. 80, 2015, pp. 185–201. [10] Panwai, S. and H. Dia, Neural agent car-following models. IEEE Transactions on Intelligent Trans-portation Systems , Vol. 8, No. 1, 2007, pp. 60–70. [11] Wang, X., R. Jiang, L. Li, Y. Lin, X. Zheng, and F.-Y. Wang, Capturing car-following behaviors by deep learning. IEEE Transactions on Intelligent Transportation Systems , Vol. 19, No. 3, 2017, pp. 910–920. [12] Khodayari, A., A. Ghaffari, R. Kazemi, and R. Braunstingl, A modified car-following model based on a neural network model of the human driver effects. IEEE Transactions on Systems, Man, and Cybernetics-Part A: Systems and Humans , Vol. 42, No. 6, 2012, pp. 1440–1449. [13] Ma, L. and S. Qu, A sequence to sequence learning based car-following model for multi-step pre-dictions considering reaction delay. Transportation research part C: emerging technologies , Vol. 120, 2020, p. 102785. [14] Sutskever, I., O. Vinyals, and Q. V. Le, Sequence to sequence learning with neural networks. Advances in neural information processing systems , Vol. 27, 2014. [15] Li, Z., H. Meng, C. Ma, K. Ma, and X. Li, Assessing Markov Property in Driving Behaviors: Insights from Statistical Tests. arXiv preprint arXiv:2501.10625 , 2025. [16] Higgs, B., M. Abbas, and A. Medina, Analysis of the Wiedemann car following model over different speeds using naturalistic data. In Procedia of RSS Conference , 2011, Vol. 1, pp. 1–22. [17] Krauss, S., Microscopic modeling of traffic flow: investigation of collision free vehicle dynamics , 1998. [18] Saifuzzaman, M. and Z. Zheng, Incorporating human-factors in car-following models: A review of recent developments and research needs. Transportation research part C: emerging technologies ,Vol. 48, 2014, pp. 379–403. 
+
+31 [19] Albeaik, S., A. Bayen, M. T. Chiri, X. Gong, A. Hayat, N. Kardous, A. Keimer, S. T. McQuade, B. Piccoli, and Y. You, Limitations and Improvements of the Intelligent Driver Model (IDM). SIAM Journal on Applied Dynamical Systems , Vol. 21, No. 3, 2022, pp. 1862–1892. [20] Zheng, F., C. Liu, X. Liu, S. E. Jabari, and L. Lu, Analyzing the impact of automated vehicles on un-certainty and stability of the mixed traffic flow. Transportation research part C: emerging technologies ,Vol. 112, 2020, pp. 203–219. [21] Jiang, R., Q. Wu, and Z. Zhu, Full velocity difference model for a car-following theory. Physical Review E , Vol. 64, No. 1, 2001, p. 017101. [22] Helbing, D. and B. Tilch, Generalized force model of traffic dynamics. Physical review E , Vol. 58, No. 1, 1998, p. 133. [23] Punzo, V., Z. Zheng, and M. Montanino, About calibration of car-following dynamics of automated and human-driven vehicles: Methodology, guidelines and codes. Transportation Research Part C: Emerging Technologies , Vol. 128, 2021, p. 103165. [24] Van Arem, B., C. J. Van Driel, and R. Visser, The impact of cooperative adaptive cruise control on traffic-flow characteristics. IEEE Transactions on intelligent transportation systems , Vol. 7, No. 4, 2006, pp. 429–436. [25] Ames, A. D., X. Xu, J. W. Grizzle, and P. Tabuada, Control barrier function based quadratic programs for safety critical systems. IEEE Transactions on Automatic Control , Vol. 62, No. 8, 2016, pp. 3861– 3876. [26] Zaky, A. B. and W. Gomaa, Car following regime taxonomy based on Markov switching. In 17th International IEEE Conference on Intelligent Transportation Systems (ITSC) , IEEE, 2014, pp. 1329– 1334. [27] Zou, Y., T. Zhu, Y. Xie, Y. Zhang, and Y. Zhang, Multivariate analysis of car-following behavior data using a coupled hidden Markov model. Transportation Research Part C: Emerging Technologies , Vol. 144, 2022, p. 103914. [28] Yao, X., S. C. Calvert, and S. P. Hoogendoorn, Identification of driving heterogeneity using action-chains. In 2023 IEEE 26th International Conference on Intelligent Transportation Systems (ITSC) ,IEEE, 2023, pp. 6001–6006. [29] Zhang, C., C. Wu, and L. Sun, Markov Regime-Switching Intelligent Driver Model for Interpretable Car-Following Behavior. arXiv preprint arXiv:2506.14762 , 2025. [30] Punzo, V., D. J. Formisano, and V. Torrieri, Nonstationary Kalman Filter for Estimation of Accurate and Consistent Car-Following Data. Transportation Research Record , Vol. 1934, No. 1, 2005, pp. 2–12. [31] Zhang, Y., S. Chung, N. Li, D. Monzer, H. S. Mahmassani, S. H. Hamdar, and A. Talebpour, Can the Waymo Open Motion Dataset Support Realistic Behavioral Modeling? A Validation Study with Naturalistic Trajectories. arXiv preprint arXiv:2509.03515 , 2025. [32] Wu, W., X. Feng, Z. Gao, and Y. Kan, Smart: Scalable multi-agent real-time motion generation via next-token prediction. In Advances in Neural Information Processing Systems , 2024, Vol. 37, pp. 114048–114071. [33] U.S. Department of Transportation Federal Highway Administration, Next Generation Simulation (NGSIM) Vehicle Trajectories and Supporting Data . http://doi.org/10.21949/1504477 , 2016, [Dataset]. Provided by ITS DataHub through Data.transportation.gov. [34] Chung, S., A. Talebpour, and S. H. Hamdar, Characterizing Lane-Changing Behavior in Mixed Traffic. 
+
+arXiv preprint arXiv:2512.07219 , 2025. [35] Ammourah, R., P. Beigi, B. Fan, S. H. Hamdar, J. Hourdos, C.-C. Hsiao, R. James, M. Khajeh-Hosseini, H. S. Mahmassani, D. Monzer, et al., Introduction to the third generation simulation dataset: 
+
+32 Data collection and trajectory extraction. Transportation Research Record , Vol. 2679, No. 1, 2025, pp. 1768–1784. [36] Talebpour, A., H. S. Mahmassani, and S. H. Hamdar, Third generation simulation data (tgsim): A closer look at the impacts of automated driving systems on human behavior, 2024. [37] Freedman, D. and P. Diaconis, On the histogram as a density estimator: L2 theory. Zeitschrift für Wahrscheinlichkeitstheorie und verwandte Gebiete , Vol. 57, No. 4, 1981, pp. 453–476. [38] Masserano, L., A. F. Ansari, B. Han, X. Zhang, C. Faloutsos, M. W. Mahoney, A. G. Wilson, et al., En-hancing foundation models for time series forecasting via Wavelet-based tokenization. arXiv preprint arXiv:2412.05244 , 2024. [39] Storn, R. and K. Price, Differential evolution—a simple and efficient heuristic for global optimization over continuous spaces. Journal of global optimization , Vol. 11, No. 4, 1997, pp. 341–359. [40] Zhang, Y. and A. Talebpour, Characterizing human–automated vehicle interactions: An investigation into car-following behavior. Transportation Research Record , Vol. 2678, No. 5, 2024, pp. 812–826. [41] Tadaki, S.-i., M. Kikuchi, M. Fukui, A. Nakayama, K. Nishinari, A. Shibata, Y. Sugiyama, T. Yosida, and S. Yukawa, Phase transition in traffic jam experiment on a circuit. New Journal of Physics , Vol. 15, No. 10, 2013, p. 103034. 
+
+33

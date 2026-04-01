@@ -1,0 +1,527 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-01T20:00:45.183573+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 13,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2603.29163v1",
+      "title": "SparseDriveV2: Scoring is All You Need for End-to-End Autonomous Driving",
+      "abstract": "End-to-end multi-modal planning has been widely adopted to model the uncertainty of driving behavior, typically by scoring candidate trajectories and selecting the optimal one. Existing approaches generally fall into two categories: scoring a large static trajectory vocabulary, or scoring a small set of dynamically generated proposals. While static vocabularies often suffer from coarse discretization of the action space, dynamic proposals provide finer-grained precision and have shown stronger empirical performance on existing benchmarks. However, it remains unclear whether dynamic generation is fundamentally necessary, or whether static vocabularies can already achieve comparable performance when they are sufficiently dense to cover the action space. In this work, we start with a systematic scaling study of Hydra-MDP, a representative scoring-based method, revealing that performance consistently improves as trajectory anchors become denser, without exhibiting saturation before computational constraints are reached. Motivated by this observation, we propose SparseDriveV2 to push the performance boundary of scoring-based planning through two complementary innovations: (1) a scalable vocabulary representation with a factorized structure that decomposes trajectories into geometric paths and velocity profiles, enabling combinatorial coverage of the action space, and (2) a scalable scoring strategy with coarse factorized scoring over paths and velocity profiles followed by fine-grained scoring on a small set of composed trajectories. By combining these two techniques, SparseDriveV2 achieves 92.0 PDMS and 90.1 EPDMS on NAVSIM, with 89.15 Driving Score and 70.00 Success Rate on Bench2Drive with a lightweight ResNet-34 as backbone. Code and model are released at https://github.com/swc-17/SparseDriveV2.",
+      "authors": [
+        "Wenchao Sun",
+        "Xuewu Lin",
+        "Keyu Chen",
+        "Zixiang Pei",
+        "Xiang Li",
+        "Yining Shi",
+        "Sifa Zheng"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-31T02:20:40+00:00",
+      "link": "https://arxiv.org/pdf/2603.29163v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "modeling uncertainty of driving behavior via trajectory scoring",
+      "llm_evidence_cn": "通过轨迹评分对驾驶行为的不确定性进行建模",
+      "llm_evidence": "通过轨迹评分对驾驶行为的不确定性进行建模",
+      "canonical_evidence": "通过轨迹评分对驾驶行为的不确定性进行建模",
+      "llm_tldr_en": "Explores end-to-end multi-modal planning by scoring trajectory candidates to handle driving uncertainty.",
+      "llm_tldr_cn": "通过对候选轨迹进行评分来探索端到端多模态规划，以处理驾驶不确定性。",
+      "llm_tldr": "通过对候选轨迹进行评分来探索端到端多模态规划，以处理驾驶不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2603.29362v1",
+      "title": "Uncertainty-Aware Trajectory Prediction: A Unified Framework Harnessing Positional and Semantic Uncertainties",
+      "abstract": "Trajectory prediction seeks to forecast the future motion of dynamic entities, such as vehicles and pedestrians, given a temporal horizon of historical movement data and environmental context. A central challenge in this domain is the inherent uncertainty in real-time maps, arising from two primary sources: (1) positional inaccuracies due to sensor limitations or environmental occlusions, and (2) semantic errors stemming from misinterpretations of scene context. To address these challenges, we propose a novel unified framework that jointly models positional and semantic uncertainties and explicitly integrates them into the trajectory prediction pipeline. Our approach employs a dual-head architecture to independently estimate semantic and positional predictions in a dual-pass manner, deriving prediction variances as uncertainty indicators in an end-to-end fashion. These uncertainties are subsequently fused with the semantic and positional predictions to enhance the robustness of trajectory forecasts. We evaluate our uncertainty-aware framework on the nuScenes real-world driving dataset, conducting extensive experiments across four map estimation methods and two trajectory prediction baselines. Results verify that our method (1) effectively quantifies map uncertainties through both positional and semantic dimensions, and (2) consistently improves the performance of existing trajectory prediction models across multiple metrics, including minimum Average Displacement Error (minADE), minimum Final Displacement Error (minFDE), and Miss Rate (MR). Code will available at https://github.com/JT-Sun/UATP.",
+      "authors": [
+        "Jintao Sun",
+        "Hu Zhang",
+        "Gangyi Ding",
+        "Zhedong Zheng"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-31T07:35:55+00:00",
+      "link": "https://arxiv.org/pdf/2603.29362v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "jointly modeling positional and semantic uncertainties in trajectory prediction",
+      "llm_evidence_cn": "在轨迹预测中联合建模位置和语义不确定性",
+      "llm_evidence": "在轨迹预测中联合建模位置和语义不确定性",
+      "canonical_evidence": "在轨迹预测中联合建模位置和语义不确定性",
+      "llm_tldr_en": "Proposes a framework to quantify and integrate positional and semantic uncertainties for trajectory prediction.",
+      "llm_tldr_cn": "提出一个联合建模位置与语义不确定性并将其集成到轨迹预测中的框架。",
+      "llm_tldr": "提出一个联合建模位置与语义不确定性并将其集成到轨迹预测中的框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2603.26995v1",
+      "title": "SCRAMPPI: Efficient Contingency Planning for Mobile Robot Navigation via Hamilton-Jacobi Reachability",
+      "abstract": "Autonomous robots commonly aim to complete a nominal behavior while minimizing a cost; this leaves them vulnerable to failure or unplanned scenarios, where a backup or contingency plan to a safe set is needed to avoid a total mission failure. This is formalized as a trajectory optimization problem over the nominal cost with a safety constraint: from any point along the nominal plan, a feasible trajectory to a designated safe set must exist. Previous methods either relax this hard constraint, or use an expensive sampling-based strategy to optimize for this constraint. Instead, we formalize this requirement as a reach-avoid problem and leverage Hamilton-Jacobi (HJ) reachability analysis to certify contingency feasibility. By computing the value function of our safe-set's backward reachable set online as the environment is revealed and integrating it with a sampling based planner (MPPI) via resampling based rollouts, we guarantee satisfaction of the hard constraint while greatly increasing sampling efficiency. Finally, we present simulated and hardware experiments demonstrating our algorithm generating nominal and contingency plans in real time on a mobile robot in an adversarial evasion task.",
+      "authors": [
+        "Raj Harshit Srirangam",
+        "Leonard Jung",
+        "Rohith Poola",
+        "Michael Everett"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-27T21:09:43+00:00",
+      "link": "https://arxiv.org/pdf/2603.26995v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "trajectory optimization and contingency planning for mobile robots",
+      "llm_evidence_cn": "移动机器人的轨迹优化与应急规划",
+      "llm_evidence": "移动机器人的轨迹优化与应急规划",
+      "canonical_evidence": "移动机器人的轨迹优化与应急规划",
+      "llm_tldr_en": "Uses HJ reachability for efficient contingency planning and safety certification in robot navigation.",
+      "llm_tldr_cn": "利用HJ可达性分析进行高效的应急规划，确保机器人导航的安全性。",
+      "llm_tldr": "利用HJ可达性分析进行高效的应急规划，确保机器人导航的安全性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.24908v1",
+      "title": "Integrated Multi-Drone Task Allocation, Sequencing, and Optimal Trajectory Generation in Obstacle-Rich 3D Environments",
+      "abstract": "Coordinating teams of aerial robots in cluttered three-dimensional (3D) environments requires a principled integration of discrete mission planning-deciding which robot serves which goals and in what order -- with continuous-time trajectory synthesis that enforces collision avoidance and dynamic feasibility. This paper introduces IMD-TAPP (Integrated Multi-Drone Task Allocation and Path Planning), an end-to-end framework that jointly addresses multi-goal allocation, tour sequencing, and safe trajectory generation for quadrotor teams operating in obstacle-rich spaces. IMD--TAPP first discretizes the workspace into a 3D navigation graph and computes obstacle-aware robot-to-goal and goal-to-goal travel costs via graph-search-based pathfinding. These costs are then embedded within an Injected Particle Swarm Optimization (IPSO) scheme, guided by multiple linear assignment, to efficiently explore coupled assignment/ordering alternatives and to minimize mission makespan. Finally, the resulting waypoint tours are transformed into time-parameterized minimum-snap trajectories through a generation-and-optimization routine equipped with iterative validation of obstacle clearance and inter-robot separation, triggering re-planning when safety margins are violated. Extensive MATLAB simulations across cluttered 3D scenarios demonstrate that IMD--TAPP consistently produces dynamically feasible, collision-free trajectories while achieving competitive completion times. In a representative case study with two drones serving multiple goals, the proposed approach attains a minimum mission time of 136~s while maintaining the required safety constraints throughout execution.",
+      "authors": [
+        "Yunes Alqudsi",
+        "Murat Makaraci"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.MA"
+      ],
+      "published": "2026-03-26T00:46:26+00:00",
+      "link": "https://arxiv.org/pdf/2603.24908v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "integrated task allocation and trajectory generation for drones",
+      "llm_evidence_cn": "无人机任务分配与轨迹生成集成",
+      "llm_evidence": "无人机任务分配与轨迹生成集成",
+      "canonical_evidence": "无人机任务分配与轨迹生成集成",
+      "llm_tldr_en": "Integrates mission planning with continuous-time trajectory synthesis for multi-drone teams.",
+      "llm_tldr_cn": "将任务规划与连续时间轨迹综合相结合，用于多无人机团队协作。",
+      "llm_tldr": "将任务规划与连续时间轨迹综合相结合，用于多无人机团队协作。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.27909v1",
+      "title": "Data is All You Need: Markov Chain Car-Following (MC-CF) Model",
+      "abstract": "Car-following behavior is fundamental to traffic flow theory, yet traditional models often fail to capture the stochasticity of naturalistic driving. This paper introduces a new car-following modeling category called the empirical probabilistic paradigm, which bypasses conventional parametric assumptions. Within this paradigm, we propose the Markov Chain Car-Following (MC-CF) model, which represents state transitions as a Markov process and predicts behavior by randomly sampling accelerations from empirical distributions within discretized state bins. Evaluation of the MC-CF model trained on the Waymo Open Motion Dataset (WOMD) demonstrates that its variants significantly outperform physics-based models including IDM, Gipps, FVDM, and SIDM in both one-step and open-loop trajectory prediction accuracy. Statistical analysis of transition probabilities confirms that the model-generated trajectories are indistinguishable from real-world behavior, successfully reproducing the probabilistic structure of naturalistic driving across all interaction types. Zero-shot generalization on the Naturalistic Phoenix (PHX) dataset further confirms the model's robustness. Finally, microscopic ring road simulations validate the framework's scalability. By incrementally integrating unconstrained free-flow trajectories and high-speed freeway data (TGSIM) alongside a conservative inference strategy, the model drastically reduces collisions, achieving zero crashes in multiple equilibrium and shockwave scenarios, while successfully reproducing naturalistic and stochastic shockwave propagation. Overall, the proposed MC-CF model provides a robust, scalable, and calibration-free foundation for high-fidelity stochastic traffic modeling, uniquely suited for the data-rich future of intelligent transportation.",
+      "authors": [
+        "Sungyong Chung",
+        "Yanlin Zhang",
+        "Nachuan Li",
+        "Dana Monzer",
+        "Alireza Talebpour"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-03-29T23:33:24+00:00",
+      "link": "https://arxiv.org/pdf/2603.27909v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "probabilistic car-following model for naturalistic driving stochasticity",
+      "llm_evidence_cn": "针对自然驾驶随机性的概率跟车模型",
+      "llm_evidence": "针对自然驾驶随机性的概率跟车模型",
+      "canonical_evidence": "针对自然驾驶随机性的概率跟车模型",
+      "llm_tldr_en": "Introduces a Markov Chain model for car-following to capture stochastic driving behavior in traffic.",
+      "llm_tldr_cn": "引入马尔可夫链跟车模型，以捕捉交通流中的随机驾驶行为。",
+      "llm_tldr": "引入马尔可夫链跟车模型，以捕捉交通流中的随机驾驶行为。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.24990v1",
+      "title": "From Global to Local: Hierarchical Probabilistic Verification for Reachability Learning",
+      "abstract": "Hamilton-Jacobi (HJ) reachability provides formal safety guarantees for nonlinear systems. However, it becomes computationally intractable in high-dimensional settings, motivating learning-based approximations that may introduce unsafe errors or overly optimistic safe sets. In this work, we propose a hierarchical probabilistic verification framework for reachability learning that bridges offline global certification and online local refinement. We first construct a coarse safe set using scenario optimization, providing an efficient global probabilistic certificate. We then introduce an online local refinement module that expands the certified safe set near its boundary by solving a sequence of convex programs, recovering regions excluded by the global verification. This refinement reduces conservatism while focusing computation on critical regions of the state space. We provide probabilistic safety guarantees for both the global and locally refined sets. Integrated with a switching mechanism between a learned reachability policy and a model-based controller, the proposed framework improves success rates in goal-reaching tasks with safety constraints, as demonstrated in simulation experiments of two drones racing to a goal with complex safety constraints.",
+      "authors": [
+        "Ebonye Smith",
+        "Sampada Deglurkar",
+        "Jingqi Li",
+        "Gechen Qu",
+        "Claire J. Tomlin"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-03-26T03:31:14+00:00",
+      "link": "https://arxiv.org/pdf/2603.24990v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "hierarchical probabilistic verification for safety in nonlinear systems",
+      "llm_evidence_cn": "非线性系统安全性的分层概率验证",
+      "llm_evidence": "非线性系统安全性的分层概率验证",
+      "canonical_evidence": "非线性系统安全性的分层概率验证",
+      "llm_tldr_en": "Proposes a verification framework to provide safety guarantees for learned reachability in control systems.",
+      "llm_tldr_cn": "提出一种验证框架，为控制系统中学习到的可达性提供安全保证。",
+      "llm_tldr": "提出一种验证框架，为控制系统中学习到的可达性提供安全保证。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.28251v1",
+      "title": "DiffAttn: Diffusion-Based Drivers' Visual Attention Prediction with LLM-Enhanced Semantic Reasoning",
+      "abstract": "Drivers' visual attention provides critical cues for anticipating latent hazards and directly shapes decision-making and control maneuvers, where its absence can compromise traffic safety. To emulate drivers' perception patterns and advance visual attention prediction for intelligent vehicles, we propose DiffAttn, a diffusion-based framework that formulates this task as a conditional diffusion-denoising process, enabling more accurate modeling of drivers' attention. To capture both local and global scene features, we adopt Swin Transformer as encoder and design a decoder that combines a Feature Fusion Pyramid for cross-layer interaction with dense, multi-scale conditional diffusion to jointly enhance denoising learning and model fine-grained local and global scene contexts. Additionally, a large language model (LLM) layer is incorporated to enhance top-down semantic reasoning and improve sensitivity to safety-critical cues. Extensive experiments on four public datasets demonstrate that DiffAttn achieves state-of-the-art (SoTA) performance, surpassing most video-based, top-down-feature-driven, and LLM-enhanced baselines. Our framework further supports interpretable driver-centric scene understanding and has the potential to improve in-cabin human-machine interaction, risk perception, and drivers' state measurement in intelligent vehicles.",
+      "authors": [
+        "Weimin Liu",
+        "Qingkun Li",
+        "Jiyuan Qiu",
+        "Wenjun Wang",
+        "Joshua H. Meng"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-03-30T10:24:20+00:00",
+      "link": "https://arxiv.org/pdf/2603.28251v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "diffusion-based framework for drivers visual attention prediction",
+      "llm_evidence_cn": "基于扩散模型的驾驶员视觉注意力预测框架",
+      "llm_evidence": "基于扩散模型的驾驶员视觉注意力预测框架",
+      "canonical_evidence": "基于扩散模型的驾驶员视觉注意力预测框架",
+      "llm_tldr_en": "Uses a conditional diffusion process to model and predict drivers' visual attention for safety.",
+      "llm_tldr_cn": "利用条件扩散过程对驾驶员视觉注意力进行建模和预测，以提升安全性。",
+      "llm_tldr": "利用条件扩散过程对驾驶员视觉注意力进行建模和预测，以提升安全性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.27756v2",
+      "title": "Heracles: Bridging Precise Tracking and Generative Synthesis for General Humanoid Control",
+      "abstract": "Achieving general-purpose humanoid control requires a delicate balance between the precise execution of commanded motions and the flexible, anthropomorphic adaptability needed to recover from unpredictable environmental perturbations. Current general controllers predominantly formulate motion control as a rigid reference-tracking problem. While effective in nominal conditions, these trackers often exhibit brittle, non-anthropomorphic failure modes under severe disturbances, lacking the generative adaptability inherent to human motor control. To overcome this limitation, we propose Heracles, a novel state-conditioned diffusion middleware that bridges precise motion tracking and generative synthesis. Rather than relying on rigid tracking paradigms or complex explicit mode-switching, Heracles operates as an intermediary layer between high-level reference motions and low-level physics trackers. By conditioning on the robot's real-time state, the diffusion model implicitly adapts its behavior: it approximates an identity map when the state closely aligns with the reference, preserving zero-shot tracking fidelity. Conversely, when encountering significant state deviations, it seamlessly transitions into a generative synthesizer to produce natural, anthropomorphic recovery trajectories. Our framework demonstrates that integrating generative priors into the control loop not only significantly enhances robustness against extreme perturbations but also elevates humanoid control from a rigid tracking paradigm to an open-ended, generative general-purpose architecture.",
+      "authors": [
+        "Zelin Tao",
+        "Zeran Su",
+        "Peiran Liu",
+        "Jingkai Sun",
+        "Wenqiang Que",
+        "Jiahao Ma",
+        "Jialin Yu",
+        "Jiahang Cao",
+        "Pihai Sun",
+        "Hao Liang",
+        "Gang Han",
+        "Wen Zhao",
+        "Zhiyuan Xu",
+        "Jian Tang",
+        "Qiang Zhang",
+        "Yijie Guo"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-03-29T16:21:01+00:00",
+      "link": "https://arxiv.org/pdf/2603.27756v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "state-conditioned diffusion middleware for motion control and adaptability",
+      "llm_evidence_cn": "用于运动控制和适应性的状态条件扩散中间件",
+      "llm_evidence": "用于运动控制和适应性的状态条件扩散中间件",
+      "canonical_evidence": "用于运动控制和适应性的状态条件扩散中间件",
+      "llm_tldr_en": "Proposes a diffusion-based middleware to balance precise motion tracking and generative adaptability in humanoid control.",
+      "llm_tldr_cn": "提出一种基于扩散模型的中间件，在机器人控制中平衡精确运动跟踪与生成式适应性。",
+      "llm_tldr": "提出一种基于扩散模型的中间件，在机器人控制中平衡精确运动跟踪与生成式适应性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.28427v1",
+      "title": "Tele-Catch: Adaptive Teleoperation for Dexterous Dynamic 3D Object Catching",
+      "abstract": "Teleoperation is a key paradigm for transferring human dexterity to robots, yet most prior work targets objects that are initially static, such as grasping or manipulation. Dynamic object catch, where objects move before contact, remains underexplored. Pure teleoperation in this task often fails due to timing, pose, and force errors, highlighting the need for shared autonomy that combines human input with autonomous policies. To this end, we present Tele-Catch, a systematic framework for dexterous hand teleoperation in dynamic object catching. At its core, we design DAIM, a dynamics-aware adaptive integration mechanism that realizes shared autonomy by fusing glove-based teleoperation signals into the diffusion policy denoising process. It adaptively modulates control based on the interaction object state. To improve policy robustness, we introduce DP-U3R, which integrates unsupervised geometric representations from point cloud observations into diffusion policy learning, enabling geometry-aware decision making. Extensive experiments demonstrate that Tele-Catch significantly improves accuracy and robustness in dynamic catching tasks, while also exhibiting consistent gains across distinct dexterous hand embodiments and previously unseen object categories.",
+      "authors": [
+        "Weiguang Zhao",
+        "Junting Dong",
+        "Rui Zhang",
+        "Kailin Li",
+        "Qin Zhao",
+        "Kaizhu Huang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-03-30T13:34:14+00:00",
+      "link": "https://arxiv.org/pdf/2603.28427v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "diffusion policy denoising for dynamic object catching",
+      "llm_evidence_cn": "用于动态物体抓取的扩散策略去噪",
+      "llm_evidence": "用于动态物体抓取的扩散策略去噪",
+      "canonical_evidence": "用于动态物体抓取的扩散策略去噪",
+      "llm_tldr_en": "Fuses teleoperation signals into diffusion policy denoising for adaptive shared autonomy in robot catching.",
+      "llm_tldr_cn": "将遥操作信号融合到扩散策略去噪中，实现机器人抓取中的自适应共享自主。",
+      "llm_tldr": "将遥操作信号融合到扩散策略去噪中，实现机器人抓取中的自适应共享自主。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.28758v1",
+      "title": "$\\mathcal{L}_1$-Certified Distributionally Robust Planning for Safety-Constrained Adaptive Control",
+      "abstract": "Safe operation of autonomous systems requires robustness to both model uncertainty and uncertainty in the environment. We propose a hierarchical framework for stochastic nonlinear systems that integrates distributionally robust model predictive control (DR-MPC) with $\\mathcal{L}_1$-adaptive control. The key idea is to use the $\\mathcal{L}_1$ adaptive controller's online distributional certificates that bound the Wasserstein distance between nominal and true state distributions, thereby certifying the ambiguity sets used for planning without requiring distribution samples. Environment uncertainty is captured via data-driven ambiguity sets constructed from finite samples. These are incorporated into a DR-MPC planner enforcing distributionally robust chance constraints over a receding horizon. Using Wasserstein duality, the resulting problem admits tractable reformulations and a sample-based implementation. We show theoretically and via numerical experimentation that our framework ensures certifiable safety in the presence of simultaneous system and environment uncertainties.",
+      "authors": [
+        "Astghik Hakobyan",
+        "Amaras Nazarians",
+        "Aditya Gahlawat",
+        "Naira Hovakimyan",
+        "Ilya Kolmanovsky"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-03-30T17:57:58+00:00",
+      "link": "https://arxiv.org/pdf/2603.28758v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "robust planning under model and environment uncertainty",
+      "llm_evidence_cn": "模型与环境不确定性下的鲁棒规划",
+      "llm_evidence": "模型与环境不确定性下的鲁棒规划",
+      "canonical_evidence": "模型与环境不确定性下的鲁棒规划",
+      "llm_tldr_en": "Integrates distributionally robust MPC with adaptive control to handle uncertainty in autonomous systems.",
+      "llm_tldr_cn": "将分布鲁棒MPC与自适应控制相结合，以处理自主系统中的不确定性。",
+      "llm_tldr": "将分布鲁棒MPC与自适应控制相结合，以处理自主系统中的不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "modeling aleatoric uncertainty in autonomous driving scenarios",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.29466v1",
+      "title": "An Isotropic Approach to Efficient Uncertainty Quantification with Gradient Norms",
+      "abstract": "Existing methods for quantifying predictive uncertainty in neural networks are either computationally intractable for large language models or require access to training data that is typically unavailable. We derive a lightweight alternative through two approximations: a first-order Taylor expansion that expresses uncertainty in terms of the gradient of the prediction and the parameter covariance, and an isotropy assumption on the parameter covariance. Together, these yield epistemic uncertainty as the squared gradient norm and aleatoric uncertainty as the Bernoulli variance of the point prediction, from a single forward-backward pass through an unmodified pretrained model. We justify the isotropy assumption by showing that covariance estimates built from non-training data introduce structured distortions that isotropic covariance avoids, and that theoretical results on the spectral properties of large networks support the approximation at scale. Validation against reference Markov Chain Monte Carlo estimates on synthetic problems shows strong correspondence that improves with model size. We then use the estimates to investigate when each uncertainty type carries useful signal for predicting answer correctness in question answering with large language models, revealing a benchmark-dependent divergence: the combined estimate achieves the highest mean AUROC on TruthfulQA, where questions involve genuine conflict between plausible answers, but falls to near chance on TriviaQA's factual recall, suggesting that parameter-level uncertainty captures a fundamentally different signal than self-assessment methods.",
+      "authors": [
+        "Nils Grünefeld",
+        "Jes Frellsen",
+        "Christian Hardmeier"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-03-31T09:13:09+00:00",
+      "link": "https://arxiv.org/pdf/2603.29466v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "decomposition of epistemic and aleatoric uncertainty",
+      "llm_evidence_cn": "偶然不确定性与认知不确定性的分解",
+      "llm_evidence": "偶然不确定性与认知不确定性的分解",
+      "canonical_evidence": "偶然不确定性与认知不确定性的分解",
+      "llm_tldr_en": "Proposes a lightweight method to quantify epistemic and aleatoric uncertainty using gradient norms.",
+      "llm_tldr_cn": "提出一种利用梯度范数对认知和偶然不确定性进行量化的轻量级方法。",
+      "llm_tldr": "提出一种利用梯度范数对认知和偶然不确定性进行量化的轻量级方法。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "aleatoric and epistemic uncertainty decomposition in diffusion trajectory models",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.29409v1",
+      "title": "CLaD: Planning with Grounded Foresight via Cross-Modal Latent Dynamics",
+      "abstract": "Robotic manipulation involves kinematic and semantic transitions that are inherently coupled via underlying actions. However, existing approaches plan within either semantic or latent space without explicitly aligning these cross-modal transitions. To address this, we propose CLaD, a framework that models how proprioceptive and semantic states jointly evolve under actions through asymmetric cross-attention that allows kinematic transitions to query semantic ones. CLaD predicts grounded latent foresights via self-supervised objectives with EMA target encoders and auxiliary reconstruction losses, preventing representation collapse while anchoring predictions to observable states. Predicted foresights are modulated with observations to condition a diffusion policy for action generation. On LIBERO-LONG benchmark, CLaD achieves 94.7\\% success rate, competitive with large VLAs with significantly fewer parameters.",
+      "authors": [
+        "Andrew Jeong",
+        "Jaemin Kim",
+        "Sebin Lee",
+        "Sung-Eui Yoon"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-31T08:13:45+00:00",
+      "link": "https://arxiv.org/pdf/2603.29409v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "planning with latent dynamics conditioning a diffusion policy",
+      "llm_evidence_cn": "利用潜在动力学调节扩散策略进行规划",
+      "llm_evidence": "利用潜在动力学调节扩散策略进行规划",
+      "canonical_evidence": "利用潜在动力学调节扩散策略进行规划",
+      "llm_tldr_en": "Uses cross-modal latent dynamics to predict foresights that condition a diffusion-based planning policy.",
+      "llm_tldr_cn": "利用跨模态潜在动力学预测前景，从而调节基于扩散的规划策略。",
+      "llm_tldr": "利用跨模态潜在动力学预测前景，从而调节基于扩散的规划策略。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.29908v1",
+      "title": "C-TRAIL: A Commonsense World Framework for Trajectory Planning in Autonomous Driving",
+      "abstract": "Trajectory planning for autonomous driving increasingly leverages large language models (LLMs) for commonsense reasoning, yet LLM outputs are inherently unreliable, posing risks in safety-critical applications. We propose C-TRAIL, a framework built on a Commonsense World that couples LLM-derived commonsense with a trust mechanism to guide trajectory planning. C-TRAIL operates through a closed-loop Recall, Plan, and Update cycle: the Recall module queries an LLM for semantic relations and quantifies their reliability via a dual-trust mechanism; the Plan module injects trust-weighted commonsense into Monte Carlo Tree Search (MCTS) through a Dirichlet trust policy; and the Update module adaptively refines trust scores and policy parameters from environmental feedback. Experiments on four simulated scenarios in Highway-env and two real-world levelXData datasets (highD, rounD) show that C-TRAIL consistently outperforms state-of-the-art baselines, reducing ADE by 40.2%, FDE by 51.7%, and improving SR by 16.9 percentage points on average. The source code is available at https://github.com/ZhihongCui/CTRAIL.",
+      "authors": [
+        "Zhihong Cui",
+        "Haoran Tang",
+        "Tianyi Li",
+        "Yushuai Li",
+        "Peiyuan Guan",
+        "Amir Taherkordi",
+        "Tor Skeie"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-03-31T15:53:29+00:00",
+      "link": "https://arxiv.org/pdf/2603.29908v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "trajectory planning for autonomous driving with trust-weighted reliability quantification",
+      "llm_evidence_cn": "自动驾驶轨迹规划及基于信任机制的可靠性量化",
+      "llm_evidence": "自动驾驶轨迹规划及基于信任机制的可靠性量化",
+      "canonical_evidence": "自动驾驶轨迹规划及基于信任机制的可靠性量化",
+      "llm_tldr_en": "Proposes C-TRAIL, a framework using LLMs and trust mechanisms for reliable trajectory planning in autonomous driving.",
+      "llm_tldr_cn": "提出C-TRAIL框架，结合大语言模型与信任机制，实现自动驾驶中可靠的轨迹规划。",
+      "llm_tldr": "提出C-TRAIL框架，结合大语言模型与信任机制，实现自动驾驶中可靠的轨迹规划。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

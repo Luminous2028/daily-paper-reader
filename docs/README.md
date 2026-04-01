@@ -6,61 +6,59 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-03-31
-- 运行时间：2026-03-31 19:51:11 UTC
+- 最新运行日期：2026-04-01
+- 运行时间：2026-04-01 20:02:26 UTC
 - 运行状态：成功
 - 本次总论文数：13
 - 精读区：2
 - 速读区：11
 
 ### 今日简报（AI）
-今日深度解析 13 篇前沿成果，重点攻克自然语言驱动驾驶与物理感知的精细手部动作恢复。
-核心看点在于 Vega 展现的语言指令驾驶新范式，以及 PAD-Hand 结合扩散模型实现的物理一致性手势重建。
-推荐优先研读 Vega 了解大模型如何赋能具身智能，并关注物理约束在动作生成中的关键作用。
-- 详情：[/202603/31/README](/202603/31/README)
+今日聚焦自动驾驶端到端架构与轨迹预测，深度拆解 SparseDriveV2 的评分机制与双重不确定性感知框架。
+- 详情：[/202604/01/README](/202604/01/README)
 
 ### 精读区论文标签
-1. [Vega: Learning to Drive with Natural Language Instructions](/202603/31/2603.25741v2-vega-learning-to-drive-with-natural-language-instructions)  
-   标签：评分：9.0/10、query:diffusion-conf-uncertainty
-   evidence：利用扩散范式生成自动驾驶未来轨迹
-2. [PAD-Hand: Physics-Aware Diffusion for Hand Motion Recovery](/202603/31/2603.26068v2-pad-hand-physics-aware-diffusion-for-hand-motion-recovery)  
+1. [SparseDriveV2: Scoring is All You Need for End-to-End Autonomous Driving](/202604/01/2603.29163v1-sparsedrivev2-scoring-is-all-you-need-for-end-to-end-autonomous-driving)  
    标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：在基于扩散的运动恢复中估计物理方差和不确定性
+   evidence：通过轨迹评分对驾驶行为的不确定性进行建模
+2. [Uncertainty-Aware Trajectory Prediction: A Unified Framework Harnessing Positional and Semantic Uncertainties](/202604/01/2603.29362v1-uncertainty-aware-trajectory-prediction-a-unified-framework-harnessing-positional-and-semantic-uncertainties)  
+   标签：评分：8.0/10、query:diffusion-conf-uncertainty
+   evidence：在轨迹预测中联合建模位置和语义不确定性
 
 ### 速读区论文标签
-1. [From Diffusion To Flow: Efficient Motion Generation In MotionGPT3](/202603/31/2603.26747v1-from-diffusion-to-flow-efficient-motion-generation-in-motiongpt3)  
+1. [SCRAMPPI: Efficient Contingency Planning for Mobile Robot Navigation via Hamilton-Jacobi Reachability](/202604/01/2603.26995v1-scramppi-efficient-contingency-planning-for-mobile-robot-navigation-via-hamilton-jacobi-reachability)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：基于扩散模型的运动生成先验
-2. [Quantification of Credal Uncertainty: A Distance-Based Approach](/202603/31/2603.27270v1-quantification-of-credal-uncertainty-a-distance-based-approach)  
+   evidence：移动机器人的轨迹优化与应急规划
+2. [Data is All You Need: Markov Chain Car-Following (MC-CF) Model](/202604/01/2603.27909v1-data-is-all-you-need-markov-chain-car-following-mc-cf-model)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：量化信度集的偶然和认知不确定性
-3. [Uni-World VLA: Interleaved World Modeling and Planning for Autonomous Driving](/202603/31/2603.27287v1-uni-world-vla-interleaved-world-modeling-and-planning-for-autonomous-driving)  
+   evidence：针对自然驾驶随机性的概率跟车模型
+3. [DiffAttn: Diffusion-Based Drivers' Visual Attention Prediction with LLM-Enhanced Semantic Reasoning](/202604/01/2603.28251v1-diffattn-diffusion-based-drivers-visual-attention-prediction-with-llm-enhanced-semantic-reasoning)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶的交织世界建模与轨迹规划
-4. [HMPDM: A Diffusion Model for Driving Video Prediction with Historical Motion Priors](/202603/31/2603.27371v1-hmpdm-a-diffusion-model-for-driving-video-prediction-with-historical-motion-priors)  
+   evidence：基于扩散模型的驾驶员视觉注意力预测框架
+4. [Tele-Catch: Adaptive Teleoperation for Dexterous Dynamic 3D Object Catching](/202604/01/2603.28427v1-tele-catch-adaptive-teleoperation-for-dexterous-dynamic-3d-object-catching)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：用于驾驶视频预测和规划的扩散模型
-5. [Drift-AR: Single-Step Visual Autoregressive Generation via Anti-Symmetric Drifting](/202603/31/2603.28049v1-drift-ar-single-step-visual-autoregressive-generation-via-anti-symmetric-drifting)  
+   evidence：用于动态物体抓取的扩散策略去噪
+5. [An Isotropic Approach to Efficient Uncertainty Quantification with Gradient Norms](/202604/01/2603.29466v1-an-isotropic-approach-to-efficient-uncertainty-quantification-with-gradient-norms)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：预测熵编码生成不确定性
-6. [$AutoDrive\text{-}P^3$: Unified Chain of Perception-Prediction-Planning Thought via Reinforcement Fine-Tuning](/202603/31/2603.28116v1-autodrivetext-p3-unified-chain-of-perception-prediction-planning-thought-via-reinforcement-fine-tuning)  
+   evidence：偶然不确定性与认知不确定性的分解
+6. [C-TRAIL: A Commonsense World Framework for Trajectory Planning in Autonomous Driving](/202604/01/2603.29908v1-c-trail-a-commonsense-world-framework-for-trajectory-planning-in-autonomous-driving)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶的统一感知-预测-规划
-7. [Decoupling Exploration and Policy Optimization: Uncertainty Guided Tree Search for Hard Exploration](/202603/31/2603.22273v2-decoupling-exploration-and-policy-optimization-uncertainty-guided-tree-search-for-hard-exploration)  
+   evidence：自动驾驶轨迹规划及基于信任机制的可靠性量化
+7. [Integrated Multi-Drone Task Allocation, Sequencing, and Optimal Trajectory Generation in Obstacle-Rich 3D Environments](/202604/01/2603.24908v1-integrated-multi-drone-task-allocation-sequencing-and-optimal-trajectory-generation-in-obstacle-rich-3d-environments)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：不确定性引导的搜索与探索解耦
-8. [Sensing-Assisted Adaptive Beam Probing with Calibrated Multimodal Priors and Uncertainty-Aware Scheduling](/202603/31/2603.24024v1-sensing-assisted-adaptive-beam-probing-with-calibrated-multimodal-priors-and-uncertainty-aware-scheduling)  
+   evidence：无人机任务分配与轨迹生成集成
+8. [From Global to Local: Hierarchical Probabilistic Verification for Reachability Learning](/202604/01/2603.24990v1-from-global-to-local-hierarchical-probabilistic-verification-for-reachability-learning)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：通过集成差异实现认知不确定性代理
-9. [Causal-INSIGHT: Probing Temporal Models to Extract Causal Structure](/202603/31/2603.25473v1-causal-insight-probing-temporal-models-to-extract-causal-structure)  
+   evidence：非线性系统安全性的分层概率验证
+9. [Heracles: Bridging Precise Tracking and Generative Synthesis for General Humanoid Control](/202604/01/2603.27756v2-heracles-bridging-precise-tracking-and-generative-synthesis-for-general-humanoid-control)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：在时间模型中提取因果结构并追溯影响
-10. [ContraMap: Contrastive Uncertainty Mapping for Robot Environment Representation](/202603/31/2603.27632v1-contramap-contrastive-uncertainty-mapping-for-robot-environment-representation)  
+   evidence：用于运动控制和适应性的状态条件扩散中间件
+10. [$\mathcal{L}_1$-Certified Distributionally Robust Planning for Safety-Constrained Adaptive Control](/202604/01/2603.28758v1-mathcall1-certified-distributionally-robust-planning-for-safety-constrained-adaptive-control)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：机器人环境表示的空间不确定性估计
-11. [Heracles: Bridging Precise Tracking and Generative Synthesis for General Humanoid Control](/202603/31/2603.27756v1-heracles-bridging-precise-tracking-and-generative-synthesis-for-general-humanoid-control)  
+   evidence：模型与环境不确定性下的鲁棒规划
+11. [CLaD: Planning with Grounded Foresight via Cross-Modal Latent Dynamics](/202604/01/2603.29409v1-clad-planning-with-grounded-foresight-via-cross-modal-latent-dynamics)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于动作跟踪和生成合成的扩散中间件
+   evidence：利用潜在动力学调节扩散策略进行规划
 
 
 <div class="dpr-home-promo-card">
