@@ -6,59 +6,55 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-01
-- 运行时间：2026-04-01 20:02:26 UTC
+- 最新运行日期：2026-04-02
+- 运行时间：2026-04-02 19:40:08 UTC
 - 运行状态：成功
-- 本次总论文数：13
-- 精读区：2
-- 速读区：11
+- 本次总论文数：11
+- 精读区：4
+- 速读区：7
 
 ### 今日简报（AI）
-今日聚焦自动驾驶端到端架构与轨迹预测，深度拆解 SparseDriveV2 的评分机制与双重不确定性感知框架。
-- 详情：[/202604/01/README](/202604/01/README)
+今日聚焦自动驾驶与扩散模型前沿，深度解析 DreamerAD 潜世界模型与具备 PAC 保证的可达性分析。
+核心突破在于利用强化学习提升驾驶效率，并借助生成式模型解决语义不确定性下的复杂运动规划。
+建议重点关注人类数据驱动的导航算法及长尾场景生成，探索安全约束下的端到端具身智能方案。
+- 详情：[/202604/02/README](/202604/02/README)
 
 ### 精读区论文标签
-1. [SparseDriveV2: Scoring is All You Need for End-to-End Autonomous Driving](/202604/01/2603.29163v1-sparsedrivev2-scoring-is-all-you-need-for-end-to-end-autonomous-driving)  
+1. [DreamerAD: Efficient Reinforcement Learning via Latent World Model for Autonomous Driving](/202604/02/2603.24587v2-dreamerad-efficient-reinforcement-learning-via-latent-world-model-for-autonomous-driving)  
    标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：通过轨迹评分对驾驶行为的不确定性进行建模
-2. [Uncertainty-Aware Trajectory Prediction: A Unified Framework Harnessing Positional and Semantic Uncertainties](/202604/01/2603.29362v1-uncertainty-aware-trajectory-prediction-a-unified-framework-harnessing-positional-and-semantic-uncertainties)  
+   evidence：用于自动驾驶轨迹和策略训练的扩散世界模型
+2. [Data-Driven Reachability Analysis via Diffusion Models with PAC Guarantees](/202604/02/2604.00283v1-data-driven-reachability-analysis-via-diffusion-models-with-pac-guarantees)  
    标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：在轨迹预测中联合建模位置和语义不确定性
+   evidence：用于可达性分析和不确定性量化的扩散模型
+3. [Behavioral Score Diffusion: Model-Free Trajectory Planning via Kernel-Based Score Estimation from Data](/202604/02/2604.00391v1-behavioral-score-diffusion-model-free-trajectory-planning-via-kernel-based-score-estimation-from-data)  
+   标签：评分：8.0/10、query:diffusion-conf-uncertainty
+   evidence：基于扩散的轨迹优化和基于数据的评分估计
+4. [Forecasting Motion in the Wild](/202604/02/2604.01015v1-forecasting-motion-in-the-wild)  
+   标签：评分：8.0/10、query:diffusion-conf-uncertainty
+   evidence：用于轨迹预测的扩散Transformer
 
 ### 速读区论文标签
-1. [SCRAMPPI: Efficient Contingency Planning for Mobile Robot Navigation via Hamilton-Jacobi Reachability](/202604/01/2603.26995v1-scramppi-efficient-contingency-planning-for-mobile-robot-navigation-via-hamilton-jacobi-reachability)  
+1. [Sampling-based Task and Kinodynamic Motion Planning under Semantic Uncertainty](/202604/02/2604.00401v1-sampling-based-task-and-kinodynamic-motion-planning-under-semantic-uncertainty)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：移动机器人的轨迹优化与应急规划
-2. [Data is All You Need: Markov Chain Car-Following (MC-CF) Model](/202604/01/2603.27909v1-data-is-all-you-need-markov-chain-car-following-mc-cf-model)  
+   evidence：环境标签语义不确定性下的运动规划
+2. [Learning Humanoid Navigation from Human Data](/202604/02/2604.00416v1-learning-humanoid-navigation-from-human-data)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：针对自然驾驶随机性的概率跟车模型
-3. [DiffAttn: Diffusion-Based Drivers' Visual Attention Prediction with LLM-Enhanced Semantic Reasoning](/202604/01/2603.28251v1-diffattn-diffusion-based-drivers-visual-attention-prediction-with-llm-enhanced-semantic-reasoning)  
+   evidence：扩散模型预测合理未来轨迹的分布
+3. [ReinDriveGen: Reinforcement Post-Training for Out-of-Distribution Driving Scene Generation](/202604/02/2604.01129v1-reindrivegen-reinforcement-post-training-for-out-of-distribution-driving-scene-generation)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：基于扩散模型的驾驶员视觉注意力预测框架
-4. [Tele-Catch: Adaptive Teleoperation for Dexterous Dynamic 3D Object Catching](/202604/01/2603.28427v1-tele-catch-adaptive-teleoperation-for-dexterous-dynamic-3d-object-catching)  
-   标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：用于动态物体抓取的扩散策略去噪
-5. [An Isotropic Approach to Efficient Uncertainty Quantification with Gradient Norms](/202604/01/2603.29466v1-an-isotropic-approach-to-efficient-uncertainty-quantification-with-gradient-norms)  
-   标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：偶然不确定性与认知不确定性的分解
-6. [C-TRAIL: A Commonsense World Framework for Trajectory Planning in Autonomous Driving](/202604/01/2603.29908v1-c-trail-a-commonsense-world-framework-for-trajectory-planning-in-autonomous-driving)  
-   标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶轨迹规划及基于信任机制的可靠性量化
-7. [Integrated Multi-Drone Task Allocation, Sequencing, and Optimal Trajectory Generation in Obstacle-Rich 3D Environments](/202604/01/2603.24908v1-integrated-multi-drone-task-allocation-sequencing-and-optimal-trajectory-generation-in-obstacle-rich-3d-environments)  
+   evidence：利用视频扩散模型合成真实的驾驶视频和参与者轨迹
+4. [HiFlow: Tokenization-Free Scale-Wise Autoregressive Policy Learning via Flow Matching](/202604/02/2603.27281v1-hiflow-tokenization-free-scale-wise-autoregressive-policy-learning-via-flow-matching)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：无人机任务分配与轨迹生成集成
-8. [From Global to Local: Hierarchical Probabilistic Verification for Reachability Learning](/202604/01/2603.24990v1-from-global-to-local-hierarchical-probabilistic-verification-for-reachability-learning)  
+   evidence：基于扩散策略的轨迹连贯性
+5. [From Independent to Correlated Diffusion: Generalized Generative Modeling with Probabilistic Computers](/202604/02/2603.27996v1-from-independent-to-correlated-diffusion-generalized-generative-modeling-with-probabilistic-computers)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：非线性系统安全性的分层概率验证
-9. [Heracles: Bridging Precise Tracking and Generative Synthesis for General Humanoid Control](/202604/01/2603.27756v2-heracles-bridging-precise-tracking-and-generative-synthesis-for-general-humanoid-control)  
+   evidence：利用交互结构泛化扩散模型的随机转移核
+6. [AutoWorld: Scaling Multi-Agent Traffic Simulation with Self-Supervised World Models](/202604/02/2603.28963v1-autoworld-scaling-multi-agent-traffic-simulation-with-self-supervised-world-models)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于运动控制和适应性的状态条件扩散中间件
-10. [$\mathcal{L}_1$-Certified Distributionally Robust Planning for Safety-Constrained Adaptive Control](/202604/01/2603.28758v1-mathcall1-certified-distributionally-robust-planning-for-safety-constrained-adaptive-control)  
+   evidence：交通模拟与轨迹建模
+7. [DreamControl-v2: Simpler and Scalable Autonomous Humanoid Skills via Trainable Guided Diffusion Priors](/202604/02/2604.00202v1-dreamcontrol-v2-simpler-and-scalable-autonomous-humanoid-skills-via-trainable-guided-diffusion-priors)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：模型与环境不确定性下的鲁棒规划
-11. [CLaD: Planning with Grounded Foresight via Cross-Modal Latent Dynamics](/202604/01/2603.29409v1-clad-planning-with-grounded-foresight-via-cross-modal-latent-dynamics)  
-   标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：利用潜在动力学调节扩散策略进行规划
+   evidence：用于自主类人机器人运动规划的引导扩散先验
 
 
 <div class="dpr-home-promo-card">
