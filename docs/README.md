@@ -6,55 +6,58 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-02
-- 运行时间：2026-04-02 19:40:08 UTC
+- 最新运行日期：2026-04-03
+- 运行时间：2026-04-03 20:00:45 UTC
 - 运行状态：成功
-- 本次总论文数：11
-- 精读区：4
-- 速读区：7
+- 本次总论文数：12
+- 精读区：1
+- 速读区：11
 
 ### 今日简报（AI）
-今日聚焦自动驾驶与扩散模型前沿，深度解析 DreamerAD 潜世界模型与具备 PAC 保证的可达性分析。
-核心突破在于利用强化学习提升驾驶效率，并借助生成式模型解决语义不确定性下的复杂运动规划。
-建议重点关注人类数据驱动的导航算法及长尾场景生成，探索安全约束下的端到端具身智能方案。
-- 详情：[/202604/02/README](/202604/02/README)
+今日深挖 12 篇前沿论文，重点聚焦高效移动操控与复杂环境下的动态轨迹优化。
+高分论文 AnchorVLA 凭借锚定扩散技术刷新了端到端移动操作效率，SHARP 与 EgoFlow 则在实时运动预测及 6DoF 生成上取得显著突破。
+建议关注扩散模型与流匹配技术如何赋能移动机器人，实现更精准的感知与控制一体化。
+- 详情：[/202604/03/README](/202604/03/README)
 
 ### 精读区论文标签
-1. [DreamerAD: Efficient Reinforcement Learning via Latent World Model for Autonomous Driving](/202604/02/2603.24587v2-dreamerad-efficient-reinforcement-learning-via-latent-world-model-for-autonomous-driving)  
+1. [AnchorVLA: Anchored Diffusion for Efficient End-to-End Mobile Manipulation](/202604/03/2604.01567v1-anchorvla-anchored-diffusion-for-efficient-end-to-end-mobile-manipulation)  
    标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：用于自动驾驶轨迹和策略训练的扩散世界模型
-2. [Data-Driven Reachability Analysis via Diffusion Models with PAC Guarantees](/202604/02/2604.00283v1-data-driven-reachability-analysis-via-diffusion-models-with-pac-guarantees)  
-   标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：用于可达性分析和不确定性量化的扩散模型
-3. [Behavioral Score Diffusion: Model-Free Trajectory Planning via Kernel-Based Score Estimation from Data](/202604/02/2604.00391v1-behavioral-score-diffusion-model-free-trajectory-planning-via-kernel-based-score-estimation-from-data)  
-   标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：基于扩散的轨迹优化和基于数据的评分估计
-4. [Forecasting Motion in the Wild](/202604/02/2604.01015v1-forecasting-motion-in-the-wild)  
-   标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：用于轨迹预测的扩散Transformer
+   evidence：用于多模态动作分布和操作不确定性的扩散策略
 
 ### 速读区论文标签
-1. [Sampling-based Task and Kinodynamic Motion Planning under Semantic Uncertainty](/202604/02/2604.00401v1-sampling-based-task-and-kinodynamic-motion-planning-under-semantic-uncertainty)  
+1. [Autonomous overtaking trajectory optimization using reinforcement learning and opponent pose estimation](/202604/03/2603.27207v1-autonomous-overtaking-trajectory-optimization-using-reinforcement-learning-and-opponent-pose-estimation)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：环境标签语义不确定性下的运动规划
-2. [Learning Humanoid Navigation from Human Data](/202604/02/2604.00416v1-learning-humanoid-navigation-from-human-data)  
+   evidence：自动超车轨迹优化
+2. [SHARP: Short-Window Streaming for Accurate and Robust Prediction in Motion Forecasting](/202604/03/2603.28091v1-sharp-short-window-streaming-for-accurate-and-robust-prediction-in-motion-forecasting)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：扩散模型预测合理未来轨迹的分布
-3. [ReinDriveGen: Reinforcement Post-Training for Out-of-Distribution Driving Scene Generation](/202604/02/2604.01129v1-reindrivegen-reinforcement-post-training-for-out-of-distribution-driving-scene-generation)  
+   evidence：动态交通环境中的运动预测
+3. [EgoFlow: Gradient-Guided Flow Matching for Egocentric 6DoF Object Motion Generation](/202604/03/2604.01421v1-egoflow-gradient-guided-flow-matching-for-egocentric-6dof-object-motion-generation)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：利用视频扩散模型合成真实的驾驶视频和参与者轨迹
-4. [HiFlow: Tokenization-Free Scale-Wise Autoregressive Policy Learning via Flow Matching](/202604/02/2603.27281v1-hiflow-tokenization-free-scale-wise-autoregressive-policy-learning-via-flow-matching)  
+   evidence：用于物体运动生成的流匹配框架
+4. [Towards Intrinsically Calibrated Uncertainty Quantification in Industrial Data-Driven Models via Diffusion Sampler](/202604/03/2604.01870v1-towards-intrinsically-calibrated-uncertainty-quantification-in-industrial-data-driven-models-via-diffusion-sampler)  
+   标签：评分：7.0/10、query:diffusion-conf-uncertainty
+   evidence：基于扩散的后验采样用于校准不确定性量化
+5. [Unified Number-Free Text-to-Motion Generation Via Flow Matching](/202604/03/2603.27040v1-unified-number-free-text-to-motion-generation-via-flow-matching)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：基于扩散策略的轨迹连贯性
-5. [From Independent to Correlated Diffusion: Generalized Generative Modeling with Probabilistic Computers](/202604/02/2603.27996v1-from-independent-to-correlated-diffusion-generalized-generative-modeling-with-probabilistic-computers)  
+   evidence：通过流匹配和潜空间进行运动生成
+6. [Bayesian-Symbolic Integration for Uncertainty-Aware Parking Prediction](/202604/03/2603.27119v1-bayesian-symbolic-integration-for-uncertainty-aware-parking-prediction)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：利用交互结构泛化扩散模型的随机转移核
-6. [AutoWorld: Scaling Multi-Agent Traffic Simulation with Self-Supervised World Models](/202604/02/2603.28963v1-autoworld-scaling-multi-agent-traffic-simulation-with-self-supervised-world-models)  
+   evidence：贝叶斯神经网络量化预测不确定性
+7. [MotionRFT: Unified Reinforcement Fine-Tuning for Text-to-Motion Generation](/202604/03/2603.27185v1-motionrft-unified-reinforcement-fine-tuning-for-text-to-motion-generation)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：交通模拟与轨迹建模
-7. [DreamControl-v2: Simpler and Scalable Autonomous Humanoid Skills via Trainable Guided Diffusion Priors](/202604/02/2604.00202v1-dreamcontrol-v2-simpler-and-scalable-autonomous-humanoid-skills-via-trainable-guided-diffusion-priors)  
+   evidence：基于扩散模型的运动生成与强化微调
+8. [From Vessel Trajectories to Safety-Critical Encounter Scenarios: A Generative AI Framework for Autonomous Ship Digital Testing](/202604/03/2603.28067v1-from-vessel-trajectories-to-safety-critical-encounter-scenarios-a-generative-ai-framework-for-autonomous-ship-digital-testing)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于自主类人机器人运动规划的引导扩散先验
+   evidence：自主导航系统的生成式轨迹建模
+9. [Kernel-SDF: An Open-Source Library for Real-Time Signed Distance Function Estimation using Kernel Regression](/202604/03/2603.29227v1-kernel-sdf-an-open-source-library-for-real-time-signed-distance-function-estimation-using-kernel-regression)  
+   标签：评分：6.0/10、query:diffusion-conf-uncertainty
+   evidence：用于运动规划和轨迹优化的不确定性感知SDF估计
+10. [Locally Confident, Globally Stuck: The Quality-Exploration Dilemma in Diffusion Language Models](/202604/03/2604.00375v1-locally-confident-globally-stuck-the-quality-exploration-dilemma-in-diffusion-language-models)  
+   标签：评分：6.0/10、query:diffusion-conf-uncertainty
+   evidence：扩散模型解码中的置信度与不确定性
+11. [Stein Variational Uncertainty-Adaptive Model Predictive Control](/202604/03/2604.01034v1-stein-variational-uncertainty-adaptive-model-predictive-control)  
+   标签：评分：6.0/10、query:diffusion-conf-uncertainty
+   evidence：针对非线性控制中潜在参数不确定性的 Stein 变分推断
 
 
 <div class="dpr-home-promo-card">

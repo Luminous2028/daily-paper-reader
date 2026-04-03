@@ -1,0 +1,697 @@
+Title: Stein Variational Uncertainty-Adaptive Model Predictive Control
+
+URL Source: https://arxiv.org/pdf/2604.01034v1
+
+Published Time: Thu, 02 Apr 2026 01:15:41 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# Stein Variational Uncertainty-Adaptive Model Predictive Control 
+
+Hrishikesh Sathyanarayan and Ian Abraham 
+
+Abstract — We propose a Stein variational distributionally robust controller for nonlinear dynamical systems with la-tent parametric uncertainty. The method is an alternative to conservative worst-case ambiguity-set optimization with a deterministic particle-based approximation of a task-dependent uncertainty distribution, enabling the controller to concentrate on parameter sensitivities that most strongly affect closed-loop performance. Our method yields a controller that is robust to latent parameter uncertainty by coupling optimal control with Stein variational inference, and avoiding restrictive parametric assumptions on the uncertainty model while preserving com-putational parallelism. In contrast to classical DRO, which can sacrifice nominal performance through worst-case design, we find our approach achieves robustness by shaping the control law around relevant uncertainty that are most critical to the task objective. The proposed framework therefore reconciles robust control and variational inference in a single decision-theoretic formulation for broad classes of control systems with parameter uncertainty. We demonstrate our approach on repre-sentative control problems that empirically illustrate improved performance-robustness tradeoffs over nominal, ensemble, and classical distributionally robust baselines. 
+
+I. INTRODUCTION 
+
+Control of dynamical systems under broad uncertainty remains a central challenge in modern control theory. In many applications, uncertainty arises from latent parameters in the system dynamics (i.e. mass, inertia, or geometry) that cannot be directly measured yet critically influences closed-loop performance. Classical robust control methods address this challenge by optimizing performance under worst-case parameter uncertainty, yielding performance guarantees at the expense of conservatively robust controllers [1], [2], [3], [4]. In contrast, stochastic and risk-sensitive control methods optimize expected performance subject to a prescribed dis-tribution, but rely heavily on task-agnostic sampling methods that fail to accurately model task-relevant uncertainty in practice [5], [6]. Bridging this gap between robustness and control performance guarantees remains a fundamental open problem. Distributionally Robust Control (DRO) [1] provides aprincipled approach for reasoning about uncertainty by op-timizing over a set of admissible probability distributions, typically defined through divergence-based ambiguity sets. While DRO provides theoretically-grounded control formu-lations to model uncertainty, the method relies heavily on restrictive assumptions: either the uncertainty distribution must be parametrized and estimated a-priori [2], [3], or samples must be drawn from a predefined generative process.  
+
+> H. Sathyanarayan is with Department of Mechanical Engineering, Yale University, USA
+
+hrishi.sathyanarayan@yale.edu  
+
+> I. Abraham is with the Department of Electrical Engineering, University of Sydney, Australia
+
+ian.abraham@sydney.edu.au Ours EMPPI Standard MPC Standard DRO 
+
+lap time: 4.408 s lap time: 6.336 s lap time: N/A lap time: 7.488 s 
+
+full trajectory param. induced planned trajectories 
+
+Fig. 1: Autonomous Racing under Vehicle Inertial Uncertainty. 
+
+Here, we apply our Stein variational uncertainty-adaptive framework to autonomous racing, where the objective is to minimize lap time under significant uncertainty in the vehicle’s mass distribution (mass and inertia). We compare our approach to current state-of-art control baselines: Ensemble Model Predictive Control (EMPPI) [5], Clas-sical Distributionally Robust Control (DRO) [1], and conventional Model Predictive Control that directly solves the task without the consideration of uncertainty. Our approach optimizes for controls that quickly adapts to task-sensitive uncertainties faster than nominal baselines, enabling fast adaptation and convergence to the racing objective. 
+
+Moreover, classical DRO inherits a worst-case uncertainty design formulation that leads to overly conservative controls that subsequently degrades task performance. A guiding question is how we can relax the assumptions of DRO to avoid worst-case uncertainty modeling. Variational Inference (VI) methods have emerged as powerful tools that approximates complex probability distributions without com-mitting to restrictive parametric families. Stein Variational Gradient Descent (SVGD) [7], in particular, constructs a deterministic flow of particles that approximates a target distribution via functional gradient descent in a reproducing kernel Hilbert space. Unlike traditional VI, SVGD provides a nonparametric and computationally tractable mechanism to represent multimodal and task-dependent uncertainty. De-spite its success in Bayesian inference and learning [8], [9], its role in robust control synthesis remains largely unexplored. Early work presented in [10] introduced Stein Variational Inference (SVI) [7], [11], [12], [13] for jointly reasoning over controls and dynamics through brute-force parallelization, but fails to capture task-sensitivities that could be used to reduce computation. This work aims to show that for Stein inference over task-sensitive parameters alone is sufficient within DRO in a model-predictive control paradigm under limited sensor feedback, thus negating need for parallel 
+
+> arXiv:2604.01034v1 [cs.RO] 1 Apr 2026
+
+inference over control and demonstrating uncertainty robust, reliable control synthesis. The core idea is to replace static or worst-case uncertainty models with a deterministic , evolving set of particles that adapts to uncertainty via a task-dependent posterior over parameter uncertainty. Rather than optimizing over all admis-sible uncertainties, our method prioritizes uncertainty most sensitive to task performance , concentrating computation on uncertainties that most impact control. This approach leads to optimal control synthesis that is coupled and co-evolved with uncertainty propagation through a coupled, adversarial-based optimization. 1 Furthermore, we characterize how the induced controller is shaped by adapting over task-relevant uncertainty. In summary, we present a recast of the robust control prob-lem as an inference-driven process where control synthesis is actively shaped to improve decision making subject to task-sensitive uncertainties. The main contributions of this work is as follows: 1) A non-parametric, deterministic approximation of task-dependent uncertainty in place of worst-case, conserva-tive uncertainty design. 2) Derivation of theoretical guarantees for the existence, optimality, and convergence of the Stein variational ap-proximation to the task-sensitive parameter distribution. 3) Demonstrations of improved performance/robustness tradeoffs of the proposed approach compared to classical and stochastic sampling methods. 
+
+II. Problem Formulation 
+
+Let 𝑥 𝑡 ∈ X be the system state, 𝑢 𝑡 ∈ U be the control input 
+
+∀𝑡 ∈ [ 0, 𝑡 ℎ] where 𝑡 ℎ is the discrete planning horizon, and 
+
+𝜃 ∈ Θ be the system latent parameters for a nonlinear system of evolving dynamics 𝑥 𝑡 +1 = 𝑓 (𝑥 𝑡 , 𝑢 𝑡 , 𝜃 ). The objective is to solve the following control problem, min  
+
+> 𝑥 0: 𝑡 ℎ,𝑢 0: 𝑡 ℎ
+
+J ( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) = 𝑚 (𝑥 𝑇 , 𝑢 𝑇 , 𝜃 ) +  
+
+> 𝑡 ℎ−1
+
+∑︁ 
+
+> 𝑡 =0
+
+ℓ(𝑥 𝑡 , 𝑢 𝑡 , 𝜃 )
+
+s.t. 𝑥 0 ∈ X 0, 𝑢 ∈ U , 𝑥 𝑡 +1 = 𝑓 𝜃 (𝑥 𝑡 , 𝑢 𝑡 , 𝜃 )
+
+(1) where 𝑥 0 are the system initial conditions, ℓ(·) is the stage cost, and 𝑚 (·) is the terminal cost. The above optimization is iteratively solved for a single planning cycle 𝑡 ∈ [ 0, 𝑡 ℎ] and the optimal first control input is administered to the system in a receding-horizon manner. 
+
+Assumption 1 (Set Compactness and Measurability): Let 
+
+𝑛 𝑥 , 𝑛 𝑢 , 𝑛 𝜃 ∈ N. The state, input, and parameter spaces satisfy 
+
+X ∈ B( R𝑛 𝑥 ), U ∈ B( R𝑛 𝑢 ), Θ ∈ B( R𝑛 𝜃 ),
+
+respectively where B( R𝑛 ) denotes the Borel 𝜎 -algebra on R𝑛 .Moreover, Θ is nonempty and compact. 
+
+Remark 1: The uncertainty enters the control problem through both the dynamics and the performance index. Hence, 
+
+> 1This is distinctly different from belief-space planning [14] and experimen-tal design related methods [15], [16], [17] in that we never explicitly reduce uncertainty, rather just focus on task performance.
+
+for fixed 𝑢 0: 𝑡 ℎ −1, the realized trajectory and realized cost are both functions of 𝜃 .
+
+Proposition 1 (Existence of optimal state-control trajectory): 
+
+Given a fixed 𝜃 ∈ Θ, let the feasible trajectory be 
+
+T :=
+
+
+
+(𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ )
+
+𝑥 0 ∈ X 0,𝑢 𝑡 ∈ U ,𝑥 𝑡 +1 = 𝑓 (𝑥 𝑡 , 𝑢 𝑡 , 𝜃 ), ∀𝑡 ∈ [ 0, 𝑡 ℎ − 1]
+
+
+
+.
+
+Suppose that: 1) X0 and U are compact, 2) 𝑓 (· , ·, 𝜃 ) is continuous in (𝑥, 𝑢 ),3) ℓ(· , ·, 𝜃 ) and 𝑚 (· , ·, 𝜃 ) are lower semicontinuous in (𝑥, 𝑢 ).Then the feasible set T is nonempty and compact, and ∃𝜏 ∗ ∈ T 
+
+such that 
+
+J ( 𝜏 ∗, 𝜃 ) = min   
+
+> 𝜏 ∈ T
+
+J ( 𝜏, 𝜃 ).
+
+Proof: We first show that T is compact. Since X0 and 
+
+U are compact and the dynamics 𝑓 (· , ·, 𝜃 ) are continuous, the constraint 
+
+𝑥 𝑡 +1 = 𝑓 (𝑥 𝑡 , 𝑢 𝑡 , 𝜃 )
+
+defines a continuous mapping from (𝑥 𝑡 , 𝑢 𝑡 ) to 𝑥 𝑡 +1. By induction over 𝑡 , the trajectory 𝑥 0: 𝑡 ℎ is a continuous function of (𝑥 0, 𝑢 0: 𝑡 ℎ −1). Hence, the feasible set T is the image of a compact set under a continuous mapping, intersected with closed constraints, and is therefore compact. Next, by assumption, the stage cost ℓ(· , ·, 𝜃 ) and terminal cost 𝑚 (· , ·, 𝜃 ) are lower semicontinuous. Since finite sums preserve lower semicontinuity, the objective J (· , 𝜃 ) is lower semicontinuous on T .Therefore, by the Weierstrass Extreme Value Theorem [18], 
+
+J attains its minimum on the compact set T , i.e., there exists 
+
+𝜏 ∗ ∈ T such that 𝜏 ∗ is the minimizer of J (· , 𝜃 ).Note that we do not assume 𝜃 to be known when the control is synthesized. Instead, 𝜃 is modeled as an unknown element of Θ, or more generally as a random variable on  Θ, B( Θ).When prior information is available by a prior distribution 
+
+𝑝 (𝜃 ), it is encoded by a reference measure 𝑝 ∈ P ( Θ), where 
+
+𝜃 ∼ 𝑝 (𝜃 )
+
+For any admissible (𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ ), the map 𝜃 ↦ →J ( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) is a random cost under any measure 𝑝 ∈P ( Θ). Thus, uncertainty about 𝜃 induces uncertainty about closed loop performance. 
+
+A. Uncertainty-Aware Optimal Control 
+
+This paper focuses on characterizing and constructing a sequence of controls 𝑢 0: 𝑇 that are robust to parametric uncer-tainty induced in task performance. Rather than optimizing for a nominal 𝜃 , we optimize controls with respect to the 
+
+variability of 𝜃 ↦ → J (· , 𝜃 ) over Θ, leading to functionals over measures 𝑝 ∈ P ( Θ) and a class of uncertainty-aware optimal control problems of the form, min  
+
+> 𝑥 0: 𝑡 ℎ,𝑢 0: 𝑡 ℎ
+
+sup 
+
+> 𝑝 ∈ A
+
+E𝑝 
+
+J ( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 )
+
+s.t. constraints in Eq. 1 (2) where A ⊆ P ( Θ) denotes a selected family of admissible distributions over the latent parameters. The formulation above highlights that robustness is defined with respect to distri-butions that capture parameter uncertainty in an adversarial manner, where the objective is to minimize an upper bound over the uncertainty defined over a family of probability distributions. The choice of selecting A, however, remains a central chal-lenge, as finding admissible distributions that characterizes 𝜃 
+
+is difficult to obtain. In DRO theory [19], [20], [21], [1], P is defined as the following ambiguity set, 
+
+P = {𝑝 | D𝐾 𝐿 [ 𝑝 ∥𝑞 ] ≤ 𝜖 } (3) where 𝑞 is the unknown target distribution that captures the realization of the true parameter 𝜃 ∗. Since finding P such that element 𝑝 remains as KL-close to the target unknown distribution is challenging to obtain, DRO relaxes the min-max problem defined in Eq. 2 to be the Risk-Averse Optimal Control Problem [22], [23], min   
+
+> 𝑥 0: 𝑡 ℎ,𝑢 0: 𝑡 ℎ,𝜆> 0
+
+𝜆𝜖 + 𝜆 log E𝑞 
+
+"
+
+exp 
+
+ 1
+
+𝜆 J ( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 )
+
+#
+
+s.t. constraints in Eq. 1 (4) where 𝜆 ∈ Λ are the dual variables to Eq. 2. For sufficiently large 𝜆 , the risk-averse problem can further be reduced to, log E𝑞 
+
+"
+
+exp 
+
+ 1
+
+𝜆 L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 )
+
+#
+
+≈ E𝑞 
+
+L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) + 121
+
+𝜆 V𝑞 
+
+L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) .
+
+(5) However, solving Eq. 5 alone does not solve the challenge of finding an admissible ambiguity set P. In practice, DRO algrithms first estimate the target distribution explicitly through data-driven maximum likelihood approaches [3] and subsequently define P as a neighborhood around this estimate in the KL sense. While maximum likelihood provides a principled ambiguity-set construction, it requires sufficient parameter-space coverage and repeated system sampling [24], which is challenging to retrieve for latent 𝜃 and largely negates the need for robustness to model uncertainty. In this work, we assume minimal access to system feedback to estimate latent parameters, and instead avoid the need of explicitly selecting P by utilizing variational methods to shape parameter uncertainty that are most critical to the objective J .
+
+III. Stein Variational Inference 
+
+Given a random variable 𝜃 ∈ 𝑝 (𝜃 ), Variational Inference (VI) offers a powerful method that approximates an intractable, unknown target distribution 𝑞 by optimizing a surrogate 𝑝 ∈P ( Θ) chosen from a family of distributions that satisfy Eq. 3, through the following, 
+
+𝑝 ∗ (𝜃 ) = arg min 
+
+> 𝑝 ∈ P
+
+{D𝐾 𝐿 ( 𝑝 ∥𝑞 )≡ E𝜃 ∼ 𝑝 ( 𝜃 )
+
+ log 𝑝 (𝜃 ) − E𝜃 ∼ 𝑝 ( 𝜃 )
+
+ log 𝑞 (𝜃 ) + log 𝑐 }
+
+(6) where 𝑝 ∗ is the approximation of 𝑞 , and 𝑐 is a constant that is often negligible in practice. As aforementioned, the choice of 
+
+P remains a nontrivial challenge, and can negatively impact the performance of VI. As a solution, Stein Variational Inference, also referred to as Stein Variational Gradient Descent (SVGD) [7], avoids the need of explicitly choosing P entirely; instead, SVGD initializes a set of particles {𝜃 𝑖  
+
+> 0
+
+}𝑁 𝑖 =0 ∼ 𝑝 (𝜃 ), and subsequently evolves them according to the mapping, 
+
+𝜃 𝑖 𝑘 +1 ← 𝜃 𝑖 𝑘 + 𝛼𝜙 ∗ 
+
+> 𝑝,𝑞
+
+(𝜃 𝑖 𝑘 ) ∀ 𝑘 ∈ [ 0, 𝑀 ] (7) where 𝛼 is a step size parameter and 𝜙 ∗ 
+
+> 𝑝,𝑞
+
+(𝜃 𝑖 𝑘 ) is a smooth function that characterizes the 𝑘 𝑡 ℎ steepest descent direction that minimizes the KL-divergence measure, and 𝑀 represents the total number of SVGD iterations. The gradient 𝜙 ∗ 
+
+> 𝑝,𝑞
+
+is the solution to the following steepest descent problem, 
+
+𝜙 ∗ 
+
+> 𝑝,𝑞
+
+(·) = arg min  
+
+> 𝜙 ∈ H 𝑑
+
+{−∇ 𝜉 𝐷 𝐾 𝐿 ( 𝑝 ∥𝑞 ) | ∥ 𝜙 ∥H𝑑 ≤ 1}
+
+= E𝜃 𝑘 ∼𝑞 
+
+A𝑞 ∥( 𝜃 𝑘 , ·)  (8) where A𝑞 (·) : Ξ → S Ξ is Stein’s identity computed for a universal positive definite kernel function 𝑘 : Ξ × Ξ → R
+
+operating in a dense H 𝑑 in the space of continuous functions 
+
+𝐶 (Ξ, R𝑑 ), where H 𝑑 is the corresponding Reproducing Kernel Hilbert Space (RKHS). The closed form solution to Eq. 8 is computed to be, 
+
+𝜙 ∗ 
+
+> 𝑝,𝑞
+
+(·) = E𝜃 𝑘 ∼ 𝑝 
+
+𝑘 (𝜃 𝑘 , ·)∇ 𝜃 log 𝑝 ′ (𝜃 𝑘 ) + ∇ 𝜃 𝑘 (𝜃 𝑘 , ·)  (9) where 𝑝 ′ is the approximated posterior to the target 𝑞 , and is modeled as a parameter conditioned observation distribution, 
+
+𝑝 ′ (𝜃 ) = 𝑝 (O| 𝜃 ) 𝑝 (𝜃 )
+
+∫ 
+
+> Θ
+
+𝑝 (O| 𝜃 ) 𝑝 (𝜃 )𝑑𝜃 (10) where ∫ 
+
+> Θ
+
+𝑝 (O| 𝜃 ) 𝑝 (𝜃 )𝑑𝜃 = constant and O is an observation output denoting an optimality criterion. Commonly, 𝜙 ∗ 
+
+> 𝑝,𝑞
+
+:
+
+Θ → S Θ is approximated using Monte-Carlo samples over 𝜃 ,
+
+𝜙 ∗ 
+
+> 𝑞, 𝑝
+
+(·) ≈ 1
+
+𝑁 
+
+> 𝑁
+
+∑︁ 
+
+> 𝑡 =1
+
+𝑘 (𝜃 𝑡 𝑘 , ·)∇ 𝜃 log 𝑝 ′ (𝜃 𝑡 𝑘 ) + ∇ 𝜃 𝑘 (𝜃 𝑡 𝑘 , ·) (11) which are initialized at random and then updated determinis-tically. With sufficient samples 𝑁 and number of SVGD itera-tions, the evolved particles become a sufficient approximation of the target 𝑞 (𝜃 ) and show provably strong convergence [9] under regularity conditions. 
+
+IV. Parameter-induced Optimality Gap as Inference 
+
+This section outlines an approach that integrated the the-oretical benefits of DRO combined with diverse, task-based parameter inference techniques via SVGD. We first define the Lagrangian of the optimization problem for a single planning cycle defined in Eq. 1 as, 
+
+L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) = J ( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) + 𝛽 ⊤ ℎ(𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 )
+
+where ℎ(𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) =
+
+ 𝑥 0 − ¯𝑥 0
+
+𝑥 𝑡 +1 − 𝑓 (𝑥 𝑡 , 𝑢 𝑡 , 𝜃 )
+
+
+
+(12) where 𝛽 comprise the dual equality variables, ℎ(·) are the equality constraints, and 𝑥 𝑡 ∈ X and 𝑢 𝑡 ∈ U are enforced. 
+
+Assumption 2: (Θ-Smoothness of Lagrangian) L is bounded and continuous in compact Θ, and for 𝜖 > 0, sup 
+
+> 𝑥,𝑢, 𝜃
+
+∥∇ 𝜃 L( 𝑥, 𝑢, 𝜃 )∥ ≤ 𝜖 s.t. 𝑥 ∈ X , 𝑢 ∈ U , 𝜃 ∈ Θ. (13) Because 𝜃 induces uncertainty about closed loop performance optimized by Lagrangian L : X × U × Θ → R, we define the optimality gap produced by a random variable 𝜃 as, 
+
+𝛿 L(· , 𝜃 ) = L( 𝑥 ∗, 𝑢 ∗, 𝜃 ) − L( 𝑥 ∗, 𝑢 ∗, 𝜃 ∗) (14) where 𝜃 ∗ is the true parameter value. Referring back to Eq. 4, for a sufficiently large dual 𝜆 , we can approximate the expected Lagrangian output via Monte-Carlo expectation to obtain, min  
+
+> 𝑥 0: 𝑡 ℎ,𝑢 0: 𝑡 ℎ
+
+E𝑞 
+
+L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) ≈ 1
+
+𝑁 
+
+> 𝑁
+
+∑︁ 
+
+> 𝑖 =1
+
+L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 𝑖 )
+
+= L( 𝜏, 𝜃 ) 𝜃 =𝜃 ∗ + 𝛾 1
+
+𝑁 
+
+> 𝑁
+
+∑︁ 
+
+> 𝑖 =1
+
+𝛿 L( 𝜏, 𝜃 𝑖 )
+
+(15) where 𝛾 is a design parameter such that 𝛾 = 1 equates to the true Monte-Carlo approximation above. However, in practice, tuning 𝛾 is desirable in order to control the trade-off between optimizing over the nominal parameters versus the variations of parameters. Note that 𝜃 ∗ is unknown a-priori, and requires an additional approximation in order to implement Eq. 15. we choose the empirical posterior mean (particle mean) as a standard and consistent estimator in particle-based inference used in Stein-based control [11], [12], 
+
+𝜃 ∗ ≈ ¯𝜃 = 1
+
+𝑁 
+
+> 𝑁
+
+∑︁ 
+
+> 𝑖 =1
+
+𝜃 𝑖 (16) which is shown to provide a stable, low-variance reference for defining the optimality gap. The optimization in Eq. 15 is commonly used in current robust control methods [5], [10], but a core challenge in implementation remains in how the parameter samples {𝜃 𝑖 }𝑁 𝑖 =1 are chosen .
+
+A. Stein Variational Parameter Inference 
+
+We outline a principled, non-parametric approach that guides parameter particles 𝜃 𝑖 towards task-critical uncertain-ties by contextualizing SVGD as an inference problem over uncertain parameters, we define the log posterior distribution given a parameter prior 𝑝 (𝜃 ) as a Boltzmann posterior, log 𝑝 ′ (𝜃 ) = log exp   − 𝛿 L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) 𝑝 (𝜃 )
+
+𝑧 
+
+!
+
+= log 𝑝 (𝜃 ) − 𝛿 L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) + log 𝑧 
+
+(17) where 𝑝 (O| 𝜃 ) is defined as the expected negative optimality gap commonly used in relevant Stein literature [11], [12], and 
+
+𝑧 is a constant that is often ignored in the optimization. By defining the likelihood observations as such, we explicitly characterize model optimality variations induced by uncertain parameters that directly impacts the Stein flow. We utilize this posterior approximation to the target 𝑞 by evolving initialized Stein particles {𝜃 𝑖 }𝑁 𝑖 =1∀𝑖 ∈ Z+ by computing steepest descent 
+
+𝜙 ∗ using Stein’s identity given prior 𝑝 (𝜃 ),
+
+𝜙 ∗ (·) = E𝜃 ∼ 𝑝 ( 𝜃 )
+
+𝑘 (𝜃 𝑖 , ·)∇ 𝜃 log 𝑝 ′ (𝜃 𝑖 ) + ∇ 𝜃 𝑘 (𝜃 𝑖 , ·) 
+
+≈ 1
+
+𝑁 
+
+> 𝑁
+
+∑︁ 
+
+> 𝑖 =1
+
+𝑘 (𝜃 𝑖 , ·)∇ 𝜃 log 𝑝 ′ (𝜃 𝑖 ) + ∇ 𝜃 𝑘 (𝜃 𝑖 , ·) (18) where 𝑘 : Θ × Θ → R is a universal positive definite kernel. Our approach evaluates parameter sensitivity through 
+
+𝑘 𝑡 ℎ evolving estimators {𝜃 𝑖 𝑘 }𝑁 𝑖 =1, capturing the task-relevant deviations 𝛿 L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) and enabling control synthesis that explicitly counteracts the induced optimality gap. 
+
+Algorithm 1 Stein Variational Uncertainty-Adaptive MPC 
+
+Require: planning horizon 𝑡 ℎ, initial trajectory (𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ )
+
+parameter prior 𝑝 (𝜃 ), 𝑁 total number of particles, SVGD step size 𝛼 , design parameter 𝛾 , initial particles {𝜃 0 
+
+> 𝑖
+
+}𝑁 𝑖 =1 ∼
+
+𝑝 (𝜃 ), dynamics 𝑓 (𝑥 𝑡 , 𝑢 𝑡 , 𝜃 ), total time duration 𝑇 . 
+
+> 1:
+
+𝑡 = 0 
+
+> 2:
+
+while 𝑡 < 𝑇 do  
+
+> 3:
+
+𝜏 ∗ ← Eq. 15  
+
+> 4:
+
+Apply first control 𝑢 ∗ [0] via MPC  
+
+> 5:
+
+𝑥 𝑡 +1 ← 𝑓 (𝑥 𝑡 , 𝑢 ∗ [0], 𝜃 ) 𝜃 =𝜃 ∗ ⊲ Env. Step  
+
+> 6:
+
+Update SVI  
+
+> 7:
+
+{𝜃 𝑖 𝑘 +1 }𝑁 𝑖 =1 ← SVGD( {𝜃 𝑖 𝑘 }𝑁 𝑖 =1) ⊲ Eq. 7  
+
+> 8:
+
+𝑡 ← 𝑡 + 1 
+
+> 9:
+
+end while 
+
+Lemma 1 (Continuity of the Stein potential): Given a fea-sible state-control pair (𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ ), let 
+
+𝑉 (𝜃 ) := 𝛿 L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) − log 𝑝 (𝜃 ), 𝜃 ∈ Θ,
+
+where 
+
+𝛿 L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) = L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) − L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ∗).
+
+Suppose Assumption 2 holds and 𝑝 (𝜃 ) is strictly positive and continuous on Θ. Then 𝑉 is continuous on Θ.
+
+Proof: Since 𝜃 ∗ is fixed, the scalar 
+
+L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ∗)
+
+is constant with respect to 𝜃 . Therefore, 
+
+𝜃 ↦ → 𝛿 L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 )
+
+is continuous on Θ.Because 𝑝 is strictly positive and continuous on Θ, the function log 𝑝 (𝜃 ) is continuous on Θ, and hence so is log 𝑝 (𝜃 ).Therefore, 𝑉 (𝜃 ) = 𝛿 L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) − log 𝑝 (𝜃 ) is the sum of two continuous functions on Θ, and is thus continuous. 
+
+Theorem 1: (Posterior Convergence in Θ [9, Corollary 6]) Given an initial prior 𝑝 (𝜃 ), let 𝑉 (𝜃 ) = 𝛿 L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) − 
+
+log 𝑝 (𝜃 ) be the lower semi-continuous, task-dependent value function on the compact space Θ, 𝑘 (· , 𝜃 ) is a universal positive definite kernel in Θ, and let 𝐾𝑆𝐷 𝑝 ′ (𝜇 𝜃 ) = ∥𝜙 ∗ (𝜇 )∥ 2 
+
+> HΘ
+
+be the t = 0 s t = 1.75 s t = 3.5 s t = 5.25 s t = 7.00 s 
+
+*rocket traj. Stein-inferred planned traj’s gimbal+thrust vector center of mass loc. landing pad goal (a) Rocket example. Given its initial condition, the rocket system navigates to a landing pad safely under broad uncertainty about its mass, inertia, and center of mass location. Because the true center of mass induces a top-heavy system, the rocket explicitly reasons over this uncertainty by modulating gimbal and thrust to maintain a locally stable upright configuration. t = 0 s t = 3.00 s t = 6.00 s t = 9.00 s t = 12.00 s 
+
+pole trajectory Stein-inferred planned traj’s  
+
+> (b) Cartpole example. Given a downward-stable oriented initial condition, the cartpole system has to reason over the mass and length of its pole while achieving a swingup task. Utilizing SVGD, the system first aims to ‘explore’ the task-sensitive uncertainty space through repeated swinging, until the SVGD solver converges on an approximated posterior to the target, subsequently achieving the task successfully.
+
+Fig. 2: Example Experimental Outcomes from Our Method. We demonstrate the efficacy of our approach on a two-dimensional rocket landing and cartpole swingup control tasks. 
+
+kernel Stein discrepancy over the posterior 𝑝 ′. Then, ∃𝜅 > 0such that, 1
+
+𝑁 
+
+> 𝑁
+
+∑︁ 
+
+> 𝑖 =1
+
+KSD 𝑝 ′ (𝜇 𝑖 ) ≤ 𝐷 𝐾 𝐿 ( 𝑝 ∥ 𝑝 ′)
+
+𝑁𝑐 𝜅 
+
+(19) where 𝑐 𝜅 is a 𝜅 -parameterized term [9, Corollary 6]. Thus, for sufficient 𝑀 number of SVGD iterations, the ap-proximated posterior 𝑝 ′ sufficiently represents the intractable target posterior 𝑞 which we show in V. 
+
+Theorem 2: (Convergence of optimality gap) Let 𝑞 ∈ P ( Θ)
+
+denote the intractable target posterior over parameters, and let 
+
+{𝑝 ′ 
+
+> 𝑀
+
+}𝑀> 0 ⊂ P ( Θ) denote the sequence of empirical Stein particle measures (posteriors) generated by the SVGD updates for 𝑀 iterations in Eq. 8. Given Assumption 1 holds true, the conditions in Theorem 1 are satisfied, and the mapping 
+
+𝜃 ↦ → L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ) is bounded and continuous for fixed state control pairs (𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ ). Then ∃𝑀 ∈ Z+ such that, 
+
+E𝜃 ∼𝑞 ( 𝜃 )
+
+L(· , 𝜃 ) − E𝜃 ∼ 𝑝 ′   
+
+> 𝑀 (𝜃 )
+
+L(· , 𝜃 ) ≤ 𝜀 
+
+Proof: Since the Stein kernel 𝑘 is universal on compact 
+
+Θ, Theorem 1 shows convergence on the associated empirical measures, 
+
+𝑝 ′ 
+
+> 𝑀
+
+⇒ 𝑞 as 𝑀 → ∞ .
+
+For a fixed trajectory (𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ ), we define the following function, 
+
+𝑓 (𝜃 ) := L( 𝑥 0: 𝑡 ℎ , 𝑢 0: 𝑡 ℎ , 𝜃 ).
+
+By Assumption 2, 𝑓 is bounded and continuous on Θ.Therefore, invoking Portmanteau Theorem [25], 
+
+∫
+
+> Θ
+
+𝑓 (𝜃 ) 𝑝 ′ 
+
+> 𝑀
+
+(𝜃 )𝑑𝜃 →
+
+∫
+
+> Θ
+
+𝑓 (𝜃 )𝑞 (𝜃 )𝑑𝜃 as 𝑀 → ∞                                      
+
+> Cartpole Swing-Up Rocket Landing
+> Method Success (%) Time (s) Success (%) Time (s) Ours 100.0 10.24 ±2.57 90.63 5.70 ±2.53 EMPPI 93.75 24.47 ±13.82 68.75 5.21 ±2.54
+> MPC 93.75 23.54 ±13.84 56.25 5.52 ±2.81 DRO 78.13 23.34 ±13.45 68.75 5.25 ±3.38
+
+TABLE I: Performance comparison on cartpole swing-up and rocket landing tasks. Our method consistently achieves the highest success rates on both problems, while also exhibiting substantially faster convergence on the cartpole task ( ≈ 2× relative speedup). Our method balances robustness and efficiency by guiding parameter inference with task-sensitive uncertainties, whereas baselines exhibit reduced reliability or increased computational burden. 
+
+and equivalently, 
+
+E𝜃 ∼ 𝑝 ′   
+
+> 𝑀 (𝜃 )
+
+L(· , 𝜃 ) → E𝜃 ∼𝑞 ( 𝜃 )
+
+L(· , 𝜃 ) .
+
+Hence, 
+
+E𝜃 ∼𝑞 ( 𝜃 )
+
+L(· , 𝜃 ) − E𝜃 ∼ 𝑝 ′   
+
+> 𝑀 (𝜃 )
+
+L(· , 𝜃 ) → 0 as 𝑀 → ∞ .
+
+By the definition of convergence of a sequence, for a finite 
+
+𝑀 ∈ Z+,
+
+E𝜃 ∼𝑞 ( 𝜃 )
+
+L(· , 𝜃 ) − E𝜃 ∼ 𝑝 ′   
+
+> 𝑀 (𝜃 )
+
+L(· , 𝜃 ) ≤ 𝜀 
+
+thus completing the proof. 
+
+V. Results 
+
+In this section, we demonstrate the empirical effectiveness of our proposed Stein Variational uncertainty-adaptive model predictive controller across the following nonlinear control problems with latent parameters with broad uncertainty: 1) Cartpole Swingup. A cartpole system is tasked with orienting the pole to an upright position given an initial downward oriented state. 2) Rocket Landing. A two-dimensional rocket system is tasked with navigating toward a landing pad given an initial state of the system. 3) Autonomous Racing. An autonomous vehicle system is asked with racing around a two-dimensional track as quickly as possible to reach the finish line. All control problems are given the following general stage and terminal cost structure based on Eq. 1, 
+
+ℓ(𝑥 𝑡 , 𝑢 𝑡 , 𝜃 ) = (𝑥 𝑡 − 𝑥 𝑑𝑒𝑠 )⊤Q(𝑥 𝑡 − 𝑥 𝑑𝑒𝑠 ) + 𝑢 ⊤ 
+
+> 𝑡
+
+R𝑢 𝑡 
+
+𝑚 (𝑥 𝑡 , 𝑢 𝑡 , 𝜃 ) = (𝑥 𝑇 − 𝑥 𝑑𝑒𝑠 )⊤Qf (𝑥 𝑇 − 𝑥 𝑑𝑒𝑠 ) + 𝑟 (𝑥 𝑡 , 𝑢 𝑡 , 𝜃 )
+
+(20) where Q, R, Qf ⪰ 0, and 𝑟 (·) is an problem-specific additional terminal cost. Note 𝑟 (·) = 0 unless otherwise specified. 
+
+A. Comparative Baselines 
+
+We compare our Stein Variational uncertainty-adaptive Model Predictive Control to the following three comparative baselines: 1) Ensemble Model Predictive Control (EMPPI) [5], [6]. Performs task-agnostic, stochastic optimization by sampling control sequences and propagating them across an ensemble of model parameters, but does not explic-itly prioritize task-relevant uncertainty in the parameter space. 2) Standard Distributionally Robust Control [1], [3]. 
+
+Computes controls against a worst-case distribution within an ambiguity set, yielding conservative policies that ignore task-dependent parameter sensitivities. 3) Standard MPC. Standard MPC solves the finite-horizon optimal control problem using a nominal parameter estimate, ignoring uncertainty in the system dynamics during control synthesis. All experiments are initialized by sampling parameters from a bounded uniform distribution. Each example is evaluated over 32 trials with different sampling seeds that initialize the parameters {𝜃 𝑖 }𝑁 𝑖 =0, where we set 𝑁 = 5. For all experiments, we utilize a Radial Basis Function (RBF) unless otherwise stated, where the kernel is modeled as, 𝑘 (𝜃, ˆ𝜃 ) = exp (−∥ 𝜃 −
+
+ˆ𝜃 ∥2/ℎ) where ℎ is a tunable bandwidth parameter, which we fix at ℎ = 1. Across all experiments, we fix the design parameter in Eq. 4 as 𝛾 = 0.5. 
+
+B. Cartpole Swingup 1) Problem Formulation: Let xcp 𝑡 ∈ X cartpole  
+
+> 𝑡
+
+= R4 be the cartpole system state, defined as xcp 𝑡 = [𝑥 𝑡 , 𝜑 𝑡 , 𝑣 𝑡 , 𝜔 𝑡 ]⊤
+
+where 𝑥 𝑡 is the horizontal displacement of the system from the origin, 𝜑 𝑡 is the measured pole angle with respect to the cartpole downward vertical axis, and 𝑣 𝑡 and 𝜔 𝑡 are translational and angular velocities, respectively. Let ucp 𝑡 ∈ U cartpole = R
+
+be the force control on the cartpole translational axis. Given an initial condition xcp 0 = [0, 0, 0, 0]⊤ and goal state xcp des =
+
+[0, 𝜋, 0, 0]⊤, the objective of the cartpole swingup is to orient track completion (%)                                 
+
+> time (s)
+> Ours
+> EMPPI MPC DRO
+> Fig. 3: Autonomous Racing Lap Time Completions. Here we report track completion over time for the autonomous racing task under parametric uncertainty in mass and inertia. Our method achieves faster and more consistent progress by reasoning over task-sensitive regions of the parameter posterior, prioritizing parameter realizations that most affect control performance.
+> Method Success (%) Time (s)
+> IMQ 95.0 7.63 ±3.41 RBF 90.0 4.55 ±2.19
+> 𝑘 (· ,ˆ𝜃 )=180.0 6.48 ±3.55
+> TABLE II: Kernel Ablation Study. Comparison of Stein Varia-tional uncertainty-adaptive approach for the rocket landing system using RBF, IMQ, and 𝑘 (· ,ˆ𝜃 )=1 kernels. We observe that the IMQ kernel achieves the highest success rate with slightly slower completion due to the kernel’s prevention of mode collapse and preservation of particle diversity, enabling more reliable task-aware parameter inference.
+
+the pole towards the upward vertical axis. We fix the time horizon as 𝑡 ℎ = 0.4 seconds. The uncertain parameters are defined as 𝜃 = [𝑚 pole , ℓ pole ]⊤, where 𝑚 pole ∈ R and ℓpole ∈ R
+
+are the mass and length of the pole, respectively, with true unknown parameter values 𝑚 ∗ 
+
+> pole
+
+= 0.5 and ℓ∗ 
+
+> pole
+
+= 0.75. We initialize samples {𝜃 𝑖 }𝑁 𝑖 =1 ∼ U ( 𝜃 min = [0.3, 0.3], 𝜃 max =
+
+[1.0, 1.0]) using a uniform prior distribution. To implement our SVGD approach, we set 𝛼 = 0.001. 
+
+2) Results: We demonstrate the outcome of our Stein variational uncertainty-adaptive approach in the example trajectory in Fig. 2b. To achieve successful task completion, the cartpole first exhibits exploratory behaviors through os-cillatory motions in order for SVGD to converge sufficiently to an approximate posterior of the target. The cartpole then subsequently stabilizes the pole towards the desired goal state. Results across all 32 trials are reported in Table I. While baselines exhibit comparable behaviors, they adapt more slowly to uncertainty; our method achieves ≈ 2× faster completion across trials with consistently lower variance, across all tested parameter initializations. EMPPI’s task-agnostic stochastic sampling drives inefficient exploration, while DRO enforces uniformly worst-case robustness, yielding over-conservative behavior irrespective of task relevance. Stein-based posterior updates reshape the parameter distri-bution via the optimality gap, suppressing task-irrelevant variations and amplifying performance-critical uncertainties, eliminating unnecessary exploration and yielding trajectories tightly coupled to task success with improved convergence and reduced variance. C. 2D Rocket Landing 1) Problem Formulation: Let xr𝑡 ∈ X rocket  
+
+> 𝑡
+
+= R6 be the rocket system state, defined as xr𝑡 = [𝑥 𝑡 , 𝑦 𝑡 , 𝜑 𝑡 , ¤𝑥 𝑡 , ¤𝑦 𝑡 , 𝜔 𝑡 ]⊤,where 𝑥 𝑡 and 𝑦 𝑡 are the translational world coordinates of the system, 𝜑 𝑡 is the measured rocket angle with respect to the world vertical axis (with world frame positioned at ‘*’ on the landing pad shown in Fig. 2a), and ¤𝑥 𝑡 , ¤𝑦 𝑡 , and 
+
+𝜔 𝑡 are translational and angular velocities, respectively. Let 
+
+ur𝑡 ∈ Urocket = R2 be the thrust and gimbal control of the rocket, where the thrust is exerted along the gimbal axis. We initialize the rocket in world coordinates with state 
+
+xr0 = [0, 0.5, 0, 0, 0, 0]⊤, and assign the landing pad state (or rocket goal state) xrdes = [0.5, 0, 0, 0, 0, 0]⊤, where the objective of the rocket landing control problem is to land the rocket safely to the goal. The goal state forces the rocket system to not trivially land vertically downward; instead, the system requires careful, lateral movement in order to land safely. We fix the time horizon as 𝑡 ℎ = 0.15 seconds. The uncertain parameters are defined as 𝜃 = [𝑚 rocket , 𝐼 rocket , ℓ COM ]⊤, where 
+
+𝑚 rocket ∈ R and 𝐼 rocket ∈ R are the mass and inertia of the system, respectively, and ℓCOM is the center of mass location measured positively along the body axis of the rocket. The true unknown parameter values are 𝑚 ∗ 
+
+> rocket
+
+= 0.1, 
+
+𝐼 ∗ 
+
+> rocket
+
+= 0.01, and ℓ∗ 
+
+> COM
+
+= 0.7. We initialize samples {𝜃 𝑖 }𝑁 𝑖 =1 ∼U ( 𝜃 min = [0.05 , 0.005 , 0.05 ], 𝜃 max = [5.0, 2.0, ℎ rocket ]) using a uniform prior, where ℎrocket = 1.0 is the rocket height. To implement our SVGD approach, we set 𝛼 = 0.001. 
+
+2) Results: An example trajectory of our approach is shown in Fig. 2a. The task is achieved only when the rocket system is within a safe tolerance to land on the indicated landing pad, with the body axis orientation pointing upwards, parallel to the world axis. Because the prescribed goal state is a lateral distance away from the body frame of the rocket, the rocket is forced to move laterally without inducing high tipping behaviors due to the high positioned center of mass location, which it is broadly uncertain about. The resulting control behavior is a gradual gimbal-thrust forcing that moves the rocket laterally without capsizing the rocket. Results across 32 trials are reported in Table I. We observe that our approach consistently achieves reliable landing performance compared to the baselines. While EMPPI attains the lowest average completion time to land the rocket system, this comes at a considerable cost in reliability, achiev-ing the lowest success rate among all methods. Our proposed framework achieves the highest reliability at a near-negligible added time required to achieve the task. By ‘probing’ the rocket through subtle tilting behaviors without the cost of tipping over, our method achieve exploratory behaviors that allow SVGD to approximate the target posterior through shaping its uncer-tainty modeling through task-sensitive posterior inference. 
+
+D. Autonomous Racing 1) Problem Formulation: Let xc𝑡 ∈ X car  
+
+> 𝑡
+
+= R5 be the rocket system state, defined as xc𝑡 = [𝑥 𝑡 , 𝑦 𝑡 , 𝜑 𝑡 , 𝑣 𝑡 , 𝜔 𝑡 ]⊤,where 𝑥 𝑡 and 𝑦 𝑡 are the translational world coordinates of the system (with world frame oriented at the center of the racetrack), 𝜑 𝑡 is the measured vehicle angle with respect to the body forward axis, 𝑣 𝑡 is the forward directional velocity with respect to the body axis, and 𝜔 𝑡 is the angular velocities, respectively. Let ur𝑡 ∈ U car = R2 be the throttle and steering control of the vehicle. We define the dimensions of the racetrack as a track length of 5 .0 and a track radius of 2 .0. We initialize the vehicle state in world coordinates at the starting line of the racetrack, xc0 = [− 2.5, −2.0, 0.0, 0.0, 0.0]⊤, with the objective of completing a single lap along the track as quickly as possible, where xcdes is a reference spline along the central spline of the racetrack. We impose an additionally added cost to Eq. 20, 𝑟 (·) = 𝑤 ⊤
+
+> 𝑟
+
+ xc𝑡 ℎ − xc0
+
+ −1 where the terminal cost 𝑟 (·) rewards weighted translational and rotational motion via 𝑤 𝑟 without dominating the primary objective. The planning horizon is fixed at 𝑡 ℎ = 0.15 s. The uncertain parameters are defined as 𝜃 = [𝑚 car , 𝐼 car ]⊤,where 𝑚 car ∈ R and 𝐼 car ∈ R are the mass and inertia of the system, respectively. The true unknown parameter values are 𝑚 ∗ 
+
+> car
+
+= 0.1, 𝐼 ∗ 
+
+> car
+
+= 0.01. We initialize samples {𝜃 𝑖 }𝑁 𝑖 =1 ∼U ( 𝜃 min = [0.05 , 0.00001 ], 𝜃 max = [0.3, 0.5]) using a uniform prior distribution. To implement our SVGD approach, we set 
+
+𝛼 = 0.01. 
+
+2) Results: We demonstrate the outcome of our Stein variational uncertainty-adaptive approach in the autonomous racing setting through the example trajectories shown in Fig. 1. Our Stein-based controller infers the target parameter posterior via task-relevant uncertainty and produces smooth, dynamically consistent trajectories that effectively tracks the reference spline, in contrast to the oscillatory or erratic behaviors of competing baselines. This allows the controller to maintain high-speed traversal with minimal corrective actions, ultimately achieving the fastest lap time of 4 .408 seconds while ensuring consistent progress around the track. As shown in Fig. 3, our method consistently achieves faster track completion with reduced variance compared to EMPPI and MPC, while standard DRO fails to reliably complete the track. EMPPI’s objective-agnostic stochastic sampling induces redundant exploration, nominal MPC neglects parameter uncertainty, and standard DRO enforces worst-case robustness, yielding overly conservative or unstable behaviors that prevent task completion. Leveraging Stein updates to infer a task-dependent posterior results in optimizing over task-critical uncertainties via the optimality gap posterior, yielding vehicle trajectories that are simultaneously aggressive, stable, and robust to uncertainty, thus achieving faster lap times. 
+
+E. Kernel Ablation Study 
+
+Here, we outline additional results on the effect on SVGD posterior approximation performance based on the choice of universal kernel used. In Table. II, we evaluate our approach’s performance on the rocket landing problem over three distinct kernel: the currently used RBF kernel, the Inverse Multi-Quadratic (IMQ) [26] kernel modeled as, 𝑘 (𝜃, ˆ𝜃 ) = (𝜓 2 + ( 𝜃 −
+
+ˆ𝜃 )2)−𝜁 where 𝜓 is a bandwidth term and 𝜁 is a decay factor, and finally, setting 𝑘 (· , ˆ𝜃 ) = 1 which reduces the SVGD to parallel gradient descent over parameter inferences. We show that the IMQ kernel yields more reliable, uncertainty-aware control by evolving particles under a quadratically guided posterior approximation, at the cost of slightly longer completion times. The RBF kernel remains reliable and slightly outperforms the constant-fixed kernel, though its exponential decay limits long-range interactions and can induce particle clustering or degeneracy. In contrast, IMQ’s long-range repulsion preserves particle diversity and prevents mode collapse, particularly in higher dimensions, demonstrating improved reliability. 
+
+VI. Conclusions 
+
+This paper introduces a Stein variational uncertainty-adaptive model predictive controller for synthesizing optimal control sequences for a range of uncertain nonlinear dynamical systems. The proposed method constructs a task-dependent posterior and uses Stein variational inference to tractably compute task-sensitive robust controllers, tightly coupling parameter inference and control to improve performance across diverse settings. Empirically, we show our approach produces controllers that provide best-case performance under uncertainty without being overly conservative. This yields control strategies that explicitly considers task-relevant un-certainty, in contrast to task-agnostic sampling and overly conservative classical approaches. 
+
+References 
+
+[1] D. Kuhn, S. Shafiee, and W. Wiesemann, “Distributionally robust optimization,” Acta Numerica , vol. 34, p. 579–804, 2025. [2] K. Long, Y. Yi, Z. Dai, S. Herbert, J. Cort´ es, and N. Atanasov, “Sensor-based distributionally robust control for safe robot navigation in dynamic environments,” IJRR , vol. 45, no. 2, pp. 328–351, 2026. [3] R. Liu, G. Shi, and P. Tokekar, “Data-driven distributionally robust optimal control with state-dependent noise,” in International Conference on Intelligent Robotics and Systems , 2023. [4] T. Summers, “Distributionally robust sampling-based motion planning under uncertainty,” in IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) , 2018, pp. 6518–6523. [5] I. Abraham, A. Handa, N. Ratliff, K. Lowrey, T. D. Murphey, and D. Fox, “Model-based generalization under parameter uncertainty using path integral control,” IEEE R-AL , vol. 5, no. 2, p. 2864–2871, Apr. 2020. [6] K. Lowrey, A. Rajeswaran, S. Kakade, E. Todorov, and I. Mordatch, “Plan online, learn offline: Efficient learning and exploration via model-based control,” in International Conference on Learning Representa-tions , 2018. [7] Q. Liu and D. Wang, “Stein variational gradient descent: A general purpose bayesian inference algorithm,” in NeurIPS , 2016. [8] J. Zhuo, C. Liu, J. Shi, J. Zhu, N. Chen, and B. Zhang, “Message passing stein variational gradient descent,” in PMLR , 2018. [9] A. Korba, A. Salim, M. Arbel, G. Luise, and A. Gretton, “A non-asymptotic analysis for stein variational gradient descent,” in Advances in Neural Information Processing Systems (NeurIPS) , 2020. [10] L. Barcelos, A. Lambert, R. Oliveira, P. Borges, B. Boots, and F. Ramos, “Dual online stein variational inference for control and dynamics,” in 
+
+Proceedings on Robotics: Science and Systems (RSS) , 2021. [11] D. Lee, C. Lerch, F. Ramos, and I. Abraham, “Stein variational ergodic search,” in Proceedings on Robotics: Science and Systems (RSS) , 2024. [12] A. Lambert, A. Fishman, D. Fox, B. Boots, and F. Ramos, “Stein variational model predictive control,” in PMLR , 2021. [13] L. Yan and T. Zhou, “Stein variational gradient descent with local approximations,” Computer Methods in Applied Mechanics and En-gineering , vol. 386, p. 114087, 2021. [14] R. Platt, L. Kaelbling, T. Lozano-Perez, and R. Tedrake, “Efficient planning in non-gaussian belief spaces and its application to robot grasping,” in Robotics Research: The 15th International Symposium ISRR . Springer, 2017, pp. 253–269. [15] H. Sathyanarayan and I. Abraham, “Behavior synthesis via contact-aware fisher information maximization,” 2025. [Online]. Available: https://arxiv.org/abs/2505.12214 [16] A. D. Wilson, J. A. Schultz, and T. D. Murphey, “Trajectory synthesis for fisher information maximization,” IEEE Transactions on Robotics , vol. 30, no. 6, p. 1358–1370, Dec. 2014. [Online]. Available: http://dx.doi.org/10.1109/TRO.2014.2345918 [17] V. Vantilborgh, H. Sathyanarayan, G. Crevecoeur, I. Abraham, and T. Lefebvre, “Dual control reference generation for optimal pick-and-place execution under payload uncertainty,” 2025. [Online]. Available: https://arxiv.org/abs/2510.20483 [18] J. Mart´ ınez-Legaz, “On weierstrass extreme value theorem,” vol. 8, no. 1, pp. 391–393, Jan. 2014. [19] A. Ben-Tal, L. E. Ghaoui, and A. Nemirovski, Robust Optimization .Princeton University Press, 2009. [20] E. Delage and Y. Ye, “Distributionally robust optimization under mo-ment uncertainty with application to data-driven problems,” Operations Research , vol. 58, no. 3, pp. 595–612, 2010. [21] H. Rahimian and S. Mehrotra, “Frameworks and results in distribution-ally robust optimization,” Open Journal of Mathematical Optimization ,vol. 3, p. 1–85, Jul. 2022. [22] P. Whittle, “Risk-sensitive linear/quadratic/gaussian control,” Advances in Applied Probability , vol. 13, no. 4, p. 764–777, 1981. [23] Ian, Rhodes, and D. H. Jacobson, “Optimal stochastic linear systems with exponential performance criteria and their relation to deterministic differential games,” IEEE Transactions on Automatic Control , vol. 18, pp. 124–131, 1973. [24] M. Yin, A. Iannelli, and R. S. Smith, “Maximum likelihood estimation in data-driven modeling and control,” IEEE Transactions on Automatic Control , vol. 68, no. 1, pp. 317–328, 2023. [25] P. Billingsley, Convergence of probability measures , 2nd ed., ser. Wiley Series in Probability and Statistics: Probability and Statistics. New York: John Wiley & Sons Inc., 1999, a Wiley-Interscience Publication. [26] J. Gorham and L. Mackey, “Measuring sample quality with kernels,” in 
+
+PMLR , 2020.

@@ -1,0 +1,475 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-03T19:59:23.795044+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 13,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2604.01567v1",
+      "title": "AnchorVLA: Anchored Diffusion for Efficient End-to-End Mobile Manipulation",
+      "abstract": "A central challenge in mobile manipulation is preserving multiple plausible action models while remaining reactive during execution. A bottle in a cluttered scene can often be approached and grasped in multiple valid ways. Robust behavior depends on preserving this action diversity while remaining reactive as the scene evolves. Diffusion policies are appealing because they model multimodal action distributions rather than collapsing to one solution. But in practice, full iterative denoising is costly at control time. Action chunking helps amortize inference, yet it also creates partially open-loop behavior, allowing small mismatches to accumulate into drift. We present AnchorVLA, a diffusion-based VLA policy for mobile manipulation built on the core insight that when sampling begins near a plausible solution manifold, extensive denoising is unnecessary to recover multimodal, valid actions. AnchorVLA combines a lightweight VLA adaptation backbone with an anchored diffusion action head, which denoises locally around anchor trajectories using a truncated diffusion schedule. This retains multimodal action generation while reducing inference cost for closed-loop control. Crucially, to mitigate chunking-induced drift, we introduce a test-time self-correction mechanism via a lightweight residual correction module that makes high-frequency, per-step adjustments during rollout. Across diverse mobile manipulation tasks, AnchorVLA improves success and stability under disturbances and distribution shifts while maintaining low-latency inference. The source code is made available at https://github.com/jason-lim26/AnchorVLA.",
+      "authors": [
+        "Jia Syuen Lim",
+        "Zhizhen Zhang",
+        "Peter Bohm",
+        "Brendan Tidd",
+        "Zi Huang",
+        "Yadan Luo"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-02T03:29:04+00:00",
+      "link": "https://arxiv.org/pdf/2604.01567v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Diffusion-based policy for multimodal action distributions and uncertainty in manipulation",
+      "llm_evidence_cn": "用于多模态动作分布和操作不确定性的扩散策略",
+      "llm_evidence": "用于多模态动作分布和操作不确定性的扩散策略",
+      "canonical_evidence": "用于多模态动作分布和操作不确定性的扩散策略",
+      "llm_tldr_en": "AnchorVLA uses anchored diffusion to preserve action diversity and handle uncertainty in end-to-end manipulation.",
+      "llm_tldr_cn": "AnchorVLA 使用锚定扩散来保留动作多样性并处理端到端操作中的不确定性。",
+      "llm_tldr": "AnchorVLA 使用锚定扩散来保留动作多样性并处理端到端操作中的不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2603.27207v1",
+      "title": "Autonomous overtaking trajectory optimization using reinforcement learning and opponent pose estimation",
+      "abstract": "Vehicle overtaking is one of the most complex driving maneuvers for autonomous vehicles. To achieve optimal autonomous overtaking, driving systems rely on multiple sensors that enable safe trajectory optimization and overtaking efficiency. This paper presents a reinforcement learning mechanism for multi-agent autonomous racing environments, enabling overtaking trajectory optimization, based on LiDAR and depth image data. The developed reinforcement learning agent uses pre-generated raceline data and sensor inputs to compute the steering angle and linear velocity for optimal overtaking. The system uses LiDAR with a 2D detection algorithm and a depth camera with YOLO-based object detection to identify the vehicle to be overtaken and its pose. The LiDAR and the depth camera detection data are fused using a UKF for improved opponent pose estimation and trajectory optimization for overtaking in racing scenarios. The results show that the proposed algorithm successfully performs overtaking maneuvers in both simulation and real-world experiments, with pose estimation RMSE of (0.0816, 0.0531) m in (x, y).",
+      "authors": [
+        "Matej Rene Cihlar",
+        "Luka Šiktar",
+        "Branimir Ćaran",
+        "Marko Švaco"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-28T09:28:04+00:00",
+      "link": "https://arxiv.org/pdf/2603.27207v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "autonomous overtaking trajectory optimization",
+      "llm_evidence_cn": "自动超车轨迹优化",
+      "llm_evidence": "自动超车轨迹优化",
+      "canonical_evidence": "自动超车轨迹优化",
+      "llm_tldr_en": "Uses RL and pose estimation for autonomous overtaking trajectory optimization.",
+      "llm_tldr_cn": "利用强化学习和姿态估计进行自动超车轨迹优化。",
+      "llm_tldr": "利用强化学习和姿态估计进行自动超车轨迹优化。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.27040v1",
+      "title": "Unified Number-Free Text-to-Motion Generation Via Flow Matching",
+      "abstract": "Generative models excel at motion synthesis for a fixed number of agents but struggle to generalize with variable agents. Based on limited, domain-specific data, existing methods employ autoregressive models to generate motion recursively, which suffer from inefficiency and error accumulation. We propose Unified Motion Flow (UMF), which consists of Pyramid Motion Flow (P-Flow) and Semi-Noise Motion Flow (S-Flow). UMF decomposes the number-free motion generation into a single-pass motion prior generation stage and multi-pass reaction generation stages. Specifically, UMF utilizes a unified latent space to bridge the distribution gap between heterogeneous motion datasets, enabling effective unified training. For motion prior generation, P-Flow operates on hierarchical resolutions conditioned on different noise levels, thereby mitigating computational overheads. For reaction generation, S-Flow learns a joint probabilistic path that adaptively performs reaction transformation and context reconstruction, alleviating error accumulation. Extensive results and user studies demonstrate UMF' s effectiveness as a generalist model for multi-person motion generation from text. Project page: https://githubhgh.github.io/umf/.",
+      "authors": [
+        "Guanhe Huang",
+        "Oya Celiktutan"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-27T23:10:56+00:00",
+      "link": "https://arxiv.org/pdf/2603.27040v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "motion generation via flow matching and latent space",
+      "llm_evidence_cn": "通过流匹配和潜空间进行运动生成",
+      "llm_evidence": "通过流匹配和潜空间进行运动生成",
+      "canonical_evidence": "通过流匹配和潜空间进行运动生成",
+      "llm_tldr_en": "Introduces a flow-matching framework for multi-agent motion generation using a unified latent space.",
+      "llm_tldr_cn": "介绍了一个利用统一潜空间进行多智能体运动生成的流匹配框架。",
+      "llm_tldr": "介绍了一个利用统一潜空间进行多智能体运动生成的流匹配框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.28091v1",
+      "title": "SHARP: Short-Window Streaming for Accurate and Robust Prediction in Motion Forecasting",
+      "abstract": "In dynamic traffic environments, motion forecasting models must be able to accurately estimate future trajectories continuously. Streaming-based methods are a promising solution, but despite recent advances, their performance often degrades when exposed to heterogeneous observation lengths. To address this, we propose a novel streaming-based motion forecasting framework that explicitly focuses on evolving scenes. Our method incrementally processes incoming observation windows and leverages an instance-aware context streaming to maintain and update latent agent representations across inference steps. A dual training objective further enables consistent forecasting accuracy across diverse observation horizons. Extensive experiments on Argoverse 2, nuScenes, and Argoverse 1 demonstrate the robustness of our approach under evolving scene conditions and also on the single-agent benchmarks. Our model achieves state-of-the-art performance in streaming inference on the Argoverse 2 multi-agent benchmark, while maintaining minimal latency, highlighting its suitability for real-world deployment.",
+      "authors": [
+        "Alexander Prutsch",
+        "Christian Fruhwirth-Reisinger",
+        "David Schinagl",
+        "Horst Possegger"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-03-30T06:47:19+00:00",
+      "link": "https://arxiv.org/pdf/2603.28091v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "motion forecasting in dynamic traffic environments",
+      "llm_evidence_cn": "动态交通环境中的运动预测",
+      "llm_evidence": "动态交通环境中的运动预测",
+      "canonical_evidence": "动态交通环境中的运动预测",
+      "llm_tldr_en": "Proposes a streaming-based motion forecasting framework for accurate agent trajectory prediction.",
+      "llm_tldr_cn": "提出一种基于流式的运动预测框架，用于准确的智能体轨迹预测。",
+      "llm_tldr": "提出一种基于流式的运动预测框架，用于准确的智能体轨迹预测。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.27119v1",
+      "title": "Bayesian-Symbolic Integration for Uncertainty-Aware Parking Prediction",
+      "abstract": "Accurate parking availability prediction is critical for intelligent transportation systems, but real-world deployments often face data sparsity, noise, and unpredictable changes. Addressing these challenges requires models that are not only accurate but also uncertainty-aware. In this work, we propose a loosely coupled neuro-symbolic framework that integrates Bayesian Neural Networks (BNNs) with symbolic reasoning to enhance robustness in uncertain environments. BNNs quantify predictive uncertainty, while symbolic knowledge extracted via decision trees and encoded using probabilistic logic programming is leveraged in two hybrid strategies: (1) using symbolic reasoning as a fallback when BNN confidence is low, and (2) refining output classes based on symbolic constraints before reapplying the BNN. We evaluate both strategies on real-world parking data under full, sparse, and noisy conditions. Results demonstrate that both hybrid methods outperform symbolic reasoning alone, and the context-refinement strategy consistently exceeds the performance of Long Short-Term Memory (LSTM) networks and BNN baselines across all prediction windows. Our findings highlight the potential of modular neuro-symbolic integration in real-world, uncertainty-prone prediction tasks.",
+      "authors": [
+        "Alireza Nezhadettehad",
+        "Arkady Zaslavsky",
+        "Abdur Rakib",
+        "Seng W. Loke"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-03-28T04:18:20+00:00",
+      "link": "https://arxiv.org/pdf/2603.27119v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Bayesian Neural Networks quantify predictive uncertainty",
+      "llm_evidence_cn": "贝叶斯神经网络量化预测不确定性",
+      "llm_evidence": "贝叶斯神经网络量化预测不确定性",
+      "canonical_evidence": "贝叶斯神经网络量化预测不确定性",
+      "llm_tldr_en": "Integrates BNNs with symbolic reasoning for uncertainty-aware prediction in transportation.",
+      "llm_tldr_cn": "结合贝叶斯神经网络与符号推理，实现交通场景中感知不确定性的预测。",
+      "llm_tldr": "结合贝叶斯神经网络与符号推理，实现交通场景中感知不确定性的预测。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.01421v1",
+      "title": "EgoFlow: Gradient-Guided Flow Matching for Egocentric 6DoF Object Motion Generation",
+      "abstract": "Understanding and predicting object motion from egocentric video is fundamental to embodied perception and interaction. However, generating physically consistent 6DoF trajectories remains challenging due to occlusions, fast motion, and the lack of explicit physical reasoning in existing generative models. We present EgoFlow, a flow-matching framework that synthesizes realistic and physically plausible trajectories conditioned on multimodal egocentric observations. EgoFlow employs a hybrid Mamba-Transformer-Perceiver architecture to jointly model temporal dynamics, scene geometry, and semantic intent, while a gradient-guided inference process enforces differentiable physical constraints such as collision avoidance and motion smoothness. This combination yields coherent and controllable motion generation without post-hoc filtering or additional supervision. Experiments on real-world datasets HD-EPIC, EgoExo4D, and HOT3D show that EgoFlow outperforms diffusion-based and transformer baselines in accuracy, generalization, and physical realism, reducing collision rates by up to 79%, and strong generalization to unseen scenes. Our results highlight the promise of flow-based generative modeling for scalable and physically grounded egocentric motion understanding.",
+      "authors": [
+        "Abhishek Saroha",
+        "Huajian Zeng",
+        "Xingxing Zuo",
+        "Daniel Cremers",
+        "Xi Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-01T21:43:57+00:00",
+      "link": "https://arxiv.org/pdf/2604.01421v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "flow-matching framework for object motion generation",
+      "llm_evidence_cn": "用于物体运动生成的流匹配框架",
+      "llm_evidence": "用于物体运动生成的流匹配框架",
+      "canonical_evidence": "用于物体运动生成的流匹配框架",
+      "llm_tldr_en": "Uses flow matching (diffusion-related) for 6DoF trajectory generation with physical constraints.",
+      "llm_tldr_cn": "利用流匹配（扩散相关）生成具有物理约束的6DoF轨迹。",
+      "llm_tldr": "利用流匹配（扩散相关）生成具有物理约束的6DoF轨迹。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.27185v1",
+      "title": "MotionRFT: Unified Reinforcement Fine-Tuning for Text-to-Motion Generation",
+      "abstract": "Text-to-motion generation has advanced with diffusion- and flow-based generative models, yet supervised pretraining remains insufficient to align models with high-level objectives such as semantic consistency, realism, and human preference. Existing post-training methods have key limitations: they (1) target a specific motion representation, such as joints, (2) optimize a particular aspect, such as text-motion alignment, and may compromise other factors; and (3) incur substantial computational overhead, data dependence, and coarse-grained optimization. We present a reinforcement fine-tuning framework that comprises a heterogeneous-representation, multi-dimensional reward model, MotionReward, and an efficient, fine-grained fine-tuning method, EasyTune. To obtain a unified semantics representation, MotionReward maps heterogeneous motions into a shared semantic space anchored by text, enabling multidimensional reward learning; Self-refinement Preference Learning further enhances semantics without additional annotations. For efficient and effective fine-tuning, we identify the recursive gradient dependence across denoising steps as the key bottleneck, and propose EasyTune, which optimizes step-wise rather than over the full trajectory, yielding dense, fine-grained, and memory-efficient updates. Extensive experiments validate the effectiveness of our framework, achieving FID 0.132 at 22.10 GB peak memory for MLD model and saving up to 15.22 GB over DRaFT. It reduces FID by 22.9% on joint-based ACMDM, and achieves a 12.6% R-Precision gain and 23.3% FID improvement on rotation-based HY Motion. Our project page with code is publicly available.",
+      "authors": [
+        "Xiaofeng Tan",
+        "Wanjiang Weng",
+        "Hongsong Wang",
+        "Fang Zhao",
+        "Xin Geng",
+        "Liang Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-28T08:10:53+00:00",
+      "link": "https://arxiv.org/pdf/2603.27185v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion-based motion generation with reinforcement fine-tuning",
+      "llm_evidence_cn": "基于扩散模型的运动生成与强化微调",
+      "llm_evidence": "基于扩散模型的运动生成与强化微调",
+      "canonical_evidence": "基于扩散模型的运动生成与强化微调",
+      "llm_tldr_en": "Presents a reinforcement fine-tuning framework for diffusion-based text-to-motion generation.",
+      "llm_tldr_cn": "提出一种针对扩散模型运动生成的强化学习微调框架，提升生成质量。",
+      "llm_tldr": "提出一种针对扩散模型运动生成的强化学习微调框架，提升生成质量。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.01870v1",
+      "title": "Towards Intrinsically Calibrated Uncertainty Quantification in Industrial Data-Driven Models via Diffusion Sampler",
+      "abstract": "In modern process industries, data-driven models are important tools for real-time monitoring when key performance indicators are difficult to measure directly. While accurate predictions are essential, reliable uncertainty quantification (UQ) is equally critical for safety, reliability, and decision-making, but remains a major challenge in current data-driven approaches. In this work, we introduce a diffusion-based posterior sampling framework that inherently produces well-calibrated predictive uncertainty via faithful posterior sampling, eliminating the need for post-hoc calibration. In extensive evaluations on synthetic distributions, the Raman-based phenylacetic acid soft sensor benchmark, and a real ammonia synthesis case study, our method achieves practical improvements over existing UQ techniques in both uncertainty calibration and predictive accuracy. These results highlight diffusion samplers as a principled and scalable paradigm for advancing uncertainty-aware modeling in industrial applications.",
+      "authors": [
+        "Yiran Ma",
+        "Jerome Le Ny",
+        "Zhichao Chen",
+        "Zhihuan Song"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "eess.SY"
+      ],
+      "published": "2026-04-02T10:28:19+00:00",
+      "link": "https://arxiv.org/pdf/2604.01870v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "diffusion-based posterior sampling for calibrated uncertainty quantification",
+      "llm_evidence_cn": "基于扩散的后验采样用于校准不确定性量化",
+      "llm_evidence": "基于扩散的后验采样用于校准不确定性量化",
+      "canonical_evidence": "基于扩散的后验采样用于校准不确定性量化",
+      "llm_tldr_en": "Introduces a diffusion-based framework for intrinsically calibrated predictive uncertainty quantification.",
+      "llm_tldr_cn": "引入一种基于扩散的框架，用于实现本质校准的预测不确定性量化。",
+      "llm_tldr": "引入一种基于扩散的框架，用于实现本质校准的预测不确定性量化。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.28067v1",
+      "title": "From Vessel Trajectories to Safety-Critical Encounter Scenarios: A Generative AI Framework for Autonomous Ship Digital Testing",
+      "abstract": "Digital testing has emerged as a key paradigm for the development and verification of autonomous maritime navigation systems, yet the availability of realistic and diverse safety-critical encounter scenarios remains limited. Existing approaches either rely on handcrafted templates, which lack realism, or extract cases directly from historical data, which cannot systematically expand rare high-risk situations.   This paper proposes a data-driven framework that converts large-scale Automatic Identification System (AIS) trajectories into structured safety-critical encounter scenarios. The framework combines generative trajectory modeling with automated encounter pairing and temporal parameterization to enable scalable scenario construction while preserving real traffic characteristics. To enhance trajectory realism and robustness under noisy AIS observations, a multi-scale temporal variational autoencoder is introduced to capture vessel motion dynamics across different temporal resolutions.   Experiments on real-world maritime traffic flows demonstrate that the proposed method improves trajectory fidelity and smoothness, maintains statistical consistency with observed data, and enables the generation of diverse safety-critical encounter scenarios beyond those directly recorded. The resulting framework provides a practical pathway for building scenario libraries to support digital testing, benchmarking, and safety assessment of autonomous navigation and intelligent maritime traffic management systems. Code is available at https://anonymous.4open.science/r/traj-gen-anonymous-review.",
+      "authors": [
+        "Sijin Sun",
+        "Liangbin Zhao",
+        "Ming Deng",
+        "Xiuju Fu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-30T06:14:04+00:00",
+      "link": "https://arxiv.org/pdf/2603.28067v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "generative trajectory modeling for autonomous navigation systems",
+      "llm_evidence_cn": "自主导航系统的生成式轨迹建模",
+      "llm_evidence": "自主导航系统的生成式轨迹建模",
+      "canonical_evidence": "自主导航系统的生成式轨迹建模",
+      "llm_tldr_en": "Proposes a generative AI framework to convert vessel trajectories into safety-critical encounter scenarios.",
+      "llm_tldr_cn": "提出一种生成式人工智能框架，将船舶轨迹转换为安全关键的遭遇场景。",
+      "llm_tldr": "提出一种生成式人工智能框架，将船舶轨迹转换为安全关键的遭遇场景。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.29227v1",
+      "title": "Kernel-SDF: An Open-Source Library for Real-Time Signed Distance Function Estimation using Kernel Regression",
+      "abstract": "Accurate and efficient environment representation is crucial for robotic applications such as motion planning, manipulation, and navigation. Signed distance functions (SDFs) have emerged as a powerful representation for encoding distance to obstacle boundaries, enabling efficient collision-checking and trajectory optimization techniques. However, existing SDF reconstruction methods have limitations when it comes to large-scale uncertainty-aware SDF estimation from streaming sensor data. Voxel-based approaches are limited by fixed resolution and lack uncertainty quantification, neural network methods require significant training time, while Gaussian process (GP) methods struggle with scalability, sign estimation, and uncertainty calibration. In this letter, we develop an open-source library, Kernel-SDF, which uses kernel regression to learn SDF with calibrated uncertainty quantification in real-time. Our approach consists of a front-end that learns a continuous occupancy field via kernel regression, and a back-end that estimates accurate SDF via GP regression using samples from the front-end surface boundaries. Kernel-SDF provides accurate SDF, SDF gradient, SDF uncertainty, and mesh construction in real-time. Evaluation results show that Kernel-SDF achieves superior accuracy compared to existing methods, while maintaining real-time performance, making it suitable for various robotics applications requiring reliable uncertainty-aware geometric information.",
+      "authors": [
+        "Zhirui Dai",
+        "Tianxing Fan",
+        "Mani Amani",
+        "Jaemin Seo",
+        "Ki Myung Brian Lee",
+        "Hyondong Oh",
+        "Nikolay Atanasov"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-03-31T03:49:51+00:00",
+      "link": "https://arxiv.org/pdf/2603.29227v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "uncertainty-aware SDF estimation for motion planning and trajectory optimization",
+      "llm_evidence_cn": "用于运动规划和轨迹优化的不确定性感知SDF估计",
+      "llm_evidence": "用于运动规划和轨迹优化的不确定性感知SDF估计",
+      "canonical_evidence": "用于运动规划和轨迹优化的不确定性感知SDF估计",
+      "llm_tldr_en": "An open-source library for real-time, uncertainty-aware environment representation in robotic motion planning.",
+      "llm_tldr_cn": "一个用于机器人运动规划中实时、不确定性感知环境表示的开源库。",
+      "llm_tldr": "一个用于机器人运动规划中实时、不确定性感知环境表示的开源库。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.00375v1",
+      "title": "Locally Confident, Globally Stuck: The Quality-Exploration Dilemma in Diffusion Language Models",
+      "abstract": "Diffusion large language models (dLLMs) theoretically permit token decoding in arbitrary order, a flexibility that could enable richer exploration of reasoning paths than autoregressive (AR) LLMs. In practice, however, random-order decoding often hurts generation quality. To mitigate this, low-confidence remasking improves single-sample quality (e.g., Pass@$1$) by prioritizing confident tokens, but it also suppresses exploration and limits multi-sample gains (e.g., Pass@$k$), creating a fundamental quality--exploration dilemma. In this paper, we provide a unified explanation of this dilemma. We show that low-confidence remasking improves a myopic proxy for quality while provably constraining the entropy of the induced sequence distribution. To overcome this limitation, we characterize the optimal distribution that explicitly balances quality and exploration, and develop a simple Independent Metropolis--Hastings sampler that approximately targets this distribution during decoding. Experiments across a range of reasoning benchmarks including MATH500, AIME24/25, HumanEval, and MBPP show that our approach yields better exploration-quality tradeoff than both random and low-confidence remasking.",
+      "authors": [
+        "Liancheng Fang",
+        "Aiwei Liu",
+        "Henry Peng Zou",
+        "Yankai Chen",
+        "Enze Ma",
+        "Leyi Pan",
+        "Chunyu Miao",
+        "Wei-Chieh Huang",
+        "Xue Liu",
+        "Philip S. Yu"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-04-01T02:01:30+00:00",
+      "link": "https://arxiv.org/pdf/2604.00375v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "confidence and uncertainty in diffusion model decoding",
+      "llm_evidence_cn": "扩散模型解码中的置信度与不确定性",
+      "llm_evidence": "扩散模型解码中的置信度与不确定性",
+      "canonical_evidence": "扩散模型解码中的置信度与不确定性",
+      "llm_tldr_en": "Analyzes the quality-exploration dilemma in diffusion models using confidence-based remasking.",
+      "llm_tldr_cn": "通过基于置信度的重掩码机制，分析扩散模型中的质量与探索困境。",
+      "llm_tldr": "通过基于置信度的重掩码机制，分析扩散模型中的质量与探索困境。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.01034v1",
+      "title": "Stein Variational Uncertainty-Adaptive Model Predictive Control",
+      "abstract": "We propose a Stein variational distributionally robust controller for nonlinear dynamical systems with latent parametric uncertainty. The method is an alternative to conservative worst-case ambiguity-set optimization with a deterministic particle-based approximation of a task-dependent uncertainty distribution, enabling the controller to concentrate on parameter sensitivities that most strongly affect closed-loop performance. Our method yields a controller that is robust to latent parameter uncertainty by coupling optimal control with Stein variational inference, and avoiding restrictive parametric assumptions on the uncertainty model while preserving computational parallelism. In contrast to classical DRO, which can sacrifice nominal performance through worst-case design, we find our approach achieves robustness by shaping the control law around relevant uncertainty that are most critical to the task objective. The proposed framework therefore reconciles robust control and variational inference in a single decision-theoretic formulation for broad classes of control systems with parameter uncertainty. We demonstrate our approach on representative control problems that empirically illustrate improved performance-robustness tradeoffs over nominal, ensemble, and classical distributionally robust baselines.",
+      "authors": [
+        "Hrishikesh Sathyanarayan",
+        "Ian Abraham"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "math.OC"
+      ],
+      "published": "2026-04-01T15:43:48+00:00",
+      "link": "https://arxiv.org/pdf/2604.01034v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Stein variational inference for latent parametric uncertainty in nonlinear control",
+      "llm_evidence_cn": "针对非线性控制中潜在参数不确定性的 Stein 变分推断",
+      "llm_evidence": "针对非线性控制中潜在参数不确定性的 Stein 变分推断",
+      "canonical_evidence": "针对非线性控制中潜在参数不确定性的 Stein 变分推断",
+      "llm_tldr_en": "Proposes a Stein variational controller for robust performance under latent parametric uncertainty.",
+      "llm_tldr_cn": "提出一种 Stein 变分控制器，用于在潜在参数不确定性下实现鲁棒性能。",
+      "llm_tldr": "提出一种 Stein 变分控制器，用于在潜在参数不确定性下实现鲁棒性能。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "estimating epistemic uncertainty in neural motion planners",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

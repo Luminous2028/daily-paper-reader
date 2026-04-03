@@ -1,0 +1,303 @@
+Title: From Vessel Trajectories to Safety-Critical Encounter Scenarios: A Generative AI Framework for Autonomous Ship Digital Testing
+
+URL Source: https://arxiv.org/pdf/2603.28067v1
+
+Published Time: Tue, 31 Mar 2026 01:39:41 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# From Vessel Trajectories to Safety-Critical Encounter Scenarios: A Generative AI Framework for Autonomous Ship Digital Testing 
+
+Sijin Sun 1 Liangbin Zhao 1,∗ Ming Deng 2 Xiuju Fu 1
+
+> ∗
+
+Corresponding author  
+
+> 1
+
+Institute of High Performance Computing, Agency for Science, Technology and Research (A*STAR IHPC)  
+
+> 2
+
+Shanghai University 
+
+Abstract —Digital testing has emerged as a key paradigm for the development and verification of autonomous maritime navi-gation systems, yet the availability of realistic and diverse safety-critical encounter scenarios remains limited. Existing approaches either rely on handcrafted templates, which lack realism, or extract cases directly from historical data, which cannot sys-tematically expand rare high-risk situations. This paper proposes a data-driven framework that converts large-scale Automatic Identification System (AIS) trajectories into structured safety-critical encounter scenarios. The frame-work combines generative trajectory modeling with automated encounter pairing and temporal parameterization to enable scal-able scenario construction while preserving real traffic character-istics. To enhance trajectory realism and robustness under noisy AIS observations, a multi-scale temporal variational autoencoder is introduced to capture vessel motion dynamics across different temporal resolutions. Experiments on real-world maritime traffic flows demonstrate that the proposed method improves trajectory fidelity and smoothness, maintains statistical consistency with observed data, and enables the generation of diverse safety-critical encounter scenarios beyond those directly recorded. The resulting frame-work provides a practical pathway for building scenario libraries to support digital testing, benchmarking, and safety assessment of autonomous navigation and intelligent maritime traffic man-agement systems. Code is available at https://anonymous.4open. science/r/traj-gen-anonymous-review. 
+
+Index Terms —Autonomous Ships, Maritime Traffic, Trajectory Generation, Variational Autoencoder, Safety-Critical Scenarios, Simulation-Based Digital Testing 
+
+I. I NTRODUCTION 
+
+Recent advances in intelligent transportation and au-tonomous navigation systems have led to a growing reliance on digital testing and virtual validation as a necessary comple-ment to field testing, particularly in domains such as maritime navigation where large-scale real-world experiments are costly and difficult to control. In specific maritime traffic environ-ments, vessel behavior is influenced by navigational con-straints, operational practices, and environmental uncertainties. Consequently, effective simulation-based validation depends on the availability of safety-critical encounter scenarios that are both realistic and sufficiently diverse. However, such scenarios occur only sparsely in real-world traffic data and are difficult to generate in a systematic manner. This gap between available trajectory data and the scenario requirements of digital testing remains a key obstacle to systematic validation of autonomous maritime systems. To address the need for scenario-based validation, exist-ing studies have explored several approaches to constructing maritime testing scenarios. Knowledge-driven methods design encounter cases based on navigation rules and expert-defined configurations, ensuring interpretability and regulatory consis-tency but often lacking diversity and realism. Data-statistical approaches extract representative encounters from historical AIS datasets, improving realism but remaining constrained by data availability and the sparsity of rare high-risk events. More recently, algorithmic and generative techniques have been proposed to expand the scenario space. However, many of these approaches primarily rely on parameter variation or simplified encounter formulations, and only limited efforts have been made to integrate generative modeling with the statistical structure of real traffic flows. As a result, despite substantial progress in scenario design, current approaches still struggle to simultaneously achieve realism, diversity, and systematic construction of safety-critical encounter scenarios from real-world traffic data. This limi-tation highlights the need for a data-driven framework that can leverage large-scale trajectory records while enabling structured and scalable generation of safety-critical scenarios suitable for simulation-based digital testing. In this work, we propose a data-driven framework that converts large-scale vessel trajectory data from Automatic Identification System (AIS) into structured safety-critical en-counter scenarios for digital testing. The framework integrates trajectory synthesis and scenario construction into a unified pipeline. First, representative vessel motion patterns within designated traffic flows are learned and synthesized through a generative modeling approach. To enhance trajectory realism and robustness under noisy AIS data, a multi-scale tempo-ral variational autoencoder architecture (VAE) is introduced, which captures vessel motion dynamics across different tem-poral scales and preserves the statistical structure of real traffic flows. The generated trajectories are then systematically paired based on spatial and temporal interaction conditions, and each identified interaction is transformed into a standardized sce-
+
+> arXiv:2603.28067v1 [cs.LG] 30 Mar 2026
+
+nario representation through temporal parameterization around the closest-encounter instant. By linking data-driven trajectory generation with structured encounter construction, the pro-posed framework enables scalable generation of realistic and diverse safety-critical maritime testing scenarios. The main contributions of this work are summarized as follows: 1) A data-driven framework for safety-critical scenario construction: We propose a unified pipeline that con-verts large-scale vessel trajectory data from Automatic Identification System (AIS) into structured safety-critical encounter scenarios, enabling systematic generation of simulation-ready test cases for maritime autonomous navigation systems. 2) A robust generative trajectory synthesis approach: 
+
+We develop a multi-scale temporal variational autoen-coder (VAE) architecture to model vessel motion pat-terns from AIS data and integrate trajectory smoothing to enhance realism. 3) A structured encounter construction mechanism: We design an automated trajectory pairing and temporal parameterization strategy that transforms synthesized trajectories into standardized safety-critical encounter scenarios suitable for digital testing. II. L ITERATURE REVIEW 
+
+A. Safety-Critical Vessel Encounter Scenario Generation 
+
+The construction of safety-critical encounter scenarios has attracted increasing attention in recent years, particularly for simulation-based testing of autonomous navigation and decision-support systems. In the domain of maritime au-tonomous vessels, generation of safety-critical scenarios has also been explored, though less extensively. Existing ap-proaches to scenario generation can be broadly categorized into knowledge-driven, data-statistical, and generative meth-ods, each addressing different aspects of the problem. Knowledge-driven approaches construct encounter scenarios based on navigation rules, expert knowledge, or predefined geometric configurations. Standardized encounter templates derived from COLREGs, such as the Imazu problem [1], or classical cases including head-on, crossing, and overtaking situations, are widely used to evaluate collision avoidance systems in a reproducible and interpretable manner [2]. Some studies further organize scenario sets according to regulatory coverage or encounter taxonomies to enable systematic testing across rule-defined contexts [3]. Simulation environments built upon such templates may also incorporate uncertainty models and environmental disturbances to provide configurable eval-uation suites [4]. While these approaches ensure interpretabil-ity and regulatory alignment, their reliance on handcrafted configurations limits their ability to capture the diversity and statistical structure of real maritime traffic patterns. Data-statistical approaches construct encounter scenarios directly from historical AIS records by identifying ship inter-actions and analyzing the statistical distributions of key navi-gation parameters. These statistics are then used to reconstruct representative real-world encounters or guide the sampling of synthetic scenarios consistent with observed traffic patterns [5], [6]. Some works further incorporate measures such as en-counter complexity or importance to support scenario selection for algorithm testing [7]. While grounding scenario construc-tion in real traffic data improves realism, such methods remain constrained by the availability and distribution of historical observations. Safety-critical encounters are inherently rare, making it difficult for purely data-driven extraction approaches to systematically generate diverse high-risk scenarios beyond those already recorded. Algorithmic and generative approaches attempt to expand the scenario space beyond historical observations by synthesiz-ing encounter configurations through sampling, optimization, or learning-based generation. Some studies generate candidate traffic situations by systematically sampling parameter spaces and filtering hazardous cases using predefined risk metrics or clustering strategies [8]. Other works provide toolchains for producing structured encounter sets that enable controlled variation of traffic configurations for systematic testing [9]. More recently, learning-based methods such as reinforcement learning have been explored to adaptively generate high-risk scenarios through interaction with the tested system, improving the efficiency of discovering safety-critical cases [10]. While these approaches improve coverage and controlla-bility of scenario generation, many rely on abstract encounter parameterizations or simplified motion assumptions, making it challenging to preserve the statistical realism and operational patterns observed in real vessel trajectories. Overall, existing approaches address complementary aspects of scenario generation, including interpretability, realism, and controllability. However, a systematic mechanism that can jointly preserve real traffic characteristics while enabling scal-able generation of diverse safety-critical encounter scenarios remains limited. Motivated by these limitations, the proposed framework aims to preserve the realism of historical traffic data while expanding the availability of safety-critical scenar-ios through generative trajectory modeling. 
+
+B. Vessel Trajectory Generation 
+
+A scenario can be interpreted as a temporal sequence of system states, which may be represented using different modalities depending on the level of abstraction required for testing and analysis [11]. For many traffic applications, trajectories provide a compact and effective representation of object motion, making them widely used in scenario modeling and simulation studies. In the maritime domain, trajectory data derived from AIS observations have been extensively used for traffic analysis, behavior modeling, and collision risk assessment. Existing research has primarily focused on trajectory prediction, where future vessel positions are estimated from historical motion patterns or environmental conditions [12]. While prediction methods are valuable for navigation support, they do not directly address the need to generate diverse motion patterns for systematic testing purposes. Fig. 1: Overview of the trajectory generation and scenario construction pipeline including Data Preprocessing, Conflux VAE Structure, and Encounter Pairing and Safety-Critical Scenario Construction: synthetic trajectories are paired and filtered to form realistic vessel encounters for safety analysis. To synthesize new trajectories, generative models have recently attracted attention. Recurrent neural networks such as LSTM have been applied to learn motion dynamics from AIS data and generate plausible vessel movements [13]. More advanced generative approaches, including generative adversarial networks and variational autoencoders, have also been explored to capture the statistical structure of trajectory datasets and enable data-driven synthesis of new motion se-quences [14], [15]. These methods provide promising tools for constructing trajectory sets that remain consistent with real traffic behavior while allowing controlled expansion of the motion space. Motivated by these developments, the present work adopts a variational autoencoder–based generative framework to syn-thesize vessel trajectories, enabling the subsequent construc-tion of safety-critical encounter scenarios while preserving the statistical characteristics of real AIS data. III. M ETHODOLOGY 
+
+A. Overall Framework 
+
+The proposed framework consists of two sequential modules designed to construct safety-critical vessel encounter scenarios from historical AIS data, as illustrated in Figure 1. Historical vessel trajectories within a specified traffic flow are extracted and processed to generate representative nav-igation tracks. In addition to trajectory reconstruction and quality control, a data-driven learning process is employed to capture the statistical characteristics of vessel motion within the traffic flow. This module ensures that the synthesized trajectories preserve the spatial, kinematic, and operational patterns observed in real vessel movements. The generated trajectories are then systematically paired to identify combinations satisfying encounter conditions defined by spatial proximity and relative motion consistency. Each de-tected interaction is then transformed into a standardized sce-nario through temporal parameterization centered on the close-encounter instant, with configurable pre- and post-encounter time windows. 
+
+B. Data-Driven Trajectory Generation from Historical AIS 1) Data Preprocessing: The workflow of the data prepro-cessing step mainly includes interest route filtering, timestamp interval resampling, abnormal data filtering, and time window standardizing. Error data or missing values are filtered out and interpolation is applied where needed. The ship trajectory is denoted as a series of timestamp points, i.e., Traj =
+
+P1, P 2, . . . , P i, . . . , P N , Pi = (lon i, lat i), i = 1, . . . , N ,where Pi is the ith datapoint comprising longitude and latitude and N is the number of points. Among the recorded vessel routes in a designated area, two overlapping routes (Route 1 and Route 2) should be identified under start and end area constraints. Route j = {Traj 1, Traj 2, . . . , Traj k, . . . , Traj n},
+
+j = 1 , 2, denotes the two route datasets with n trajectories each, which are respectively used as training sets for subse-quent trajectory generation. 
+
+2) Conflux EMA for Sequence Modeling: Exponential mov-ing average (EMA) is widely used for sequence smoothing and long-range dependency modeling. Multi-headed EMA maintains several EMA states at different temporal scales to fuse short-, medium-, and long-term information. We propose Conflux EMA, a split-flow module with three parallel multi-headed EMA branches operating at distinct representation scales. The three branches correspond to natural temporal levels in vessel trajectories: (1) local dynamics (step-wise displacement and instantaneous velocity), (2) segment -level maneuvers (turning and course adjustment), and (3) 
+
+global directional trends. Two branches would merge segment and global patterns, while more than three introduce redundant scales without additional coverage. Given x ∈ RB×L×d, the three branches produce ys, ym,and yl. The small branch projects d=64 to ds=32 with 
+
+Hs=4 heads for fine-grained features; the medium branch keeps dm=64 with Hm=8 heads; the large branch expands to dl=128 with Hl=16 heads for global context. A learnable softmax gate w fuses them as a residual: 
+
+w = softmax( w0, w 1, w 2), ˆx = x+w0ys +w1ym +w2yl.
+
+(1) Conflux EMA is embedded in a convolutional block (CE-Conv): a 1D convolution is applied first, followed by the Conflux EMA residual along the sequence dimension. The same CEConv is used in both encoder and decoder. 
+
+Fig. 2: Conflux EMA block (CEConv): three parallel multi-headed EMA branches at different scales (small, medium, large) are combined via a learnable softmax gate and added to the input as a residual. Compared to Transformer self-attention, multi-headed EMA offers two advantages for noisy AIS trajectories: the exponen-tial decay imposes a temporal locality prior aligned with vessel kinematics, and EMA acts as a low-pass filter that suppresses high-frequency GPS and AIS noise rather than amplifying anomalous frames. 
+
+3) ConfluxVAE for Trajectory Generation: A VAE consists of an encoder E and a decoder D. The encoder maps input data to a latent space; the decoder reconstructs data from the latent code. The generative model is p(x, z ) = pθ (z)pθ (x|z),where pθ (z) is the prior over the latent variable z and 
+
+pθ (x|z) is the likelihood modeled by the decoder. The training objective is to maximize the evidence lower bound (ELBO) [15]: 
+
+L(θ, ϕ ; xi) = −DKL (qϕ(z|xi)∥pθ (z))+ Eqϕ(z|xi)[log pθ (xi|z)] ,
+
+(2) where ϕ and θ denote the variational and generative parame-ters. The encoder outputs the parameters of a Gaussian over the latent space (mean μ and log-variance log σ2); z is obtained by the reparameterization z = μ + ϵ · exp(0 .5 log σ2) with 
+
+ϵ ∼ N (0 , I ).ConfluxVAE integrates Conflux EMA into a VAE for tra-jectory generation. The encoder processes input trajectories through convolutional feature extraction and refinement layers, followed by a CEConv block for multi-scale temporal model-ing. The extracted features are flattened and passed through fully connected layers that output the latent parameters μ
+
+and log σ2. After reparameterization to obtain z, the decoder reconstructs trajectories through a symmetric inverse process: fully connected layers reshape the latent code, which then passes through a CEConv block and transposed convolutional layers, with sigmoid activation producing the final output. Compared to a standard VAE that uses a single reconstruction-KL objective, the training loss used here is a β-weighted combination of reconstruction and KL terms. Let ˆx denote the reconstruction. The reconstruction loss is the mean squared error Lrecon = MSE( x, ˆx). The KL divergence term (Gaussian prior and posterior) is LKL =
+
+− 12
+
+PJj=1 
+
+ 1 + log σ2 
+
+> j
+
+− μ2 
+
+> j
+
+− σ2
+
+> j
+
+, where J is the latent di-mension. The total loss is L = Lrecon + βLKL , where β
+
+balances latent regularization and reconstruction quality. 
+
+4) Data Postprocessing: To improve the quality of the gen-erated trajectories, a Savitzky–Golay filter is applied to denoise the model output. The filter fits adjacent data points with a low-degree polynomial via linear least squares, smoothing the trajectory while preserving its trend. 
+
+5) Evaluation Index: We use four metrics to evaluate trajectory generation quality. MAE (Mean Absolute Error) and MSE (Mean Squared Error) measure point-wise reconstruction error: MAE = 1
+
+> N
+
+PNi=1 |xi − ˆxi| and MSE = 1
+
+> N
+
+PNi=1 (xi −
+
+ˆxi)2, where xi and ˆxi denote corresponding points in the original and generated trajectories respectively, and N is the total number of points. DM (Distance Metric) measures the distributional distance between the original and generated trajectory sets using Fr´ echet distance between their statistical representations. MMD (Maximum Mean Discrepancy) quan-tifies distributional discrepancy via a kernel k (exponentiated quadratic [16]). For reference set X and generated set Y ,             
+
+> MMD 2(X, Y ) = 1
+> m(m−1)
+> X
+> i̸=j
+> k(xi, x j) + 1
+> n(n−1)
+> X
+> i̸=j
+> k(yi, y j)−2
+> mn
+> X
+> i,j
+> k(xi, y j)
+
+(3) where m and n are the sizes of sets X and Y respectively. 
+
+C. Encounter Pairing and Safety-Critical Scenario Construc-tion 1) Problem Formulation: Let T (1) = {τ (1)  
+
+> i
+
+}N1 
+
+> i=1
+
+and 
+
+T (2) = {τ (2)  
+
+> j
+
+}N2 
+
+> j=1
+
+denote two trajectory pools generated for two designated traffic flows (e.g., inbound vs. outbound). Each trajectory τ is represented as a temporally ordered sequence of AIS states 
+
+τ = {sk}Lk=1 , sk = ( tk, ϕ k, λ k), (4) where tk is the timestamp, and (ϕk, λ k) are latitude and longitude at sample k.The objective is to automatically construct a set of in-teraction scenarios by pairing trajectories across flows and extracting those that satisfy encounter conditions within a predefined encounter region. Let R be a polygonal region of interest (ROI) defined by vertices {(ϕ(r) 
+
+> m
+
+, λ (r) 
+
+> m
+
+)}Mm=1 . The output is a scenario set 
+
+S = {σij | τ (1)  
+
+> i
+
+∈ T (1) , τ (2)  
+
+> j
+
+∈ T (2) , σ ij is safety-critical },
+
+(5) where each scenario σij stores the paired trajectory indices and the corresponding encounter indices (k⋆, ℓ ⋆) at which a safety-critical interaction is detected. 
+
+2) Region-Constrained Encounter Pairing: To avoid spuri-ous pairs from out-of-region evaluation, we restrict to states within encounter region R via indicator IR(ϕ, λ ) = 1 if 
+
+(ϕ, λ ) ∈ R else 0. For candidate pair (τ (1)  
+
+> i
+
+, τ (2)  
+
+> j
+
+), we require indices k, ℓ with IR(ϕ(1)  
+
+> i,k
+
+, λ (1)  
+
+> i,k
+
+) = IR(ϕ(2)  
+
+> j,ℓ
+
+, λ (2)  
+
+> j,ℓ
+
+) = 1 . This focuses detection on interaction hotspots and reduces false positives from distant co-existence. 
+
+3) Proximity and Motion Based Encounter Identification: 
+
+For encounter detection, relative motion of vessels s(1)  
+
+> i,k
+
+and 
+
+s(2)  
+
+> j,ℓ
+
+is evaluated from consecutive AIS samples. With fixed 
+
+∆t, Speed Over Ground (SOG) and Course Over Ground (COG) are estimated: SOG ≈ d(pk−1, pk)/∆t, COG ≈
+
+bearing (pk−1 → pk), where pk = ( ϕk, λ k) and d is great-circle distance. Based on these reconstructed motion states, relative motion indicators between vessel pairs are evaluated using standard closest point of approach (CPA) analysis. This enables the interaction assessment to consider not only instantaneous separation but also the motion tendency of the vessels, en-suring that detected events correspond to genuine navigational encounters. An interaction is considered safety-critical only if both proximity and motion-consistency conditions are satisfied. The vessels must exhibit sufficiently close spatial interaction at some point along the trajectories. Let Dmin = min t Dr (t)
+
+denote the minimum observed separation distance between the vessels over the evaluated interval, where Dr (t) is the instantaneous inter-vessel distance expressed in nautical miles. The proximity condition requires Dmin ≤ dmin , ensuring that the vessels come into near-contact proximity at least once. dmin 
+
+denotes the minimum-distance threshold. Additionally, the relative motion must indicate a converging encounter configuration. This requires that there exists at least one time instant t at which the instantaneous distance and CPA indicators jointly satisfy 
+
+Dr (t) ≤ dth , 0 < TCPA( t) ≤ Tth , DCPA( t) ≤ dcpa ,
+
+(6) where dth denotes the proximity threshold, Tth denotes the admissible time-to-closest-approach window, and dcpa denotes the admissible closest-approach distance. These constraints ensure that the vessels are not only spatially close but also dynamically converging within a relevant time horizon. By jointly enforcing the minimum-distance requirement and the motion-consistency constraint, the framework filters out incidental spatial proximity and isolates interaction configura-tions that are both spatially critical and dynamically meaning-ful. The resulting encounters therefore represent safety-critical maritime situations suitable for scenario-based safety analysis and testing of intelligent navigation systems. 
+
+4) Configurable Safety-Critical Scenario Representation: 
+
+Given a paired trajectory (τ (1)  
+
+> i
+
+, τ (2)  
+
+> j
+
+) that satisfies the safety-critical encounter conditions, a standardized scenario represen-tation is further constructed by anchoring the scenario at the closest-interaction instant. Let t⋆ denote the time correspond-ing to the minimum observed inter-vessel separation within the encounter interval, i.e., 
+
+t⋆ = arg min  
+
+> t
+
+Dr (t), (7) where Dr (t) is the instantaneous inter-vessel distance (in nautical miles) evaluated at time t.To enable consistent scenario extraction across different encounter instances, two configurable temporal margins are introduced: tearly and tafter . These margins define a scenario window centered around t⋆: [t⋆ −tearly , t ⋆ +tafter ]. Accordingly, each vessel trajectory is partitioned into three segments: 1) Pre-encounter segment (nominal tracking path): from the trajectory start time to t⋆ − tearly . This segment represents the nominal path that the vessel is expected to track prior to entering the hazardous situation. 2) Encounter segment (safety-critical test window): from 
+
+t⋆ − tearly to t⋆ + tafter . This segment constitutes the core safety-critical interval used to evaluate collision avoid-ance and maneuvering capability under the encounter configuration. 3) Post-encounter segment (recovery tracking path): 
+
+from t⋆ + tafter to the end of the trajectory. This segment represents the recovery phase in which the vessel is expected to re-plan and continue tracking a nominal route after the hazardous interaction. The extracted scenario instance is represented as 
+
+σij =  i, j, t ⋆, t early , t after 
+
+, (8) together with the corresponding trajectory clips for both ves-sels within the three segments. This representation provides a unified interface for downstream simulation-based digital testing, where the pre- and post-encounter segments define nominal reference paths, and the encounter segment defines the evaluation window for collision-avoidance performance. The specific values of the configuration parameters, in-cluding tearly and tafter , can be selected according to test-ing objectives and operational context. In practice, these parameters may be determined based on domain expertise, vessel characteristics, or regulatory requirements. Moreover, performance evaluation criteria for autonomous vessels can be defined differently across the three trajectory segments, enabling flexible assessment of tracking stability, collision-avoidance capability, and post-encounter recovery behavior. IV. E XPERIMENTS AND RESULTS 
+
+A. Vessel Trajectory Generation for Designated Traffic Flows 1) Data Description: The dataset is derived from one-year AIS records of a Singapore seaway, covering the area ap-proximately bounded by longitudes 103.785°E–103.837°E and latitudes 1.180°N–1.215°N. Two opposing traffic flows along the same waterway are selected as Route 1 (northbound, from 1.180°N to 1.212°N) and Route 2 (southbound, from 1.210°N to 1.189°N). The two routes traverse the same geographic corridor in opposite directions, causing their trajectories to spatially overlap and creating potential vessel encounter situa-tions. Figure 3 shows the spatial distribution of both datasets. Raw trajectories are filtered by geographic start/end bounding-box constraints to isolate each directional flow. The retained trajectories are then resampled to a uniform 10-second interval and missing values are filled by linear interpolation. Each datasets utliers that deviate significantly from the domi-nant flow are identified and removed using pairwise distance filtering to obtain a clean, well-structured dataset suitable for comparative evaluation. A fixed time window is then applied to standardize sequence length, yielding 1094 trajectories with 91 steps for Route 1 and 2310 trajectories with 61 steps for Route 2 as the final training inputs. 
+
+Fig. 3: Visualization of trajectory datasets for (a) Route 1 and (b) Route 2. 
+
+2) Experiment Setup: All experiments are conducted on a workstation running Ubuntu 22.04 with a single NVIDIA GeForce RTX 4080 GPU under PyTorch 2.6. Two models are trained corresponding to the two route datasets. The Route 1 model is trained on 1094 well-structured trajectories with 91 time steps each, serving as the primary comparative evaluation benchmark. The Route 2 model is trained on 2310 more complex trajectories with 61 time steps each, designed for robustness evaluation under challenging data conditions. Both models use a latent dimension of 100, batch size of 64, and are trained for 500 epochs. After training, each model generates 1000 trajectories for evaluation. All trajectories maintain a uniform 10-second interval between consecutive data points. 
+
+3) Experimental Results: Comparative evaluation is con-ducted on both Route 1 and Route 2 datasets against baseline models, where Route 2 additionally serves to demonstrate the robustness of ConfluxVAE under more challenging real-world data conditions. ConfluxVAE demonstrates stable convergence on the Route 1 dataset, effectively capturing the dominant traffic flow pat-terns. Overall, the generated trajectories exhibit similar trends and spatial distributions to the original trajectories. Figure 4 visualizes the generated trajectories, demonstrating that the model successfully reproduces the spatial distribution and navigational patterns of real vessel movements while maintain-ing realistic trajectory smoothness and continuity. However, some unexpected jitters occur in the generated trajectories, particularly at trajectory bends. To improve data quality and smooth the trajectories, the Savitzky–Golay filter is applied for denoising after model generation. 
+
+Fig. 4: Vessel trajectories generated by ConfluxVAE To evaluate the performance of the generated trajectories, the similarity and error between the original and generated trajectories are measured. Since MAE and MSE are calculated based on pairwise trajectory comparisons, the results are obtained in a 1000 × 1094 matrix for Route 1. The mean value of the calculated matrix is taken as the final metric value. Smaller values indicate better performance and higher similarity between trajectories. Table I shows the comparative results using MAE, MSE, DM, and MMD metrics against baseline models. TABLE I: Comparative evaluation on Route 1 dataset.                                                
+
+> Model MAE ↓MSE ↓DM ↓MMD ↓
+> CNN 0.1658 0.0453 0.9073 0.5163 GAN 0.0763 0.0125 0.7560 0.5630 LSTM 0.0615 0.0079 0.7301 0.4937 BiLSTM 0.0621 0.0082 0.6807 0.4812 VAE 0.0569 0.0053 0.7235 0.4998 Transformer VAE 0.0452 0.0038 0.6287 0.5373 Social VAE 0.0396 0.0038 0.6706 0.3748 ConfluxVAE 0.0177 0.0008 0.6315 0.3706
+> ↓: Less is better; ↓: Training metric; ↓: Maritime AIS-specific metric.
+> Bold :1st per column; Underline: 2nd per column.
+
+To further evaluate model robustness, Table II presents the comparative evaluation on the Route 2 dataset, which contains greater trajectory irregularity and AIS signal variability. While all models exhibit some performance degradation compared to Route 1, ConfluxVAE maintains top performance across all metrics, demonstrating its robustness under noisy and complex real-world data conditions. The multi-scale temporal modeling capability of Conflux EMA enables ConfluxVAE to simultaneously capture both local trajectory details and global flow patterns, allowing it to generalize effectively across varying data quality and behavioral diversity. TABLE II: Comparative evaluation on Route 2 dataset (robust-ness evaluation).                                                
+
+> Model MAE ↓MSE ↓DM ↓MMD ↓
+> CNN 0.1282 0.0291 0.9308 0.6992 GAN 0.0860 0.0145 0.7604 0.8202 LSTM 0.0358 0.0036 0.6724 0.7420 BiLSTM 0.0361 0.0045 0.6717 0.6767 VAE 0.0425 0.0023 0.7512 0.7402 Transformer VAE 0.0290 0.0021 0.6782 0.6816 Social VAE 0.0392 0.0042 0.7245 0.6452 ConfluxVAE 0.0217 0.0016 0.6393 0.6314
+> ↓: Less is better; ↓: Training metric; ↓: Maritime AIS-specific metric.
+> Bold :1st per column; Underline: 2nd per column.
+
+4) Ablation Study: To validate the contribution of each component in ConfluxVAE, an ablation study is conducted on Route 1 by removing one component at a time. Four ablation variants are evaluated: without the Conflux EMA module (replaced by a standard convolutional block), without the complete Conflux module, without β-weighted KL divergence, and without the Savitzky–Golay postprocessing filter. Table III reports the results. Removing the Conflux EMA module leads to a substantial increase in MAE and MSE, confirming that multi-scale tempo-ral feature extraction is critical for trajectory reconstruction ac-curacy. Removing the entire Conflux module further degrades MAE while achieving the second-best MSE, indicating that the EMA sub-module is the primary contributor to distribution-level quality. Removing β-weighted KL causes the DM metric to collapse (marked as strikethrough), showing that the model fails to generate valid trajectory distributions without proper KL regularization. Removing the Savitzky–Golay filter has negligible impact on MAE and MSE but slightly degrades DM and MMD, demonstrating that postprocessing smoothing contributes to distribution-level fidelity. The full ConfluxVAE achieves the best performance on MAE, MSE, and MMD, validating the necessity of each component. TABLE III: Ablation study of ConfluxVAE on Route 1.                              
+
+> Variant MAE ↓MSE ↓DM ↓MMD ↓
+> w/o Conflux EMA 0.0568 0.0052 0.7086 0.4999 w/o Conflux 0.0351 0.0026 0.6958 0.4658 w/o β-KL 0.0609 0.0047 0.0000 0.9996 w/o SG filter 0.0179 0.0008 0.6481 0.3709 ConfluxVAE (full) 0.0177 0.0008 0.6315 0.3706
+
+5) Qualitative Case Study: Baseline models each exhibit distinct limitations: LSTM-based models and standard VAE suffer from mode collapse with trajectories converging to a single route, CNN and GAN produce chaotic unrealistic paths, Social-VAE generates fragmented trajectories by over-capturing AIS signal dropouts, and Transformer-VAE shows noticeable jitter at trajectory bends. ConfluxVAE overcomes these limitations through multi-scale temporal modeling, si-multaneously capturing local trajectory details and global traf-fic flow patterns, yielding trajectories that balance smoothness and diversity while faithfully reproducing maritime traffic flow structure for safety-critical scenario construction. 
+
+B. Demonstration of Constructed Safety-Critical Scenario 1) Traffic Flow and Encounter Context: To demonstrate the applicability of the proposed framework, two representative traffic flows within the study area are selected as experimental contexts. As shown in Figure 5a, the study area is located near the precautionary area with the highest density of multi-vessel encounters according to the chart. Among the intersecting traffic flows in this region, the two dominant routes indicated by the thick arrows are selected for analysis, namely the southbound outbound traffic flow and the eastbound traffic that turns northward to enter the port. A representative real encounter occurring within these flows is illustrated in Figure 5b, where the vessel trajectories demon-strate a typical interaction pattern observed in the historical AIS data, and the southbound vessel has already initiated an avoidance maneuver. 
+
+2) Scenario Construction from Generated Trajectories: 
+
+Based on the representative traffic flows identified in the pre-vious section, synthetic trajectories are generated to construct  
+
+> (a) Study Area and Traffic Flows (b) An Encounter Example
+
+Fig. 5: Traffic Flow and Encounter Context a diverse set of encounter scenarios. The generation process preserves the statistical properties of the original AIS data while allowing controlled variations in vessel motion, timing, and spatial interaction patterns. The resulting set of scenarios exhibits significant diversity in terms of relative geometry, encounter timing, and ma-noeuvring behaviour, as illustrated by the six representative scenarios shown in Figure 6 (Additional generated scenarios are available at the attached link). In addition, to systemati-cally represent these generated encounters, each scenario is expressed in a structured form consisting of Pre-encounter segment (solid line), Encounter segment (light dashed line) and the Post-encounter segment (thick dashed line). It is worth noting that the trajectory dataset used for training is dominated by encounters involving relatively small vessels, primarily bunker barges with lengths of around 100 m. Accordingly, the scenario construction parameters adopted in this study are set conservatively, with dmin = 0 .05 nm and both tearly and 
+
+tafter fixed at 100 s. It can be observed that the generated trajectories preserve the key characteristics of the original historical tracks while not being exact replicas. At the same time, the interacting trajectories are capable of triggering safety-critical close-encounter situations. 
+
+Fig. 6: Constructed Safety-Critical Encounter Scenarios V. C ONCLUSION 
+
+This paper presented a data-driven framework for construct-ing safety-critical vessel encounter scenarios from histori-cal AIS data. By integrating generative trajectory modeling with structured encounter pairing and temporal parameteri-zation, the proposed method enables scalable construction of simulation-ready maritime testing scenarios while preserving the statistical characteristics of real traffic flows. To enhance trajectory realism and robustness under noisy AIS observations, a multi-scale temporal variational autoen-coder architecture was introduced. Experimental results on real-world traffic flows demonstrated that the proposed Con-fluxVAE effectively captures vessel motion patterns, improves trajectory smoothness and distributional fidelity, and maintains robustness across datasets with varying levels of complexity. The generated trajectories were further combined to construct diverse encounter scenarios that retain key characteristics of real historical interactions while enabling the discovery of safety-critical cases beyond those directly observed. The proposed framework provides a practical pathway for building scenario libraries for simulation-based digital testing, benchmarking, and safety assessment of autonomous naviga-tion systems and decision-support tools in maritime traffic environments. Future work will investigate the extension of the framework to multi-vessel interactions, incorporation of envi-ronmental factors such as wind and current, and integration with large-scale simulation platforms to support systematic validation of intelligent maritime traffic management systems. REFERENCES [1] H Imazu. Research on collision avoidance manoeuvre. Tokyo University of Marine Science and Technology: Tokyo, Japan , 1987. [2] Ivan Porres, Sepinoud Azimi, and Johan Lilius. Scenario-based testing of a ship collision avoidance system. In 2020 46th Euromicro Conference on Software Engineering and Advanced Applications (SEAA) , pages 545–552. IEEE, 2020. [3] Ryohei Sawada, Keiji Sato, and Makiko Minami. Framework of safety evaluation and scenarios for automatic collision avoidance algorithm. 
+
+Ocean Engineering , 300:117506, 2024. [4] Trym Tengesdal and Tor A Johansen. Simulation framework and software environment for evaluating automatic ship collision avoidance algorithms. In 2023 IEEE Conference on Control Technology and Applications (CCTA) , pages 186–193. IEEE, 2023. [5] Feixiang Zhu, Zhengyu Zhou, and Hongrui Lu. Randomly testing an autonomous collision avoidance system with real-world ship encounter scenario from ais data. Journal of Marine Science and Engineering ,10(11):1588, 2022. [6] Weiqiang Wang, Liwen Huang, Kezhong Liu, Yang Zhou, Zhitao Yuan, Xuri Xin, and Xiaolie Wu. Ship encounter scenario generation for colli-sion avoidance algorithm testing based on ais data. Ocean Engineering ,291:116436, 2024. [7] Weiqiang Wang, Kezhong Liu, Liwen Huang, Xuri Xin, Xiaolie Wu, and Zhitao Yuan. Generation and complexity analysis of ship encounter scenarios using ais data for collision avoidance algorithm testing. Ocean Engineering , 312:119034, 2024. [8] Victor Bolbot, Christos Gkerekos, Gerasimos Theotokatos, and Evan-gelos Boulougouris. Automatic traffic scenarios generation for au-tonomous ships collision avoidance system testing. Ocean Engineering ,254:111309, 2022. [9] Tom Arne Pedersen, Chanjei Vasanthan, Kristian Karolius, Øystein Engelhardtsen, Koen Pieter Houweling, and Are Jørgensen. Generating structured set of encounters for verifying automated collision and grounding avoidance systems. In Journal of Physics: Conference Series ,volume 2618, page 012013. IOP Publishing, 2023. [10] Feixiang Zhu, Yihan Niu, Moxuan Wei, Yifan Du, and Pengyu Zhai. A high-risk test scenario adaptive generation algorithm for ship au-tonomous collision avoidance decision-making based on reinforcement learning. Ocean Engineering , 320:120344, 2025. [11] Simon Ulbrich, Till Menzel, Andreas Reschka, Fabian Schuldt, and Markus Maurer. Defining and substantiating the terms scene, situation, and scenario for automated driving. In 2015 IEEE 18th International Conference on Intelligent Transportation Systems , pages 982–988. IEEE, 2015. [12] Xian Ding, Hongwei Bian, Heng Ma, and Rongying Wang. Ship trajectory generator under the interference of wind, current and waves. 
+
+Sensors , 22(23):9395, 2022. [13] ChangXi Zhuang and Chao Chen. Research on autonomous route generation method based on ais ship trajectory big data and improved lstm algorithm. Frontiers in Neurorobotics , 16, 2022. [14] Ian J Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, and Yoshua Bengio. Generative adversarial nets. Advances in neural information processing systems , 27, 2014. [15] Diederik P Kingma and Max Welling. Auto-encoding variational bayes. 
+
+arXiv preprint arXiv:1312.6114 , 2013. [16] Luming Chen and Sujit K. Ghosh. A test of relative similarity for model selection in generative models. Entropy , 26(2):150, 2024.
