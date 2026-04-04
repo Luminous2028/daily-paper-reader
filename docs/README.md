@@ -6,58 +6,53 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-03
-- 运行时间：2026-04-03 20:00:45 UTC
+- 最新运行日期：2026-04-04
+- 运行时间：2026-04-04 19:45:45 UTC
 - 运行状态：成功
-- 本次总论文数：12
-- 精读区：1
-- 速读区：11
+- 本次总论文数：10
+- 精读区：0
+- 速读区：10
 
 ### 今日简报（AI）
-今日深挖 12 篇前沿论文，重点聚焦高效移动操控与复杂环境下的动态轨迹优化。
-高分论文 AnchorVLA 凭借锚定扩散技术刷新了端到端移动操作效率，SHARP 与 EgoFlow 则在实时运动预测及 6DoF 生成上取得显著突破。
-建议关注扩散模型与流匹配技术如何赋能移动机器人，实现更精准的感知与控制一体化。
-- 详情：[/202604/03/README](/202604/03/README)
+今日速览 10 篇前沿论文，重点攻克实时自动驾驶的规则引导与视频模型的复杂规划推理。
+推荐关注 RAD-LAD 如何实现语言驱动的实时驾驶，以及视频模型在迷宫求解中展现出的“预见性”推理能力。
+建议深入了解控制理论与多模态大模型的结合，探索更具解释性且安全的智能决策方案。
+- 详情：[/202604/04/README](/202604/04/README)
 
 ### 精读区论文标签
-1. [AnchorVLA: Anchored Diffusion for Efficient End-to-End Mobile Manipulation](/202604/03/2604.01567v1-anchorvla-anchored-diffusion-for-efficient-end-to-end-mobile-manipulation)  
-   标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：用于多模态动作分布和操作不确定性的扩散策略
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Autonomous overtaking trajectory optimization using reinforcement learning and opponent pose estimation](/202604/03/2603.27207v1-autonomous-overtaking-trajectory-optimization-using-reinforcement-learning-and-opponent-pose-estimation)  
+1. [RAD-LAD: Rule and Language Grounded Autonomous Driving in Real-Time](/202604/04/2603.28522v2-rad-lad-rule-and-language-grounded-autonomous-driving-in-real-time)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动超车轨迹优化
-2. [SHARP: Short-Window Streaming for Accurate and Robust Prediction in Motion Forecasting](/202604/03/2603.28091v1-sharp-short-window-streaming-for-accurate-and-robust-prediction-in-motion-forecasting)  
+   evidence：自动驾驶运动规划与预测
+2. [Video Models Reason Early: Exploiting Plan Commitment for Maze Solving](/202604/04/2603.30043v1-video-models-reason-early-exploiting-plan-commitment-for-maze-solving)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：动态交通环境中的运动预测
-3. [EgoFlow: Gradient-Guided Flow Matching for Egocentric 6DoF Object Motion Generation](/202604/03/2604.01421v1-egoflow-gradient-guided-flow-matching-for-egocentric-6dof-object-motion-generation)  
+   evidence：视频扩散模型中的内部规划动态和规划承诺
+3. [Set-Theoretic Receding Horizon Control for Obstacle Avoidance and Overtaking in Autonomous Highway Driving](/202604/04/2604.01790v1-set-theoretic-receding-horizon-control-for-obstacle-avoidance-and-overtaking-in-autonomous-highway-driving)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：用于物体运动生成的流匹配框架
-4. [Towards Intrinsically Calibrated Uncertainty Quantification in Industrial Data-Driven Models via Diffusion Sampler](/202604/03/2604.01870v1-towards-intrinsically-calibrated-uncertainty-quantification-in-industrial-data-driven-models-via-diffusion-sampler)  
-   标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：基于扩散的后验采样用于校准不确定性量化
-5. [Unified Number-Free Text-to-Motion Generation Via Flow Matching](/202604/03/2603.27040v1-unified-number-free-text-to-motion-generation-via-flow-matching)  
+   evidence：针对建模为不确定系统的车辆进行运动规划
+4. [Neuro-Cognitive Reward Modeling for Human-Centered Autonomous Vehicle Control](/202604/04/2603.25968v1-neuro-cognitive-reward-modeling-for-human-centered-autonomous-vehicle-control)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：通过流匹配和潜空间进行运动生成
-6. [Bayesian-Symbolic Integration for Uncertainty-Aware Parking Prediction](/202604/03/2603.27119v1-bayesian-symbolic-integration-for-uncertainty-aware-parking-prediction)  
+   evidence：以人为中心的自动驾驶汽车控制与决策
+5. [OccSim: Multi-kilometer Simulation with Long-horizon Occupancy World Models](/202604/04/2603.28887v1-occsim-multi-kilometer-simulation-with-long-horizon-occupancy-world-models)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：贝叶斯神经网络量化预测不确定性
-7. [MotionRFT: Unified Reinforcement Fine-Tuning for Text-to-Motion Generation](/202604/03/2603.27185v1-motionrft-unified-reinforcement-fine-tuning-for-text-to-motion-generation)  
+   evidence：自动驾驶仿真与占据栅格世界模型
+6. [COTTA: Context-Aware Transfer Adaptation for Trajectory Prediction in Autonomous Driving](/202604/04/2604.00402v1-cotta-context-aware-transfer-adaptation-for-trajectory-prediction-in-autonomous-driving)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：基于扩散模型的运动生成与强化微调
-8. [From Vessel Trajectories to Safety-Critical Encounter Scenarios: A Generative AI Framework for Autonomous Ship Digital Testing](/202604/03/2603.28067v1-from-vessel-trajectories-to-safety-critical-encounter-scenarios-a-generative-ai-framework-for-autonomous-ship-digital-testing)  
+   evidence：自动驾驶中具有领域自适应的轨迹预测
+7. [Flow-based Policy With Distributional Reinforcement Learning in Trajectory Optimization](/202604/04/2604.00977v1-flow-based-policy-with-distributional-reinforcement-learning-in-trajectory-optimization)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：自主导航系统的生成式轨迹建模
-9. [Kernel-SDF: An Open-Source Library for Real-Time Signed Distance Function Estimation using Kernel Regression](/202604/03/2603.29227v1-kernel-sdf-an-open-source-library-for-real-time-signed-distance-function-estimation-using-kernel-regression)  
+   evidence：轨迹优化中用于多模态策略的流匹配
+8. [Diffusion models with physics-guided inference for solving partial differential equations](/202604/04/2604.01242v1-diffusion-models-with-physics-guided-inference-for-solving-partial-differential-equations)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于运动规划和轨迹优化的不确定性感知SDF估计
-10. [Locally Confident, Globally Stuck: The Quality-Exploration Dilemma in Diffusion Language Models](/202604/03/2604.00375v1-locally-confident-globally-stuck-the-quality-exploration-dilemma-in-diffusion-language-models)  
+   evidence：具有物理引导推理的扩散模型
+9. [Bridging Large-Model Reasoning and Real-Time Control via Agentic Fast-Slow Planning](/202604/04/2604.01681v1-bridging-large-model-reasoning-and-real-time-control-via-agentic-fast-slow-planning)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：扩散模型解码中的置信度与不确定性
-11. [Stein Variational Uncertainty-Adaptive Model Predictive Control](/202604/03/2604.01034v1-stein-variational-uncertainty-adaptive-model-predictive-control)  
+   evidence：自主系统规划与实时控制的分层框架
+10. [When to ASK: Uncertainty-Gated Language Assistance for Reinforcement Learning](/202604/04/2604.02226v1-when-to-ask-uncertainty-gated-language-assistance-for-reinforcement-learning)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：针对非线性控制中潜在参数不确定性的 Stein 变分推断
+   evidence：使用蒙特卡洛Dropout评估自主规划中的不确定性
 
 
 <div class="dpr-home-promo-card">

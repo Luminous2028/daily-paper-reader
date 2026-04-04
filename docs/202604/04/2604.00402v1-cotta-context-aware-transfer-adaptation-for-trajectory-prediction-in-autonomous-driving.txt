@@ -1,0 +1,179 @@
+Title: COTTA: Context-Aware Transfer Adaptation for Trajectory Prediction in Autonomous Driving
+
+URL Source: https://arxiv.org/pdf/2604.00402v1
+
+Published Time: Thu, 02 Apr 2026 00:26:49 GMT
+
+Number of Pages: 4
+
+Markdown Content:
+# COTTA: COntext-aware Transfer adaptation for Trajectory prediction in Autonomous driving 
+
+Seohyoung Park Jaeyeol Lim Seoyoung Ju Kyeonghun Kim 
+
+Ewha Womans University Seoul National University Sangmyung University OUTTA 
+
+03nobel@ewhain.net limlimlim00@snu.ac.kr 202115055@sangmyung.ac.kr kyeonghun.kim@outta.ai Ken Ying-Kai Liao Nam-Joon Kim † Hyuk-Jae Lee 
+
+NVIDIA Seoul National University Seoul National University 
+
+kenyingkail@nvidia.com knj01@snu.ac.kr hjlee@capp.snu.ac.kr 
+
+Abstract —Developing robust models to accurately predict the trajectories of surrounding agents is fundamental to autonomous driving safety. However, most public datasets, such as the Waymo Open Motion Dataset and Argoverse, are collected in Western road environments and do not reflect the unique traffic patterns, infrastructure, and driving behaviors of other regions, including South Korea. This domain discrepancy leads to performance degradation when state-of-the-art models trained on Western data are deployed in different geographic contexts. In this work, we investigate the adaptability of Query-Centric Trajectory Prediction (QCNet) when transferred from U.S.-based data to Korean road environments. Using a Korean autonomous driving dataset, we compare four training strategies: zero-shot transfer, training from scratch, full fine-tuning, and encoder freezing. Experimental results demonstrate that leveraging pre-trained knowledge significantly improves prediction performance. Specifically, selectively fine-tuning the decoder while freezing the encoder yields the best trade-off between accuracy and training efficiency, reducing prediction error by over 66% compared to training from scratch. This study provides practical insights into effective transfer learning strategies for deploying trajectory prediction models in new geographic domains. 
+
+Index Terms —QCNet, Trajectory Prediction, Transfer Learn-ing, Domain Adaptation 
+
+I. I NTRODUCTION 
+
+With the rapid advancement of autonomous driving tech-nologies, ensuring the safety and reliability of vehicles in complex real-world environments remains one of the most critical challenges. Public benchmarks such as the Waymo Open Dataset (Waymo) [1] and Argoverse [2], [3] have seen new state-of-the-art (SOTA) models emerge annually. However, despite these advances, a fundamental limitation persists. Most datasets used to train SOTA models are collected in North American or European road environments, reflect-ing the traffic cultures and infrastructure of those regions. Consequently, they fail to represent the unique characteristics of Asian countries—particularly South Korea—where urban environments are denser, intersections more complex, and driving behaviors often involve aggressive lane changes and frequent cut-ins. Such dataset bias and domain gaps pose a serious challenge when deploying Western-trained models in domestic contexts, 
+
+† Corresponding author 
+
+as their prediction accuracy and reliability degrade sharply due to poor domain adaptability. Therefore, it is imperative to develop trajectory prediction models optimized for local road conditions or to establish effective strategies for adapting existing high-performing models. In this study, we focus on QCNet (Query-Centric Trajectory Prediction) [4], an innovative query-centric paradigm that has demonstrated both high efficiency and strong predictive performance. QCNet significantly improves computational ef-ficiency during the encoding stage, making it suitable for real-time autonomous driving systems. Nevertheless, since it was pretrained on U.S.-based datasets, it inherits the same domain limitations. Hence, our objective is to systematically analyze how effectively a pretrained QCNet can adapt to the congested and dynamic road environments of South Korea. To address this, we design and compare four distinct transfer-learning strategies using a Korean autonomous-driving dataset. Through this comparative analysis, we evaluate the adaptability of QCNet to local driving conditions and propose an adaptation strategy that achieves both optimal performance and training efficiency. The findings of this research are expected to provide practical guidelines for successfully in-tegrating and localizing state-of-the-art trajectory prediction models in future Korean autonomous driving systems. II. RELATED WORKS 
+
+A. Motion Forecasting 
+
+QCNet [4], introduced at CVPR 2023, marks the origin of the query-centric paradigm in trajectory prediction and has become a milestone model in autonomous driving research. By reformulating agent–scene interactions through query-based reasoning, QCNet achieved both high efficiency and accuracy, ranking first on the Argoverse 1 and 2 benchmarks, and winning the CVPR 2023 Workshop on Autonomous Driving Challenge. However, the Argoverse dataset used to train QCNet was primarily represents U.S. urban driving environments (e.g., Pittsburgh, Miami), reflecting Western traffic patterns and infrastructure, which potentially limits the model’s adaptability to non-Western contexts such as densely populated Asian  
+
+> arXiv:2604.00402v1 [cs.CV] 1 Apr 2026 Knowledge
+> Transfer
+> Pretext
+> Task
+> Trajectory
+> Prediction
+> Step 1.
+> Step 2.
+> Decoder
+> Fine -Tuned
+> Decoder
+> Agent
+> Encoder
+> Network
+> Map
+> Encoder
+> Network
+> Past
+> Trajectory
+> Past
+> Trajectory
+> Pretrained
+> Encoder Fig. 1. Overview of the proposed methodology
+
+cities. For instance, UniTraj [5] introduced a unified bench-mark across Waymo [1], Argoverse 2 [3], and nuScenes [6], conducting cross-dataset evaluations that revealed a substantial performance drop when models trained on one dataset were tested on another. Similarly, models trained on Argoverse 2 show a 20–30% degradation in b-minFDE6 when tested on nuScenes, underscoring how dataset diversity and scale fundamentally affect generalization performance [7]. We further hypothesize that country-specific road structures and driving behaviors also contribute to the domain gap. Consequently, a model like QCNet, trained on U.S. datasets, is expected to experience performance degradation when applied to Korean driving environments. In this work, we system-atically analyze this phenomenon by evaluating QCNet on Korean autonomous-driving datasets and investigate effective transfer-learning strategies to enhance domain adaptability and prediction performance in region-specific contexts. III. EXPERIMENTS 
+
+A. Datasets 
+
+The Argoverse [2], [3] comprises a large-scale collection of real-world driving data captured from autonomous vehicles in diverse urban environments. The subsequent release, Ar-goverse 2 motion forecasting dataset, significantly enhances its predecessor by providing 250,000 scenarios that span more than 2,000 km of roadways across six geographically diverse cities. Each scenario contains 11 seconds of track-ing data accompanied by high-definition vector maps that include lane centerlines and road topology information. The dataset partitions each scenario into a 5-second observation period followed by a 6-second prediction horizon, enabling comprehensive evaluation of motion forecasting algorithms in complex multi-agent environments. We used the ETRI Trajectory Prediction Challenge 2025 dataset [8]. The ETRI Trajectory Dataset (ETD) contains 20,739 scenarios collected by two vehicles following prede-fined routes in Daejeon and Sejong, South Korea. The dataset includes trajectories of vehicles, cyclists, and pedestrians. Data samples are provided as 6-second segments, comprising 2 seconds of historical data and 4 seconds of future data. In addition, the dataset provides an official split for trajectory prediction. The training set is generated from approximately 28,800 collected frames, creating learning scenes that contain roughly 494,000 training trajectories. The evaluation set is generated from approximately 4,200 collected frames, creating QCNet   
+
+> From Scratch
+> QCNet
+> Pre-trained
+> QCNet Encoder
+> Pre-trained
+> QCNet Encoder
+> Fine-Tuned
+> QCNet Decoder
+> Fine-Tuned
+> QCNet Decoder
+> Fine-Tuned
+> ❄
+> ❄
+> 🔥 🔥
+> 🔥
+> (a)
+> (b)
+> (c)
+> (d) Fig. 2. Overview of transfer learning strategies from Argoverse 2 to ETRI Trajectory Dataset: (a) Zero-shot evaluation, (b) Training from scratch, (c) Full fine-tuning, (d) Encoder freezing fine-tuning.
+
+test scenes that contain roughly 84,000 test trajectories. For evaluation, we focus exclusively on vehicle trajectories. 
+
+B. Experimental Details 
+
+All experiments were conducted on an NVIDIA A100 GPU for 150 epochs with batch size 16 for training and validation. Map elements were filtered to those within 50 m of the target agent. The models were trained using the AdamW optimizer [9] with cosine annealing, weight decay of 1e−4, dropout of 10%, and learning rate of 1e−4.
+
+C. Experimental Setup 
+
+To investigate the domain gap that arises when applying a QCNet model pretrained on the U.S.-based Argoverse 2 to the ETRI Trajectory Dataset, we conducted four transfer learning experiments designed to assess performance degra-dation and identify an effective adaptation strategy. For all experiments, we utilized the official QCNet implementation with the pretrained model weights released by the authors. The four experimental settings are as follows:  
+
+> •
+
+Zero-shot : The QCNet model pretrained on Argoverse 2 was directly evaluated on the ETRI test set without any further training.  
+
+> •
+
+Scratch Training : The QCNet architecture was retained, but the model was trained from scratch using only the ETRI training set, and subsequently evaluated on the ETRI test set.  
+
+> •
+
+Full Fine-tuning : The entire QCNet model pretrained on Argoverse 2 was fine-tuned using the ETRI training set and then evaluated on the ETRI test set.  
+
+> •
+
+Encoder Freezing : The QCNet model pretrained on Argoverse 2 was adapted by freezing the encoder and fine-tuning only the decoder with the ETRI training set, followed by evaluation on the ETRI test set. 
+
+D. Metrics 
+
+minADE K =min Kl=1 
+
+PTpred −1 
+
+> t=Tobs
+
+ˆyt, (l) 
+
+> i
+
+− yti 2
+
+Tpred − Tobs 
+
+, (1) 
+
+min F DE K = K
+
+min  
+
+> l=1
+
+ˆyTpred −1,(l) 
+
+> i
+
+− yTpred −1 
+
+> i2
+
+, (2) The evaluation metrics were minimum Average Displacement Error (minADE) and minimum Final Displacement Error (minFDE), as defined in (1) and (2). 
+
+N LL Laplace =
+
+> Tpred −1
+
+X
+
+> t=Tobs
+
+log P (ytj |ˆytj , ˆbtj ), (3) 
+
+Ltotal = Lpropose + Lrefine + Lcls , (4) The training procedure followed the original QCNet [4] training configuration, and the loss functions in (3) and (4) were applied accordingly during optimization. IV. RESULTS We evaluate the transferability of QCNet, pretrained on Argoverse 2, to the Korean driving domain. The quantitative results of the four training strategies are presented in Table I, comparing minADE and minFDE performance. The zero-shot results (Pretrained) confirm a clear domain gap, as the performance significantly degrades when a model trained on U.S. driving data is directly applied to Korean road scenarios. Training QCNet from scratch on the ETRI dataset reduces minADE but leads to a substantial increase in minFDE, indicating difficulty in learning long-term motion patterns due to limited data scale. By contrast, transfer learning strategies that leverage pretrained weights show notably superior perfor-mance. In particular, the Encoder Freezing approach achieves the best results, with a 66.3% reduction in minADE and an 83.7% reduction in minFDE compared to Scratch Training. This demonstrates that large-scale pretraining provides essential general motion representations, while fine-tuning with Korean data enables the model to effectively learn domain-specific driving behaviors and traffic patterns. Overall, the results validate that pretraining + targeted fine-tuning is crucial for adapting trajectory prediction models to new geographic domains, and that selectively updating the decoder offers an efficient and highly effective transfer strategy for localizing QCNet to Korean road environments. V. C ONCLUSION 
+
+This study explored the optimal transfer learning strategy for adapting QCNet—an advanced trajectory prediction model pretrained on the U.S.-based Argoverse 2 dataset—to the high-density and highly interactive driving environments of South Korea. Among the four evaluated strategies, the Encoder Freezing approach achieved the best localization performance, TABLE I PERFORMANCE COMPARISON OF QCNET TRAINING STRATEGIES           
+
+> Training Strategy minADE minFDE
+> Pretrained 0.767 1.460 Scratch Training 0.540 2.720 Full Fine-tuning 0.205 0.721 Encoder Freezing 0.182 0.444
+
+reducing minADE by approximately 66.3% compared to Scratch Training. These findings confirm that large-scale pretraining provides strong general motion priors, and that selectively fine-tuning model components enables efficient acquisition of domain-specific driving behaviors. The results highlight the importance of positive transfer from source domains and demonstrate that the proposed strategy is a practical and effective pathway for localizing SOTA trajectory models for new geographic regions. While the transfer learning approaches demonstrated effec-tiveness, qualitative analysis reveals that residual domain dis-crepancies persist due to the unique characteristics of Korean road environments. To address these limitations, future work will pursue the following research directions:  
+
+> •
+
+Data-Centric Enhancement : We will strengthen the rep-resentation of Korean road characteristics by improving both the quality and diversity of training data. This includes expanding domestic data collection to cover a broader range of geographic areas and complex scenar-ios, as well as employing targeted data augmentation techniques that simulate region-specific behaviors, such as high-density interactions and aggressive lane changes. These efforts aim to enhance model robustness in diverse real-world settings.  
+
+> •
+
+Domain Adaptation Techniques : Beyond supervised fine-tuning, we will adopt Unsupervised Domain Adap-tation (UDA) methods to explicitly reduce distributional shifts between source and target domains. Approaches such as adversarial learning, feature alignment, and style transfer will be explored, particularly applied to the encoder to reduce structural and contextual feature dis-crepancies between Argoverse-like and Korean road data.  
+
+> •
+
+Multi-Domain Learning Framework : To expand adapt-ability across multiple countries, we plan to investi-gate Multi-Domain Learning strategies that enable asingle model to generalize across heterogeneous road cul-tures. Techniques such as domain discriminators, domain-specific encoders, and mixture-of-experts architectures will be employed to jointly preserve global generalization while retaining local specialization. In addition, future work may explore online adaptation, where the model continuously refines itself using in-field driving data, allowing real-time adaptation to evolving traffic patterns. We also foresee value in extending this study to incorporate social interaction modeling and map-less predic-tion architectures, enabling robust performance in regions with limited or outdated HD maps. ACKNOWLEDGMENT 
+
+This study was supported by the Next Generation Semi-conductor Convergence and Open Sharing System, as well as by the Institute of Information & Communications Technology Planning & Evaluation (IITP) within the Artificial Intelligence Semiconductor Support Program to Nurture the Best Talents (IITP-2023-RS-2023-00256081), managed by the Korea gov-ernment (MSIT). REFERENCES [1] S. Ettinger, S. Cheng, B. Caine, C. Liu, H. Zhao, S. Pradhan, Y. Chai, B. Sapp, C. R. Qi, Y. Zhou et al. , “Large scale interactive motion forecasting for autonomous driving: The waymo open motion dataset,” in Proceedings of the IEEE/CVF international conference on computer vision , 2021, pp. 9710–9719. [2] M.-F. Chang, J. Lambert, P. Sangkloy, J. Singh, S. Bak, A. Hartnett, D. Wang, P. Carr, S. Lucey, D. Ramanan et al. , “Argoverse: 3d tracking and forecasting with rich maps,” in Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , 2019, pp. 8748– 8757. [3] B. Wilson, W. Qi, T. Agarwal, J. Lambert, J. Singh, S. Khandelwal, B. Pan, R. Kumar, A. Hartnett, J. K. Pontes et al. , “Argoverse 2: Next generation datasets for self-driving perception and forecasting,” arXiv preprint arXiv:2301.00493 , 2023. [4] Z. Zhou, J. Wang, Y.-H. Li, and Y.-K. Huang, “Query-centric trajectory prediction,” in 2023 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) . IEEE, 2023, pp. 17 863–17 873. [5] L. Feng, M. Bahari, K. M. B. Amor, ´ E. Zablocki, M. Cord, and A. Alahi, “Unitraj: A unified framework for scalable vehicle trajectory prediction,” in European Conference on Computer Vision . Springer, 2024, pp. 106– 123. [6] H. Caesar, V. Bankiti, A. H. Lang, S. Vora, V. E. Liong, Q. Xu, A. Krish-nan, Y. Pan, G. Baldan, and O. Beijbom, “nuscenes: A multimodal dataset for autonomous driving,” in Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , 2020, pp. 11 621–11 631. [7] D. Grimm, A. Abouelazm, and J. M. Z¨ ollner, “Goal-based trajectory prediction for improved cross-dataset generalization,” arXiv preprint arXiv:2507.18196 , 2025. [8] J. Kim and Electronics and Telecommunications Research Institute, “ETRI trajectory dataset and prediction challenge 2025,” 2025, accessed: 2025-09-15. [Online]. Available: epretx.etri.re.kr/dataDetail?lang=ko& id=455 [9] I. Loshchilov and F. Hutter, “Decoupled weight decay regularization,”

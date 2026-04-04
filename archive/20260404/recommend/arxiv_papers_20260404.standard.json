@@ -1,0 +1,404 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-04T19:44:59.398123+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 10,
+    "quick_skim_target": 11,
+    "quick_selected": 10
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2603.28522v2",
+      "title": "RAD-LAD: Rule and Language Grounded Autonomous Driving in Real-Time",
+      "abstract": "We present LAD, a real-time language--action planner with an interruptible architecture that produces a motion plan in a single forward pass (~20 Hz) or generates textual reasoning alongside a motion plan (~10 Hz). LAD is fast enough for real-time closed-loop deployment, achieving ~3x lower latency than prior driving language models while setting a new learning-based state of the art on nuPlan Test14-Hard and InterPlan. We also introduce RAD, a rule-based planner designed to address structural limitations of PDM-Closed. RAD achieves state-of-the-art performance among rule-based planners on nuPlan Test14-Hard and InterPlan. Finally, we show that combining RAD and LAD enables hybrid planning that captures the strengths of both approaches. This hybrid system demonstrates that rules and learning provide complementary capabilities: rules support reliable maneuvering, while language enables adaptive and explainable decision-making.",
+      "authors": [
+        "Anurag Ghosh",
+        "Srinivasa Narasimhan",
+        "Manmohan Chandraker",
+        "Francesco Pittaluga"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-03-30T14:50:37+00:00",
+      "link": "https://arxiv.org/pdf/2603.28522v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "autonomous driving motion planning and prediction",
+      "llm_evidence_cn": "自动驾驶运动规划与预测",
+      "llm_evidence": "自动驾驶运动规划与预测",
+      "canonical_evidence": "自动驾驶运动规划与预测",
+      "llm_tldr_en": "A real-time language-action planner for autonomous driving that achieves state-of-the-art motion planning.",
+      "llm_tldr_cn": "一种用于自动驾驶的实时语言-动作规划器，实现了先进的运动规划性能。",
+      "llm_tldr": "一种用于自动驾驶的实时语言-动作规划器，实现了先进的运动规划性能。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.25968v1",
+      "title": "Neuro-Cognitive Reward Modeling for Human-Centered Autonomous Vehicle Control",
+      "abstract": "Recent advancements in computer vision have accelerated the development of autonomous driving. Despite these advancements, training machines to drive in a way that aligns with human expectations remains a significant challenge. Human factors are still essential, as humans possess a sophisticated cognitive system capable of rapidly interpreting scene information and making accurate decisions. Aligning machine with human intent has been explored with Reinforcement Learning with Human Feedback (RLHF). Conventional RLHF methods rely on collecting human preference data by manually ranking generated outputs, which is time-consuming and indirect. In this work, we propose an electroencephalography (EEG)-guided decision-making framework to incorporate human cognitive insights without behaviour response interruption into reinforcement learning (RL) for autonomous driving. We collected EEG signals from 20 participants in a realistic driving simulator and analyzed event-related potentials (ERP) in response to sudden environmental changes. Our proposed framework employs a neural network to predict the strength of ERP based on the cognitive information from visual scene information. Moreover, we explore the integration of such cognitive information into the reward signal of the RL algorithm. Experimental results show that our framework can improve the collision avoidance ability of the RL algorithm, highlighting the potential of neuro-cognitive feedback in enhancing autonomous driving systems. Our project page is: https://alex95gogo.github.io/Cognitive-Reward/.",
+      "authors": [
+        "Zhuoli Zhuang",
+        "Yu-Cheng Chang",
+        "Yu-Kai Wang",
+        "Thomas Do",
+        "Chin-Teng Lin"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-26T23:16:16+00:00",
+      "link": "https://arxiv.org/pdf/2603.25968v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "human-centered autonomous vehicle control and decision-making",
+      "llm_evidence_cn": "以人为中心的自动驾驶汽车控制与决策",
+      "llm_evidence": "以人为中心的自动驾驶汽车控制与决策",
+      "canonical_evidence": "以人为中心的自动驾驶汽车控制与决策",
+      "llm_tldr_en": "Integrates EEG-guided reward modeling to align autonomous vehicle decision-making with human intent.",
+      "llm_tldr_cn": "集成脑电图引导的奖励建模，使自动驾驶汽车的决策与人类意图保持一致。",
+      "llm_tldr": "集成脑电图引导的奖励建模，使自动驾驶汽车的决策与人类意图保持一致。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.30043v1",
+      "title": "Video Models Reason Early: Exploiting Plan Commitment for Maze Solving",
+      "abstract": "Video diffusion models exhibit emergent reasoning capabilities like solving mazes and puzzles, yet little is understood about how they reason during generation. We take a first step towards understanding this and study the internal planning dynamics of video models using 2D maze solving as a controlled testbed. Our investigations reveal two findings. Our first finding is early plan commitment: video diffusion models commit to a high-level motion plan within the first few denoising steps, after which further denoising alters visual details but not the underlying trajectory. Our second finding is that path length, not obstacle density, is the dominant predictor of maze difficulty, with a sharp failure threshold at 12 steps. This means video models can only reason over long mazes by chaining together multiple sequential generations. To demonstrate the practical benefits of our findings, we introduce Chaining with Early Planning, or ChEaP, which only spends compute on seeds with promising early plans and chains them together to tackle complex mazes. This improves accuracy from 7% to 67% on long-horizon mazes and by 2.5x overall on hard tasks in Frozen Lake and VR-Bench across Wan2.2-14B and HunyuanVideo-1.5. Our analysis reveals that current video models possess deeper reasoning capabilities than previously recognized, which can be elicited more reliably with better inference-time scaling.",
+      "authors": [
+        "Kaleb Newman",
+        "Tyler Zhu",
+        "Olga Russakovsky"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-31T17:58:15+00:00",
+      "link": "https://arxiv.org/pdf/2603.30043v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "internal planning dynamics and plan commitment in video diffusion models",
+      "llm_evidence_cn": "视频扩散模型中的内部规划动态和规划承诺",
+      "llm_evidence": "视频扩散模型中的内部规划动态和规划承诺",
+      "canonical_evidence": "视频扩散模型中的内部规划动态和规划承诺",
+      "llm_tldr_en": "Analyzes how video diffusion models commit to high-level motion plans during early denoising steps.",
+      "llm_tldr_cn": "分析了视频扩散模型在早期去噪步骤中如何确定高层运动规划。",
+      "llm_tldr": "分析了视频扩散模型在早期去噪步骤中如何确定高层运动规划。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.28887v1",
+      "title": "OccSim: Multi-kilometer Simulation with Long-horizon Occupancy World Models",
+      "abstract": "Data-driven autonomous driving simulation has long been constrained by its heavy reliance on pre-recorded driving logs or spatial priors, such as HD maps. This fundamental dependency severely limits scalability, restricting open-ended generation capabilities to the finite scale of existing collected datasets. To break this bottleneck, we present OccSim, the first occupancy world model-driven 3D simulator. OccSim obviates the requirement for continuous logs or HD maps; conditioned only on a single initial frame and a sequence of future ego-actions, it can stably generate over 3,000 continuous frames, enabling the continuous construction of large-scale 3D occupancy maps spanning over 4 kilometers for simulation. This represents an >80x improvement in stable generation length over previous state-of-the-art occupancy world models. OccSim is powered by two modules: W-DiT based static occupancy world model and the Layout Generator. W-DiT handles the ultra-long-horizon generation of static environments by explicitly introducing known rigid transformations in architecture design, while the Layout Generator populates the dynamic foreground with reactive agents based on the synthesized road topology. With these designs, OccSim can synthesize massive, diverse simulation streams. Extensive experiments demonstrate its downstream utility: data collected directly from OccSim can pre-train 4D semantic occupancy forecasting models to achieve up to 67% zero-shot performance on unseen data, outperforming previous asset-based simulator by 11%. When scaling the OccSim dataset to 5x the size, the zero-shot performance increases to about 74%, while the improvement over asset-based simulators expands to 22.1%.",
+      "authors": [
+        "Tianran Liu",
+        "Shengwen Zhao",
+        "Mozhgan Pourkeshavarz",
+        "Weican Li",
+        "Nicholas Rhinehart"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.RO"
+      ],
+      "published": "2026-03-30T18:13:51+00:00",
+      "link": "https://arxiv.org/pdf/2603.28887v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "autonomous driving simulation and occupancy world models",
+      "llm_evidence_cn": "自动驾驶仿真与占据栅格世界模型",
+      "llm_evidence": "自动驾驶仿真与占据栅格世界模型",
+      "canonical_evidence": "自动驾驶仿真与占据栅格世界模型",
+      "llm_tldr_en": "A long-horizon occupancy world model for large-scale autonomous driving simulation and map generation.",
+      "llm_tldr_cn": "一种用于大规模自动驾驶仿真和地图生成的长时程占据栅格世界模型。",
+      "llm_tldr": "一种用于大规模自动驾驶仿真和地图生成的长时程占据栅格世界模型。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.01790v1",
+      "title": "Set-Theoretic Receding Horizon Control for Obstacle Avoidance and Overtaking in Autonomous Highway Driving",
+      "abstract": "This article addresses obstacle avoidance motion planning for autonomous vehicles, specifically focusing on highway overtaking maneuvers. The control design challenge is handled by considering a mathematical vehicle model that captures both lateral and longitudinal dynamics. Unlike existing numerical optimization methods that suffer from significant online computational overhead, this work extends the state-of-the-art by leveraging a fast set-theoretic ellipsoidal Model Predictive Control (Fast-MPC) technique. While originally restricted to stabilization tasks, the proposed framework is successfully adapted to handle motion planning for vehicles modeled as uncertain polytopic discrete-time linear systems. The control action is computed online via a set-membership evaluation against a structured sequence of nested inner ellipsoidal approximations of the exact one-step ahead controllable set within a receding horizon framework. A six-degrees-of-freedom (6-DOF) nonlinear model characterizes the vehicle dynamics, while a polytopic embedding approximates the nonlinearities within a linear framework with parameter uncertainties. Finally, to assess performance and real-time feasibility, comparative co-simulations against a baseline Non-Linear MPC (NLMPC) were conducted. Using the high-fidelity CARLA 3D simulator, results demonstrate that the proposed approach seamlessly rejects dynamic traffic disturbances while reducing online computational time by over 90% compared to standard optimization-based approaches.",
+      "authors": [
+        "Gianni Cario",
+        "Valentino Carriuolo",
+        "Alessandro Casavola",
+        "Gianfranco Gagliardi",
+        "Marco Lupia",
+        "Franco Angelo Torchiaro"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-04-02T08:56:18+00:00",
+      "link": "https://arxiv.org/pdf/2604.01790v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "motion planning for vehicles modeled as uncertain systems",
+      "llm_evidence_cn": "针对建模为不确定系统的车辆进行运动规划",
+      "llm_evidence": "针对建模为不确定系统的车辆进行运动规划",
+      "canonical_evidence": "针对建模为不确定系统的车辆进行运动规划",
+      "llm_tldr_en": "Adapts ellipsoidal MPC for obstacle avoidance and overtaking in uncertain highway scenarios.",
+      "llm_tldr_cn": "将椭球模型预测控制应用于不确定高速场景下的避障与超车。",
+      "llm_tldr": "将椭球模型预测控制应用于不确定高速场景下的避障与超车。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.00402v1",
+      "title": "COTTA: Context-Aware Transfer Adaptation for Trajectory Prediction in Autonomous Driving",
+      "abstract": "Developing robust models to accurately predict the trajectories of surrounding agents is fundamental to autonomous driving safety. However, most public datasets, such as the Waymo Open Motion Dataset and Argoverse, are collected in Western road environments and do not reflect the unique traffic patterns, infrastructure, and driving behaviors of other regions, including South Korea. This domain discrepancy leads to performance degradation when state-of-the-art models trained on Western data are deployed in different geographic contexts. In this work, we investigate the adaptability of Query-Centric Trajectory Prediction (QCNet) when transferred from U.S.-based data to Korean road environments. Using a Korean autonomous driving dataset, we compare four training strategies: zero-shot transfer, training from scratch, full fine-tuning, and encoder freezing. Experimental results demonstrate that leveraging pretrained knowledge significantly improves prediction performance. Specifically, selectively fine-tuning the decoder while freezing the encoder yields the best trade-off between accuracy and training efficiency, reducing prediction error by over 66% compared to training from scratch. This study provides practical insights into effective transfer learning strategies for deploying trajectory prediction models in new geographic domains.",
+      "authors": [
+        "Seohyoung Park",
+        "Jaeyeol Lim",
+        "Seoyoung Ju",
+        "Kyeonghun Kim",
+        "Nam-Joon Kim",
+        "Hyuk-Jae Lee"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-04-01T02:36:28+00:00",
+      "link": "https://arxiv.org/pdf/2604.00402v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "trajectory prediction in autonomous driving with domain adaptation",
+      "llm_evidence_cn": "自动驾驶中具有领域自适应的轨迹预测",
+      "llm_evidence": "自动驾驶中具有领域自适应的轨迹预测",
+      "canonical_evidence": "自动驾驶中具有领域自适应的轨迹预测",
+      "llm_tldr_en": "Investigates context-aware transfer adaptation for trajectory prediction models in diverse autonomous driving domains.",
+      "llm_tldr_cn": "研究了自动驾驶轨迹预测模型在不同地理环境下的上下文感知迁移自适应。",
+      "llm_tldr": "研究了自动驾驶轨迹预测模型在不同地理环境下的上下文感知迁移自适应。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.00977v1",
+      "title": "Flow-based Policy With Distributional Reinforcement Learning in Trajectory Optimization",
+      "abstract": "Reinforcement Learning (RL) has proven highly effective in addressing complex control and decision-making tasks. However, in most traditional RL algorithms, the policy is typically parameterized as a diagonal Gaussian distribution, which constrains the policy from capturing multimodal distributions, making it difficult to cover the full range of optimal solutions in multi-solution problems, and the return is reduced to a mean value, losing its multimodal nature and thus providing insufficient guidance for policy updates. In response to these problems, we propose a RL algorithm termed flow-based policy with distributional RL (FP-DRL). This algorithm models the policy using flow matching, which offers both computational efficiency and the capacity to fit complex distributions. Additionally, it employs a distributional RL approach to model and optimize the entire return distribution, thereby more effectively guiding multimodal policy updates and improving agent performance. Experimental trails on MuJoCo benchmarks demonstrate that the FP-DRL algorithm achieves state-of-the-art (SOTA) performance in most MuJoCo control tasks while exhibiting superior representation capability of the flow policy.",
+      "authors": [
+        "Ruijie Hao",
+        "Longfei Zhang",
+        "Yang Dai",
+        "Yang Ma",
+        "Xingxing Liang",
+        "Guangquan Cheng"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-01T14:47:41+00:00",
+      "link": "https://arxiv.org/pdf/2604.00977v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "flow matching for multimodal policy in trajectory optimization",
+      "llm_evidence_cn": "轨迹优化中用于多模态策略的流匹配",
+      "llm_evidence": "轨迹优化中用于多模态策略的流匹配",
+      "canonical_evidence": "轨迹优化中用于多模态策略的流匹配",
+      "llm_tldr_en": "Proposes flow-based policies to capture multimodal distributions in trajectory optimization tasks.",
+      "llm_tldr_cn": "提出了基于流的策略，以捕获轨迹优化任务中的多模态分布。",
+      "llm_tldr": "提出了基于流的策略，以捕获轨迹优化任务中的多模态分布。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.01242v1",
+      "title": "Diffusion models with physics-guided inference for solving partial differential equations",
+      "abstract": "Diffusion models have recently emerged as powerful stochastic frameworks for high-dimensional inference and generation. However, existing applications to partial differential equations (PDEs) predominantly rely on physics-informed training strategies, which tightly couple learning with specific governing equations and limit generalization across problem settings. In this work, we propose a diffusion model with physics-guided inference for solving PDEs, in which the diffusion model is trained using standard data-driven procedures, while physical laws are incorporated exclusively during the reverse inference stage. The reverse diffusion dynamics is guided by a PDE residual energy function, combined with Gaussian smoothing and explicit boundary enforcement, yielding a physically consistent stochastic iteration that is independent of the training process. From a numerical standpoint, the proposed framework can be interpreted as a diffusion-inspired implicit solver that converges to the PDE solution even when initialized from random noise and perturbed by stochastic fluctuations. The method is validated on classical PDE equation such as Poisson, Diffusion, and Burgers equations with varying coefficients. Numerical results demonstrate robust convergence, high accuracy, and strong generalization without retraining, highlighting the proposed framework as a unified alternative to classical numerical solvers and physics-informed neural networks.",
+      "authors": [
+        "Yi Bing",
+        "Liu Jia",
+        "Fu Jinyang",
+        "Peng Xiang"
+      ],
+      "primary_category": "math.NA",
+      "categories": [
+        "math.NA",
+        "physics.comp-ph"
+      ],
+      "published": "2026-03-31T01:18:54+00:00",
+      "link": "https://arxiv.org/pdf/2604.01242v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion models with physics-guided inference",
+      "llm_evidence_cn": "具有物理引导推理的扩散模型",
+      "llm_evidence": "具有物理引导推理的扩散模型",
+      "canonical_evidence": "具有物理引导推理的扩散模型",
+      "llm_tldr_en": "Develops diffusion models that incorporate physical laws during inference for solving complex equations.",
+      "llm_tldr_cn": "开发了在推理过程中结合物理定律以求解复杂方程的扩散模型。",
+      "llm_tldr": "开发了在推理过程中结合物理定律以求解复杂方程的扩散模型。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.01681v1",
+      "title": "Bridging Large-Model Reasoning and Real-Time Control via Agentic Fast-Slow Planning",
+      "abstract": "Large foundation models enable powerful reasoning for autonomous systems, but mapping semantic intent to reliable real-time control remains challenging. Existing approaches either (i) let Large Language Models (LLMs) generate trajectories directly - brittle, hard to verify, and latency-prone - or (ii) adjust Model Predictive Control (MPC) objectives online - mixing slow deliberation with fast control and blurring interfaces. We propose Agentic Fast-Slow Planning, a hierarchical framework that decouples perception, reasoning, planning, and control across natural timescales. The framework contains two bridges. Perception2Decision compresses scenes into ego-centric topologies using an on-vehicle Vision-Language Model (VLM) detector, then maps them to symbolic driving directives in the cloud with an LLM decision maker - reducing bandwidth and delay while preserving interpretability. Decision2Trajectory converts directives into executable paths: Semantic-Guided A* embeds language-derived soft costs into classical search to bias solutions toward feasible trajectories, while an Agentic Refinement Module adapts planner hyperparameters using feedback and memory. Finally, MPC tracks the trajectories in real time, with optional cloud-guided references for difficult cases. Experiments in CARLA show that Agentic Fast-Slow Planning improves robustness under perturbations, reducing lateral deviation by up to 45% and completion time by over 12% compared to pure MPC and an A*-guided MPC baseline. Code is available at https://github.com/cjychenjiayi/icra2026_AFSP.",
+      "authors": [
+        "Jiayi Chen",
+        "Shuai Wang",
+        "Guangxu Zhu",
+        "Chengzhong Xu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-04-02T06:34:29+00:00",
+      "link": "https://arxiv.org/pdf/2604.01681v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "hierarchical framework for autonomous system planning and real-time control",
+      "llm_evidence_cn": "自主系统规划与实时控制的分层框架",
+      "llm_evidence": "自主系统规划与实时控制的分层框架",
+      "canonical_evidence": "自主系统规划与实时控制的分层框架",
+      "llm_tldr_en": "Decouples reasoning and control in autonomous systems using a hierarchical fast-slow planning framework.",
+      "llm_tldr_cn": "通过分层快慢规划框架解耦自主系统中的推理与控制。",
+      "llm_tldr": "通过分层快慢规划框架解耦自主系统中的推理与控制。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.02226v1",
+      "title": "When to ASK: Uncertainty-Gated Language Assistance for Reinforcement Learning",
+      "abstract": "Reinforcement learning (RL) agents often struggle with out-of-distribution (OOD) scenarios, leading to high uncertainty and random behavior. While language models (LMs) contain valuable world knowledge, larger ones incur high computational costs, hindering real-time use, and exhibit limitations in autonomous planning. We introduce Adaptive Safety through Knowledge (ASK), which combines smaller LMs with trained RL policies to enhance OOD generalization without retraining. ASK employs Monte Carlo Dropout to assess uncertainty and queries the LM for action suggestions only when uncertainty exceeds a set threshold. This selective use preserves the efficiency of existing policies while leveraging the language model's reasoning in uncertain situations. In experiments on the FrozenLake environment, ASK shows no improvement in-domain, but demonstrates robust navigation in transfer tasks, achieving a reward of 0.95. Our findings indicate that effective neuro-symbolic integration requires careful orchestration rather than simple combination, highlighting the need for sufficient model scale and effective hybridization mechanisms for successful OOD generalization.",
+      "authors": [
+        "Juarez Monteiro",
+        "Nathan Gavenski",
+        "Gianlucca Zuin",
+        "Adriano Veloso"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-04-02T16:19:20+00:00",
+      "link": "https://arxiv.org/pdf/2604.02226v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Monte Carlo Dropout to assess uncertainty in autonomous planning",
+      "llm_evidence_cn": "使用蒙特卡洛Dropout评估自主规划中的不确定性",
+      "llm_evidence": "使用蒙特卡洛Dropout评估自主规划中的不确定性",
+      "canonical_evidence": "使用蒙特卡洛Dropout评估自主规划中的不确定性",
+      "llm_tldr_en": "Uses uncertainty-gated language assistance to improve RL policy safety in OOD scenarios.",
+      "llm_tldr_cn": "利用不确定性门控语言辅助提高强化学习策略在分布外场景下的安全性。",
+      "llm_tldr": "利用不确定性门控语言辅助提高强化学习策略在分布外场景下的安全性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "estimating epistemic uncertainty in neural motion planners",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
