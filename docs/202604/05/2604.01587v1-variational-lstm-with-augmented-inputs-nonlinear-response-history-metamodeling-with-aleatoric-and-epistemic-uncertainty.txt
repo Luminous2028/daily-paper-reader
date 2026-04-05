@@ -1,0 +1,499 @@
+Title: Variational LSTM with Augmented Inputs: Nonlinear Response History Metamodeling with Aleatoric and Epistemic Uncertainty
+
+URL Source: https://arxiv.org/pdf/2604.01587v1
+
+Published Time: Fri, 03 Apr 2026 00:27:57 GMT
+
+Number of Pages: 23
+
+Markdown Content:
+# Highlights 
+
+## Variational LSTM with Augmented Inputs: Nonlinear Response History Metamodeling with Aleatoric and Epistemic Uncertainty 
+
+Manisha Sapkota, Min Li, Bowei Li 
+
+• Variational LSTM with augmented inputs for nonlinear structural metamodeling. 
+
+• Augmented inputs capture record-to-record variability and system uncertainty. 
+
+• Epistemic uncertainty in response histories is quantified via Monte Carlo dropout. 
+
+• Validated on strongly nonlinear systems under stochastic seismic and wind loads. 
+
+• Monte Carlo dropout reflects prediction fidelity across diverse scenarios. 
+
+> arXiv:2604.01587v1 [cs.LG] 2 Apr 2026
+
+# Variational LSTM with Augmented Inputs: Nonlinear Response History Metamodeling with Aleatoric and Epistemic Uncertainty 
+
+## Manisha Sapkota a,1 , Min Li b,2 and Bowei Li a,c ,∗,3 
+
+> a
+
+Department of Civil, Environmental, and Construction Engineering, Texas Tech University, 2500 Broadway St, Lubbock 79409, TX, USA 
+
+> b
+
+Department of Civil and Environmental Engineering, Rensselaer Polytechnic Institute, 110 8th Street, Troy 12180, NY, USA 
+
+> c
+
+National Wind Institute, Texas Tech University, 1009 Canton Ave, Lubbock 79409, TX, USA 
+
+A R T I C L E I N F O 
+
+Keywords :Uncertainty quantification Nonlinear dynamic systems Stochastic excitation Multi-degree-of-freedom systems Model order reduction 
+
+A B S T R A C T 
+
+Uncertainty propagation in high-dimensional nonlinear dynamic structural systems is pivotal in state-of-the-art performance-based design and risk assessment, where uncertainties from both excitations and structures, i.e., the aleatoric uncertainty, must be considered. This poses a significant challenge due to heavy computational demands. Machine learning techniques are thus introduced as metamodels to alleviate this burden. However, the "black box" nature of Machine learning models underscores the necessity of avoiding overly confident predictions, particularly when data and training efforts are insufficient. This creates a need, in addition to considering the aleatoric uncertainty, of estimating the uncertainty related to the prediction confidence, i.e., epistemic uncertainty, for machine learning-based metamodels. We developed a probabilistic metamodeling technique based on a variational long short-term memory (LSTM) with augmented inputs to simultaneously capture aleatoric and epistemic uncertainties. Key random system parameters are treated as augmented inputs alongside excitation series carrying record-to-record variability to capture the full range of aleatoric uncertainty. Meanwhile, epistemic uncertainty is effectively approximated via the Monte Carlo dropout scheme. Unlike computationally expensive full Bayesian approaches, this method incurs negligible additional training costs while enabling nearly cost-free uncertainty simulation. The proposed technique is demonstrated through multiple case studies involving stochastic seismic or wind excitations. Results show that the calibrated metamodels accurately reproduce nonlinear response time histories and provide confidence bounds indicating the associated epistemic uncertainty. 
+
+## 1. Introduction 
+
+The state-of-the-art performance-based design and risk assessment have gained profound interest and significant advancement in recent years Moehle and Deierlein (2004); Baker and Cornell (2008); Augusti and Ciampoli (2008); Yang, Moehle, Stojadinovic and Der Kiureghian (2009); Barbato, Petrini, Unnikrishnan and Ciampoli (2013); Ciampoli, Petrini and Augusti (2011); Günay and Mosalam (2013); Gardoni and LaFave (2016). This is motivated by the fundamental need of rational engineering design and decision through comprehensive and accurate characterization of structural performances under hazards, e.g., earthquake, wind, etc. To this end, explicit structural dynamic analysis under a full range of hazard intensities, including those induce nonlinearity Hong (2004); Bezabeh, Bitsuamlak and Tesfamariam (2021); Huang and Chen (2022), is required to quantify structural performances under these hazards. Moreover, practical engineered structural systems are in general involving a great number of degree-of-freedoms (DoFs), making the structural analysis a high-dimensional nonlinear dynamic analysis problem, a well-known computationally demanding task. In addition, this simulation task in nature involves uncertainty propagation because of the ubiquitous uncertainty present in both excitations and structural systems Ellingwood (2008). This requires a massive number of repeated expensive high-dimensional nonlinear dynamic analyses for Monte Carlo simulation Vamvatsikos and Cornell (2002); Seo and Caracoglia (2013); Spence and Kareem (2014); Judd and Charney (2015); Bernardini, Spence, Kwon and Kareem (2015); Chuang and Spence (2017); Cui and Caracoglia (2018); Ierimonti, Venanzi, Caracoglia and Materazzi (2019); Micheli, Alipour, Laflamme and Sarkar (2019); Cui and Caracoglia (2020); Ouyang and Spence (2020), leading to an impractical task due to the unaffordable computational demand. This is now the major barrier to advance the engineering adoption of existing state-of-the-art design and assessment frameworks. 
+
+> ∗
+
+Corresponding author 
+
+manisapk@ttu.edu (M. Sapkota); lim33@rpi.edu (M. Li); boweili@ttu.edu (B. Li) 
+
+(M. Sapkota); https://faculty.rpi.edu/min-li (M. Li); https://sites.google.com/view/boweiliphd/home (B. Li) 
+
+> ORCID
+
+(s): 0000-0002-6859-4939 (B. Li) 
+
+: Preprint submitted to Elsevier Page 1 of 22 A potential remedy to address the computational demand is metamodeling, establishing an accurate but com-putationally tractable surrogate for solving structural dynamic responses. Response surface approach is introduced for this purpose by taking intensity (peak ground acceleration, wind speed, etc.) and system parameters (material properties, structural damping, etc.) as inputs to reproduce response indices (interstory drift ratio, etc.) Towashiraporn (2004); Vaidyanathan, Kamatchi and Ravichandran (2005); De Grandis, Domaneschi and Perotti (2009); Seo, Dueñas-Osorio, Craig and Goodno (2012); Perotti, Domaneschi and De Grandis (2013); Saha, Matsagar and Chakraborty (2016); Kroetz, Tessari and Beck (2017); Segura, Padgett and Paultre (2020). In these implementations, response surfaces are constructed by statistical and machine learning approaches by fitting the input-output mapping. Since propagating high-dimensional record-to-record variability directly through these mappings is challenging, a dual response surface approach is adopted to simultaneously approximate the means and reproduce the standard deviations of the responses. The response surface approach is shown to be effective in various engineering applications and has thus been widely used. However, this is usually insufficient to accurately represent the nonstationary and higher-order statistics of nonlinear structural responses. To address this issue, it is required to explicitly propagate the record-to-record variability. To this end, nonlinear autoregressive models with exogenous inputs (NARX) Spiridonakos and Chatzi (2015); Mai, Spiridonakos, Chatzi and Sudret (2016); Bhattacharyya, Jacquelin and Brizard (2020); Li, Chuang and Spence (2021), a metamodeling technique with sequence processing capabilities, is introduced. The NARX model constitutes a recursive mapping that explicitly captures the high-dimensional record-to-record variability by incorporating the system excitation as a step-by-step input. On the other hand, more versatile deep learning architectures, including convolutional neural networks (CNN) Kim, Kwon and Song (2019); Zhang, Liu and Sun (2020a), long short-term memory (LSTM) Kundu and Chakraborty (2020); Wang and Wu (2020); Zhang, Liu and Sun (2020b); Simpson, Dervilis and Chatzi (2021); Li and Spence (2022), and neural operators Goswami, Giovanis, Li, Spence and Shields (2025), were reported to be applied in reconstructing response time histories. Like NARX, these models are also sequence-to-sequence mappings that explicitly account for record-to-record variability propagation. To allow these models to be used in practical high-dimensional structural systems, dimensionality reduction through a proper orthogonal basis or an autoencoder is introduced, enabling deep learning techniques to be effectively applied to full-scale engineering structures that have a great number of degrees-of-freedom (DoFs) Li et al. (2021); Simpson et al. (2021); Li and Spence (2022). Nevertheless, these deep learning architectures only capture record-to-record variability, representing just one component of the full range of uncertainties that must be accounted for. In general, the uncertainties include aleatoric uncertainty, irreducible randomness inherent in the problem setting, and epistemic uncertainty, which quantifies model confidence and can be reduced through additional data or calibration Der Kiureghian and Ditlevsen (2009); Kendall and Gal (2017). The record-to-record variability belongs to aleatoric uncertainty. In addition, system uncertainties, e.g., material properties and system properties, constitute an important component of aleatoric uncertainty; however, they are not captured by these aforementioned deep learning architectures. Although in NARX, polynomial chaos expansions Spiridonakos and Chatzi (2015); Mai et al. (2016) and Kriging Bhattacharyya et al. (2020) were leveraged to identify the relationship between system parameters and NARX coefficients, extending these approaches to deep neural networks remains challenging due to their high-dimensional spaces of trainable parameters and complex architectures. A potential solution is to leverage generative schemes or probabilistic machine learning techniques that aim at capturing the probability distribution of responses, instead of individual samples Xiong, Jia, Dong and Guo (2025); Peng, Taflanidis and Zhang (2026). However, when the interpretation of system performance in terms of individual samples is demanded, explicit correspondence from excitation and system realizations to responses is usually needed. To establish this correspondence, an alternative is to include system parameters as inputs to fuse into neural network features, e.g., through a network branch Li, Yang, Deng, Gong, Tian, Su and Teng (2024); Ning and Xie (2024). As such, the neural network learns to capture a one-to-one mapping from system parameters to responses. The importance of epistemic uncertainty cannot be overstated, considering the potential catastrophic consequences if using weak response predictions with overconfidence in design and risk tasks where safety is critical Gal et al. (2016). This is particularly true for machine learning techniques, of which the black box nature makes it challenging to guarantee their performance. In existing metamodeling approaches, Kriging Chatterjee and Chowdhury (2017); Gidaris, Taflanidis and Mavroeidis (2015); Ghosh, Roy and Chakraborty (2019); Shi, Lu, Xu and Chen (2019); Kyprioti and Taflanidis (2021) offers a straightforward means of quantifying epistemic uncertainty; however, it fails in capturing high-dimensional sequence-to-sequence relationships. A potential solution is to introduce Bayesian machine learning approaches Kim, Song and Kwon (2020); Ghosh and Chakraborty (2020); Ding, Feng, Brunesi, Parisi and Wu (2023) to the aforementioned sequence-to-sequence mapping architectures, where the epistemic uncertainty is quantified as   
+
+> :Preprint submitted to Elsevier Page 2 of 22
+
+probabilistic prediction based on posterior weight distributions inferred from available data. However, for large machine learning models, analytical posterior weight distributions are in general not available due to the nonconjugacy and nonlinearity. On the other hand, commonly used Markov Chain Monte Carlo (MCMC) Straub and Der Kiureghian (2008); Koutsourelakis (2010); Pujari, Ghosh and Lala (2016); Xu and Gardoni (2016) are computationally very demanding due to the great number of trainable parameters involved in large machine learning models. Bootstrap Tibshirani and Efron (1993), a Bayesian method through sampling multiple datasets by adding noise/disturbance and training an estimator for each of the disturbed datasets, suffers from a significant increase in computational demand in training. An alternative to quantifying epistemic uncertainty efficiently is Monte Carlo dropout, a variational inference approach by approximating the posterior weight distribution through randomly masking out hidden neurons Gal and Ghahramani (2015). This Monte Carlo dropout can be directly embedded in existing training algorithms Hinton, Srivastava, Krizhevsky, Sutskever and Salakhutdinov (2012); Srivastava, Hinton, Krizhevsky, Sutskever and Salakhutdinov (2014) with minimal increase in computational demand, making it an efficient approach allowing large machine learning models to quantify epistemic uncertainty. In this paper, a variational LSTM with augmented inputs metamodeling approach is developed for nonlinear dynamic structural systems, with the capability of modeling both aleatoric (record-to-record variability and system uncertainty) and epistemic uncertainty. Proper orthogonal decomposition (POD)-based dimensionality reduction and wavelet approximation are first considered to address the high-dimensionality of structural systems and long duration of excitations and responses. The LSTM network is leveraged as a sequence-to-sequence mapping approach to capture all aleatoric uncertainty, including record-to-record variability in excitation series and parametric system uncertainty. In particular, the parametric system uncertainty is considered by augmenting its realizations to the network input series. In addition, epistemic uncertainty is modeled by implementing the variational inference through the Monte Carlo dropout for the LSTM network. Once calibrated, the LSTM network offers an efficient one-to-one mapping from stochastic excitation and system parameters to a full range of response time histories, while allowing for convenient estimation of the remaining epistemic uncertainty through the Monte Carlo dropout in inference. The applicability of the proposed metamodeling technique is demonstrated by multiple case studies involving nonlinear dynamic structural systems with system uncertainty while subjected to stochastic seismic or wind excitations. 
+
+## 2. Problem setting 
+
+In general, dynamics of a structural system with 𝑛 DoF DoFs subjected to stochastic excitation 𝑭 (𝑡 ) can be described by the following equilibrium over a time horizon of 𝑡 ∈  :
+
+ (̈ 𝑼 (𝑡 ),̇ 𝑼 (𝑡 ), 𝑼 (𝑡 ); 𝚯 ) = 𝑭 (𝑡 ; R), 𝑡 ∈  (1) where  is the operator that represents the resultant internal forces, including inertia, damping, and restoring forces; 
+
+𝚯 ∈ (Ω Θ, Θ, Θ) is a random vector of size 𝑛 Θ characterizing the system uncertainty, defined by its sample space 
+
+ΩΘ = ℝ𝑛 Θ , sigma-algebra Θ, and probability measure Θ; R ∈ (Ω R, R, R) is a random process with sample space ΩR = ℝ𝑛 DoF ×  , sigma-algebra R, and probability measure R that defines the record-to-record variability (stochasticity) of the excitation; ̈ 𝑼 (𝑡 ),̇ 𝑼 (𝑡 ), 𝑼 (𝑡 ) are respectively the acceleration, velocity, and displacement, all are random processes derived from 𝚯 and R, and with sample spaces of ℝ𝑛 DoF ×  . When considering a full spectrum of excitation intensity due to the variability in hazard characteristics,  can exhibit complex nonlinear behaviors that, in most cases, exclude alternative solutions but the time-consuming direct integration schemes. This leads to a computationally very challenging nonlinear dynamic problem defined over a potentially long time horizon and with high-dimensionality in equations and randomness. The sequence-to-sequence mapping architectures, including LSTM, CNN, and DeepONet, aforementioned in the introduction, offer a remedy for this high computational demand by providing a highly efficient sequence-to-sequence mapping from excitations to response time histories. This allows the explicit propagation of the high-dimensional record-to-record variability. However, the record-to-record variability is only a subset of the aleatoric uncertainty. System uncertainty, an additional element of aleatoric uncertainty, remains outside the current scope of this analysis. In contrast to record-to-record variability, which is directly propagated through excitations, system uncertainties are difficult to integrate into the neural networks due to their ’black box’ architecture and the massive number of trainable parameters. Additionally, unlike traditional numerical solvers, these networks often lack guaranteed physical validity. Thus, it is particularly necessary to avoid overly confident predictions if used in safety-related engineering tasks, e.g., performance or risk assessments. This requires quantifying the uncertainty related to the lack of knowledge in the   
+
+> :Preprint submitted to Elsevier Page 3 of 22
+
+neural networks, the so-called epistemic uncertainty. However, the complex and nonlinear architecture of the neural networks excludes a straightforward quantification of this epistemic uncertainty by either analytical or direct numerical simulations. These limitations necessitate the development of an efficient sequence-to-sequence mapping (⋅) that effectively captures both aleatoric and epistemic uncertainty, reads: ̂
+
+𝑼 (𝑡 ) = (𝑭 (𝑡 ; R), 𝚯 ; 𝐖 ) (2) where ̂ 𝑼 (𝑡 ) is the predicted stochastic displacement time history with its randomness induced by the aleatoric and epistemic uncertainty; 𝐖 collects random trainable parameters of (⋅), containing randomness modeling the epistemic uncertainty of the mapping (⋅) to be propagated to ̂ 𝑼 (𝑡 ).To this end, we proposed a metamodeling approach based on variational LSTM with augmented inputs. This metamodeling approach includes system uncertainty as augmented inputs, in addition to the original inputs carrying the record-to-record variability, allowing explicit one-to-one mapping from the full range of aleatoric uncertainty to responses. The variational inference through the Monte Carlo dropout was considered to enable a computationally effi-cient means to estimate the epistemic uncertainty reflecting finite data and training effort. As such, this metamodeling technique offers an efficient, easy-to-implement approach to propagating both aleatoric and epistemic uncertainty for high-dimensional nonlinear dynamic systems. 
+
+## 3. LSTM-based metamodeling 
+
+3.1. LSTM network 
+
+The LSTM network is a type of recurrent neural network, which feeds neuron output as input. This recursive nature is suitable for time series data with underlying dynamics. An LSTM network is designed to significantly alleviate gradient vanishing and exploding issues that are typically seen in vanilla recurrent neural networks. This greatly enhances the applicability of the LSTM network in practice by allowing it to maintain exceptional stability in training and to capture long-term dependence in time series. Core to the LSTM network is the LSTM layer defined as: 
+
+gf(𝜏 ) = 𝜎 g(𝐰 Tf,Hy(𝜏 − 1) + 𝐰 Tf,Ix(𝜏 ) + bf) (3) 
+
+gi(𝜏 ) = 𝜎 g(𝐰 Ti,Hy(𝜏 − 1) + 𝐰 Ti,Ix(𝜏 ) + bi) (4) 
+
+go(𝜏 ) = 𝜎 g(𝐰 To,Hy(𝜏 − 1) + 𝐰 To,Ix(𝜏 ) + bo) (5) 
+
+Δs(𝜏 ) = 𝜎 s(𝐰 Ts,Hy(𝜏 − 1) + 𝐰 Ts,Ix(𝜏 ) + bs) (6) 
+
+s(𝜏 ) = gf(𝜏 )◦s(𝜏 − 1) + gi(𝜏 )◦Δs(𝜏 ) (7) 
+
+y(𝜏 ) = go(𝜏 )◦𝜎 s(s(𝜏 )) (8) where 𝜏 represent the time index; x and y are the layer inputs and outputs; gf(⋅), gi(⋅), go(⋅) are respectively the forget, input, and output gates; 𝜎 g and 𝜎 s are gate and state activation functions taking sigmoid and hyperbolic tangent forms, respectively; s and Δs are cell state and its updating increment; ◦ indicates element-wise multiplication. This LSTM layer has trainable parameters including weights ( 𝐰 f,H, 𝐰 i,H, 𝐰 o,H, 𝐰 s,H, 𝐰 f,I, 𝐰 i,I, 𝐰 o,I, 𝐰 s,I) and bias ( bf, bi, bo, and 
+
+bs). In practice, an LSTM network is usually a neural network that consists of an input layer, LSTM layer(s), and a fully connected layer. The LSTM network is calibrated by minimizing a loss function (𝐰 ) with respect to all the trainable parameters 𝐰 . The loss function (𝐰 ) is typically defined as the discrepancy between the neural network outputs and ground truth data. Usually, this can be effectively solved by stochastic gradient descent or its variants. 
+
+3.2. Data processing 
+
+To calibrate the LSTM network, a dataset  = {( 𝐟 𝑖 , 𝜽 𝑖 , 𝐮 𝑖 ), 𝑖 = 1 , 2, ..., 𝑛 } containing 𝑛 realizations of stochastic excitation 𝐅 , structural systems 𝚯 , and responses 𝐔 , is generated as described in Section 2 1. The high dimensionality of the problem and the long time horizon make it intractable to directly use machine learning models for the dataset. To cope with the high dimensionality, projection-based dimensionality reduction is used: 
+
+𝐪 = 𝝓 T𝐮 (9)   
+
+> 1The notations follow standard conventions in probability theory, where random variables are denoted as capital and their realizations are represented by same letters but in lowercase. This convention applies to the remainder of this paper.
+> :Preprint submitted to Elsevier Page 4 of 22
+
+𝐩 = 𝝓 T𝐟 (10) with 𝝓 ∈ ℝ𝑛 DoF ×𝑛 r is truncated POD basis containing 𝑛 r POD mode vectors within each of its columns. The truncated POD basis is obtained by performing singular value decomposition for snapshots collected from the response realizations 𝒖 𝑖 in . This gives in total 𝑛 DoF POD mode vectors and those corresponding to the first few 𝑛 r largest singular values are preserved as the truncated POD basis for the projection, ensuring the majority of response signal energy is captured. Through Eq. (9 and 10), the high-dimensional excitation 𝐟 and responses 𝐮 are projected to be reduced inputs 𝐩 ∈ ℝ𝑛 r ×  and outputs 𝐪 ∈ ℝ𝑛 r ×  , both of dimensionality of 𝑛 r. In practice, the truncated POD basis is highly effective in capturing response signal energy, and it is usually only necessary to keep a small number of POD mode vectors, i.e., 𝑛 r ≪ 𝑛 DoF . This allows the 𝐩 and 𝐪 to be of very low dimensionality. Concerning that both the reduced inputs and outputs have potentially a large number of time steps, due to the long time horizon of interest, wavelet transformation is thus introduced as a downsampling approach to reduce the time series Le and Caracoglia (2015); Wang and Wu (2020). This is performed by filtering the time series with a scaling function 𝜙 (𝜏 ; 𝑡 ):
+
+𝐜 𝐪 (𝜏 ) = ∫𝑡 
+
+𝐪 (𝑡 )𝜙 (𝜏 ; 𝑡 )d𝑡 (11) 
+
+𝐜 𝐩 (𝜏 ) = ∫𝑡 
+
+𝐩 (𝑡 )𝜙 (𝜏 ; 𝑡 )d𝑡 (12) 
+
+𝐜 𝐪 (𝜏 ) ∈ ℝ𝑛 r×𝑛 𝜏 and 𝐜 𝐩 (𝜏 ) ∈ ℝ𝑛 r×𝑛 𝜏 are wavelet coefficient series of reduced outputs and inputs, both are reduced to a length of 𝑛 𝜏 ; 𝜏 is the time shift parameter, which also represents the time index in the wavelet coefficient series. In implementation, it is possible to properly select the scaling function 𝜙 (𝜏 ; 𝑡 ) to significantly reduce the length of time series without noticeable loss in accuracy in reproducing the original signals. The wavelet coefficient series 𝐜 𝐪 and 𝐜 𝐩 will be used to calibrate the LSTM network. Both the size of 𝐜 𝐪 and 𝐜 𝐩 are being significantly reduced in spatial dimensionality and series length, thus drastically diminishing the computational effort in network calibration and the memory demand on graphics processing unit (GPU). The reduced sequence length also improves LSTM accuracy by mitigating error accumulation during recursive inference. 
+
+## 4. Variation LSTM with augmented inputs 
+
+4.1. Integrating aleatoric uncertainty as augmented inputs 
+
+Aleatoric uncertainty under the problem setting of this work includes record-to-record variability, R, and system uncertainty, 𝚯 , as described in Eq. (1). The LSTM network allows explicit propagation of the record-to-record variability, carried by the input series 𝐜 𝐩 obtained from stochastic excitation. Monte Carlo simulation, i.e., repeated response simulation based on LSTM inference, directly offers the response samples under the effect of record-to-record variability. The computationally inexpensive LSTM network makes this Monte Carlo simulation process a tractable method for uncertainty propagation. To cope with system uncertainty 𝚯 , its realization 𝜽 is taken as augmented inputs, along with 𝐜 𝐩 , to the LSTM network. Unlike 𝐜 𝐩 , which is a stochastic process, the 𝜽 includes time-invariant features representing the nonlinear dynamic structural system. From this aspect, 𝜽 , if treated as input, should be constant series. To this end, 𝜽 is replicated to be constant series of the same length as 𝐜 𝐩 and concatenated to 𝐜 𝐩 , making it to be augmented inputs 
+
+[
+
+𝐜 T 
+
+> 𝐩
+
+𝜽 T]T
+
+, with the superscript T indicating transpose. As such, the LSTM network will be calibrated to capture the system uncertainty along with record-to-record variability. It is worth noting that although there exists an alternative of considering an additional model that maps system uncertainty to neural network parameters, as is mentioned for the NARX models in the introduction, its implementation for deep learning architectures is usually extremely challenging due to the large number of neural network parameters involved. The approach of using augmented inputs, on the other hand, is scalable to machine learning models with arbitrarily large size. In addition, for most cases where typically a few random parameters are involved Chuang and Spence (2022), this approach offers the most straightforward feature fusion to address the system uncertainty with a slight increase in the input dimensionality. In cases where the system uncertainty is of high-dimensionality, sensitivity analysis along with principal component analysis can be efficiently performed by leveraging the data generated for network calibration, to identify a few mostly critical random parameters. Thereafter, only the most critical random parameters will be added to the augmented inputs. This captures the full system uncertainty while avoiding the high computational and memory demands of increased input dimensionality.   
+
+> :Preprint submitted to Elsevier Page 5 of 22
+
+4.2. Simulate epistemic uncertainty through Monte Carlo dropout 
+
+A standard machine learning approach, once calibrated, yields a deterministic network characterized by its optimized trainable parameters ̂ 𝐰 , which produces predictions when provided with input data. However, these predictions do not inherently convey quantitative information regarding data availability or the extent of training effort invested in model calibration. This implies a risk of being overly confident in the obtained training outcome, particularly in cases with insufficient data or training effort. Indeed, predictions with abundant data and sufficient training should have higher confidence, while those suffering from data sparsity or insufficient training will receive lower confidence. Epistemic uncertainty is associated with the concept of confidence within this context, which quantifies the remaining uncertainty within a trained network, typically decreasing as data availability and training efforts increase. 
+
+4.2.1. Theoretical foundations of variational inference 
+
+By definition, given a training dataset t containing 𝑛 t realizations (𝐟 𝑖 , 𝜽 𝑖 , 𝐮 𝑖 ) selected from the entire dataset ,the epistemic uncertainty in trainable parameters can be described as a posterior distribution 𝑝 𝐖 |Dt (𝐰 |t). Here, 
+
+Dt represents 𝑛 t independent and identically distributed (i.i.d.) random triplets ( F, 𝚯 , U), with t being a specific realization of Dt. Once the posterior 𝑝 𝐖 |Dt (𝐰 |t) is determined, the epistemic uncertainty in the predicted response ̂ 𝐮 
+
+given a new excitation ̂ f and a system realization ̂ 𝜽 is quantified by the following posterior predictive distribution: 
+
+𝑝 𝐔 |F,𝚯 ,Dt (̂ 𝐮 |̂f,̂ 𝜽 , t) = ∫𝐰 
+
+𝑝 𝐔 |𝐖 ,F,𝚯 (̂ 𝐮 |𝐰 ,̂ f,̂ 𝜽 )𝑝 𝐖 |Dt (𝐰 |t)d𝐰 (13) where 𝑝 𝐔 |𝐖 ,F,𝚯 is the distribution of the predicted response ̂ 𝐮 by the model (i.e., the LSTM network). Since the LSTM network provides a deterministic one-to-one mapping, this distribution is represented by a Dirac delta function centered at ̂ 𝐮 . It is seen the posterior 𝑝 𝐖 |Dt (𝐰 |t) is the key to this probabilistic prediction, which, once obtained, Eq. (13) can be efficiently evaluated, e.g., by Monte Carlo simulation. However, unlike simple conjugate Bayesian models where the posterior admits an analytical form, in neural networks, the complex architecture and nonlinear dependence of the model output on the trainable parameters render the likelihood non-conjugate to the prior. Consequently, the posterior distribution cannot be obtained in closed form. This makes direct posterior inference intractable. To this end, variational inference is employed. The core idea is to approximate the posterior through a more tractable variational distribution 𝑞 𝐖 (𝐰 ) by minimizing their discrepancy, which is typically defined as the Kullback–Leibler divergence (KL-divergence): 
+
+𝐷 𝐾𝐿 [𝑞 𝐖 (𝐰 )|| 𝑝 𝐖 |Dt (𝐰 |t)] = 𝔼 𝑞 𝐖 (𝐰 ) log 𝑞 𝐖 (𝐰 )
+
+𝑝 𝐖 |Dt (𝐰 |t) (14) For implementation purposes, 𝑝 𝐖 |Dt (𝐰 |t) in Eq. (14) is replaced by considering the Bayes’ theorem: 
+
+𝑝 𝐖 |Dt (𝐰 |t) = 𝑝 Dt|𝐖 (t|𝐰 )𝑝 𝐖 (𝐰 )
+
+𝑝 Dt (t) (15) where 𝑝 Dt|𝐖 (t|𝐰 ) is known as the likelihood function; 𝑝 𝐖 (𝐰 ) is the prior distribution, representing the statistics of the trainable parameters before the network has gained any information from the dataset; 𝑝 Dt (t) is the joint distribution of the training data. Substitute Eq. (15), the Bayes’ theorem, into Eq. (14), the KL-divergence, one obtains: 
+
+𝐷 𝐾𝐿 [𝑞 𝐖 (𝐰 )|| 𝑝 𝐖 |Dt (𝐰 |t)] = 𝔼 𝑞 𝐖 (𝐰 ) log 𝑞 𝐖 (𝐰 ) − 𝔼 𝑞 𝐖 (𝐰 ) log 𝑝 𝐃 t|𝐖 (t ∣ 𝐰 )𝑝 𝐖 (𝐰 )
+
+𝑝 𝐃 t (t) (16) 
+
+= log 𝑝 𝐃 t (t) − 𝔼 𝑞 𝐖 (𝐰 ) log 𝑝 𝐃 t|𝐖 (t ∣ 𝐰 ) + 𝔼 𝑞 𝐖 (𝐰 ) log 𝑞 𝐖 (𝐰 )
+
+𝑝 𝐖 (𝐰 ) (17) 
+
+= log 𝑝 𝐃 t (t) − 
+
+(
+
+𝔼 𝑞 𝐖 (𝐰 ) log 𝑝 𝐃 t|𝐖 (t ∣ 𝐰 ) − 𝐷 𝐾𝐿 
+
+[𝑞 𝐖 (𝐰 )|| 𝑝 𝐖 (𝐰 )])
+
+(18) It is observed that the first term log 𝑝 𝐃 t (t) is a constant, thus can be removed without changing the solution to the optimization problem. It is seen that minimizing 𝐷 𝐾𝐿 [𝑞 𝐖 (𝐰 )|| 𝑝 𝐖 |Dt (𝐰 |t)] is equivalent to maximizing the remaining terms in the equation, known as the log Evidence Lower Bound: 
+
+(𝐰 ) = 𝔼 𝑞 𝐖 (𝐰 ) log 𝑝 𝐃 t|𝐖 (t ∣ 𝐰 ) − 𝐷 𝐾𝐿 
+
+[𝑞 𝐖 (𝐰 )|| 𝑝 𝐖 (𝐰 )] (19)   
+
+> :Preprint submitted to Elsevier Page 6 of 22
+
+4.2.2. Variational inference through Monte Carlo dropout 
+
+Gal and Ghahramani Gal and Ghahramani (2015) propose that the variational distribution 𝑞 𝐖 (𝐰 ) can be conveniently realized through Monte Carlo dropout. This is implemented simply by imposing a binary mask for rows of weight matrices of layers where dropout is to be implemented: ̂
+
+𝐰 𝑗,𝑘 = 𝑧 𝑘 𝐰 𝑗,𝑘 (20) where 𝐰 𝑗,𝑘 is 𝑘 th row of the 𝑗 th matrix 𝐰 𝑗 collected in the trainable parameters 𝐰 ; 𝑧 𝑘 is a Bernoulli random variable with probability 𝑃 (𝑧 𝑘 = 0) = 𝑝 𝑗 , where 𝑝 𝑗 denotes the dropout rate, taking as identical for all 𝑘 . As such, each row of the weight matrix 𝐰 𝑗 has a probability of 𝑝 𝑗 being masked out, equivalent to dropping the corresponding input from the previous layer. So far, this dropout mechanism has formulated a probabilistic model for the weight matrices, which, although easy to implement, introduces discrete random variables that are not straightforward for further derivation. To facilitate further derivation, it is convenient to smooth the probabilistic model of weight matrices by Gaussian kernels, making it a Gaussian mixture distribution Gal and Ghahramani (2015) with a small bandwidth 𝜎 𝐰 :
+
+𝑞 (𝐰 𝑗,𝑘 ) = (1 − 𝑝 𝑗 ) (𝐰 𝑗,𝑘 , 𝜎 2
+
+> 𝐰
+
+𝐈 𝐰 𝑗,𝑘 ) + 𝑝 𝑗  (𝟎 , 𝜎 2
+
+> 𝐰
+
+𝐈 𝐰 𝑗,𝑘 ) (21) where  (⋅) indicates normal distribution; 𝐈 𝐰 𝑗,𝑘 is an identity matrix whose dimension equals the length of 𝐰 𝑗,𝑘 . Next, without loss of generality, the prior distribution 𝑝 (𝐰 𝑗,𝑘 ) can be taken as a Gaussian distribution with zero mean and the covariance matrix to be the identity. As such, it can be shown that the second term in Eq. (19) can be simplified to be Gal and Ghahramani (2015): 
+
+𝐷 𝐾𝐿 
+
+[𝑞 𝐖 (𝐰 )|| 𝑝 𝐖 (𝐰 )] = ∑
+
+> 𝑗
+
+1 − 𝑝 𝑗 
+
+2 || 𝐰 𝑗 || 22 + 𝐶 (𝜎 𝐰 ) (22) where 𝐶 (𝜎 𝐰 ) is a constant. The log likelihood log 𝑝 Dt|𝐖 (t|𝐰 ) in Eq. (19) in principle can be derived by 𝑝 𝐔 |𝐖 ,F,𝚯 . However, the deterministic nature of the LSTM network makes this distribution a Dirac delta function, which leads to infinite log likelihood values. To facilitate a tractable derivation, we adopt a Gaussian form for 𝑝 𝐔 |𝐖 ,F,𝚯 , with mean given by the neural network output   (𝐰 ; 𝐟 , 𝜽 ) and variance 𝜎 2, i.e., additive zero-mean Gaussian noise with standard deviation 𝜎 is considered. After the derivation, we can let 𝜎 2 → 0 to recover the Dirac delta form of 𝑝 𝐔 |𝐖 ,F,𝚯 to reconcile with the deterministic nature of the LSTM network. The Gaussian likelihood reads: 
+
+𝑝 𝐔 |𝐖 ,F,𝚯 (̂𝐮 |𝐰 ,̂ f,̂ 𝜽 ) =  (  (𝐰 ;̂ f,̂ 𝜽 ), 𝜎 2𝐈 ̂𝐮 ) (23) 
+
+𝐈 ̂𝐮 is an identity matrix with a dimension of 𝑛 𝑟 𝑛 𝜏 , i.e., the total number of entries contained in ̂ 𝐮 ; The log likelihood 
+
+log 𝑝 Dt|𝐖 (t|𝐰 ) can be directly obtained by substituting each datum into Eq. (23) and noting that the joint likelihood is the product of the likelihood of each datum, by reasonably assuming that each datum is independent: 
+
+log 𝑝 Dt|𝐖 (t|𝐰 ) = 
+
+> 𝑛 t
+
+∑
+
+> 𝑖 =1
+
+log 𝑝 𝐔 |𝐖 ,F,𝚯 (𝐮 𝑖 |𝐰 , f𝑖 , 𝜽 𝑖 ) (24) 
+
+= − 𝑛 t𝑛 𝑟 𝑛 𝜏 
+
+2 log(2 𝜋 ) − 𝑛 t𝑛 𝑟 𝑛 𝜏 
+
+2 log 𝜎 2 −
+
+> 𝑛 t
+
+∑
+
+> 𝑖 =1
+
+12𝜎 2 || 𝐮 𝑖 −   (𝐰 ; f𝑖 , 𝜽 𝑖 )|| 22 (25) Substitute Eqs. (22) and (25) into Eq. (19), ignore constant terms that are not changing with trainable parameters 𝐰 ,and normalize by 𝑛 t∕𝜎 2, one obtains the log evidence lower bound under the dropout approximation: 
+
+(𝐰 ) = − 𝔼 𝑞 𝐖 (𝐰 )
+
+12𝑛 t
+
+> 𝑛 t
+
+∑
+
+> 𝑖 =1
+
+|| 𝐮 𝑖 −   (𝐰 ; f𝑖 , 𝜽 𝑖 )|| 22 − ∑
+
+> 𝑗
+
+𝜎 2(1 − 𝑝 𝑗 )2𝑛 t
+
+|| 𝐰 𝑗 || 22 (26) It is interesting to note how this approximated log evidence lower bound resembles the regular square loss with dropout and L2 regularization, except for a negative sign ensuring Eq. (26) is a maximization problem that is consistent with Eq. (19). This makes training a variational LSTM network the same as training a regular LSTM network with dropout     
+
+> :Preprint submitted to Elsevier Page 7 of 22 Projection with POD modes, Eq. (10)
+> 
+> Wavelet transformation , Eq. (12) LSTM network
+> Wavelet approximation
+> Superpositioning POD modes
+> !
+> "
+> Monte Carlo dropout
+> Replication
+> System parameters Excitation Responses Reduced inputs
+> #
+> #
+> %(&)
+> &
+> Input concatenation
+> #'' '
+> Reduced outputs Epistemic uncertainty, Eq. (20)
+> Time
+> *DoF
+> 
+
+Figure 1: The developed framework 
+
+and considering the square loss with regularization. The variance of the additional Gaussian noise, 𝜎 2 in Eq. (23), controls the regularization term, and letting 𝜎 2 → 0, the regularization term vanishes. The developed framework allows one to choose a non-zero 𝜎 2 if the training data contain noise, e.g., from experiments or sensors. In this work, we let 𝜎 2 → 0 to maintain consistency with the deterministic mapping of the LSTM architecture. Although getting rid of this regularization term might typically increase the risk of overfitting, it should be considered that the dropout is also, in nature, a regularization technique preventing overfitting Srivastava et al. (2014), making the additional L2 regularization may not often be necessary. As such, in implementation, one first performs dropout to obtain network realizations. Next, the objective function Eq. (26) and its derivatives are evaluated. The trainable parameters 𝐰 are subsequently updated. This parameter-updating cycle is performed iteratively until a satisfactory result is reached. To alleviate the computational burden of full-batch gradient evaluation and to introduce stochasticity that helps escape suboptimal local minima, the optimization is typically performed in a mini-batch manner, whereby gradients are estimated from randomly sampled subsets of the training data at each iteration. Lastly, it should be noted that when dropout is applied to recurrent neural networks, e.g., LSTM in this paper, the same parameter realization must be considered for all the time steps Gal and Ghahramani (2016) to avoid very weak signals due to a great number of repeated dropouts Gal and Ghahramani (2015). Once calibrated, the epistemic uncertainty can be simulated by simply sampling network realizations with the Monte Carlo dropout. 
+
+## 5. Summary of the metamodeling approach 
+
+The developed metamodeling approach leverages the LSTM network with augmented inputs to propagate aleatoric uncertainty, including record-to-record variability and system uncertainty, and uses Monte Carlo dropout to simulate epistemic uncertainty. To manage high dimensionality and extended durations, POD-based dimensionality reduction and wavelet-based downsampling are used to reduce the size of the excitation and responses. The process of the developed metamodeling approach is shown in Figure 1 and summarized below for implementation: 
+
+: Preprint submitted to Elsevier Page 8 of 22 1. Data generation: Generate 𝑛 realizations of stochastic excitation and structural systems 𝐟 𝑖 , 𝜽 𝑖 , 𝑖 = 1 , 2, ..., 𝑛 ,and perform high-fidelity simulation by numerically solving the dynamic equilibrium, Eq. (1), to obtain their response samples, u𝑖 , 𝑖 = 1 , 2, ..., 𝑛 . This gives a dataset  = { f𝑖 , 𝜽 𝑖 , u𝑖 ∶ 𝑖 = 1 , 2, ..., 𝑛 }. Select randomly from the dataset  for the calibration set 𝑐 to calibrate the metamodel, and leave the rest of the data for the testing set 𝑒 to evaluate the generalizability of the calibrated metamodel to unseen data. In the calibration set 𝑐 ,randomly select a small group of data as a validation set 𝑣 to monitor potential overfitting issues, and leave the rest of the data for the training set 𝑡 for gradient evaluation. 2. Data processing: Normalization statistics (e.g., mean, maximum/minimum) are first evaluated from the training set 𝑡 . Next, POD basis 𝝓 is extracted from response snapshots selected randomly or uniformly in time from the response samples in 𝑡 . This is done by firstly obtaining all POD mode vectors by singular value decomposition for the matrix collecting snapshots, and then truncating to keep only significant POD mode vectors, i.e., those corresponding to the first 𝑛 𝑟 largest singular values. Projections by Eqs. (9) and (10) are performed for the excitations and responses for all the data  to obtain reduced inputs and outputs, {p𝑖 , q𝑖 ∶ 𝑖 = 1 , 2, ..., 𝑛 }. Next, wavelet-based downsampling with a properly selected scaling function is leveraged to further reduce the length of these time series. This gives the wavelet coefficient series with reduced length, {𝐜 𝐩 ,𝑖 , 𝐜 𝐪 ,𝑖 ∶ 𝑖 = 1 , 2, ..., 𝑛 }.Finally, the parameters describing realizations of system uncertainty, 𝜽 𝑖 , are paired with the wavelet coefficients of reduced inputs, replicated to match the length of the coefficient series, and concatenated to be the augmented inputs 
+
+[
+
+𝐜 T 
+
+> 𝐩 ,𝑖
+
+𝜽 T
+
+> 𝑖
+
+]T
+
+. This forms the data format to be learned by the LSTM network: {
+
+[
+
+𝐜 T 
+
+> 𝐩 ,𝑖
+
+𝜽 T
+
+> 𝑖
+
+]T
+
+, 𝐜 𝐪 ,𝑖 ∶ 𝑖 =1, 2, ..., 𝑛 }.3. Network calibration: LSTM is calibrated to a one-to-one mapping 
+
+[
+
+𝐜 T 
+
+> 𝐩 ,𝑖
+
+𝜽 T
+
+> 𝑖
+
+]T
+
+←←→ 𝐜 𝐪 ,𝑖 , with Monte Carlo dropout incorporated to simulate epistemic uncertainty. Stochastic gradient descent and its variants can be leveraged to train the LSTM network by optimizing the loss function in Eq. (26), which is equivalent to maximizing the log evidence lower bound in Eq. (19). During the training, the loss function will also be evaluated based on the validation set 𝑣 to monitor the generalizability performance of the LSTM network, triggering early stopping if unacceptable overfitting is observed. This iterative training process is allowed to continue until a satisfactory LSTM network is obtained. 4. Uncertainty propagation: To perform simulation for any excitation samples and system realizations, e.g., those in the testing set 𝑡 , the same data processing described in Step 2 will be performed. This gives augmented inputs carrying aleatoric uncertainty. Simultaneously, the Monte Carlo dropout will be performed to generate multiple realizations of the calibrated LSTM network. Each of the augmented inputs will be fed into these realizations of the calibrated LSTM network to obtain response samples representing epistemic uncertainty. This, overall, allows efficient propagation of aleatoric and epistemic uncertainty to dynamic responses. 
+
+## 6. Case study 
+
+In this section, we demonstrate the applicability of the developed metamodeling framework with a single DoF (SDOF) Bouc-Wen system under seismic excitation, a shear building model subjected to seismic excitation, and a 2D steel framework subjected to wind excitation. All the numerical computations involved in this paper were performed on a Personal Computer equipped with an Intel(R) Core(TM) i9-14900K CPU (3.20 GHz) and 64.0 GB of RAM. The LSTM training was executed on a single NVIDIA GeForce RTX 4090 GPU with 24.0 GB of VRAM. 
+
+6.1. Case 1: SDOF Bouc-Wen system subjected to stochastic seismic excitation 
+
+6.1.1. Structural system 
+
+This case study considers an SDOF Bouc-Wen system with parametric uncertainty, subjected to stochastic seismic excitation, as shown in Figure 2 (a). The Bouc-Wen system is widely recognized for its versatility in representing the non-linear hysteretic behavior seen in materials, components, and structures. The deterministic form of the equation of motion for the considered SDOF Bouc-Wen system is given by: ̈𝑢 (𝑡 ) + 2 𝜁𝜔̇𝑢 (𝑡 ) + 𝜔 2 [𝜌𝑢 (𝑡 ) + (1 − 𝜌 )𝑧 (𝑡 )] = − 𝑎 (𝑡 ), (27) where 𝑎 (𝑡 ) is the ground motion acceleration; 𝑢 (𝑡 ),̇ 𝑢 (𝑡 ),̈𝑢 (𝑡 ) are the displacement response and its time derivatives, i.e., velocity, and acceleration; 𝜁 and 𝜔 are respectively the damping ratio and circular frequency in the linear elastic sense;               
+
+> :Preprint submitted to Elsevier Page 9 of 22 (a) (b) (c) (d)
+> u(t)
+> mc
+> (t)Figure 2: (a) The SDOF Bouc-Wen system subjected to ground motion in Case 1; (b) A realization of the hysteresis curve; (c) A realization of ground motion; (d) Mean spectrum and spectra samples.
+> Table 1
+> Random Parameters in Bouc-Wen System Parameters Distribution Mean Support
+> 𝜔 Uniform 5.97 [5.373, 6.567]
+> 𝛼 Uniform 50 [45, 55]
+
+𝜌 is the post-yield stiffness ratio; 𝑧 (𝑡 ) is the hysteretic displacement, which is governed by the equation: ̇𝑧 (𝑡 ) = 𝛾̇𝑢 (𝑡 ) − 𝛼 |̇𝑢 (𝑡 )|| 𝑧 (𝑡 )| 𝑛 −1 𝑧 (𝑡 ) − 𝛽̇𝑢 (𝑡 )|𝑧 (𝑡 )|𝑛 (28) where ̇ 𝑧 (𝑡 ) is the first time derivative of the hysteretic displacement 𝑧 (𝑡 ); parameters 𝛼 , 𝛽 , 𝛾 , and 𝑛 control the hysteretic behaviors of the system. In this case study, the fundamental frequency 𝜔 and the hysteretic parameter 𝛼 are treated as random variables following uniform distributions, and the lower and upper bounds as defined in Table 1. The remaining parameters are held constant at 𝜁 = 0 .02 , 𝜌 = 0 , 𝑛 = 2 , 𝛾 = 1 and 𝛽 = 0 . Figure 2 (b) displays a realization of the hysteresis curve. The excitation was generated by the stochastic ground motion model from Rezaeian and Der Kiureghian (2010). This model generates stochastic ground motion by first passing a white noise series through an SDOF filter with time-varying circular frequency and damping ratio, followed by the application of a time-modulating function to define the evolving amplitude. A high-pass filter is finally applied to remove the unrealistic displacement or velocity residuals to avoid overestimation in long-period components of responses. The parameters of the ground motion model are 
+
+𝐼 𝑎 = 0 .109 s⋅g, 𝐷 5−95 = 7 .96 s, 𝑡 mid = 7 .78 s, 𝜔 mid = 4 .66 × 2 × 𝜋 rad/s, 𝜔 ′ = −0 .09 × 2 × 𝜋 rad/s 2, and 𝜁 𝑓 = 0 .24 ,adopted from Rezaeian and Der Kiureghian (2010) for the recorded motion at the 1994 Northridge earthquake at the LA 00 station. All notations are kept consistent with the cited reference. Figure 2 (c) and (d) respectively show a ground motion realization and the spectra of ground motions generated by the model.    
+
+> :Preprint submitted to Elsevier Page 10 of 22 Figure 3: Training and validation loss of metamodel in Case 1
+
+6.1.2. Data generation 
+
+The Bouc-Wen equation was modeled and solved in MATLAB R2024b environment. In this case, we consider generating a dataset  with 200 excitation-system-response samples. To this end, we first generate 200 ground motion realizations based on the aforementioned stochastic ground motion model to represent record-to-record variability. Next, 200 system realizations are generated by sampling the circular frequency 𝜔 and the hysteretic parameter 𝛼 ,in modeling the system uncertainty. These 200 system realizations are subsequently paired with the ground motion realizations, and the resulting response time histories were computed using the fourth-order Runge-Kutta algorithm with an error tolerance of 10 −5 .
+
+6.1.3. Training and testing configuration 
+
+The metamodel in this case adopts an LSTM architecture, consisting of a sequence input layer, an LSTM layer with 200 hidden units, followed by a fully connected layer. The network comprises three input features, including a ground motion record, concatenated with the two uncertain parameters 𝜔 and 𝛼 replicated to have the same length as the ground motion record. The output layer gives a single feature, displacement response time history, as the output data. The dropout is implemented with a dropout rate of 20 % for the fully connected layer to introduce uncertainty in modeling epistemic uncertainty to the metamodel Gal and Ghahramani (2015). Next, to calibrate the metamodel, the 200 data were divided by allocating 150 data to the training set, 10 data to the validation set, and 40 data to the testing set. The training was executed by leveraging the Adam optimizer with a learning rate of 0.002. Loss gradient in each iteration was evaluated based on the training set by considering a mini-batch size of 50, making the training with 3 iterations per epoch. Figure 3 shows the evolution of the training and validation loss during training. The training was concluded in a total of 40,000 epochs ( 12 × 10 4 iterations) after converged training and validation loss were observed. The entire training process for Case 1 took around 671 minutes and 36 seconds. 
+
+6.1.4. Performance on the testing set 
+
+The performance of the metamodel was evaluated on the testing set with 40 samples, with results shown in Figure 4. In particular, in Figure 4 (a), we show the response time history from the metamodel, with a median level of mean square error over the testing set, compared against that from the numerical solver (fourth-order Runge-Kutta method). It is seen that the response reproduced by the metamodel matches well with the numerical solver over the entire time history. Figure 4 (b) shows the error time history between the response by the metamodel and the numerical solver, where only minor discrepancies are observed. Figure 4 (c) shows the comparison between the peak responses by the metamodel and the numerical solver for the entire testing set. It is seen that the augmented LSTM successfully reproduced the responses from the dynamic system with a full range of aleatoric uncertainty, including record-to-record variability and system uncertainty. In addition, the metamodel can also simulate the epistemic uncertainty using the Monte Carlo dropout. This is demonstrated by the interval of 95% confidence, as the shaded area shown in Figure 4 (a), along with the response time histories. This confidence interval is obtained by generating 100 metamodel realizations and passing the              
+
+> :Preprint submitted to Elsevier Page 11 of 22 (a) (b) Figure 4: (a) Comparison of the mean and 95% confidence interval of the displacement response by the metamodel against the high-fidelity reference; (b) Error time history of the mean response by the metamodel; (c) Comparison between peak displacements by the metamodel and by the high-fidelity reference.
+> Table 2
+> Random Parameters in Nonlinear Shear Building Parameters Distribution Mean Support Story Weight (w) Uniform 100 kips (444.82 kN) [50,150] kips ([222.41, 667.23]kN) Post-Yield Stiffness ratio ( 𝛼 )Uniform 0.1 [0.05,0.15]
+
+ground motion through these realizations. This gives 100 response time history realizations representing the epistemic uncertainty, from which the corresponding confidence interval can be constructed. This confidence interval reflects the remaining epistemic uncertainty in the metamodel predictions, given the amount of data and training effort provided. 
+
+6.2. Case 2: Nonlinear shear building model subjected to stochastic seismic excitation 
+
+6.2.1. Structural system 
+
+To demonstrate the scalability of the metamodeling approach, a six-story nonlinear shear building model under seismic excitation is considered McKenna, Yi, Bangalore Satish, Zsarnoczay, Gardner and Elhaddad (2024) as shown in Figure 5 (a). The mass of the model is given by the roof weight 𝑤 𝑟 and equal floor weights 𝑤 at each floor. The nonlinear interstory restoration force is modeled through the Giuffre-Menegotto-Pinto model, characterized by the initial stiffness 𝑘 𝑒 , the yield strength 𝑓 y, the post-yield stiffness ratio 𝜌 , and parameters 𝑅 0, 𝑐𝑅 1, and 𝑐𝑅 2 controlling the transitioning from elastic to plastic branches. This case accounts for the uncertainty of the two most influential parameters: story weight ( 𝑤 ) and post-yield stiffness ratio ( 𝛼 ), both of which follow uniform distributions and the lower and upper bounds as defined in Table 2. The rest parameters take fixed values as initial stiffness 𝑘 𝑒 = 300 kip/in (52,538.05 kN/m), the yield strength 𝑓 y = 20 kip/in 2 (137,895.14 kN/m 2), 𝑅 0 = 15 , 𝑐𝑅 1 = 0 .925 , 𝑐𝑅 2 = 0 .15 , and the roof weight 𝑤 𝑟 = 60 kips (266.89 kN). A representative hysteresis curve of this structure is shown in Figure 5 (b), indicating the high-nonlinearity with this case. 
+
+6.2.2. Hazard and ground motion 
+
+We considered a seismic hazard of 10% exceedance in 50 years at Loma Preita. Target spectrum was then obtained from USGS (United States Geological Survey) hazard tool U.S. Geological Survey (2025) at this hazard level, as shown in Figure 5 (c). We employed the same ground motion generator as mentioned in Case 1 Rezaeian and Der Kiureghian (2010). The parameters for the ground motion generator were taken first from those for the recorded 1989 Loma Preita earthquake reported in Rezaeian and Der Kiureghian (2010) and calibrated to the target spectrum as is described in Li and Spence (2022). This gives the parameters of the ground motion generation model: 𝐼 𝑎 = 0 .045 s⋅g, 𝐷 5−95 = 12 .62 
+
+s, 𝑡 𝑚 = 4 .73 s, 𝜔 mid = 20 .57 rad/s, 𝜔 ′ = −0 .08×2× 𝜋 rad/s 2, and 𝜁 𝑓 = 0 .4801 representing the Loma Preita earthquake but with the hazard level of 10% exceedance in 50 years designated. The spectra of all ground motion realizations and their mean are shown in Figure 5 (c) while Figure 5 (d) shows a representative ground motion realization.   
+
+> :Preprint submitted to Elsevier Page 12 of 22 (b) (a) (d) (c)
+> (t)
+
+. 
+
+> 6543
+> 21Figure 5: (a) The shear building model in Case 2; (b) A representative inter-story hysteresis curve; (c) The target spectrum, mean and sample spectra of the generated ground motion realizations; (d) A representative ground motion realization.
+
+6.2.3. Data generation 
+
+To obtain the dataset needed for metamodel calibration and testing, 1000 ground motion realizations, each with a duration of 30 seconds, were generated through the ground motion model as outlined in Section 6.2.2. Next, the 1000 groups of parameters 𝑤 and 𝛼 are sampled, compiled to be structural system realizations, and paired with the ground motion realizations. Simulations through direct integration are carried out for the high-fidelity shear building model under these seismic excitations within the OpenSees (the Open System for Earthquake Engineering Simulation) version 3.7.1 McKenna, Fenves and Scott (2000). OpenSees Tcl scripts were run in the MATLAB workflow repeatedly for all 1000 ground motion-structural system pairs. The Tcl scripts execute this nonlinear dynamic analysis using the average constant acceleration method. At each time step, the nonlinear equilibrium was solved using an adaptive Newton-Raphson loop; if the standard algorithm failed to converge, the system automatically switched to the modified Newton-Raphson method McKenna et al. (2024). This produces 1000 responses, including the displacement and velocity at each DoF, as well as the restoring force within each story. 
+
+6.2.4. Training and testing configuration 
+
+We considered the same metamodel configuration as in Case 1, where the metamodel is an LSTM network with 200 hidden units. The network input comprises three features: a ground motion and two random parameters. The two random parameters were concatenated to the ground motion realization after being replicated to match its temporal length. The output layer produces the displacement response time histories. To calibrate the LSTM network, we divided the 1000 data into 750 for training, 50 for validation, and the remaining 200 for testing to evaluate the performance of the metamodel on unseen realizations. To simulate the epistemic uncertainty, a dropout rate of 20% for the fully connected layer was incorporated following the Monte Carlo dropout framework. We considered a mini-batch size of 50, resulting in 15 iterations per epoch. The network was then trained for 1500 epochs ( 2.25 × 10 4 iterations) with a    
+
+> :Preprint submitted to Elsevier Page 13 of 22 Figure 6: Training and validation loss of metamodel in Case 2
+
+learning rate of 0.002. The curve of training and validation loss in the training process is shown in Figure 6. Both the training and validation losses converge to a low level, with no evidence of overfitting. The total training time for this case is approximately 191 minutes and 10 seconds. 
+
+6.2.5. Performance on the testing set 
+
+Figure 7 shows the displacement responses, including the time histories with median level error and the peak displacements for the entire testing set (plotted with the line of identity) at the 3rd and 6th DoF, as well as the hysteresis curve at the 3rd floor. The hysteresis in Figure 7 (e) shows this is a highly nonlinear case. Overall, the metamodel exhibits impressive accuracy after the calibration. It is seen from Figure 7 (a) and (b) that the response time histories predicted by the metamodel closely align with the reference solutions obtained via direct integration in OpenSees. The high accuracy is observed for the entire testing set, as can be seen in the comparison of the peak responses by the metamodel and the high-fidelity direct integration shown in Figure 7 (c) and (d), where sample points tightly cluster along the line of identity. On the other hand, the intervals of 95% confidence shown in Figure 7 (a) and (b), simulated by the Monte Carlo dropout, reflect the model’s predictive certainty under the finite size of the training dataset and the optimization process. In addition, the metamodel allows reproducing the interstory hysteresis curve, as shown in Figure 7 (e), which matches perfectly with that provided by the high-fidelity simulation. The ensemble of hysteresis realizations generated by the Monte Carlo dropout (shown in light blue) characterizes the epistemic uncertainty in the predicted nonlinear behavior. This confirms that the metamodeling framework allows for the estimation of the epistemic uncertainty of a full range of responses from displacements to hysteresis. 
+
+6.3. Case 3: 37-story moment-resisting frame under stochastic wind excitation 
+
+6.3.1. Structural system 
+
+In this section, a 37-Story moment resisting frame is subjected to wind excitation to illustrate the scalability of this metamodeling approach to cases with high-dimensional nonlinear structural systems and stochastic excitation. This structure is adopted from Li et al. (2024) and is shown in Figure 8 (a). The total height of this 2D steel frame is 150 m. The first floor is 6 m in height, and the rest of the floors have a floor height of 4 meters each. Each floor has six spans with an equal width of 5 m. The structural system consists of columns with box sections and AISC standard wide-flange W24 section beams. The dimensions of the beam and column vary with the height of the floor, as summarized in Table 3. The sections are composed of steel material with the yield stress 𝜎 𝑦 = 355 MPa, and Young’s modulus 𝐸 𝑠 = 200 GPa. A volumetric mass density of 100 kg/m 3 is considered to account for the superimposed dead loads in addition to the self-weight of the structural members. The inherent damping of the structure was considered as random, as the source of system uncertainty.                   
+
+> :Preprint submitted to Elsevier Page 14 of 22 Figure 7: (a)(b) Comparison of displacement response time histories between high-fidelity direct integration and the metamodel, including 95% confidence intervals (light blue shaded areas), at the 3rd and 6th DoFs; (c)(d) Comparison between the peak displacements by the high-fidelity direct integration and by the metamodel, at the 3rd and 6th DoFs; (e) The hysteresis curves by the high-fidelity direct integration and by the metamodel, as well as 100 realizations of the hysteresis curve under epistemic uncertainty (light blue).
+> Table 3
+> Dimensions of the structural members in Case 3
+> Floor Beams Columns (cm)
+> 1 − 20 𝑊 24 × 192 50 2× 2 .521 − 30 𝑊 24 × 103 40 2× 2 .031 − 37 𝑊 24 × 103 35 2× 1 .8
+
+6.3.2. Wind load 
+
+In this case, a non-directional mean hourly wind speed at the building top 𝑣 𝐻 = 59 .87 m/s is considered. This makes the building go through noticeable nonlinearity, leading to a challenging case for metamodeling. Stochastic wind excitation is subsequently generated through the wind tunnel data-driven proper orthogonal decomposition model Chen and Kareem (2005). This was done by using the aerodynamic data from Tokyo Polytechnic University database, specifically a 1/300 scale rigid model tested at a mean reduced-scale top wind speed of 11m/s. The external wind pressures were recorded via 512 synchronous taps at a sampling frequency of 1000Hz, and were further processed into two translational floor loads and one torsional moment. The first five spatial modes were preserved at each discrete frequency point, and with a cutoff frequency of 1𝐻𝑧 to reconstruct stochastic wind loads for the building. This wind load model was then leveraged to generate stationary wind excitation with a duration of 600 s and with a time step    
+
+> :Preprint submitted to Elsevier Page 15 of 22 Level 37 150 m Level 20 82 m Level 0 0 m
+> 6 @ 5 m = 30 m
+> (a) (b) (c) Figure 8: (a) The 37-Story moment-resisting frame considered in Case 3; Comparison between the (b) time histories and (c) power spectral densities (PSD) of synthetic wind load and the wind tunnel data at the top floor.
+
+Δ𝑡 = 0 .5 s. Figure 8 (b) and (c) are respectively the time histories and power spectral densities of the generated wind load, against those of the wind tunnel data at the top floor. Linear interpolation was used to adapt the dynamic wind load to finer time steps in direct integration for structural analysis. It should be noted that the wind tunnel data is only for the second quadrant, i.e., wind direction 𝛼 = 0° to 90 °. A symmetric mapping from the second quadrant to the rest directions is thus performed Li and Spence (2024) to overcome this limitation. Since the wind directions at third and fourth quadrants completely mirrored the wind tunnel data from the second and the first quadrants, it is therefore only necessary to validate the applicability within the second and the first quadrants, i.e., the wind directions 𝛼 = 0° to 90 °,and 270 ° to 350 °.
+
+6.3.3. Modeling and data generation 
+
+A high-fidelity finite element model for the structural system was built in the OpenSees software version 3.7.1 McKenna et al. (2000). The structural components were modeled using displacement-based elements with fiber-discretized sections to capture distributed and progressive inelasticity. The Gauss-Legendre integration scheme with 5 integration points per element along the length was considered. Within each fiber, the elastic-perfectly-plastic steel material model was considered. The inherent damping within the system was modeled as random Rayleigh damping. This is done by introducing a random damping factor 𝜂 following a lognormal distribution, with the mean of 1.0 and the coefficient of variation of 0.3. The coefficients of the Rayleigh damping were first calibrated such that the deterministic modal damping ratios at the first two frequencies, 0.28 Hz and 0.81 Hz, are 2.5%, then were multiplied by the random damping factor 𝜂 .  
+
+> :Preprint submitted to Elsevier Page 16 of 22
+
+The structural responses were solved with the average constant acceleration method. At each time step, the nonlinear equilibrium was solved by the adaptive nonlinear solver as in Li and Spence (2022). Following the successful execution of the OpenSees simulation, the Tcl scripts extract displacement response time histories and fiber hysteresis curves for each realization of wind excitation and uncertain parameter provided to the structure. The OpenSees Tcl scripts were executed in the MATLAB environment to loop over all realizations. POD-based dimensionality reduction and wavelet-based downsampling were carried out for the wind excitation and displacement responses. To perform the POD-based dimensionality reduction, 800 samples were set aside from the 1000 data points as the calibration dataset, which will be used for metamodel calibration in the next Section. The POD mode vectors were then extracted by performing singular value decomposition over displacement snapshots. The snapshots were collected by considering 1200 equally spaced time points from each displacement time history, leading to a collection of 800 × 1200 snapshots. By considering a threshold of the ratio between the cumulative summation and the total summation of squared singular values, i.e., the fraction of captured signal energy, of 99.99% , the first three significant POD mode vectors were reserved as the POD basis. As such, the high-dimensional wind excitation and displacement responses were reduced to a space with a low dimensionality of three. Next, both the reduced inputs and outputs are then normalized by the maximum and minimum values obtained from the entire calibration set Wang and Wu (2020); Li and Spence (2022). Finally, the wavelet transformation was implemented by considering the 6th-order Daubechies function to further downsample the reduced inputs and outputs. This converts the reduced inputs and outputs to shortened wavelet coefficient series. The wavelet coefficient series of reduced inputs is then paired with the replicated random variable of the system, i.e., the random damping factor, as the input. The metamodel was calibrated to reproduce, based on the augmented input, the wavelet coefficient series of the reduced outputs. Once obtained, inverse wavelet transformation and POD modal superpositioning can be quickly performed to obtain the displacement and other responses. 
+
+6.3.4. Training and testing configurations 
+
+A metamodel of the same architecture as Cases 1 and 2, a LSTM network with an input layer, an LSTM layer with 200 hidden units, and a fully connected layer, was considered in this case. The metamodel takes the augmented inputs, consisting of the wavelet coefficient series of reduced inputs (representing wind load) and the replicated random damping factor, as input, and reproduces the wavelet coefficients of reduced outputs (which can further reconstruct displacement time history). The Monte Carlo dropout with a dropout rate of 20% was implemented for the fully connected layer to account for the epistemic uncertainty through the variational inference. The calibration set was partitioned into training and validation sets using a 750:50 ratio. The rest of 200 samples that were not included in the calibration set are used, as a testing set, to test the model performance over unseen samples. The LSTM is trained using a mini-batch size of 50 and a learning rate of 0.005. The training phase is completed in 2400 epochs, reaching a total of 2.5 × 10 4 iterations. The curves of training and validation loss are shown in Figure 9. The training progress is completed in around 70 minutes. It is seen from the Figure 9 that, although the loss curves exhibited noticeable fluctuations, they demonstrate an overall decreasing trend without apparent overfitting. 
+
+6.3.5. Performance on the testing set 
+
+Figure 10 shows the results of the metamodel validated on the 200 testing samples. The calibrated model in Case 3 is highly accurate with minimal discrepancy between the high-fidelity model and metamodel response, and exhibits different confidence between global and local responses. Figure 10 (a) and (b) respectively show the comparisons of displacement time histories by the metamodel with 95% confidence intervals against those by the high-fidelity direct integration at the 20th and 37th floor. The displacement response time histories by the metamodel exhibit an excellent match with those by the high-fidelity direct integration. This is also attested by the nearly zero error time histories in the scale of the responses. The high accuracy over the entire testing set is evidenced by the peak displacements by the metamodel compared to those by the high-fidelity direct integration at the 20th and 37th floor, respectively shown in Figure 10 (c) and (d), where the data points overlap with the line of identity. Moreover, through the Monte Carlo dropout scheme, the epistemic uncertainty in response time histories is shown as the intervals of 95% confidence in Figure 10 (a) and (b), indicating the uncertainty arising from finite training data and effort. Once global displacements are obtained, local responses, including strain time histories and hyteresis curves, can be rapidly obtained as well. Figure 10 (e) compares the strain time histories of an exterior fiber in the exterior column at the 1st floor (95% confidence interval is included), calculated by the displacements from the metamodel and by the direct integration. Figure 10 (f) shows the comparison of the hysteresis curve of the exterior fiber by the metamodel, its 100 realizations under epistemic    
+
+> :Preprint submitted to Elsevier Page 17 of 22 Figure 9: Training and validation loss of metamodel in Case 3
+
+uncertainty, against those by the high-fidelity direct integration. Notably, the epistemic uncertainty for these local responses (strain and hysteresis) is significantly higher than that observed for global displacements. This is because local responses are reproduced by displacement responses, which, in general, are usually sensitive to perturbations in displacement response time histories. This is consistent with the fact that, in metamodeling, local responses, including strain, stress, and hysteresis curves, are more challenging to accurately reproduce. This cannot be revealed if epistemic uncertainty is not explicitly considered. 
+
+## 7. Conclusion 
+
+In this paper, a metamodeling technique capable of propagating the full range of aleatoric and epistemic uncertainty was developed for high-dimensional nonlinear structural dynamic systems under stochastic excitations. The long short-term memory (LSTM) network is leveraged along with proper orthogonal decomposition (POD)-based dimensionality reduction and wavelet-based downsampling, as a sequence-to-sequence mapping to simulate a full range of displacement responses given stochastic excitation. To incorporate uncertainties within structural systems, the random parameters describing system uncertainty are considered as augmented inputs to the LSTM network. This allows for accurately capturing the effects of system uncertainty while retaining a one-to-one mapping from the random parameters of the system to responses. In addition, the epistemic uncertainty was effectively estimated by the Monte Carlo dropout scheme. Through a binary mask applied to the network parameters, the calibrated LSTM metamodel can generate an ensemble of realizations, and a confidence interval that represents the remaining epistemic uncertainty due to a finite amount of data and training effort, in addition to a point (mean) prediction of the response. The applicability of the developed scheme was validated comprehensively through three case studies involving an SDOF Bouc-Wen system subjected to stochastic seismic excitation, a shear building model under stochastic seismic excitation, and a full-scale steel moment-resisting framework subjected to stochastic wind excitation. All the cases are with system uncertainty from materials to dynamic properties. It was observed that the proposed LSTM network with augmented inputs accurately reproduced the structural responses under a full range of aleatoric uncertainty. On the other hand, the epistemic uncertainty can be estimated by the Monte Carlo dropout scheme, rendered as confidence intervals or response realizations. The epistemic uncertainty provides insights into the remaining uncertainty in the metamodel after calibration, providing a quantitative description of the additional risk from a finite amount of data and training effort. It is also interesting to observe that when reproducing local responses, including strain, stress, and hysteresis curves of a section fiber in a full-scale structure, higher epistemic uncertainty was observed. This observation aligns with the inherent challenges of accurately reproducing localized nonlinear behavior via metamodeling. Overall, the developed metamodeling techniques based on variational LSTM with augmented inputs enable the propagation of a full range of aleatoric and epistemic uncertainty, showing great potential in risk-informed design and engineering.    
+
+> :Preprint submitted to Elsevier Page 18 of 22 u37, X
+> u20, X
+> (c) (b) (d) (e) (a)
+> (f)
+
+Figure 10: Comparisons of displacement time histories by the metamodel with 95% of confidence intervals against those by the high-fidelity direct integration at 20th (a) and 37th floor (b); Peak displacements by the metamodel compared to those by the high-fidelity direct integration at 20th (c) and 37th floor (d); (e) Comparisons of strain time histories by the metamodel with 95% of confidence intervals against those by the high-fidelity direct integration; (f) Comparison of the hysteresis curve by the metamodel, its 100 realizations under epistemic uncertainty, against those by the high-fidelity direct integration of an exterior fiber in the exterior column at the 1st floor. 
+
+## Data availability 
+
+All codes will made available on GitHub 2, upon publication of the paper. 
+
+## Acknowledgements 
+
+The authors’ research efforts were partly supported by the faculty startup funding at Texas Tech University and Rensselaer Polytechnic Institute, and the Koh Family Scholarship at Texas Tech University. Any opinions, findings, conclusions, or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the funding organizations. 
+
+## References 
+
+> Augusti, G., Ciampoli, M., 2008. Performance-based design in risk assessment and reduction. Probabilistic Engineering Mechanics 23, 496–508. Baker, J.W., Cornell, C.A., 2008. Uncertainty propagation in probabilistic seismic loss estimation. Structural Safety 30, 236–252.
+> 2https://github.com/jacklbw/Variational-LSTM-with-Augmented-Inputs
+
+: Preprint submitted to Elsevier Page 19 of 22 Barbato, M., Petrini, F., Unnikrishnan, V.U., Ciampoli, M., 2013. Performance-based hurricane engineering (pbhe) framework. Structural safety 45, 24–35. Bernardini, E., Spence, S.M., Kwon, D.K., Kareem, A., 2015. Performance-based design of high-rise buildings for occupant comfort. Journal of Structural Engineering 141, 04014244. Bezabeh, M.A., Bitsuamlak, G.T., Tesfamariam, S., 2021. Nonlinear dynamic response of single-degree-of-freedom systems subjected to along-wind loads. i: Parametric study. Journal of Structural Engineering 147, 04021177. Bhattacharyya, B., Jacquelin, E., Brizard, D., 2020. A Kriging–NARX model for uncertainty quantification of nonlinear stochastic dynamical systems in time domain. J. Eng. Mech. 146, 04020070. Chatterjee, T., Chowdhury, R., 2017. An efficient sparse bayesian learning framework for stochastic response analysis. Structural Safety 68, 1–14. Chen, X., Kareem, A., 2005. Proper orthogonal decomposition-based modeling, analysis, and simulation of dynamic wind load effects on structures. Journal of Engineering Mechanics 131, 325–339. Chuang, W.C., Spence, S.M., 2017. A performance-based design framework for the integrated collapse and non-collapse assessment of wind excited buildings. Engineering Structures 150, 746–758. Chuang, W.C., Spence, S.M., 2022. A framework for the efficient reliability assessment of inelastic wind excited structures at dynamic shakedown. Journal of Wind Engineering and Industrial Aerodynamics 220, 104834. Ciampoli, M., Petrini, F., Augusti, G., 2011. Performance-based wind engineering: towards a general procedure. Structural safety 33, 367–378. Cui, W., Caracoglia, L., 2018. A unified framework for performance-based wind engineering of tall buildings in hurricane-prone regions based on lifetime intervention-cost estimation. Structural safety 73, 75–86. Cui, W., Caracoglia, L., 2020. Performance-based wind engineering of tall buildings examining life-cycle downtime and multisource wind damage. Journal of Structural Engineering 146, 04019179. De Grandis, S., Domaneschi, M., Perotti, F., 2009. A numerical procedure for computing the fragility of npp components under random seismic excitation. Nuclear Engineering and Design 239, 2491–2499. Der Kiureghian, A., Ditlevsen, O., 2009. Aleatory or epistemic? does it matter? Structural safety 31, 105–112. Ding, J.Y., Feng, D.C., Brunesi, E., Parisi, F., Wu, G., 2023. Efficient seismic fragility analysis method utilizing ground motion clustering and probabilistic machine learning. Engineering Structures 294, 116739. Ellingwood, B.R., 2008. Structural reliability and performance-based engineering. Proceedings of the Institution of Civil Engineers-Structures and Buildings 161, 199–207. Gal, Y., Ghahramani, Z., 2015. Dropout as a bayesian approximation. arXiv preprint arXiv:1506.02157 . Gal, Y., Ghahramani, Z., 2016. A theoretically grounded application of dropout in recurrent neural networks. Advances in neural information processing systems 29. Gal, Y., et al., 2016. Uncertainty in deep learning . Gardoni, P., LaFave, J.M., 2016. Multi-hazard approaches to civil infrastructure engineering: Mitigating risks and promoting resilence, in: Multi-hazard approaches to civil infrastructure engineering. Springer, pp. 3–12. Ghosh, S., Chakraborty, S., 2020. Seismic fragility analysis of structures based on bayesian linear regression demand models. Probabilistic Engineering Mechanics 61, 103081. Ghosh, S., Roy, A., Chakraborty, S., 2019. Kriging metamodeling-based monte carlo simulation for improved seismic fragility analysis of structures. Journal of Earthquake Engineering , 1–21. Gidaris, I., Taflanidis, A.A., Mavroeidis, G.P., 2015. Kriging metamodeling in seismic risk assessment based on stochastic ground motion models. Earthquake Engineering & Structural Dynamics 44, 2377–2399. Goswami, S., Giovanis, D.G., Li, B., Spence, S.M., Shields, M.D., 2025. Neural operators for stochastic modeling of nonlinear structural system response to natural hazards. Engineering Structures 345, 121284. URL: https://www.sciencedirect.com/science/article/pii/ S014102962501675X , doi: https://doi.org/10.1016/j.engstruct.2025.121284 .Günay, S., Mosalam, K.M., 2013. Peer performance-based earthquake engineering methodology, revisited. Journal of Earthquake Engineering 17, 829–858. Hinton, G.E., Srivastava, N., Krizhevsky, A., Sutskever, I., Salakhutdinov, R.R., 2012. Improving neural networks by preventing co-adaptation of feature detectors. arXiv preprint arXiv:1207.0580 . Hong, H., 2004. Accumulation of wind induced damage on bilinear sdof systems. Wind & structures 7, 145–158. Huang, J., Chen, X., 2022. Inelastic performance of high-rise buildings to simultaneous actions of alongwind and crosswind loads. Journal of Structural Engineering 148, 04021258. Ierimonti, L., Venanzi, I., Caracoglia, L., Materazzi, A.L., 2019. Cost-based design of nonstructural elements for tall buildings under extreme wind environments. Journal of Aerospace Engineering 32, 04019020. Judd, J., Charney, F.A., 2015. Inelastic behavior and collapse risk for buildings subjected to wind loads, in: Structures Congress 2015, pp. 2483–2496. Kendall, A., Gal, Y., 2017. What uncertainties do we need in bayesian deep learning for computer vision? Advances in neural information processing systems 30. Kim, T., Kwon, O.S., Song, J., 2019. Response prediction of nonlinear hysteretic systems by deep neural networks. Neural Networks 111, 1–10. Kim, T., Song, J., Kwon, O.S., 2020. Probabilistic evaluation of seismic responses using deep learning method. Structural Safety 84, 101913. Koutsourelakis, P.S., 2010. Assessing structural vulnerability against earthquakes using multi-dimensional fragility surfaces: A bayesian framework. Probabilistic Engineering Mechanics 25, 49–60. Kroetz, H.M., Tessari, R.K., Beck, A.T., 2017. Performance of global metamodeling techniques in solution of structural reliability problems. Advances in Engineering Software 114, 394–404. Kundu, A., Chakraborty, S., 2020. Deep learning-based metamodeling technique for nonlinear seismic response quantification, in: IOP Conference Series: Materials Science and Engineering, IOP Publishing. p. 012042. 
+
+: Preprint submitted to Elsevier Page 20 of 22 Kyprioti, A.P., Taflanidis, A.A., 2021. Kriging metamodeling for seismic response distribution estimation. Earthquake Engineering & Structural Dynamics 50, 3550–3576. Le, T.H., Caracoglia, L., 2015. Reduced-order wavelet-galerkin solution for the coupled, nonlinear stochastic response of slender buildings in transient winds. Journal of Sound and Vibration 344, 179–208. Li, B., Chuang, W.C., Spence, S.M., 2021. Response estimation of multi-degree-of-freedom nonlinear stochastic structural systems through metamodeling. Journal of Engineering Mechanics 147, 04021082. Li, B., Spence, S.M., 2022. Metamodeling through deep learning of high-dimensional dynamic nonlinear systems driven by general stochastic excitation. Journal of Structural Engineering 148, 04022186. Li, B., Spence, S.M., 2024. Deep learning enabled rapid nonlinear time history wind performance assessment, in: Structures, Elsevier. p. 106810. Li, Z., Yang, Q., Deng, Q., Gong, Y., Tian, D., Su, P., Teng, J., 2024. Time history seismic response prediction of multiple homogeneous building structures using only one deep learning-based structure temporal fusion network. Earthquake Engineering & Structural Dynamics 53, 4076–4098. Mai, C.V., Spiridonakos, M.D., Chatzi, E.N., Sudret, B., 2016. Surrogate modeling for stochastic dynamical systems by combining nonlinear autoregressive with exogenous input models and polynomial chaos expansions. International Journal for Uncertainty Quantification 6. McKenna, F., Fenves, G.L., Scott, M.H., 2000. Open System for Earthquake Engineering Simulation. University of California, Berkeley. URL: 
+
+http://opensees.berkeley.edu . http://opensees.berkeley.edu .McKenna, F., Yi, S.r., Bangalore Satish, A., Zsarnoczay, A., Gardner, M., Elhaddad, W., 2024. NHERI-SimCenter/quoFEM: Version 4.0.0. URL: 
+
+https://doi.org/10.5281/zenodo.10443180 , doi: 10.5281/zenodo.10443180 .Micheli, L., Alipour, A., Laflamme, S., Sarkar, P., 2019. Performance-based design with life-cycle cost assessment for damping systems integrated in wind excited tall buildings. Engineering Structures 195, 438–451. Moehle, J., Deierlein, G.G., 2004. A framework methodology for performance-based earthquake engineering, in: 13th world conference on earthquake engineering, WCEE Vancouver. p. 12. Ning, C., Xie, Y., 2024. Dual-branch deep learning model for seismic response history prediction of bridge portfolios, in: 18th World Conference on Earthquake Engineering, World Conference on Earthquake Engineering (WCEE). Conference paper presented in Milan, Italy. Ouyang, Z., Spence, S.M., 2020. A performance-based wind engineering framework for envelope systems of engineered buildings subject to directional wind and rain hazards. Journal of Structural Engineering 146, 04020049. Peng, H., Taflanidis, A.A., Zhang, J., 2026. Accelerating seismic response distribution estimation with scalable mixture density network stochastic surrogate models. Earthquake Engineering & Structural Dynamics 55, 721–742. Perotti, F., Domaneschi, M., De Grandis, S., 2013. The numerical computation of seismic fragility of base-isolated nuclear power plants buildings. Nuclear Engineering and Design 262, 189–200. Pujari, N.N., Ghosh, S., Lala, S., 2016. Bayesian approach for the seismic fragility estimation of a containment shell based on the formation of through-wall cracks. ASCE-ASME Journal of Risk and Uncertainty in Engineering Systems, Part A: Civil Engineering 2, B4015004. Rezaeian, S., Der Kiureghian, A., 2010. Simulation of synthetic ground motions for specified earthquake and site characteristics. Earthq. Eng. Struct. Dyn. 39, 1155–1180. Saha, S.K., Matsagar, V., Chakraborty, S., 2016. Uncertainty quantification and seismic fragility of base-isolated liquid storage tanks using response surface models. Probabilistic Engineering Mechanics 43, 20–35. Segura, R., Padgett, J.E., Paultre, P., 2020. Metamodel-based seismic fragility analysis of concrete gravity dams. Journal of Structural Engineering 146, 04020121. Seo, D.W., Caracoglia, L., 2013. Estimating life-cycle monetary losses due to wind hazards: Fragility analysis of long-span bridges. Engineering Structures 56, 1593–1606. Seo, J., Dueñas-Osorio, L., Craig, J.I., Goodno, B.J., 2012. Metamodel-based regional vulnerability estimate of irregular steel moment-frame structures subjected to earthquake events. Engineering Structures 45, 585–597. Shi, Y., Lu, Z., Xu, L., Chen, S., 2019. An adaptive multiple-kriging-surrogate method for time-dependent reliability analysis. Applied Mathematical Modelling 70, 545–571. Simpson, T., Dervilis, N., Chatzi, E., 2021. Machine learning approach to model order reduction of nonlinear systems via autoencoder and lstm networks. Journal of Engineering Mechanics 147, 04021061. Spence, S.M., Kareem, A., 2014. Performance-based design and optimization of uncertain wind-excited dynamic building systems. Engineering Structures 78, 133–144. Spiridonakos, M.D., Chatzi, E.N., 2015. Metamodeling of nonlinear structural systems with parametric uncertainty subject to stochastic dynamic excitation. Earthquakes and Structures 8, 915–934. Srivastava, N., Hinton, G., Krizhevsky, A., Sutskever, I., Salakhutdinov, R., 2014. Dropout: a simple way to prevent neural networks from overfitting. The journal of machine learning research 15, 1929–1958. Straub, D., Der Kiureghian, A., 2008. Improved seismic fragility modeling from empirical data. Structural safety 30, 320–336. Tibshirani, R.J., Efron, B., 1993. An introduction to the bootstrap. Monographs on statistics and applied probability 57, 1–436. Towashiraporn, P., 2004. Building seismic fragilities using response surface metamodels. Ph.D. thesis. Georgia Institute of Technology. Atlanta, GA. U.S. Geological Survey, 2025. Earthquake hazards program: Interactive map. URL: https://earthquake.usgs.gov/hazards/ interactive/ . accessed: 2025-02-19. Vaidyanathan, C., Kamatchi, P., Ravichandran, R., 2005. Artificial neural networks for predicting the response of structural systems with viscoelastic dampers. Computer-Aided Civil and Infrastructure Engineering 20, 294–302. Vamvatsikos, D., Cornell, C.A., 2002. Incremental dynamic analysis. Earthquake Engineering & Structural Dynamics 31, 491–514. Wang, H., Wu, T., 2020. Knowledge-enhanced deep learning for wind-induced nonlinear structural dynamic analysis. Journal of Structural Engineering 146, 04020235. 
+
+: Preprint submitted to Elsevier Page 21 of 22 Xiong, Z., Jia, G., Dong, Y., Guo, Y., 2025. Uncertainty-aware fragility modeling of urban building exteriors subjected to hurricane-induced windborne debris with conditional generative adversarial nets. Advances in Wind Engineering 2, 100042. Xu, H., Gardoni, P., 2016. Probabilistic capacity and seismic demand models and fragility estimates for reinforced concrete buildings based on three-dimensional analyses. Engineering Structures 112, 200–214. Yang, T., Moehle, J., Stojadinovic, B., Der Kiureghian, A., 2009. Seismic performance evaluation of facilities: Methodology and implementation. Journal of Structural Engineering 135, 1146–1154. Zhang, R., Liu, Y., Sun, H., 2020a. Physics-guided convolutional neural network (phycnn) for data-driven seismic response modeling. Engineering Structures 215, 110704. Zhang, R., Liu, Y., Sun, H., 2020b. Physics-informed multi-lstm networks for metamodeling of nonlinear structures. arXiv preprint arXiv:2002.10253 . 
+
+: Preprint submitted to Elsevier Page 22 of 22
