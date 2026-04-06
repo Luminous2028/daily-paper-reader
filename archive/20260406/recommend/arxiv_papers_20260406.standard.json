@@ -1,0 +1,439 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-06T20:09:21.629085+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 11,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2603.27670v1",
+      "title": "ProgressVLA: Progress-Guided Diffusion Policy for Vision-Language Robotic Manipulation",
+      "abstract": "Most existing vision-language-action (VLA) models for robotic manipulation lack progress awareness, typically relying on hand-crafted heuristics for task termination. This limitation is particularly severe in long-horizon tasks involving cascaded sub-goals. In this work, we investigate the estimation and integration of task progress, proposing a novel model named {\\textbf \\vla}. Our technical contributions are twofold: (1) \\emph{robust progress estimation}: We pre-train a progress estimator on large-scale, unsupervised video-text robotic datasets. This estimator achieves a low prediction residual (0.07 on a scale of $[0, 1]$) in simulation and demonstrates zero-shot generalization to unseen real-world samples, and (2) \\emph{differentiable progress guidance}: We introduce an inverse dynamics world model that maps predicted action tokens into future latent visual states. These latents are then processed by the progress estimator; by applying a maximal progress regularization, we establish a differentiable pipeline that provides progress-piloted guidance to refine action tokens. Extensive experiments on the CALVIN and LIBERO benchmarks, alongside real-world robot deployment, consistently demonstrate substantial improvements in success rates and generalization over strong baselines.",
+      "authors": [
+        "Hongyu Yan",
+        "Qiwei Li",
+        "Jiaolong Yang",
+        "Yadong Mu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-03-29T12:38:11+00:00",
+      "link": "https://arxiv.org/pdf/2603.27670v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "diffusion policy for robotic manipulation with progress estimation",
+      "llm_evidence_cn": "带有进度估计的机器人操作扩散策略",
+      "llm_evidence": "带有进度估计的机器人操作扩散策略",
+      "canonical_evidence": "带有进度估计的机器人操作扩散策略",
+      "llm_tldr_en": "Integrates progress estimation into diffusion policies for robust robotic task execution.",
+      "llm_tldr_cn": "将进度估计集成到扩散策略中，以实现鲁棒的机器人任务执行。",
+      "llm_tldr": "将进度估计集成到扩散策略中，以实现鲁棒的机器人任务执行。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.00380v1",
+      "title": "Data-Attributed Adaptive Control Barrier Functions: Safety-Certified Training Data Curation via Influence Analysis",
+      "abstract": "Learning-based adaptation of Control Barrier Function (CBF) parameters offers a promising path toward safe autonomous navigation that balances conservatism with performance. Yet the accuracy of the underlying safety predictor is ultimately constrained by training data quality, and no prior work has formally characterized how prediction errors propagate through the adaptive pipeline to degrade closed-loop safety guarantees. We introduce Data-Attributed Adaptive CBF (DA-CBF), a framework that integrates TracIn-based data attribution into adaptive CBF learning. Our theoretical contributions are fourfold: (i) corrected two-sided bounds relating the safety-loss surrogate to the CBF constraint margin; (ii) a safety margin preservation theorem showing that prediction error induces quantifiable margin degradation and, via a smooth parameter selector, yields a genuine closed-loop forward invariance guarantee not conditioned on a fixed trajectory; (iii) a CBF-QP constraint perturbation bound that links prediction accuracy directly to recursive feasibility; and (iv) a principled leave-one-out justification for influence-based data curation under explicit smoothness assumptions. On a DynamicUnicycle2D benchmark, DA-CBF reduces prediction RMSE by 35.6\\%, expands the certified safe operating set by 39\\%, and achieves collision-free navigation in a 16-obstacle environment where the uncurated baseline incurs 3 collisions.",
+      "authors": [
+        "Jiachen Li",
+        "Shihao Li",
+        "Dongmei Chen"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-04-01T02:05:13+00:00",
+      "link": "https://arxiv.org/pdf/2604.00380v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "tracing prediction errors and data attribution in autonomous navigation",
+      "llm_evidence_cn": "自动驾驶中的预测误差追溯与数据归因",
+      "llm_evidence": "自动驾驶中的预测误差追溯与数据归因",
+      "canonical_evidence": "自动驾驶中的预测误差追溯与数据归因",
+      "llm_tldr_en": "Integrates data attribution into adaptive control to trace how training data affects safety margins.",
+      "llm_tldr_cn": "将数据归因集成到自适应控制中，以追溯训练数据如何影响安全余量。",
+      "llm_tldr": "将数据归因集成到自适应控制中，以追溯训练数据如何影响安全余量。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.02447v1",
+      "title": "PlayGen-MoG: Framework for Diverse Multi-Agent Play Generation via Mixture-of-Gaussians Trajectory Prediction",
+      "abstract": "Multi-agent trajectory generation in team sports requires models that capture both the diversity of possible plays and realistic spatial coordination between players on plays. Standard generative approaches such as Conditional Variational Autoencoders (CVAE) and diffusion models struggle with this task, exhibiting posterior collapse or convergence to the dataset mean. Moreover, most trajectory prediction methods operate in a forecasting regime that requires multiple frames of observed history, limiting their use for play design where only the initial formation is available. We present PlayGen-MoG, an extensible framework for formation-conditioned play generation that addresses these challenges through three design choices: 1/ a Mixture-of-Gaussians (MoG) output head with shared mixture weights across all agents, where a single set of weights selects a play scenario that couples all players' trajectories, 2/ relative spatial attention that encodes pairwise player positions and distances as learned attention biases, and 3/ non-autoregressive prediction of absolute displacements from the initial formation, eliminating cumulative error drift and removing the dependence on observed trajectory history, enabling realistic play generation from a single static formation alone. On American football tracking data, PlayGen-MoG achieves 1.68 yard ADE and 3.98 yard FDE while maintaining full utilization of all 8 mixture components with entropy of 2.06 out of 2.08, and qualitatively confirming diverse generation without mode collapse.",
+      "authors": [
+        "Kevin Song"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-04-02T18:18:53+00:00",
+      "link": "https://arxiv.org/pdf/2604.02447v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "multi-agent trajectory generation using diffusion models and MoG",
+      "llm_evidence_cn": "使用扩散模型和高斯混合模型进行多智能体轨迹生成",
+      "llm_evidence": "使用扩散模型和高斯混合模型进行多智能体轨迹生成",
+      "canonical_evidence": "使用扩散模型和高斯混合模型进行多智能体轨迹生成",
+      "llm_tldr_en": "Proposes a framework for diverse multi-agent play generation using MoG and diffusion-based trajectory prediction.",
+      "llm_tldr_cn": "提出了一个利用高斯混合模型和基于扩散的轨迹预测进行多样化多智能体剧本生成的框架。",
+      "llm_tldr": "提出了一个利用高斯混合模型和基于扩散的轨迹预测进行多样化多智能体剧本生成的框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.01428v1",
+      "title": "Rendezvous Planning from Sparse Observations of Optimally Controlled Targets",
+      "abstract": "We develop a probabilistic framework for \\emph{rendezvous planning}: given sparse, noisy observations of a fast-moving target, plan rendezvous spatiotemporal coordinates for a set of significantly slower seeking agents. The unknown target trajectory is estimated under uncertain dynamics using a filtering approach that combines a kernel-based maximum a posteriori estimation with Gaussian process correction, producing a mixture over trajectory hypotheses. This estimate is used to select spatiotemporal rendezvous points that maximize the probability of successful rendezvous. Points are chosen sequentially by greedily minimizing failure probability in the current belief space, which is updated after each step by conditioning on unsuccessful rendezvous attempts. We show that the failure-conditioned update correctly captures the posterior belief for subsequent decisions, ensuring that each step in the greedy sequence is informed by a statistically consistent representation of the remaining search space, and derive the corresponding Bayesian updates incorporating temporal correlations intrinsic to the trajectory model. This result provides a systematic framework for planning under uncertainty in applications of autonomous rendezvous such as unmanned aerial vehicle refueling, spacecraft servicing, autonomous surface vessel operations, search and rescue missions, and missile defense. In each, the motion of the target entity can be modeled using a system of differential equations undergoing optimal control for a chosen objective, in our example case Hamilton--Jacobi--Bellman solutions for minimum arrival time of a Dubins car with uncertain turning radius and destination.",
+      "authors": [
+        "Thomas A. Scott",
+        "Lukas Taus",
+        "Yen-Hsi Richard Tsai",
+        "Tan Bui-Thanh",
+        "Justin G. R. Delva"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-04-01T22:09:19+00:00",
+      "link": "https://arxiv.org/pdf/2604.01428v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "probabilistic framework for trajectory estimation and planning",
+      "llm_evidence_cn": "轨迹估计与规划的概率框架",
+      "llm_evidence": "轨迹估计与规划的概率框架",
+      "canonical_evidence": "轨迹估计与规划的概率框架",
+      "llm_tldr_en": "Develops a probabilistic framework for rendezvous planning under uncertain target dynamics.",
+      "llm_tldr_cn": "开发了一个在目标动力学不确定情况下的会合规划概率框架。",
+      "llm_tldr": "开发了一个在目标动力学不确定情况下的会合规划概率框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.02714v1",
+      "title": "ExploreVLA: Dense World Modeling and Exploration for End-to-End Autonomous Driving",
+      "abstract": "End-to-end autonomous driving models based on Vision-Language-Action (VLA) architectures have shown promising results by learning driving policies through behavior cloning on expert demonstrations. However, imitation learning inherently limits the model to replicating observed behaviors without exploring diverse driving strategies, leaving it brittle in novel or out-of-distribution scenarios. Reinforcement learning (RL) offers a natural remedy by enabling policy exploration beyond the expert distribution. Yet VLA models, typically trained on offline datasets, lack directly observable state transitions, necessitating a learned world model to anticipate action consequences. In this work, we propose a unified understanding-and-generation framework that leverages world modeling to simultaneously enable meaningful exploration and provide dense supervision. Specifically, we augment trajectory prediction with future RGB and depth image generation as dense world modeling objectives, requiring the model to learn fine-grained visual and geometric representations that substantially enrich the planning backbone. Beyond serving as a supervisory signal, the world model further acts as a source of intrinsic reward for policy exploration: its image prediction uncertainty naturally measures a trajectory's novelty relative to the training distribution, where high uncertainty indicates out-of-distribution scenarios that, if safe, represent valuable learning opportunities. We incorporate this exploration signal into a safety-gated reward and optimize the policy via Group Relative Policy Optimization (GRPO). Experiments on the NAVSIM and nuScenes benchmarks demonstrate the effectiveness of our approach, achieving a state-of-the-art PDMS score of 93.7 and an EPDMS of 88.8 on NAVSIM. The code and demo will be publicly available at https://zihaosheng.github.io/ExploreVLA/.",
+      "authors": [
+        "Zihao Sheng",
+        "Xin Ye",
+        "Jingru Luo",
+        "Sikai Chen",
+        "Liu Ren"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-03T04:14:13+00:00",
+      "link": "https://arxiv.org/pdf/2604.02714v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "end-to-end autonomous driving and world modeling",
+      "llm_evidence_cn": "端到端自动驾驶与世界建模",
+      "llm_evidence": "端到端自动驾驶与世界建模",
+      "canonical_evidence": "端到端自动驾驶与世界建模",
+      "llm_tldr_en": "Proposes a unified world model for exploration and action anticipation in autonomous driving.",
+      "llm_tldr_cn": "提出了一种用于自动驾驶探索和动作预测的统一世界模型。",
+      "llm_tldr": "提出了一种用于自动驾驶探索和动作预测的统一世界模型。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.01709v1",
+      "title": "Bias mitigation in graph diffusion models",
+      "abstract": "Most existing graph diffusion models have significant bias problems. We observe that the forward diffusion's maximum perturbation distribution in most models deviates from the standard Gaussian distribution, while reverse sampling consistently starts from a standard Gaussian distribution, which results in a reverse-starting bias. Together with the inherent exposure bias of diffusion models, this results in degraded generation quality. This paper proposes a comprehensive approach to mitigate both biases. To mitigate reverse-starting bias, we employ a newly designed Langevin sampling algorithm to align with the forward maximum perturbation distribution, establishing a new reverse-starting point. To address the exposure bias, we introduce a score correction mechanism based on a newly defined score difference. Our approach, which requires no network modifications, is validated across multiple models, datasets, and tasks, achieving state-of-the-art results.Code is at https://github.com/kunzhan/spp",
+      "authors": [
+        "Meng Yu",
+        "Kun Zhan"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-02T07:21:02+00:00",
+      "link": "https://arxiv.org/pdf/2604.01709v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "mitigating bias and perturbation distribution issues in diffusion models",
+      "llm_evidence_cn": "减轻扩散模型中的偏差和扰动分布问题",
+      "llm_evidence": "减轻扩散模型中的偏差和扰动分布问题",
+      "canonical_evidence": "减轻扩散模型中的偏差和扰动分布问题",
+      "llm_tldr_en": "Proposes Langevin sampling and score correction to mitigate bias in graph diffusion models, improving generation quality.",
+      "llm_tldr_cn": "提出Langevin采样和得分修正机制以减轻图扩散模型的偏差，提升生成质量。",
+      "llm_tldr": "提出Langevin采样和得分修正机制以减轻图扩散模型的偏差，提升生成质量。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.02441v1",
+      "title": "Adaptive Learned State Estimation based on KalmanNet",
+      "abstract": "Hybrid state estimators that combine model-based Kalman filtering with learned components have shown promise on simulated data, yet their performance on real-world automotive data remains insufficient. In this work we present Adaptive Multi-modal KalmanNet (AM-KNet), an advancement of KalmanNet tailored to the multi-sensor autonomous driving setting. AM-KNet introduces sensor-specific measurement modules that enable the network to learn the distinct noise characteristics of radar, lidar, and camera independently. A hypernetwork with context modulation conditions the filter on target type, motion state, and relative pose, allowing adaptation to diverse traffic scenarios. We further incorporate a covariance estimation branch based on the Josephs form and supervise it through negative log-likelihood losses on both the estimation error and the innovation. A comprehensive, component-wise loss function encodes physical priors on sensor reliability, target class, motion state, and measurement flow consistency. AM-KNet is trained and evaluated on the nuScenes and View-of-Delft datasets. The results demonstrate improved estimation accuracy and tracking stability compared to the base KalmanNet, narrowing the performance gap with classical Bayesian filters on real-world automotive data.",
+      "authors": [
+        "Arian Mehrfard",
+        "Bharanidhar Duraisamy",
+        "Stefan Haag",
+        "Florian Geiss",
+        "Mirko Mählisch"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-02T18:12:40+00:00",
+      "link": "https://arxiv.org/pdf/2604.02441v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "covariance estimation and noise characteristics in autonomous driving",
+      "llm_evidence_cn": "自动驾驶中的协方差估计与噪声特性",
+      "llm_evidence": "自动驾驶中的协方差估计与噪声特性",
+      "canonical_evidence": "自动驾驶中的协方差估计与噪声特性",
+      "llm_tldr_en": "Enhances KalmanNet for multi-modal autonomous driving by learning sensor-specific noise and covariance.",
+      "llm_tldr_cn": "通过学习特定传感器的噪声和协方差，增强了用于多模态自动驾驶的KalmanNet。",
+      "llm_tldr": "通过学习特定传感器的噪声和协方差，增强了用于多模态自动驾驶的KalmanNet。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "modeling aleatoric uncertainty in autonomous driving scenarios",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.02573v1",
+      "title": "Dynamic Risk Generation for Autonomous Driving: Naturalistic Reconstruction of Vehicle-E-Scooter Interactions",
+      "abstract": "The increasing, high-risk interactions between vehicles and vulnerable micromobility users, such as e-scooter riders, challenge vehicular safety functions and Automated Driving (AD) techniques, often resulting in severe consequences due to the dynamic uncertainty of e-scooter motion. Despite advances in data-driven AD methods, traffic data addressing the e-scooter interaction problem, particularly for safety-critical moments, remains underdeveloped. This paper proposes a pipeline that utilizes collected on-road traffic data and creates configurable synthetic interactions for validating vehicle motion planning algorithms. A Social Force Model (SFM) is applied to offer more dynamic and potentially risky movements for the e-scooter, thereby testing the functionality and reliability of the vehicle collision avoidance systems. A case study based on a real-world interaction scenario was conducted to verify the practicality and effectiveness of the established simulator. Simulation experiments successfully demonstrate the capability of extending the target scenario to more critical interactions that may result in a potential collision.",
+      "authors": [
+        "Abin Mathew",
+        "Zhitong He",
+        "Lingxi Li",
+        "Yaobin Chen"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "eess.SP"
+      ],
+      "published": "2026-04-02T23:05:09+00:00",
+      "link": "https://arxiv.org/pdf/2604.02573v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "dynamic uncertainty of e-scooter motion for validating vehicle motion planning",
+      "llm_evidence_cn": "电动滑板车运动的动态不确定性，用于验证车辆运动规划",
+      "llm_evidence": "电动滑板车运动的动态不确定性，用于验证车辆运动规划",
+      "canonical_evidence": "电动滑板车运动的动态不确定性，用于验证车辆运动规划",
+      "llm_tldr_en": "Generates synthetic interactions with dynamic uncertainty to validate autonomous driving planners.",
+      "llm_tldr_cn": "生成具有动态不确定性的合成交互，以验证自动驾驶规划算法。",
+      "llm_tldr": "生成具有动态不确定性的合成交互，以验证自动驾驶规划算法。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "modeling aleatoric uncertainty in autonomous driving scenarios",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.02745v1",
+      "title": "Geometrically-Constrained Radar-Inertial Odometry via Continuous Point-Pose Uncertainty Modeling",
+      "abstract": "Radar odometry is crucial for robust localization in challenging environments; however, the sparsity of reliable returns and distinctive noise characteristics impede its performance. This paper introduces geometrically-constrained radar-inertial odometry and mapping that jointly consolidates point and pose uncertainty. We employ the continuous trajectory model to estimate the pose uncertainty at any arbitrary timestamp by propagating uncertainties of the control points. These pose uncertainties are continuously integrated with heteroscedastic measurement uncertainty during point projection, thereby enabling dynamic evaluation of observation confidence and adaptive down-weighting of uninformative radar points. By leveraging quantified uncertainties in radar mapping, we construct a high-fidelity map that improves odometry accuracy under imprecise radar measurements. Moreover, we reveal the effectiveness of explicit geometrical constraints in radar-inertial odometry when incorporated with the proposed uncertainty-aware mapping framework. Extensive experiments on diverse real-world datasets demonstrate the superiority of our method, yielding substantial performance improvements in both accuracy and efficiency compared to existing baselines.",
+      "authors": [
+        "Wooseong Yang",
+        "Dongjae Lee",
+        "Minwoo Jung",
+        "Ayoung Kim"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-03T05:37:56+00:00",
+      "link": "https://arxiv.org/pdf/2604.02745v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "continuous trajectory model to estimate pose uncertainty and measurement uncertainty",
+      "llm_evidence_cn": "利用连续轨迹模型估计位姿不确定性和测量不确定性",
+      "llm_evidence": "利用连续轨迹模型估计位姿不确定性和测量不确定性",
+      "canonical_evidence": "利用连续轨迹模型估计位姿不确定性和测量不确定性",
+      "llm_tldr_en": "Models continuous point-pose uncertainty for robust radar-inertial odometry and mapping.",
+      "llm_tldr_cn": "为鲁棒的雷达惯性里程计建模连续的点位姿不确定性。",
+      "llm_tldr": "为鲁棒的雷达惯性里程计建模连续的点位姿不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.02751v1",
+      "title": "Understanding Latent Diffusability via Fisher Geometry",
+      "abstract": "Diffusion models often degrade when trained in latent spaces (e.g., VAEs), yet the formal causes remain poorly understood. We quantify latent-space diffusability through the rate of change of the Minimum Mean Squared Error (MMSE) along the diffusion trajectory. Our framework decomposes this MMSE rate into contributions from Fisher Information (FI) and Fisher Information Rate (FIR). We demonstrate that while global isometry ensures FI alignment, FIR is governed by the encoder's local geometric properties. Our analysis explicitly decouples latent geometric distortion into three measurable penalties: dimensional compression, tangential distortion, and curvature injection. We derive theoretical conditions for FIR preservation across spaces, ensuring maintained diffusability. Experiments across diverse autoencoding architectures validate our framework and establish these efficient FI and FIR metrics as a robust diagnostic suite for identifying and mitigating latent diffusion failure.",
+      "authors": [
+        "Jing Gu",
+        "Morteza Mardani",
+        "Wonjun Lee",
+        "Dongmian Zou",
+        "Gilad Lerman"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-03T05:52:09+00:00",
+      "link": "https://arxiv.org/pdf/2604.02751v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "quantifying latent-space diffusability and decoupling geometric distortion",
+      "llm_evidence_cn": "量化潜空间扩散性并解耦几何失真",
+      "llm_evidence": "量化潜空间扩散性并解耦几何失真",
+      "canonical_evidence": "量化潜空间扩散性并解耦几何失真",
+      "llm_tldr_en": "A theoretical framework using Fisher geometry to analyze and decouple factors affecting diffusion trajectories.",
+      "llm_tldr_cn": "一个利用费舍尔几何分析和解耦影响扩散轨迹因素的理论框架。",
+      "llm_tldr": "一个利用费舍尔几何分析和解耦影响扩散轨迹因素的理论框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.03181v1",
+      "title": "Multi-View Video Diffusion Policy: A 3D Spatio-Temporal-Aware Video Action Model",
+      "abstract": "Robotic manipulation requires understanding both the 3D spatial structure of the environment and its temporal evolution, yet most existing policies overlook one or both. They typically rely on 2D visual observations and backbones pretrained on static image--text pairs, resulting in high data requirements and limited understanding of environment dynamics. To address this, we introduce MV-VDP, a multi-view video diffusion policy that jointly models the 3D spatio-temporal state of the environment. The core idea is to simultaneously predict multi-view heatmap videos and RGB videos, which 1) align the representation format of video pretraining with action finetuning, and 2) specify not only what actions the robot should take, but also how the environment is expected to evolve in response to those actions. Extensive experiments show that MV-VDP enables data-efficient, robust, generalizable, and interpretable manipulation. With only ten demonstration trajectories and without additional pretraining, MV-VDP successfully performs complex real-world tasks, demonstrates strong robustness across a range of model hyperparameters, generalizes to out-of-distribution settings, and predicts realistic future videos. Experiments on Meta-World and real-world robotic platforms demonstrate that MV-VDP consistently outperforms video-prediction--based, 3D-based, and vision--language--action models, establishing a new state of the art in data-efficient multi-task manipulation.",
+      "authors": [
+        "Peiyan Li",
+        "Yixiang Chen",
+        "Yuan Xu",
+        "Jiabing Yang",
+        "Xiangnan Wu",
+        "Jun Guo",
+        "Nan Sun",
+        "Long Qian",
+        "Xinghang Li",
+        "Xin Xiao",
+        "Jing Liu",
+        "Nianfeng Liu",
+        "Tao Kong",
+        "Yan Huang",
+        "Liang Wang",
+        "Tieniu Tan"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-04-03T16:57:06+00:00",
+      "link": "https://arxiv.org/pdf/2604.03181v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "multi-view video diffusion policy for robotic action and environment dynamics",
+      "llm_evidence_cn": "用于机器人动作和环境动力学的多视图视频扩散策略",
+      "llm_evidence": "用于机器人动作和环境动力学的多视图视频扩散策略",
+      "canonical_evidence": "用于机器人动作和环境动力学的多视图视频扩散策略",
+      "llm_tldr_en": "Introduces a multi-view video diffusion policy that models 3D spatio-temporal states for robotic manipulation.",
+      "llm_tldr_cn": "引入了一种多视图视频扩散策略，通过建模3D时空状态来实现机器人操作。",
+      "llm_tldr": "引入了一种多视图视频扩散策略，通过建模3D时空状态来实现机器人操作。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

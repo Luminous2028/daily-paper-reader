@@ -1,0 +1,716 @@
+Title: Data-Attributed Adaptive Control Barrier Functions: Safety-Certified Training Data Curation via Influence Analysis
+
+URL Source: https://arxiv.org/pdf/2604.00380v1
+
+Published Time: Thu, 02 Apr 2026 00:25:05 GMT
+
+Number of Pages: 7
+
+Markdown Content:
+# Data-Attributed Adaptive Control Barrier Functions: Safety-Certified Training Data Curation via Influence Analysis 
+
+Jiachen Li 1, Shihao Li 1, and Dongmei Chen 1
+
+Abstract — Learning-based adaptation of Control Barrier Function (CBF) parameters offers a promising path toward safe autonomous navigation that balances conservatism with performance. Yet the accuracy of the underlying safety pre-dictor is ultimately constrained by training data quality, and no prior work has formally characterized how prediction errors propagate through the adaptive pipeline to degrade closed-loop safety guarantees. We introduce Data-Attributed Adaptive CBF (DA-CBF), a framework that integrates TracIn-based data attribution into adaptive CBF learning. Our the-oretical contributions are fourfold: (i) corrected two-sided bounds relating the safety-loss surrogate to the CBF constraint margin; (ii) a safety margin preservation theorem showing that prediction error induces quantifiable margin degradation and, via a smooth parameter selector, yields a genuine closed-loop forward invariance guarantee not conditioned on a fixed trajectory; (iii) a CBF-QP constraint perturbation bound that links prediction accuracy directly to recursive feasibility; and (iv) a principled leave-one-out justification for influence-based data curation under explicit smoothness assumptions. On a DynamicUnicycle2D benchmark, DA-CBF reduces prediction RMSE by 35.6%, expands the certified safe operating set by 39%, and achieves collision-free navigation in a 16-obstacle environment where the uncurated baseline incurs 3 collisions. 
+
+I. INTRODUCTION Safety remains a defining challenge for autonomous sys-tems operating in complex, unstructured environments [1]. As mobile robots are increasingly deployed in settings rang-ing from cluttered warehouses to urban streets, the need for rigorous, real-time safety assurances has grown correspond-ingly urgent. Control Barrier Functions (CBFs) [2] offer an appealing framework for meeting this need: they enforce forward invariance of a designated safe set by imposing a pointwise constraint on the control input, one that can be embedded in a Quadratic Program (QP) and solved in real time. In practice, however, the effectiveness of CBF controllers depends heavily on the class-K function parameters that mediate the trade-off between conservatism and performance. Overly conservative parameters keep the system safe but produce sluggish, inefficient behavior; overly aggressive ones improve task performance at the cost of potential constraint violations. Extensions to higher-order CBFs [3] and tunable input-to-state-safe formulations [4] enrich the design space but do not resolve the underlying parameter selection prob-lem, leaving open the question of how to choose parameters adaptively in response to the current operating context.  
+
+> 1All authors are with the Department of Mechanical Engineering, The University of Texas at Austin, Austin, TX 78712, USA.
+
+{jiachenli, shihaoli01301, dmchen }@utexas.edu 
+
+Kim et al. [5] address this gap with an online adaptation scheme built on a Probabilistic Ensemble Neural Network (PENN) [6]. Their pipeline predicts a safety-loss surrogate for each candidate parameter setting, then applies a two-stage uncertainty filter: epistemic uncertainty is assessed via Jensen–R´ enyi Divergence [7] to flag out-of-distribution queries, while aleatoric risk is bounded through Conditional Value-at-Risk (CVaR). Only candidates that survive both filters are considered, and the least conservative among them is selected for control. The resulting architecture is carefully designed, yet its end-to-end safety guarantee can be no stronger than the PENN’s predictive accuracy, and that accuracy is, in turn, shaped by the training data. Data for adaptive CBF learning is typically generated through large-scale simulation sweeps over initial conditions, obstacle layouts, and candidate pa-rameters. Such sweeps inevitably introduce noisy labels from near-boundary dynamics, distributional imbalances that over-represent benign configurations, and outliers arising from nu-merical edge cases. The effect of these corrupted samples is not uniform: they bias predictions most severely in precisely the high-risk regions of state space where accurate safety-loss estimates matter most. A growing body of work in data attribution, span-ning influence functions [8], TracIn [9], TRAK [10], and memorization-based diagnostics [11], provides tools for iden-tifying which training examples drive specific prediction errors. These methods trace the effect of individual samples along the optimization trajectory, yielding principled per-sample scores. What remains absent, however, is a formal account of how data quality connects to closed-loop safety in adaptive CBF pipelines . Without such an account, one cannot determine how much prediction improvement is needed to recover a target safety margin, and data curation reduces to heuristic trial and error rather than a certifiable intervention. The broader literature on learning-based safety-critical control has not filled this gap. Taylor et al. [12] learn CBF parameters from expert demonstrations but assume clean training data. Castaneda et al. [13] use Gaussian processes to handle model uncertainty in CBF feasibility, yet do not exam-ine how training data quality affects the GP posterior. Choi et al. [14] combine reinforcement learning with control Lya-punov and barrier functions under model uncertainty, relying on representative state coverage without formal data quality analysis. Dawson et al. [15] survey neural Lyapunov, barrier, and contraction methods, noting that data-driven certificate learning generally assumes sufficient training coverage. In each case, prediction error is treated as either negligible or       
+
+> arXiv:2604.00380v1 [eess.SY] 1 Apr 2026 Fig. 1. Overview of the DA-CBF pipeline. Stage 1: TracIn-based attribution identifies and removes the top 10% harmful training samples. Stage 2:
+> Curated PENN predicts safety loss with 36% lower RMSE, filtered by JRD and CVaR thresholds. Stage 3: Adaptive CBF-QP achieves collision-free navigation where the baseline incurs 3 collisions.
+
+absorbed by conservative margins, without analyzing how data deficiencies degrade the resulting safety certificate. Safe MPC approaches [16] and onboard CBF implementations for high-speed platforms [17] make analogous modeling assumptions. The upshot is that practitioners currently lack a principled basis for deciding whether their training data is adequate for a given safety target, or for determining how best to improve it. We propose Data-Attributed Adaptive CBF (DA-CBF), whose three-stage pipeline is illustrated in Fig. 1. Our work makes four contributions. First, we prove a closed-loop safety margin preservation theorem: Theorem 1 shows that a learned controller inherits the safety of an oracle adaptive controller with certified margin δmin whenever the prediction error satisfies ϵ ≤ δmin /(Lψ LM), with a sampled-data extension and a probabilistic guarantee via a covering argument in Corollary 1. Second, we derive a CBF-QP constraint perturbation bound in Proposition 3 with analytic Lipschitz constants, tying prediction accuracy directly to recursive feasibility. Third, we establish corrected two-sided Φ ↔ ψ bounds in Proposition 1 and design a smooth parameter selector with a proven Lipschitz con-stant in Lemma 1, replacing the switching discontinuity of the original hard-threshold selector. Fourth, we supply a principled leave-one-out motivation for TracIn-based data curation in Proposition 2 and show experimentally that DA-CBF reduces RMSE by 35.6% and achieves collision-free navigation in a challenging multi-obstacle environment. II. PRELIMINARIES AND PROBLEM FORMULATION 
+
+A. System Dynamics and CBF 
+
+Consider an affine control system: 
+
+˙x = f (x) + g(x)u, x ∈ X ⊂ Rn, u ∈ U ⊂ Rm (1) A set S = {x ∈ Rn : h(x) ≥ 0} is forward invariant under CBF control [2], [18] if there exists an extended class-K∞
+
+function α such that: 
+
+sup 
+
+> u∈U
+
+[Lf h(x) + Lg h(x)u + α(h(x))] ≥ 0, ∀x ∈ S (2) For relative-degree-2 systems, the CBF condition takes the form: 
+
+¨h + ( γ0 + γ1) ˙h + γ0γ1h ≥ 0 (3) where γ0, γ 1 > 0 parameterize the class-K function. The corresponding CBF-QP selects: 
+
+u∗(x, γ ) = arg min  
+
+> u∈U
+
+∥u − unom ∥2 s.t. (3) (4) Throughout, we evaluate on the DynamicUnicycle2D model with state (x, y, θ, v ) and control inputs consisting of acceleration and angular velocity. 
+
+B. Adaptive CBF Pipeline 
+
+The adaptive pipeline of [5] trains a PENN ˆΦθ (s, γ ) to predict the safety loss Φ for state-parameter pairs (s, γ ),where s encodes relative state (distance, velocity, approach angle). At each control step, the pipeline samples candidate γ
+
+values, predicts ( ˆΦ, ˆTd) with uncertainty estimates, filters by JRD (epistemic) and CVaR (aleatoric) thresholds, and selects the least conservative valid parameters. 
+
+C. Safety-Loss Surrogate 
+
+The safety loss function introduced in [5] is: 
+
+Φ( x, x obs , γ ) = λ1e−λ2ψ
+
+β1e−β2(cos ∆ θ+1) d2 + 1 (5) where d denotes obstacle distance, ∆θ is the relative head-ing angle, ψ is the CBF constraint value from (3), and 
+
+(λ1, λ 2, β 1, β 2) are design parameters. To ground our subsequent analysis, we first establish a formal connection between Φ and the barrier certificate. 
+
+Assumption 1 (Bounded Operating Domain) . The system operates in a compact domain Xop with obstacle distance 
+
+d ∈ [dmin , d max ] where dmin > 0, relative heading ∆θ ∈[0 , π ], and CBF parameters γ ∈ Γ := [ γmin , γ max ]2 with 
+
+γmin > 0.
+
+Assumption 2. The CBF constraint margin ψ(γ) := ¨h +(γ0 +γ1) ˙h+γ0γ1h is Lipschitz continuous in γ with constant 
+
+Lψ > 0 over Γ, i.e., |ψ(γ) − ψ(γ′)| ≤ Lψ ∥γ − γ′∥ for all 
+
+γ, γ ′ ∈ Γ.
+
+Remark 1. Assumption 2 is mild for systems with bounded 
+
+˙h and h on Xop . Since ψ is polynomial in γ with coefficients depending on ˙h and h, Lipschitz continuity on compact Γ
+
+follows with Lψ ≤ | ˙h| + | ˙h| + 2 γmax |h| + |h|.
+
+Proposition 1 (Two-Sided Bounds on Safety-Loss Surro-gate) . Under Assumption 1, define the denominator bounds: 
+
+Dmin := β1e−2β2 d2min + 1 (6) 
+
+Dmax := β1d2max + 1 (7) 
+
+Then for all (x, x obs , γ ) ∈ X op × Γ, the safety loss Φ and CBF margin ψ satisfy: 
+
+λ1
+
+Dmax 
+
+e−λ2ψ ≤ Φ ≤ λ1
+
+Dmin 
+
+e−λ2ψ (8) 
+
+Inverting (8) yields a usable error bound depending only on the predicted ˆΦ and domain constants: if | ˆΦ − Φ| ≤ ϵΦ, then 
+
+| ˆψ − ψ| ≤ 1
+
+λ2
+
+ln 
+
+
+
+1 + Dmax 
+
+λ1e−λ2 ˆψmax 
+
+ϵΦ
+
+
+
+(9) 
+
+where ˆψmax is an upper bound on ψ computable from ˆΦ via the left inequality in (8) .Proof. From (5), Φ = λ1e−λ2ψ /D where D := 
+
+β1e−β2(cos ∆ θ+1) d2 + 1 . On Xop , e−β2(cos ∆ θ+1) ∈ [e−2β2 , 1] 
+
+and d ∈ [dmin , d max ], so Dmin ≤ D ≤ Dmax : the minimum occurs at cos ∆ θ = 1 (head-on, e−2β2 smallest) and d =
+
+dmin , the maximum at cos ∆ θ = −1 (e0 = 1 ) and d = dmax .Since Φ = λ1e−λ2ψ /D , larger D decreases Φ and smaller 
+
+D increases Φ, giving (8). For (9): from ψ = − 1 
+
+> λ2
+
+ln(Φ D/λ 1) and ˆψ =
+
+− 1 
+
+> λ2
+
+ln( ˆΦD/λ 1), we get | ˆψ − ψ| = 1 
+
+> λ2
+
+| ln( ˆΦ/Φ) | = 
+
+> 1
+> λ2
+
+| ln(1 + ( ˆΦ − Φ) /Φ) | ≤ 1 
+
+> λ2
+
+ln(1 + ϵΦ/Φ) . Using Φ ≥
+
+(λ1/D max )e−λ2ψ and bounding ψ ≤ ˆψmax from the predic-tion gives (9). 
+
+D. Formal Problem Statement 
+
+Definition 1 (Safety-Weighted Risk) . Given a data distribu-tion P over state-parameter-loss triples (s, γ, Φ) , define the safety-weighted generalization risk of predictor ˆΦθ :
+
+Rsafe (θ) = E(s,γ, Φ) ∼P 
+
+h
+
+w(Φ) · ℓ( ˆΦθ (s, γ ), Φ) 
+
+i
+
+(10) 
+
+where w(Φ) = 1[Φ > Φthr ] is a safety weight emphasizing high-risk regions, and ℓ is the prediction loss. 
+
+Problem. Given a training dataset D = {(si, γ i, Φi)}Ni=1 ,identify a subset Dharmful ⊂ D such that retraining on D \ Dharmful minimizes Rsafe (θ), thereby improving safety-critical prediction accuracy and, through Proposition 1, tightening the bound on CBF constraint margin estimation error. III. SAFETY-CERTIFIED DATA CURATION 
+
+A. From Prediction Error to Safety Degradation 
+
+We turn to the central theoretical question: how do predic-tion errors in ˆΦ translate into degradation of the CBF safety margin? 
+
+Assumption 3 (Smooth Parameter Selection) . The parame-ter selection mechanism uses a fully smooth soft-max rule: 
+
+γ∗(s; ˆΦθ ) = 
+
+P 
+
+> γ∈Γcand
+
+γ · w(γ, s )
+
+P 
+
+> γ∈Γcand
+
+w(γ, s ) (11) 
+
+with smooth weights w(γ, s ) := exp  J(γ)/τ s −
+
+κ [ ˆΦθ (s, γ )] +
+
+, where J(γ) is the aggressiveness criterion, 
+
+τs > 0 is the temperature, κ > 0 is a safety penalty gain, and [x]+ := max(0 , x ) is smoothly approximated by softplus (x) = ln(1 + ex). Candidates with high predicted safety loss ˆΦ receive exponentially suppressed weight, while those with low ˆΦ are favored. 
+
+Lemma 1. Under Assumption 3, γ∗ is LM-Lipschitz in ˆΦ:
+
+∥γ∗( ˆΦ) − γ∗( ˆΦ′)∥ ≤ LM∥ ˆΦ − ˆΦ′∥∞ (12) 
+
+with LM = κ·diam (Γ) , where diam (Γ) = √2( γmax −γmin ).Proof. Each weight w(γ, s ) is κ-Lipschitz in ˆΦθ (s, γ ) since 
+
+∂w/∂ ˆΦ = −κσ ( ˆΦ) w where σ is the sigmoid, so |∂w/∂ ˆΦ| ≤ 
+
+κw . The soft-max γ∗ = P γw/ P w has gradient bounded by κ · diam (Γ) via standard soft-max Lipschitz analysis [19]. With the selector’s regularity established, we can state the main safety result. 
+
+Theorem 1 (Safety Margin Preservation Under Prediction Error) . Under Assumptions 1–3, let ˆΦθ be the learned predictor, Φ the true safety loss, and γ∗ 
+
+> ˆΦ
+
+= M( ˆΦθ ),
+
+γ∗ 
+
+> Φ
+
+= M(Φ) the parameters selected via (11) . This is a robustness theorem: given an oracle controller that is already safe, it characterizes how much prediction error the learned controller can tolerate while preserving safety. 
+
+(a) Pointwise margin bound. If ∥ ˆΦθ −Φ∥∞ ≤ ϵ on Xop ×Γ,then at every state x ∈ X op :
+
+|ψ(γ∗
+
+> ˆΦ
+
+) − ψ(γ∗
+
+> Φ
+
+)| ≤ Lψ · LM · ϵ (13) 
+
+This bound holds globally since γ∗ is Lipschitz everywhere (Lemma 1). 
+
+(b) Closed-loop forward invariance (margin preservation). 
+
+Suppose the oracle adaptive controller with true Φ maintains a certified safety margin δmin := inf x∈X op ∩S ψ(γ∗
+
+> Φ
+
+(x)) >
+
+0 on the compact set Xop ∩ S . (A certified lower bound on δmin can be obtained via an r-covering of Xop ∩ S :
+
+δmin ≥ min j ψ(γ∗
+
+> Φ
+
+(xj )) − Lψ LMLtrue  
+
+> Φ
+
+r, using Lipschitzness of ψ ◦ γ∗
+
+> Φ
+
+.) Assume further that Xop ∩ S is forward invariant under the oracle controller, or equivalently, that the theorem holds up to the first exit time from Xop . If ϵ ≤ δmin /(Lψ LM),then ψ(γ∗
+
+> ˆΦ
+
+(x)) ≥ 0 for all x ∈ X op ∩ S , and S is for-ward invariant under the learned controller within Xop . The learned controller inherits the oracle’s safety, with margin degradation bounded by Lψ LMϵ.
+
+(c) Sampled-data extension. For discrete-time imple-mentation with period ∆t, assume bounded dynamics: 
+
+sup x∈S | ˙ψ(x)| ≤ Vψ < ∞ (which holds on compact Xop 
+
+under bounded f, g, u ). Inter-sample safety is preserved if 
+
+∆t ≤ (δmin − Lψ LMϵ)/V ψ .Proof. (a) By Lemma 1, ∥γ∗ 
+
+> ˆΦ
+
+− γ∗
+
+> Φ
+
+∥ ≤ LMϵ at every x. By Assumption 2, |ψ(γ∗
+
+> ˆΦ
+
+) − ψ(γ∗
+
+> Φ
+
+)| ≤ Lψ LMϵ.
+
+(b) From (a), at every x ∈ X op : ψ(γ∗
+
+> ˆΦ
+
+(x)) ≥ ψ(γ∗
+
+> Φ
+
+(x)) −
+
+Lψ LMϵ ≥ δmin − Lψ LMϵ ≥ 0. Since ψ ≥ 0 is the CBF constraint (3), the CBF-QP (4) is feasible with a positive margin at every state. By [2, Thm. 2], the resulting control renders S forward invariant. Crucially, this holds for any 
+
+trajectory starting in S, not just a fixed one, because the margin bound is state-uniform. 
+
+(c) Between samples at tk and tk+1 = tk + ∆ t, ψ evolves continuously. A Taylor bound gives ψ(t) ≥ ψ(tk)−| ˙ψ|∆t ≥
+
+(δmin − Lψ LMϵ) − | ˙ψ|∆t ≥ 0 under the stated sampling condition. 
+
+Remark 2 (Safety Budget) . Theorem 1 is best understood as a robustness result: it quantifies the prediction error budget ϵ∗ = δmin /(Lψ LM) that the learned controller can tolerate without forfeiting the oracle’s safety margin. This budget is computable offline from the oracle margin and the analytic Lipschitz constants. The role of DA-CBF is to reduce 
+
+ϵ through data curation (Proposition 2), thereby making it more likely that ϵ ≤ ϵ∗.
+
+Assumption 4 (Prediction Error Regularity) . The true safety loss Φ is Ltrue  
+
+> Φ
+
+-Lipschitz in x on Xop (which holds since Φ is a smooth function of system state under bounded dynamics). The learned predictor ˆΦθ is Lnn  
+
+> Φ
+
+-Lipschitz in x (which holds for Lipschitz-bounded neural networks on compact domains). The prediction error e(x, γ ) := ˆΦθ (x, γ ) − Φ( x, γ ) is therefore Le-Lipschitz with Le ≤ Lnn  
+
+> Φ
+
++ Ltrue  
+
+> Φ
+
+. Additionally, the pointwise errors at any fixed (x, γ ) are sub-Gaussian with parameter σ2 over PENN training randomness (random initialization and mini-batch ordering). 
+
+Corollary 1 (Probabilistic Forward Invariance) . Under As-sumption 4, let {xj }Mj=1 be an r-covering of Xop with M ≤
+
+(diam (Xop )/r )n balls. Then: 
+
+Pθ
+
+
+
+sup 
+
+> x,γ
+
+|e(x, γ )| ≤ ϵ
+
+
+
+≥ 1 − 2M |Γcand | e−(ϵ−Ler)2/(2 σ2)
+
+(14) 
+
+provided ϵ > L er. Combined with Theorem 1(b): setting 
+
+ϵ = δmin /(Lψ LM) gives a probabilistic forward invariance guarantee with failure probability decaying exponentially in 
+
+δ2min .
+
+Corollary 2 (End-to-End Safety of Learned Adaptive CBF-QP) . Under Assumptions 1–4, suppose the oracle con-troller maintains margin δmin > 0, Xop ∩ S is forward invariant under the oracle, LICQ holds for the CBF-QP, and 
+
+sup x∈S | ˙ψ| ≤ Vψ . If ϵ ≤ δmin /(Lψ LM) and ∆t ≤ (δmin −
+
+Lψ LMϵ)/V ψ , then the sampled-data learned adaptive CBF-QP controller is: (i) well-defined (QP feasible at each sam-ple, Prop. 3), (ii) forward invariant in continuous time within 
+
+Xop (Thm. 1b,c), and (iii) satisfies these guarantees with probability ≥ 1 − 2M |Γcand |e−(ϵ−Ler)2/(2 σ2) over PENN training (Cor. 1). B. Influence-Based Curation: Motivation and Justification 
+
+We now provide a principled motivation for the TracIn-based curation strategy. The key insight is that TracIn scores locally approximate the effect of data removal on safety-critical prediction quality; this motivates the curation score, while the actual finite-removal improvements are validated empirically in Section IV. 
+
+Definition 2 (Empirical Safety-Weighted Risk) . The empir-ical safety-weighted risk on test set Dtest is: 
+
+ˆRsafe (θ; Dtest ) = 1
+
+|D unsafe |
+
+X
+
+> zt∈D unsafe
+
+ℓ( ˆΦθ (st, γ t), Φt) (15) 
+
+where Dunsafe = {zt ∈ D test : Φ t > Φ75% } and ℓ is the Gaussian NLL loss. 
+
+Assumption 5 (Loss Smoothness) . The loss function ℓ(z; w)
+
+is twice continuously differentiable in w with ∥∇ 2ℓ(z; w)∥ ≤ 
+
+B for all z ∈ D and w in the training trajectory, where 
+
+B > 0 is the Hessian bound. 
+
+Proposition 2 (TracIn as LOO Surrogate) . Under Assump-tion 5, TracIn’s safety-influence score satisfies: 
+
+ˆRsafe (θD ) − ˆRsafe (θD\{ zi}) = τsafety (zi) + Ei (16) 
+
+where |E i| ≤ B P 
+
+> k
+
+η2
+
+> k
+
+∥∇ ℓ(zi; wk)∥2/2. In particular, for small learning rates ( ηk ≪ 1), τsafety (zi) is a first-order-accurate approximation of the LOO risk change. Samples with τsafety (zi) > 0 increase safety-critical prediction error; their removal is beneficial to first order. Proof. At checkpoint k, removing zi’s gradient step changes the weights from wk+1 = wk − ηk∇ℓ(zi; wk) + . . . 
+
+to ˜wk+1 = wk + . . . , a perturbation of ∆wk =
+
+ηk∇ℓ(zi; wk). By Taylor expansion of ℓ(zt; ·) at wk:
+
+ℓ(zt; wk +∆ wk)−ℓ(zt; wk) = ηk⟨∇ ℓ(zi; wk), ∇ℓ(zt; wk)⟩+
+
+O(η2
+
+> k
+
+B∥∇ ℓ(zi; wk)∥2/2) . Summing over checkpoints and averaging over Dunsafe gives the result with the explicit Hessian-bounded residual. 
+
+Remark 3. The combined score score (zi) = 0 .7 ¯ τsafety (zi) + 0.3 ¯ τself (zi) is a tuned heuristic; we do not claim optimality. For subset removal ( ρ = 0 .10 , removing ∼100 samples), interaction effects beyond LOO are not captured by Propo-sition 2. That the first-order surrogate remains predictive under these conditions is confirmed empirically (Table I). 
+
+Corollary 3 (Certified Sufficient Condition Expansion) . De-fine the set of states where Theorem 1(b) certifies safety: 
+
+C(ϵ) := {x ∈ X op : ψ(γ∗
+
+> Φ
+
+(x)) ≥ Lψ LMϵ} (17) 
+
+If DA-CBF reduces the uniform prediction error from ϵ
+
+to ϵ′ < ϵ , then C(ϵ) ⊆ C (ϵ′): the certifiably safe region Fig. 2. Conceptual illustration of certified region expansion. (a) Under the uncurated baseline, large prediction error ϵ yields a small certified region        
+
+> C(ϵ); the trajectory exits and collides. (b) DA-CBF reduces ϵto ϵ′< ϵ ,expanding the certified region C(ϵ′)⊃ C (ϵ)and enabling collision-free navigation.
+
+expands. Note that C characterizes a sufficient condition; states outside this set may still be safe but cannot be certified by our analysis. 
+
+Proposition 3 (CBF-QP Recursive Feasibility) . Under the conditions of Theorem 1(a), define the CBF-QP con-straint function Ψ( x, γ, u ) := L2 
+
+> f
+
+h(x) + Lg Lf h(x)u +(γ0 + γ1)( Lf h(x) + Lg h(x)u) + γ0γ1h(x). Suppose the CBF-QP is feasible under γ∗ 
+
+> Φ
+
+with margin μ(x) := max u∈U Ψ( x, γ ∗
+
+> Φ
+
+, u ) > 0, and Ψ is LΨ-Lipschitz in γ
+
+uniformly over U:
+
+|Ψ( x, γ, u ) − Ψ( x, γ ′, u )| ≤ LΨ∥γ − γ′∥, ∀u ∈ U (18) 
+
+Then the CBF-QP is feasible under γ∗ 
+
+> ˆΦ
+
+whenever: 
+
+LΨ · LM · ϵ < inf 
+
+> x∈X op
+
+μ(x) (19) 
+
+Proof. By Lemma 1, ∥γ∗ 
+
+> ˆΦ
+
+− γ∗
+
+> Φ
+
+∥ ≤ LMϵ. For any 
+
+u ∈ U: |Ψ( x, γ ∗
+
+> ˆΦ
+
+, u ) − Ψ( x, γ ∗
+
+> Φ
+
+, u )| ≤ LΨLMϵ. Since 
+
+max u Ψ( x, γ ∗
+
+> Φ
+
+, u ) = μ(x), the maximizer u∗ satisfies 
+
+Ψ( x, γ ∗
+
+> ˆΦ
+
+, u ∗) ≥ μ(x) − LΨLMϵ > 0.
+
+Remark 4. For the relative-degree-2 system, Ψ is C1 and polynomial in γ on compact Γ (with the bilinear term 
+
+γ0γ1h). The Lipschitz constant follows from the gradient: 
+
+∇γ Ψ = ( ˙h + Lg h u + γ1h, ˙h + Lg h u + γ0h), giving LΨ ≤
+
+2( | ˙hmax | + ∥Lg h∥∞ ¯u + γmax |hmax |), which is computable analytically from state bounds on Xop . Well-definedness of the QP solution requires standard LICQ regularity [2]; under this condition, u∗(x, γ ) is locally Lipschitz in γ.C. Data Attribution Step 
+
+We insert a data attribution step between data generation and PENN training: 
+
+1) Training with Checkpoints: Train the baseline PENN and save checkpoints every K epochs for TracIn computa-tion. 
+
+2) Safety-Specific Influence Scoring: Compute TracIn scores focused on safety-critical test points: 
+
+τsafety (zi) = X
+
+> k
+
+ηk
+
+*
+
+∇ℓ(zi; wk), 1
+
+|D unsafe |
+
+X
+
+> zt∈D unsafe
+
+∇ℓ(zt; wk)
+
++
+
+(20) where Dunsafe = {zt : Φ t > Φ75% }.
+
+3) Self-Influence: τself (zi) = P 
+
+> k
+
+ηk∥∇ ℓ(zi; wk)∥2.
+
+4) Combined Curation: score (zi) = 0.7 ¯ τsafety (zi) + 0.3 ¯ τself (zi), remove the top ρ = 0 .10 fraction, retrain. 
+
+D. Preserved Safety Mechanism 
+
+The JRD and CVaR filters from [5] are retained without modification. By Theorem 1, the improved prediction accu-racy means these filters now operate on more reliable inputs, effectively tightening their safety bounds without requiring any architectural change. IV. EXPERIMENTS 
+
+Setup. We generate 1,500 samples via DynamicUnicy-cle2D with randomized initial conditions: d ∈ [0 .65 , 2.5] 
+
+m, v ∈ [0 .01 , 1.0] m/s, θ ∈ [0 .01 , π/ 2] , γ0, γ 1 ∈ [0 .5, 2.5] .Of these, 1,264 (84.3%) result in successful navigation and 236 (15.7%) in collision or deadlock. The PENN is a 3-member ensemble with a 5-layer MLP (40 , 80 , 120 , 40) ,ReLU activations, and 54K parameters, trained with Adam (lr = 10 −4, batch size 32, 200 epochs, 70/30 split). TracIn uses 10 checkpoints and 68 unsafe test points. 
+
+Prediction accuracy. Removing 10–15% of training data identified as harmful by our curation score yields a 35.5– 35.7% reduction in test RMSE (Table I). As Fig. 3 illustrates, every curated model converges faster and to a lower final error than the baseline trained on the full dataset.                      
+
+> TABLE I PENN PREDICTION ACCURACY (TEST RMSE). L OWER IS BETTER .Model Train Samples Test RMSE ∆RMSE Baseline PENN 1,050 4.3895 –DA-PENN (5%) 698 2.9399 −33.0% DA-PENN (10%) 661 2.8297 −35.5% DA-PENN (15%) 625 2.8210 −35.7% DA-PENN (20%) 588 2.9265 −33.3%
+
+Empirical validation of theoretical results. We compute analytic Lipschitz constants from the system structure: Lψ ≈
+
+3.8, LM = κ · diam (Γ) ≈ 1.41 (with κ = 0.5), and domain constants Dmin ≈ 1.08 , Dmax ≈ 26 .3. Apply-ing the closed-loop safety budget from Theorem 1(b), the baseline requires δmin ≥ 78 .3 whereas DA-CBF requires only δmin ≥ 47 .7, a 39% reduction in the margin needed for certification. The probabilistic bound (Corollary 1) gives 
+
+P[forward invariance ] ≥ 0.74 for the baseline versus ≥ 0.93 0 25 50 75 100 125 150 175 200         
+
+> Epoch
+> 0
+> 50
+> 100
+> 150
+> 200
+> 250
+> 300
+> Train Loss (NLL)
+> Baseline (all data)
+> 5% removed
+> 10% removed
+> 15% removed
+> 20% removed
+> 025 50 75 100 125 150 175 200
+> Epoch
+> 4
+> 6
+> 8
+> 10
+> 12
+> 14
+> Test RMSE
+> ↓ 36%
+> 4.39
+> 2.83
+> Baseline (all data)
+> 5% removed
+> 10% removed
+> 15% removed
+> 20% removed
+
+Fig. 3. Training loss (left) and test RMSE (right). DA-PENN (10% removed) achieves RMSE 2.83 vs. baseline 4.39 (36% reduction). 0 20 40 60 80 100         
+
+> Collision Rate (%)
+> Fixed Low
+> (γ=0.01)
+> Fixed Mid
+> (γ=0.15)
+> Fixed High
+> (γ=0.35)
+> Adaptive
+> (Baseline)
+> DA-CBF
+> (Ours)
+> 50%
+> 10%
+> 5%
+> 90%
+> 90%
+> 010 20 30
+> Goal Rate (%)
+> 10%
+> 20%
+> 25%
+> 10%
+> 10%
+> 0.0 0.2 0.4 0.6 0.8 1.0
+> Avg Safety Loss
+> 0.69
+> 0.44
+> 0.40
+> 0.94
+> 0.94
+
+Fig. 4. Safety metrics in single-obstacle scenarios. Both adaptive methods perform identically, confirming prediction accuracy is not the bottleneck in simple environments. 
+
+for DA-CBF at δmin = 10 . For the curation LOO residual (Proposition 2), we find |E i| ≤ 6 × 10 −8 · ∥∇ ℓ∥2, confirming that the first-order approximation is tight. 
+
+Closed-loop simulation. In single-obstacle scenarios (20 runs), both adaptive methods exhibit identical behavior (Fig. 4): the parameter selector simply chooses the most aggressive setting that passes the uncertainty filters. The distinction emerges in harder environments. In the standard obstacle layout from [5] (Fig. 5), Fixed Low ( γ=0 .01 ) col-lides twice while the remaining three methods navigate suc-cessfully. In the extended 16-obstacle environment (Fig. 6), however, DA-CBF is the only collision-free method: Fixed Low incurs 2 collisions, Fixed High ( γ=0 .35 ) incurs 3, and the uncurated adaptive baseline also incurs 3. This pattern aligns with the prediction of Theorem 1(b): the reduced 
+
+ϵ afforded by DA-CBF matters precisely when Lψ LMϵ
+
+approaches δmin , a condition that arises in tight multi-obstacle configurations but not in geometrically simple ones. 
+
+Ablation studies and sensitivity. RMSE drops sharply at 5% removal (from 4.39 to 2.94), reaches its minimum at 10–15% (2.82–2.83), and begins to rise at 20% (2.93), indicating a plateau that is reassuringly robust to the choice of ρ (Fig. 7). The combined curation score (RMSE 2.83) outperforms both influence-only (3.01) and self-influence-only (3.52) variants, confirming that the two signals carry complementary information (Table II). Inspection of the influence score distribution reveals that 80.8% of training samples carry positive (harmful) safety influence, with a pronounced right skew (Fig. 8), a signature of the distribu-tional mismatch introduced by uniform sampling. The safety certificate itself is stable under design variations: shifting the unsafe-set threshold from the top 10% to the top 50% alters 
+
+δreq 
+
+min by less than 15%, and varying κ over [0 .1, 1.0] changes it by less than 20%. TracIn computation adds approximately 5 minutes on a single GPU, a negligible overhead relative to data generation. 0 2 4 6 8 10 12                
+
+> X [m]
+> 0
+> 1
+> 2
+> 3
+> 4
+> Y [m]
+> Fixed Low (γ=0.01) Fixed High (γ=0.35) Adaptive (Baseline) DA-CBF (Ours)
+> 0510 15 20 25 30 35 40
+> Time [s]
+> 0.0
+> 0.2
+> γ
+> γ0(Adaptive (Baseline))
+> γ1(Adaptive (Baseline))
+> γ0(DA-CBF (Ours))
+> γ1(DA-CBF (Ours))
+
+Fig. 5. Trajectory comparison in the standard obstacle environment from [5]. Fixed Low ( γ=0 .01 ) collides twice; the other three methods reach the goal collision-free. 0.0 2.5 5.0 7.5 10.0 12.5 15.0 17.5             
+
+> X [m]
+> 0
+> 1
+> 2
+> 3
+> 4
+> Y [m]
+> Fixed Low (γ=0.01) Fixed High (γ=0.35) Adaptive (Baseline) DA-CBF (Ours)
+> 020 40 60 80 100
+> Time [s]
+> 0.0
+> 0.2
+> γ γ0(Adaptive (Baseline))
+> γ1(Adaptive (Baseline))
+> γ0(DA-CBF (Ours))
+> γ1(DA-CBF (Ours))
+
+Fig. 6. Extended 16-obstacle environment. DA-CBF is the only collision-free method ; all others incur 2–3 collisions. 
+
+V. CONCLUSIONS We have presented DA-CBF, a framework for safety-certified data curation in adaptive CBF learning. At its core is Theorem 1, which establishes closed-loop forward invariance under bounded prediction error by coupling a smooth parameter selector (Lemma 1) with Lipschitz margin analysis, producing a state-uniform guarantee rather than one conditioned on a particular trajectory. To our knowledge, this provides the first formal chain linking training data quality to prediction error, CBF margin degradation, and ultimately closed-loop forward invariance within adaptive CBF pipelines. The supporting results, including two-sided 
+
+Φ-to-ψ bounds (Proposition 1), a direct QP constraint per-turbation bound (Proposition 3), and a principled LOO mo-tivation for TracIn-based curation (Proposition 2), complete the theoretical picture. Experimentally, DA-CBF achieves a 35.6% reduction in prediction RMSE, a 39% expansion of the certified safe region, and collision-free navigation in a 16-obstacle environment. Several limitations warrant acknowledgment. The closed-loop guarantee requires the smooth selector introduced in Assumption 3; the original hard-threshold selector of [5] falls outside its scope. Proposition 2 provides a LOO-based justification, and extending the analysis to bulk removal would require stronger stability conditions on the training dynamics. The 0.7/0.3 weighting in the combined curation score is empirically tuned rather than derived. 0 5 10 15 20 
+
+Removal Fraction (%)  
+
+> 3.0
+> 3.5
+> 4.0
+> 4.5
+> Test RMSE
+> 4.39
+> 2.94 2.83
+> 2.82
+> 2.93
+> Baseline
+> ↓ 36%
+
+Fig. 7. Test RMSE vs. removal fraction. Optimal at 10–15%; beyond 20%, useful data loss degrades performance. TABLE II ABLATION : CURATION STRATEGY AT 10% REMOVAL .Strategy Test RMSE ∆vs. Baseline Baseline (no removal) 4.3895 –Influence only ( τsafety ) 3.0143 −31.3% Self-influence only ( τself ) 3.5215 −19.8% Combined (Eq. 7) 2.8297 −35.5% 
+
+ACKNOWLEDGMENT 
+
+Claude was used to assist with the language editing of this manuscript. REFERENCES [1] D. Amodei, C. Olah, J. Steinhardt, P. Christiano, J. Schulman, and D. Man´ e, “Concrete problems in ai safety,” arXiv preprint arXiv:1606.06565 , 2016. [2] A. D. Ames, X. Xu, J. W. Grizzle, and P. Tabuada, “Control barrier function based quadratic programs for safety critical systems,” IEEE Transactions on Automatic Control , vol. 62, no. 8, pp. 3861–3876, 2016. [3] W. Xiao and C. Belta, “High-order control barrier functions,” IEEE Transactions on Automatic Control , vol. 67, no. 7, pp. 3655–3662, 2021. [4] A. Alan, A. J. Taylor, C. R. He, G. Orosz, and A. D. Ames, “Safe controller synthesis with tunable input-to-state safe control barrier functions,” IEEE Control Systems Letters , vol. 6, pp. 908–913, 2021. [5] T. Kim, R. W. Beard, and D. Panagou, “How to adapt control barrier functionsƒ a learning-based approach with applications to a vtol quadplane,” in 2025 IEEE 64th Conference on Decision and Control (CDC) . IEEE, 2025, pp. 7050–7057. [6] B. Lakshminarayanan, A. Pritzel, and C. Blundell, “Simple and scalable predictive uncertainty estimation using deep ensembles,” 
+
+Advances in neural information processing systems , vol. 30, 2017. [7] A. R´ enyi, “On measures of entropy and information,” in Proceedings of the fourth Berkeley symposium on mathematical statistics and probability, volume 1: contributions to the theory of statistics , vol. 4. University of California Press, 1961, pp. 547–562. [8] P. W. Koh and P. Liang, “Understanding black-box predictions via influence functions,” in International conference on machine learning .PMLR, 2017, pp. 1885–1894. [9] G. Pruthi, F. Liu, S. Kale, and M. Sundararajan, “Estimating training data influence by tracing gradient descent,” Advances in Neural Information Processing Systems , vol. 33, pp. 19 920–19 930, 2020. [10] S. M. Park, K. Georgiev, A. Ilyas, G. Leclerc, and A. Madry, “Trak: Attributing model behavior at scale,” arXiv preprint arXiv:2303.14186 ,2023. [11] V. Feldman and C. Zhang, “What neural networks memorize and why: Discovering the long tail via influence estimation,” Advances in neural information processing systems , vol. 33, pp. 2881–2891, 2020. [12] A. Taylor, A. Singletary, Y. Yue, and A. Ames, “Learning for safety-critical control with control barrier functions,” in Learning for dynam-ics and control . PMLR, 2020, pp. 708–717. 0 100 200 300 400 
+
+TracIn Influence Score 
+
+> 0
+> 20
+> 40
+> 60
+> 80
+> Count
+> Top-10% removal
+> (τ=67.8) Helpful (n=182)
+> Harmful (n=168)
+
+Fig. 8. Distribution of TracIn safety-influence scores. Dashed line: top-10% removal threshold. [13] F. Castaneda, J. J. Choi, B. Zhang, C. J. Tomlin, and K. Sreenath, “Pointwise feasibility of gaussian process-based safety-critical control under model uncertainty,” in 2021 60th IEEE Conference on Decision and Control (CDC) . IEEE, 2021, pp. 6762–6769. [14] J. Choi, F. Castaneda, C. J. Tomlin, and K. Sreenath, “Reinforcement learning for safety-critical control under model uncertainty, using con-trol lyapunov functions and control barrier functions,” arXiv preprint arXiv:2004.07584 , 2020. [15] C. Dawson, S. Gao, and C. Fan, “Safe control with learned certificates: A survey of neural lyapunov, barrier, and contraction methods for robotics and control,” IEEE Transactions on Robotics , vol. 39, no. 3, pp. 1749–1767, 2023. [16] J. Zeng, B. Zhang, and K. Sreenath, “Safety-critical model predictive control with discrete-time control barrier function,” in 2021 American control conference (ACC) . IEEE, 2021, pp. 3882–3889. [17] A. Singletary, A. Swann, Y. Chen, and A. D. Ames, “Onboard safety guarantees for racing drones: High-speed geofencing with control barrier functions,” IEEE Robotics and Automation Letters , vol. 7, no. 2, pp. 2897–2904, 2022. [18] M. Nagumo, “ ¨ Uber die lage der integralkurven gew¨ ohnlicher differen-tialgleichungen,” Proceedings of the physico-mathematical society of Japan. 3rd Series , vol. 24, pp. 551–559, 1942. [19] A. D. Ames, S. Coogan, M. Egerstedt, G. Notomista, K. Sreenath, and P. Tabuada, “Control barrier functions: Theory and applications,” in 2019 18th European control conference (ECC) . Ieee, 2019, pp. 3420–3431.

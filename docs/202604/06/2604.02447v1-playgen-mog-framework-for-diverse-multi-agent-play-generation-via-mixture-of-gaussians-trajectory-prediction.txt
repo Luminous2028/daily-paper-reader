@@ -1,0 +1,416 @@
+Title: PlayGen-MoG: Framework for Diverse Multi-Agent Play Generation via Mixture-of-Gaussians Trajectory Prediction
+
+URL Source: https://arxiv.org/pdf/2604.02447v1
+
+Published Time: Mon, 06 Apr 2026 00:05:01 GMT
+
+Number of Pages: 12
+
+Markdown Content:
+# PlayGen-MoG: Framework for Diverse Multi-Agent Play Generation via Mixture-of-Gaussians Trajectory Prediction 
+
+# Kevin Song Amazon Web Services Seattle, Washington 
+
+> kcsong@amazon.com
+
+# Abstract 
+
+Multi-agent trajectory generation in team sports requires models that capture both the diversity of possible plays and realistic spatial coordination between players on plays. Standard generative approaches such as Conditional Vari-ational Autoencoders (CVAE) and diffusion models strug-gle with this task, exhibiting posterior collapse or conver-gence to the dataset mean. Moreover, most trajectory pre-diction methods operate in a forecasting regime that re-quires multiple frames of observed history, limiting their use for play design where only the initial formation is available. We present PlayGen-MoG, an extensible frame-work for formation-conditioned play generation that ad-dresses these challenges through three design choices: 1/ a Mixture-of-Gaussians (MoG) output head with shared mix-ture weights across all agents, where a single set of weights selects a play scenario that couples all players’ trajec-tories, 2/ relative spatial attention that encodes pairwise player positions and distances as learned attention biases, and 3/ non-autoregressive prediction of absolute displace-ments from the initial formation, eliminating cumulative er-ror drift and removing the dependence on observed trajec-tory history, enabling realistic play generation from a sin-gle static formation alone. On American football tracking data, PlayGen-MoG achieves 1.68 yard ADE and 3.98 yard FDE while maintaining full utilization of all 8 mixture com-ponents with entropy of 2.06 out of 2.08, and qualitatively confirming diverse generation without mode collapse. 
+
+# 1. Introduction 
+
+Predicting and generating multi-agent trajectories in team sports is a fundamental challenge at the intersection of com-puter vision, machine learning, and sports analytics. Unlike single-agent prediction, sports plays require modeling the coordinated motion of multiple players whose trajectories are inherently interdependent. For example, in American football, one receiver’s route influences other receivers and a quarterback’s movement is coupled with offensive line blocking schemes. The ability to generate diverse, realistic play trajectories from an initial formation has direct appli-cations in tactical analysis, game planning, and play design for coaching staffs. Crucially, there is a fundamental distinction between tra-jectory forecasting and trajectory generation . Forecasting methods, including Social LSTM [1], Trajectron++ [13], AgentFormer [20], LED [9], and MID [5], condition on an observed trajectory window of 0.8–2.0 seconds of past motion and extrapolate future positions. This dependence on observed history limits their applicability to play design, where no past trajectories exist: a coaching staff exploring tactical options from a given formation has access to the pre-play alignment and nothing more. PlayGen-MoG ad-dresses this more challenging setting by conditioning solely on the initial formation, a single static frame of player po-sitions and roles and generating complete play trajectories from that minimal input alone. Early approaches to multi-agent trajectory prediction re-lied on pooling mechanisms to capture social interactions, such as Social LSTM [1] and Social GAN [6], which model interactions through spatial pooling of hidden states. While effective for crowd simulation, these methods do not ex-plicitly model the structured roles and spatial relationships present in team sports. More recent transformer-based ap-proaches, including AgentFormer [20] and Scene Trans-former [12], leverage attention mechanisms for multi-agent interaction modeling but typically treat spatial relationships implicitly through learned attention patterns rather than en-coding geometric structure directly. In the sports domain, Yeh et al . [18] demonstrated di-verse trajectory generation for multi-agent sports games us-ing a variational recurrent neural network (VRNN) with graph-based interaction modeling, while Zhan et al . [21] in-troduced a hierarchical framework with programmatic weak supervision that uses intermediate macro-action variables to capture long-term coordination. These works established 1
+
+> arXiv:2604.02447v1 [cs.CV] 2 Apr 2026
+
+the viability of deep generative models for sports play syn-thesis. Diffusion-based trajectory prediction models, such as LED [9] and MID [5], have shown strong performance in stochastic trajectory forecasting. However, these ap-proaches require multiple denoising steps at inference time and control output diversity implicitly through stochastic sampling, making it difficult to enumerate or select among distinct play variations. In our experience with American football tracking data, these standard generative approaches exhibit characteristic failure modes when applied to multi-agent play generation. A conditional VAE [15] with β-annealing suffered from posterior collapse, producing near-identical trajectories re-gardless of the latent sample (APD = 0 .10 yards). A la-tent diffusion model (LED) [9] with formation conditioning avoided collapse but produced spatially incoherent trajec-tories lacking team-level coordination (see the supplemen-tary material). These failures motivated the explicit mixture structure of our approach, where diversity is structurally en-forced through distinct mixture components rather than re-lying on a continuous latent space. We present PlayGen-MoG, an extensible framework that addresses these limitations through three key design choices: (1) A Mixture-of-Gaussians (MoG) output head inspired by Mixture Density Networks [2] that predicts ex-plicit mixture distributions over player displacements, with shared mixture weights across all agents to couple their outcomes under a common play scenario. (2) Relative spatial attention that augments standard self-attention with learned biases derived from pairwise relative positions and Euclidean distances between players, following the relative position encoding framework of Shaw et al . [14] adapted to 2D player coordinates. (3) A non-autoregressive par-allel prediction architecture inspired by non-autoregressive translation [4] that predicts absolute displacements from the initial formation for all timesteps simultaneously, eliminat-ing cumulative drift and removing the need for observed trajectory history that prior methods require. On American football tracking data, PlayGen-MoG achieves an Average Displacement Error (ADE) of 1.68 yards and Final Displacement Error (FDE) of 3.98 yards while maintaining active use of all 8 mixture components, demonstrating diverse play generation without mode col-lapse in a single forward pass under 10ms. 
+
+# 2. Related Work 
+
+2.1. Multi-Agent Trajectory Prediction 
+
+Multi-agent trajectory prediction has been widely studied in pedestrian motion forecasting. Social LSTM [1] introduced social pooling to capture spatial interactions, while So-cial GAN [6] combined adversarial training with a variety loss for diverse predictions. Trajectron++ [13] employed a CVAE [15] with a spatio-temporal graph for heterogeneous agent interactions. More recently, AgentFormer [20] in-troduced agent-aware attention for joint forecasting, Scene Transformer [12] proposed a unified multi-agent architec-ture, and GRIN [8] explicitly modeled relational interac-tions. Our work introduces explicit spatial relation encod-ing through relative spatial attention rather than relying on learned attention patterns to discover spatial structure. 
+
+2.2. Sports Trajectory Generation 
+
+Sports settings introduce additional structure: players have defined roles, teams execute coordinated strategies, and mo-tion follows tactical conventions. Yeh et al . [18] demon-strated diverse generation for multi-agent sports games us-ing a CVAE with graph encoders, while Le et al . [7] ex-plored coordinated multi-agent imitation learning. Zhan 
+
+et al . [21] leveraged programmatic weak supervision for multi-agent trajectory generation. While we demonstrate PlayGen-MoG on American football data, the architecture is sport-agnostic and applicable to any domain with coor-dinated multi-agent trajectories, such as soccer, basketball, and hockey. 
+
+2.3. Mixture Models for Multimodal Prediction 
+
+Mixture Density Networks (MDNs) [2] combine neural net-works with Gaussian mixture models for multimodal out-put distributions. MultiPath++ [16] employed Gaussian mixture outputs for vehicle trajectory prediction, and Cui 
+
+et al . [3] used multimodal trajectory predictions for au-tonomous driving. We extend the standard per-agent MDN formulation with shared mixture weights across all players: a single set of component weights selects a play scenario, such as deep pass, screen, run, and all agents’ distributions are conditioned on that shared component. This couples agent outcomes without requiring cross-agent covariance modeling, which would scale quadratically with the num-ber of agents. 
+
+2.4. Spatial Relation Encoding in Transformers 
+
+Standard transformer self-attention [17] does not explic-itly capture geometric relationships between entities. Shaw 
+
+et al . [14] introduced relative position representations for sequence modeling, which has since been adopted widely in vision transformers [19] and trajectory prediction [13]. We apply this framework to 2D player coordinates: for each pair of players, we encode the relative position vec-tor (∆ x, ∆y) and Euclidean distance through a small MLP, producing per-head attention biases that allow different heads to specialize in different spatial relationships ( e.g ., nearby interactions vs. downfield awareness). 23. Method 
+
+3.1. Problem Formulation 
+
+Given an initial formation F ∈ RN ×2 specifying the (x, y )
+
+positions of N = 11 players and their role identifiers 
+
+r ∈ { 0, . . . , 7}N (QB, RB, FB, WR, TE, C, G, T), we aim to generate a trajectory X ∈ RT ×N ×2 representing the posi-tions of all players over T timesteps. The model should pro-duce diverse trajectories reflecting different play outcomes while maintaining physical plausibility and inter-player co-ordination. This formulation differs fundamentally from the trajec-tory forecasting setting adopted by most prior work [1, 5, 9, 13, 20], which conditions on an observed trajectory prefix 
+
+Xobs ∈ RTobs ×N ×2 spanning Tobs frames of past motion and predicts only the future segment. By contrast, our model receives only the formation F—a single frame with no tem-poral history—and must generate the entire trajectory from scratch. This is both a harder modeling problem, since the model cannot rely on observed velocity or heading cues, and a more practical one for play design, where the forma-tion is the only information available before the snap. 
+
+3.2. Architecture Overview 
+
+PlayGen-MoG is a non-autoregressive model that predicts the full trajectory in a single forward pass. The architecture, illustrated in Figure 1A, consists of four components: (1) a Formation Encoder that produces per-player condition-ing vectors, (2) a stack of relative spatial attention blocks for inter-player interaction modeling, where each frame’s agent features attend to the formation embeddings via cross-attention, conditioning every prediction step on the initial formation context, (3) a bidirectional temporal attention block for cross-frame coordination, and (4) a Mixture-of-Gaussians output head that predicts displacement distribu-tions. 
+
+3.2.1. Formation Encoder. 
+
+The formation encoder uses a Transformer encoder layer with full self-attention over all N players. Each player’s position is concatenated with a learned role embedding 
+
+er ∈ R32 , projected to the hidden dimension, and processed through multi-head self-attention, allowing every player to attend to every other player. This produces formation em-beddings HF ∈ RN ×D , which are computed once and shared across all timesteps via cross-attention. 
+
+3.2.2. Relative Spatial Attention. 
+
+Standard multi-head self-attention treats all player pairs identically regardless of spatial arrangement. Following Shaw et al . [14], we inject explicit geometric structure by computing pairwise relational features for each player pair 
+
+(i, j ):
+
+rij = MLP (∆ xij , ∆yij , ∥pi − pj ∥) (1) where ∆xij , ∆yij are relative position components and ∥ · ∥ 
+
+is Euclidean distance. The encoded relations are projected to per-head scalar biases: 
+
+Attn (Q, K, V ) = softmax 
+
+ QK ⊤
+
+√dk
+
++ Brel 
+
+
+
+V (2) where Brel ∈ RH×N ×N is the relational bias matrix. This allows different attention heads to specialize in different spatial relationships. 
+
+3.2.3. Temporal Processing. 
+
+A bidirectional temporal attention block processes step-level summary features across all T −1 prediction frames. Unlike autoregressive models that use causal masking, our non-autoregressive design allows each frame to attend to all other frames, enabling global trajectory coordination. Learnable temporal position embeddings provide frame-index information. 
+
+3.2.4. Cross-Attention to Formation. 
+
+After the relative spatial attention blocks, each frame’s player features attend to the formation embeddings HF via cross-attention. This conditions every prediction step on the initial formation context. 
+
+3.3. Mixture-of-Gaussians Output Head 
+
+At each timestep t, the model predicts the parameters of an 
+
+M -component Gaussian mixture for displacement from the formation: 
+
+Shared mixture weights. Agent features are pooled (masked mean) and projected to produce a single weight vector π ∈ ∆M −1 shared across all players: 
+
+π = softmax MLP 1
+
+N
+
+> N
+
+X
+
+> i=1
+
+hi
+
+!! 
+
+(3) This is the key coupling mechanism: selecting component 
+
+k corresponds to a “play scenario”, and all agents’ displace-ments are drawn from that scenario’s distributions. 
+
+Per-agent means. Each player i under component k has a displacement mean μik ∈ R2.
+
+Per-agent covariances. We parameterize each 2 × 2 co-variance via its Cholesky factor Lik :
+
+Lik =
+
+softplus (l11 ) + ϵ 0
+
+l21 softplus (l22 ) + ϵ
+
+
+
+(4) with Σik = Lik L⊤ 
+
+> ik
+
+and ϵ = 0 .01 as a minimum scale floor to prevent covariance collapse. 3Figure 1. PlayGen-MoG training and generation overview (A) Model architecture. Initial formation and role IDs are encoded by a full-attention formation encoder. The input projection maps formation (replicated across all T −1 frames) and sinusoidal step embeddings to hidden representations. A stack of L SRTE blocks applies relative spatial attention with pairwise distance biases, followed by cross-attention to the formation embeddings (Q = agents, K/V = formation). Bidirectional temporal attention pools agent features per frame, applies full self-attention across frames, and broadcasts the temporal context back to each agent. The MoG output head produces shared mixture weights π, per-agent displacement means μ, and Cholesky-parameterized covariances L, which are used to generate the final trajectory. (B) Play Generation . The model performs a single forward pass with formation replicated across T −1 frames. A global mixture component k is selected by sampling from the time-averaged weights ¯π. Positions are reconstructed as absolute displacements from formation: x(t) 
+
+> i
+
+= fi + μ(t) 
+
+> ik
+
++ L(t) 
+
+> ik
+
+ϵ, eliminating cumulative drift. 
+
+3.4. Training Objective 
+
+The primary loss is the negative log-likelihood of ground-truth displacements under the predicted mixture, with shared weights creating a joint distribution: 
+
+LNLL = − 1
+
+N T 
+
+X
+
+> t
+
+log 
+
+> M
+
+X
+
+> k=1
+
+π(t)
+
+> kN
+
+Y
+
+> i=1
+
+N
+
+
+
+d(t) 
+
+> i
+
+; μ(t) 
+
+> ik
+
+, Σ(t)
+
+> ik
+
+
+
+(5) where d(t) 
+
+> i
+
+= x(t) 
+
+> i
+
+− fi is the absolute displacement of player i at time t from their formation position fi. The per-agent normalization ensures loss scale is independent of team size. We compute this in log-space using the log-sumexp trick for numerical stability, with Mahalanobis dis-tances computed via triangular solve L−1(d − μ).We add three auxiliary losses to stabilize training and improve trajectory quality: 
+
+Best-component ADE loss. The NLL gradient can be dif-fuse across all M components. To provide a direct spa-tial signal, we select the highest-weight component k∗ =arg max k π(t) 
+
+> k
+
+at each frame and penalize its L2 displace-ment error against ground truth: 
+
+LADE = 1
+
+N T 
+
+X
+
+> t,i
+
+μ(t) 
+
+> ik ∗
+
+− d(t) 
+
+> i2
+
+(6) This encourages the dominant component to track the true trajectory accurately. 
+
+Entropy regularization. Without explicit encourage-ment, the model can collapse to using a single mixture com-ponent, wasting the remaining M −1 components. We max-imize the entropy of the mixture weights: 
+
+Lent = −H(π) = X
+
+> k
+
+πk log πk (7) Minimizing Lent pushes π toward a uniform distribution, keeping all components active and available for diverse play generation. 
+
+Temporal smoothness. Since each frame’s displacement is predicted independently, consecutive frames can exhibit 4unrealistic jumps. We penalize the L2 norm of frame-to-frame changes in the best-component means: 
+
+Lsmooth = 1(T −1) N
+
+X
+
+> t,i
+
+μ(t+1)  
+
+> ik ∗
+
+− μ(t)
+
+> ik ∗
+> 2
+
+(8) This encourages physically plausible, continuous motion without constraining the model to any specific dynamics. 
+
+Total loss. The final objective combines all terms: 
+
+L = LNLL + λ1LADE + λ2Lent + λ3Lsmooth  (9) with λ1 = 0 .1, λ2 = 0 .1, λ3 = 0 .1.
+
+3.5. Non-Autoregressive Prediction 
+
+A critical design choice is predicting absolute displace-ment from formation rather than frame-to-frame deltas. Each frame’s target is d(t) 
+
+> i
+
+= x(t) 
+
+> i
+
+− fi, the offset of player 
+
+i from their formation position fi. This eliminates cumu-lative drift: per-frame errors do not compound since each prediction is independent of previous frames’ outputs. Concretely, the model receives the same formation po-sitions as spatial input at every timestep; no ground-truth trajectory is fed during training or generation. Two mecha-nisms allow the model to produce distinct predictions across frames: (1) sinusoidal step embeddings SinEmb (t) added to each frame’s hidden representation, which provide ab-solute frame-index information, and (2) bidirectional tem-poral attention , which allows frames to attend to one an-other and coordinate their predictions into a coherent trajec-tory rather than independent snapshots. Together, the model learns a mapping from formation and frame index to dis-placement: “given this formation and the fact that this is step t, where should each player be relative to their starting position?” This design ensures exact distribution matching between training and generation, as the spatial input is identical in both settings, avoiding the train/test mismatch inherent in teacher-forced autoregressive models. 
+
+Generation. At inference time, the model performs a sin-gle forward pass over all T −1 frames, producing per-frame MoG parameters (π(t), μ(t), L(t)). A single mixture com-ponent k is selected for the entire trajectory by sampling from the time-averaged weights ¯π = 1
+
+> T
+
+P 
+
+> t
+
+π(t), ensuring all frames and players share a coherent play scenario. Posi-tions are then reconstructed as: 
+
+x(t) 
+
+> i
+
+= fi + μ(t) 
+
+> ik
+
++ L(t) 
+
+> ik
+
+ϵ (10) where ϵ ∼ N (0, I) is temporally correlated noise that pro-vides controlled diversity without frame-to-frame jitter. 
+
+# 4. Experiments 
+
+4.1. Dataset and Setup 
+
+We evaluate PlayGen-MoG on American football player tracking data from the 2021–2022 seasons [10, 11]. We fil-ter the dataset to passing plays only, yielding 9,934 plays with 11 offensive players each, recorded at 10 fps. All play coordinates are centered on the Center player’s position at the snap frame and oriented so that the offense faces right, providing a formation-relative coordinate system that is in-variant to field position and play direction. Coordinates are then normalized to [−1, 1] by dividing x-coordinates by the half-field length (60 yards) and y-coordinates by the half-field width (26.65 yards). We use 50 frames per play (5 seconds) with the first frame as the formation. Data is split 80/20 for training/validation with on-the-fly augmentation leveraging x-axis flipping, position-aware jitter, formation spread perturbation. 
+
+Model configuration. Hidden dimension D = 128 , 4 rel-ative spatial attention layers, 4 attention heads, M = 8 mix-ture components, relational encoding dimension 16, posi-tion embedding dimension 32. Total parameters: 1.3M. 
+
+Training. AdamW optimizer with learning rate 1e−4,weight decay 0.01 , cosine schedule with 500-step warmup. Gradient clipping at 1.0. Loss weights: λADE = 1.0,
+
+λentropy = 0 .1, λsmooth = 0 .5. Trained for up to 100 epochs with early stopping based on validation ADE, restoring the best model weights. 
+
+4.2. Metrics 
+
+We report standard trajectory prediction metrics: • Average Displacement Error (ADE) : Mean L2 distance between predicted and ground-truth positions across all frames and players, in yards. • Final Displacement Error (FDE) : L2 distance at the last valid frame, in yards. • Mixture Entropy : H(π) = − P 
+
+> k
+
+πk log πk, measuring component utilization (maximum ln 8 ≈ 2.08 for uniform usage of all 8 components). • Average Pairwise Distance (APD) : For each formation we draw K=10 trajectories at temperature 0.8 and com-pute the mean pairwise ADE across all  K
+
+> 2
+
+ pairs, aver-aged over players and formations. APD directly measures generative diversity in yards. 
+
+4.3. Results 
+
+Figure 2 shows generated plays compared to ground truth across three distinct formation types at temperature 1.0. Players are colored by position group: QB (red), RB/FB (teal), WR (blue), TE (orange), OL (gray). Circles mark starting positions and diamonds mark endpoints; trajectory 5Table 1. Ablation results on American football tracking data (9,934 plays). ADE/FDE in yards via generation at temperature 0.8. Entropy measures mixture utilization (max ln 8 ≈ 2.08 ).                      
+
+> Variant ADE FDE Ent.
+> AR, frame ∆40.83 43.79 1.70 AR, sched. samp. 41.53 44.61 1.70 Non-AR, frame ∆47.51 55.00 1.70 Non-AR, abs. disp. 1.68 3.98 2.06 Non-AR, abs. disp. + λADE 1.67 4.01 2.03
+
+width tapers from thick (start) to thin (end) to indicate di-rection of movement. The model produces trajectories with realistic scale and directionality across all formation types. In the tight for-mation (top row), receivers run short-to-intermediate routes while linemen remain near the line of scrimmage. The spread formation (middle row) produces wider route dis-tributions with receivers splitting to both sides. The 12-personnel formation (bottom row) shows tight ends releas-ing into routes alongside receivers. Critically, the three generated samples from each formation show meaningfully different play concepts, not merely noisy variations of the same play, demonstrating that the shared mixture weights successfully capture distinct play scenarios. Table 1 summarizes results across model variants. The most impactful design decision is predicting absolute displacement from formation rather than frame-to-frame deltas. Autoregressive models accumulate per-step errors over 49 frames, producing trajectories spanning the entire field ( ± 60 yards). Absolute displacement predicts each frame independently, reducing ADE from > 40 yards to < 2yards. In addition, entropy regularization successfully pre-vents mode collapse, keeping all 8 components active with entropy of 2.06 out of maximum 2.08 and enabling diverse play generation from the same formation. 
+
+Effect of mixture size. Table 2 ablates the number of mixture components M . ADE and FDE remain stable across all values of M (1.59–1.66 yards), indicating that the non-autoregressive absolute-displacement architecture pro-duces accurate mean trajectories regardless of mixture size. The key benefit of larger M is not lower displacement er-ror but greater generative diversity , measured directly by Average Pairwise Distance (APD): for each formation we draw K=10 trajectories and report the mean pairwise ADE across all  K
+
+> 2
+
+ pairs. APD increases monotonically with M ,confirming that additional mixture components yield gen-uinely different play concepts rather than redundant modes. With M =1 diversity comes solely from sampling noise, whereas M =8 can express up to 8 distinct play concepts per formation. Entropy regularization keeps all components                                   
+
+> Table 2. Effect of varying the number of mixture components M.All variants use the non-AR absolute-displacement architecture with λADE =1 .0. Max entropy is ln M. APD (Average Pairwise Distance) measures generative diversity across K=10 samples per formation.
+> MADE FDE Ent. / ln MAPD
+> 11.60 3.82 —0.83 21.59 3.78 0.68 / 0.69 0.86 41.65 3.84 1.37 / 1.39 1.03 81.66 3.91 2.06 / 2.08 1.13 16 1.66 3.96 2.74 / 2.77 1.31
+
+active in every setting (entropy ≈ ln M ), confirming that no components collapse. The largest gains come from adding the first few components: M =8 provides 35% more di-versity than M =1 (APD 1.13 vs. 0.83), while doubling to 
+
+M =16 adds only a further 0.18 yards. Qualitative inspec-tion reveals that the diversity gap is position-dependent. Be-cause component selection is shared across all players (Sec-tion 3), M =1 forces every position into a single mean with only per-player covariance for variation. QB, RB, and TE trajectories still appear diverse under M =1 because their learned covariance is wide, reflecting the inherent variabil-ity of these roles. WR routes, however, collapse to a sin-gle “average route”. Distinct route types require separate component means to express and cannot be recovered by covariance noise alone. With M =8 , the shared component selection captures play-level concepts. For example, one component pairs a go route for WR1 with a QB dropback, another pairs a slant with a rollout, restoring distinct route diversity for receivers. 
+
+4.4. Practical Design Insights 
+
+Table 1 reveals that architectural choices in multi-agent tra-jectory generation interact in non-obvious ways. We high-light three practical insights for practitioners: 
+
+Continuous latent spaces struggle with multi-agent di-versity. We compared PlayGen-MoG against a condi-tional VAE (CVAE) [15] and Leapfrog Diffusion (LED) [9] trained on the same data (full results in the supplementary material). The CVAE suffers from posterior collapse (APD 
+
+= 0 .10 yards despite anti-collapse strategies), while LED produces spatially incoherent trajectories. Both rely on con-tinuous latent spaces to implicitly capture diversity, which proves insufficient when the output distribution has discrete modes ( e.g ., distinct play concepts). The MoG formulation addresses this directly: each mixture component explicitly represents a distinct play concept, and the shared π weights provide a natural mechanism for enumerating and sampling among them. 6Figure 2. Formation-conditioned play generation at temperature 1.0 across three personnel groupings. Each row shows a different formation type: 3WR/1TE/1RB tight (top), 3WR/1TE/1RB spread (middle), and 2WR/2TE/1RB 12-personnel (bottom). The leftmost column shows ground truth; columns 2–4 show three independent samples from PlayGen-MoG. Players are colored by position group (see legend). All panels in each row share the same axis scale. The model generates diverse play outcomes that match the scale and structure of real American football plays. 
+
+Prediction target matters. Switching from frame-to-frame deltas to absolute displacement from formation yields a 20 × improvement in ADE (40+ yards to <2 yards). Frame-to-frame deltas of ∼0.3 yards per step appear easy to predict, but even small per-step errors compound over 49 frames into field-spanning drift. Absolute displacement eliminates this entirely, as each frame’s prediction is inde-pendent. 
+
+Shared component selection ensures coherence. When generating from the MoG, selecting a single mixture com-ponent for the entire trajectory is critical for temporal coher-ence. Per-frame sampling causes adjacent frames to draw from different play scenarios, producing erratic trajectories despite each individual frame being plausible. 75. Conclusion 
+
+We presented PlayGen-MoG, an extensible framework for diverse multi-agent play generation. We summarize the key contributions: First, we introduce shared MoG mixture weights as a lightweight coupling mechanism for multi-agent genera-tion. Rather than modeling full cross-agent covariance, which scales quadratically with team size, or treating agents independently, a single set of mixture weights selects a “play scenario” shared by all players. This produces co-ordinated multi-agent behavior while remaining computa-tionally efficient. Second, we provide a quantitative failure mode analysis of standard generative baselines (CVAE and LED) on the multi-agent play generation task (the supplementary mate-rial), documenting posterior collapse and spatial incoher-ence, and show how the explicit mixture structure of MoG addresses these failures. Third, we demonstrate that absolute displacement from formation as the prediction target yields a 20 × improve-ment in generation quality over frame-to-frame deltas (ADE from >40 yards to <2 yards). This finding has broad appli-cability to any multi-agent trajectory generation task where cumulative error is a concern. The framework achieves an ADE of 1.68 yards and FDE of 3.98 yards on American football tracking data while maintaining full utilization of all 8 mixture com-ponents, confirming diverse generation without mode col-lapse. Temperature-controlled sampling allows users to tune the tradeoff between fidelity and diversity for their spe-cific use case. 
+
+Applications. The formation-conditioned generation paradigm is particularly well-suited to American football, where every play begins from a designed formation and follows a pre-called play concept. The primary application is play design, where coaching staffs and analysts can explore tactical variations from a given personnel package without requiring extensive film study, rapidly prototyping route combinations and evaluating spacing concepts. Additionally, pre-snap prediction offers an intriguing direction, where the model’s mixture weights could inform real-time analytics by suggesting likely play concepts from the formation. We note that while the architecture is sport-agnostic, extending to continuous-flow sports such as soccer or basketball would require extracting set-play situations to match the formation-conditioned paradigm, since open play lacks the discrete starting configurations that American football provides at every snap. 
+
+Limitations and future work. PlayGen-MoG currently generates only offensive trajectories and does not condition on defensive alignment or play-call labels. A natural exten-sion is natural language conditioning by injecting per-player route labels as embeddings alongside the formation context, enabling targeted generation of specific play concepts rather than unconditional sampling. Modeling defensive trajecto-ries conditioned on both offensive formation and play call would further enable counterfactual analysis: given an of-fensive play concept, how should a defense in Cover 3 ver-sus Cover 1 respond? We hope the PlayGen-MoG framework will encourage further exploration of MoG-based joint trajectory prediction in sports analytics and beyond. 
+
+Acknowledgments. This work uses player tracking data from the NFL Big Data Bowl [10, 11], made publicly avail-able through the NFL–AWS partnership on Kaggle. We thank the NFL and Amazon Web Services for collecting and releasing this data, which has enabled a growing body of re-search in sports analytics. 
+
+# References               
+
+> [1] Alexandre Alahi, Kratarth Goel, Vignesh Ramanathan, Alexandre Robicquet, Li Fei-Fei, and Silvio Savarese. So-cial lstm: Human trajectory prediction in crowded spaces. In
+> Proceedings of the IEEE conference on computer vision and pattern recognition , pages 961–971, 2016. [2] Christopher M Bishop. Mixture density networks. 1994. [3] Henggang Cui, Vladan Radosavljevic, Fang-Chieh Chou, Tsung-Han Lin, Thi Nguyen, Tzu-Kuo Huang, Jeff Schnei-der, and Nemanja Djuric. Multimodal trajectory predictions for autonomous driving using deep convolutional networks. In 2019 international conference on robotics and automation (icra) , pages 2090–2096. IEEE, 2019. [4] Jiatao Gu, James Bradbury, Caiming Xiong, Victor OK Li, and Richard Socher. Non-autoregressive neural machine translation. arXiv preprint arXiv:1711.02281 , 2017. [5] Tianpei Gu, Guangyi Chen, Junlong Li, Chunze Lin, Yong-ming Rao, Jie Zhou, and Jiwen Lu. Stochastic trajectory pre-diction via motion indeterminacy diffusion. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 17113–17122, 2022. [6] Agrim Gupta, Justin Johnson, Li Fei-Fei, Silvio Savarese, and Alexandre Alahi. Social gan: Socially acceptable tra-jectories with generative adversarial networks. In Proceed-ings of the IEEE conference on computer vision and pattern recognition , pages 2255–2264, 2018. [7] Hoang M Le, Yisong Yue, Peter Carr, and Patrick Lucey. Coordinated multi-agent imitation learning. In International Conference on Machine Learning , pages 1995–2003. PMLR, 2017. [8] Longyuan Li, Jian Yao, Li Wenliang, Tong He, Tianjun Xiao, Junchi Yan, David Wipf, and Zheng Zhang. Grin: Genera-tive relation and intention network for multi-agent trajectory prediction. Advances in Neural Information Processing Sys-tems , 34:27107–27118, 2021.
+
+8[9] Weibo Mao, Chenxin Xu, Qi Zhu, Siheng Chen, and Yanfeng Wang. Leapfrog diffusion model for stochastic trajectory prediction. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 5517–5526, 2023. [10] NFL Football Operations. NFL big data bowl 2023 dataset. 
+
+https://www.kaggle.com/competitions/nfl-big-data-bowl-2023/ , 2023. 2021 NFL season player tracking data. [11] NFL Football Operations. NFL big data bowl 2025 dataset. 
+
+https://www.kaggle.com/competitions/nfl-big-data-bowl-2025/ , 2025. 2022 NFL season player tracking data. [12] Jiquan Ngiam, Benjamin Caine, Vijay Vasudevan, Zheng-dong Zhang, Hao-Tien Lewis Chiang, Jeffrey Ling, Rebecca Roelofs, Alex Bewley, Chenxi Liu, Ashish Venugopal, et al. Scene transformer: A unified architecture for predicting mul-tiple agent trajectories. arXiv preprint arXiv:2106.08417 ,2021. [13] Tim Salzmann, Boris Ivanovic, Punarjay Chakravarty, and Marco Pavone. Trajectron++: Dynamically-feasible trajec-tory forecasting with heterogeneous data. In European con-ference on computer vision , pages 683–700. Springer, 2020. [14] Peter Shaw, Jakob Uszkoreit, and Ashish Vaswani. Self-attention with relative position representations. In Proceed-ings of the 2018 Conference of the North American Chap-ter of the Association for Computational Linguistics: Hu-man Language Technologies, Volume 2 (Short Papers) , pages 464–468, 2018. [15] Kihyuk Sohn, Honglak Lee, and Xinchen Yan. Learning structured output representation using deep conditional gen-erative models. Advances in neural information processing systems , 28, 2015. [16] Balakrishnan Varadarajan, Ahmed Hefny, Avikalp Srivas-tava, Khaled S Refaat, Nigamaa Nayakanti, Andre Cornman, Kan Chen, Bertrand Douillard, Chi Pang Lam, Dragomir Anguelov, et al. Multipath++: Efficient information fu-sion and trajectory aggregation for behavior prediction. In 
+
+2022 international conference on robotics and automation (ICRA) , pages 7814–7821. IEEE, 2022. [17] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszko-reit, Llion Jones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. Attention is all you need. Advances in neural information processing systems , 30, 2017. [18] Raymond A Yeh, Alexander G Schwing, Jonathan Huang, and Kevin Murphy. Diverse generation for multi-agent sports games. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , pages 4610– 4619, 2019. [19] Cunjun Yu, Xiao Ma, Jiawei Ren, Haiyu Zhao, and Shuai Yi. Spatio-temporal graph transformer networks for pedestrian trajectory prediction. In European conference on computer vision , pages 507–523. Springer, 2020. [20] Ye Yuan, Xinshuo Weng, Yanglan Ou, and Kris M Kitani. Agentformer: Agent-aware transformers for socio-temporal multi-agent forecasting. In Proceedings of the IEEE/CVF international conference on computer vision , pages 9813– 9823, 2021. [21] Eric Zhan, Stephan Zheng, Yisong Yue, Long Sha, and Patrick Lucey. Generating multi-agent trajectories us-ing programmatic weak supervision. arXiv preprint arXiv:1803.07612 , 2018. 
+
+9PlayGen-MoG: Framework for Diverse Multi-Agent Play Generation via Mixture-of-Gaussians Trajectory Prediction 
+
+# Supplementary Material 
+
+# Comparison with Generative Baselines 
+
+We compare PlayGen-MoG against two standard generative approaches trained on the same American football tracking data: a conditional VAE (CVAE) with an MLP decoder, and a Leapfrog Diffusion Model (LED) with formation condi-tioning. For the CVAE, we applied β-warmup, target KL annealing, and a weak (MLP-only) decoder to mitigate pos-terior collapse. For LED, we followed the two-stage train-ing procedure (denoiser then initializer) with K=6 trajec-tory proposals and 5 denoising steps.                    
+
+> Table 1. Comparison with generative baselines on American foot-ball tracking data (9,934 plays). ADE/FDE in yards. APD mea-sures diversity across K=10 samples per formation. †LED reports best-of-6 proposals (standard LED evaluation); single-proposal ADE is substantially higher.
+> Method ADE ↓FDE ↓APD ↑Params
+> CVAE (MLP decoder) 2.88 6.56 0.10 11M LED †1.34 3.14 —3.4M PlayGen-MoG (Ours) 1.68 3.98 1.13 1.3M
+
+The CVAE achieves moderate ADE but suffers from se-vere posterior collapse: the learned KL divergence con-verges to near-zero ( 4.3 × 10 −6), and diverse latent samples decode to near-identical trajectories (APD = 0 .10 yards). Despite anti-collapse strategies, the decoder learns to ignore the latent code entirely. LED achieves the lowest best-of-K ADE by selecting the closest of 6 proposals to the ground truth, but its individ-ual proposals exhibit high variance with trajectories span-ning unrealistic distances. As shown in Figure 1, LED sam-ples lack the spatial coherence of real plays, with player tra-jectories crossing the entire field in an uncoordinated fash-ion. LED also does not provide a mechanism for enumer-ating distinct play concepts: diversity is an artifact of diffu-sion noise rather than structured variation. PlayGen-MoG strikes a middle ground between these two failure modes. Its ADE of 1.68 yards is competitive with LED’s best-of-K selection, indicating that generated routes are individually realistic and spatially coherent. At the same time, the mixture structure produces meaningful diversity (APD = 1 .13 yards): each of the 8 components learns a distinct play concept—short passes, deep routes, screens, etc.—rather than collapsing to a single output or producing random noise. This combination of low error 
+
+and structured diversity is what makes MoG practical for play design: a coach can enumerate all 8 concepts from a formation and get realistic, coordinated routes for each one, rather than sifting through identical outputs (CVAE) or discarding incoherent ones (LED). PlayGen-MoG also achieves this with the smallest model (1.3M parameters), making it efficient to deploy in interactive tools. 
+
+# Generation Quality Across Time Horizons 
+
+Table 2 evaluates PlayGen-MoG at truncated prediction horizons to characterize how generation quality evolves over time. All metrics are computed on the validation set at temperature 0.8.                             
+
+> Table 2. Generation quality at different prediction horizons. T
+> is the number of predicted frames at 10 fps. ADE/FDE in yards. APD measures diversity across K=10 samples.
+> TDuration ADE ↓FDE ↓APD ↑
+> 10 1.0 s 0.22 0.51 0.08 20 2.0 s 0.63 1.50 0.31 30 3.0 s 0.96 2.28 0.66 40 4.0 s 1.13 2.66 1.17 49 4.9 s 1.19 2.80 1.69
+
+ADE degrades gracefully from 0.22 yards at 1 s to 1.19 yards at 4.9 s, confirming that the non-autoregressive absolute-displacement architecture avoids cumulative drift even at longer horizons. FDE follows a similar trend. No-tably, generative diversity (APD) increases with the pre-diction horizon: at T =10 all play concepts share similar early motion (formation release), while by T =49 the mix-ture components have diverged into distinct route patterns. This matches the intuition that play concepts become distin-guishable only after players have had time to separate from the formation. Figure 2 visualizes a single generated play at each hori-zon. At T =10 (1 s), players have barely left the formation; by T =30 (3 s), distinct route shapes are emerging; and at 10 Figure 1. Qualitative comparison of generative baselines. Each row shows three independent samples from the same formation. Top (CVAE): Posterior collapse—all samples are nearly identical despite different latent draws. Middle (LED): Diffusion produces high-variance, spatially incoherent trajectories spanning the full field. Bottom (PlayGen-MoG): Each sample represents a distinct, realistic play concept with coordinated player motion. 
+
+T =49 (4.9 s), the full play concept is visible with receivers completing their routes downfield. 11 Figure 2. A single generated play shown at increasing prediction horizons. Circles mark starting positions; diamonds mark endpoints at each horizon. Trajectory width tapers to indicate direction of movement. Routes become progressively distinguishable as the horizon extends. 
+
+12
