@@ -6,56 +6,70 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-06
-- 运行时间：2026-04-06 20:10:24 UTC
+- 最新运行日期：2026-04-07
+- 运行时间：2026-04-07 20:20:09 UTC
 - 运行状态：成功
-- 本次总论文数：11
-- 精读区：0
+- 本次总论文数：16
+- 精读区：5
 - 速读区：11
 
 ### 今日简报（AI）
-今日速览 11 篇前沿论文，重点解析 VLA 模型在机器人操控与自动驾驶领域的最新突破。
-ProgressVLA 通过进度引导优化扩散策略，而 ExploreVLA 则利用稠密世界建模显著提升了自动驾驶的探索效率。
-建议深入了解视觉语言模型如何结合时空预测，解决复杂场景下的多智能体协作与长程任务规划难题。
-- 详情：[/202604/06/README](/202604/06/README)
+今日精选 16 篇前沿论文，深度聚焦扩散模型在端到端驾驶与多目标跟踪中的突破性应用。
+重点关注 HAD 框架如何通过分层扩散结合强化学习提升驾驶性能，以及利用贝叶斯专家选择优化主动跟踪策略。
+建议优先研读扩散模型与决策算法融合的案例，探索其在复杂机器人任务中的生成与控制潜力。
+- 详情：[/202604/07/README](/202604/07/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [HAD: Combining Hierarchical Diffusion with Metric-Decoupled RL for End-to-End Driving](/202604/07/2604.03581v1-had-combining-hierarchical-diffusion-with-metric-decoupled-rl-for-end-to-end-driving)  
+   标签：评分：9.0/10、query:diffusion-conf-uncertainty
+   evidence：用于端到端驾驶和轨迹解码的分层扩散模型
+2. [Diffusion Policy with Bayesian Expert Selection for Active Multi-Target Tracking](/202604/07/2604.03404v1-diffusion-policy-with-bayesian-expert-selection-for-active-multi-target-tracking)  
+   标签：评分：8.0/10、query:diffusion-conf-uncertainty
+   evidence：机器人动作序列扩散策略中的不确定性量化
+3. [InsTraj: Instructing Diffusion Models with Travel Intentions to Generate Real-world Trajectories](/202604/07/2604.04106v1-instraj-instructing-diffusion-models-with-travel-intentions-to-generate-real-world-trajectories)  
+   标签：评分：8.0/10、query:diffusion-conf-uncertainty
+   evidence：利用扩散模型从自然语言生成真实的GPS轨迹
+4. [Primitive-based Truncated Diffusion for Efficient Trajectory Generation of Differential Drive Mobile Manipulators](/202604/07/2604.04166v1-primitive-based-truncated-diffusion-for-efficient-trajectory-generation-of-differential-drive-mobile-manipulators)  
+   标签：评分：8.0/10、query:diffusion-conf-uncertainty
+   evidence：用于移动机械臂高效轨迹生成的截断扩散模型
+5. [SAIL: Scene-aware Adaptive Iterative Learning for Long-Tail Trajectory Prediction in Autonomous Vehicles](/202604/07/2604.04573v1-sail-scene-aware-adaptive-iterative-learning-for-long-tail-trajectory-prediction-in-autonomous-vehicles)  
+   标签：评分：8.0/10、query:diffusion-conf-uncertainty
+   evidence：自动驾驶车辆在长尾场景下的轨迹预测
 
 ### 速读区论文标签
-1. [ProgressVLA: Progress-Guided Diffusion Policy for Vision-Language Robotic Manipulation](/202604/06/2603.27670v1-progressvla-progress-guided-diffusion-policy-for-vision-language-robotic-manipulation)  
+1. [Collisionless Multi-Agent Path Planning in the Hamilton-Jacobi Formulation](/202604/07/2603.28993v1-collisionless-multi-agent-path-planning-in-the-hamilton-jacobi-formulation)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：带有进度估计的机器人操作扩散策略
-2. [PlayGen-MoG: Framework for Diverse Multi-Agent Play Generation via Mixture-of-Gaussians Trajectory Prediction](/202604/06/2604.02447v1-playgen-mog-framework-for-diverse-multi-agent-play-generation-via-mixture-of-gaussians-trajectory-prediction)  
+   evidence：多智能体路径规划与最优轨迹
+2. [Super Agents and Confounders: Influence of surrounding agents on vehicle trajectory prediction](/202604/07/2604.03463v1-super-agents-and-confounders-influence-of-surrounding-agents-on-vehicle-trajectory-prediction)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：使用扩散模型和高斯混合模型进行多智能体轨迹生成
-3. [ExploreVLA: Dense World Modeling and Exploration for End-to-End Autonomous Driving](/202604/06/2604.02714v1-explorevla-dense-world-modeling-and-exploration-for-end-to-end-autonomous-driving)  
+   evidence：车辆轨迹预测分析与非因果决策研究
+3. [CRAFT: Video Diffusion for Bimanual Robot Data Generation](/202604/07/2604.03552v1-craft-video-diffusion-for-bimanual-robot-data-generation)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：端到端自动驾驶与世界建模
-4. [Data-Attributed Adaptive Control Barrier Functions: Safety-Certified Training Data Curation via Influence Analysis](/202604/06/2604.00380v1-data-attributed-adaptive-control-barrier-functions-safety-certified-training-data-curation-via-influence-analysis)  
+   evidence：用于机器人轨迹生成的视频扩散模型
+4. [DriveVA: Video Action Models are Zero-Shot Drivers](/202604/07/2604.04198v1-driveva-video-action-models-are-zero-shot-drivers)  
+   标签：评分：7.0/10、query:diffusion-conf-uncertainty
+   evidence：用于动作序列和多模态未来预测的自动驾驶世界模型
+5. [Generative models for decision-making under distributional shift](/202604/07/2604.04342v1-generative-models-for-decision-making-under-distributional-shift)  
+   标签：评分：7.0/10、query:diffusion-conf-uncertainty
+   evidence：用于决策分布的生成模型和基于评分的方法
+6. [Receding-Horizon Control via Drifting Models](/202604/07/2604.04528v1-receding-horizon-control-via-drifting-models)  
+   标签：评分：7.0/10、query:diffusion-conf-uncertainty
+   evidence：使用漂移生成模型进行轨迹优化
+7. [DLWM: Dual Latent World Models enable Holistic Gaussian-centric Pre-training in Autonomous Driving](/202604/07/2604.00969v1-dlwm-dual-latent-world-models-enable-holistic-gaussian-centric-pre-training-in-autonomous-driving)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶中的预测误差追溯与数据归因
-5. [Rendezvous Planning from Sparse Observations of Optimally Controlled Targets](/202604/06/2604.01428v1-rendezvous-planning-from-sparse-observations-of-optimally-controlled-targets)  
+   evidence：用于自动驾驶和预测场景动态的世界模型
+8. [Hierarchical Planning with Latent World Models](/202604/07/2604.03208v1-hierarchical-planning-with-latent-world-models)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：轨迹估计与规划的概率框架
-6. [Bias mitigation in graph diffusion models](/202604/06/2604.01709v1-bias-mitigation-in-graph-diffusion-models)  
+   evidence：潜在世界模型中的分层规划与轨迹生成
+9. [Drift-Based Policy Optimization: Native One-Step Policy Learning for Online Robot Control](/202604/07/2604.03540v1-drift-based-policy-optimization-native-one-step-policy-learning-for-online-robot-control)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：减轻扩散模型中的偏差和扰动分布问题
-7. [Adaptive Learned State Estimation based on KalmanNet](/202604/06/2604.02441v1-adaptive-learned-state-estimation-based-on-kalmannet)  
+   evidence：用于多模态动作分布的生成式策略
+10. [ART: Adaptive Relational Transformer for Pedestrian Trajectory Prediction with Temporal-Aware Relations](/202604/07/2604.03649v1-art-adaptive-relational-transformer-for-pedestrian-trajectory-prediction-with-temporal-aware-relations)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶中的协方差估计与噪声特性
-8. [Dynamic Risk Generation for Autonomous Driving: Naturalistic Reconstruction of Vehicle-E-Scooter Interactions](/202604/06/2604.02573v1-dynamic-risk-generation-for-autonomous-driving-naturalistic-reconstruction-of-vehicle-e-scooter-interactions)  
+   evidence：具有时间感知关系的行人轨迹预测
+11. [Confidence Intervals for Rate Estimation with Importance Sampling in Autonomous Vehicle Evaluation](/202604/07/2604.03827v1-confidence-intervals-for-rate-estimation-with-importance-sampling-in-autonomous-vehicle-evaluation)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：电动滑板车运动的动态不确定性，用于验证车辆运动规划
-9. [Geometrically-Constrained Radar-Inertial Odometry via Continuous Point-Pose Uncertainty Modeling](/202604/06/2604.02745v1-geometrically-constrained-radar-inertial-odometry-via-continuous-point-pose-uncertainty-modeling)  
-   标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：利用连续轨迹模型估计位姿不确定性和测量不确定性
-10. [Understanding Latent Diffusability via Fisher Geometry](/202604/06/2604.02751v1-understanding-latent-diffusability-via-fisher-geometry)  
-   标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：量化潜空间扩散性并解耦几何失真
-11. [Multi-View Video Diffusion Policy: A 3D Spatio-Temporal-Aware Video Action Model](/202604/06/2604.03181v1-multi-view-video-diffusion-policy-a-3d-spatio-temporal-aware-video-action-model)  
-   标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于机器人动作和环境动力学的多视图视频扩散策略
+   evidence：自动驾驶汽车性能评估中比率估计的不确定性量化
 
 
 <div class="dpr-home-promo-card">

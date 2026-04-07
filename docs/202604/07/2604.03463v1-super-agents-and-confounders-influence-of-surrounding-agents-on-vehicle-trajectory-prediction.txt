@@ -1,0 +1,430 @@
+Title: Super Agents and Confounders: Influence of surrounding agents on vehicle trajectory prediction
+
+URL Source: https://arxiv.org/pdf/2604.03463v1
+
+Published Time: Tue, 07 Apr 2026 00:12:08 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+# Super Agents and Confounders: Influence of surrounding agents on vehicle trajectory prediction 
+
+Daniel Jost 1, Luca Paparusso 2, Martin Stoll 2, J¨ org Wagner 2, Raghu Rajan 1, Joschka B¨ odecker 1
+
+Abstract — In highly interactive driving scenes, trajectory prediction is conditioned on information from surrounding traffic participants such as cars and pedestrians. Our main contribution is a comprehensive analysis of state-of-the-art trajectory predictors, which reveals a surprising and critical flaw: many surrounding agents degrade prediction accuracy rather than improve it. Using Shapley-based attribution, we rigorously demonstrate that models learn unstable and non-causal decision-making schemes that vary significantly across training runs. Building on these insights, we propose to inte-grate a Conditional Information Bottleneck (CIB), which does not require additional supervision and is trained to effectively compress agent features as well as ignore those that are not beneficial for the prediction task. Comprehensive experiments using multiple datasets and model architectures demonstrate that this simple yet effective approach not only improves overall trajectory prediction performance in many cases but also increases robustness to different perturbations. Our results highlight the importance of selectively integrating contextual information, which can often contain spurious or mislead-ing signals, in trajectory prediction. Moreover, we provide interpretable metrics for identifying non-robust behavior and present a promising avenue towards a solution. 
+
+I. I NTRODUCTION 
+
+Predicting the future trajectories of agents in dynamic environments is a central task in autonomous driving, crowd simulation, and robotics. Accurate prediction allows au-tonomous systems to anticipate the behavior of other partici-pants and plan safe and efficient maneuvers. Recent learning-based approaches have achieved strong performance in this domain [1]–[4]. Most trajectory prediction models explicitly incorporate information about surrounding agents, under the assumption that additional context improves accuracy. From a causal perspective, however, not all agents are equally relevant for forecasting a particular target agent’s behavior. A robust model should therefore prioritize relevant agents while dis-counting irrelevant ones. Yet, recent work shows that re-moving seemingly irrelevant agents can dramatically change the model’s predictions [5], and that small perturbations in agents’ past trajectories can be exploited to increase the likelihood of collisions [6]–[8]. These findings suggest that state-of-the-art methods are fragile, relying on agent information in a way that is neither selective nor robust. Our contribution in this work is twofold. As a primary 
+
+> 1
+
+Department of Computer Science, Univer-sity of Freiburg, Germany. {jostd, rajanr, jboedeck }@informatik.uni-freiburg.de 
+
+> 2
+
+Bosch Center for Artificial Intelligence, Rennin-gen, Germany. {luca.paparusso, martin.stoll, joerg.wagner3 }@de.bosch.com Confounding Agent Confounding Agent    
+
+> Super Agent Super Agent
+> Neutral Agent Neutral Agent
+> Target Agent Target Agent
+> Prediction
+> Ground Truth
+> Prediction
+> Ground Truth
+
+(a) Impact of Confounding Agent removal. 0%          
+
+> No Agents
+> 10% 20% 30% 40% 50% 60% 70% 80% 90% 100%
+> All Agents
+> 0.950
+> 0.975
+> 1.000
+> 1.025
+> 1.050
+> 1.075
+> 1.100
+> MinADE 10
+> QEANet@test - minADE
+> QEANet@test - NLL
+> 19.0
+> 19.5
+> 20.0
+> 20.5
+> 21.0
+> Negative Log Likelihood
+> Neutral Agents
+> Confounding Agents
+> Super Agents
+
+(b) Insertion Test results. 
+
+Fig. 1: (a) Removing a ”Confounding Agent” can sig-nificantly improve prediction accuracy. (b) The Insertion Test based on the attribution analysis reveals a U-shaped performance curve, where using only the subset of the most helpful agents yields the best results. contribution, we adopt Shapley-based attribution methods [9], [10] to quantify the contribution of each surrounding agent to prediction performance. This serves as a post-hoc evaluation method leveraging ground-truth data. Building on [5], which demonstrated that removing certain groups of agents can sometimes even improve predictions, we extend the analysis to the individual-agent level. We uncover a striking imbalance among surrounding agents. A small subset of agents, which we refer to as Super Agents , enhances prediction accuracy. In contrast, a larger subset, termed Con-founding Agents , introduces spurious or misleading informa-tion that reduces model performance, as depicted in Fig. 1b. The positive and negative contributions nearly cancel out, leaving only marginal performance gains compared to model performance when ignoring surrounding agents altogether. Notably, this behavior is observable across different metrics. This analysis provides a principled explanation for the lack of robustness observed in practice [5], [6], [8] and highlights the sensitivity of current models to spurious features in contextual information. 
+
+> arXiv:2604.03463v1 [cs.LG] 3 Apr 2026
+
+Second, we explore the application of the Conditional Information Bottleneck (CIB) approach [11], [12] to filter out non-robust agent information. We find that constraining the information flow consistently improves robustness across various models and datasets. Our contributions can be summarized as follows:  
+
+> •
+
+A systematic analysis of state-of-the-art trajectory pre-diction models, revealing their lack of robustness when incorporating surrounding agent information.  
+
+> •
+
+Evidence that prediction accuracy is improved by only a small subset of Super Agents, whereas many agents act as confounders that degrade performance; including a comparison with causality-based relevancy labels.  
+
+> •
+
+A Conditional Information Bottleneck (CIB) module that improves robustness by filtering spurious agent in-formation without additional supervision, augmented by a comprehensive analysis of its benefits and limitations. II. R ELATED WORK 
+
+A. Trajectory Prediction 
+
+Accurate trajectory prediction is essential for autonomous driving and robotics, enabling systems to anticipate the future movements of surrounding agents. Recent methods fall into two main categories: marginal prediction and joint prediction. Marginal prediction forecasts the trajectory of a target agent conditioned on contextual cues like the lane graph and nearby agents. State-of-the-art models such as LAformer [2], QEANet [1], and other transformer-based methods [4], [13] set benchmarks on datasets like nuScenes [14] and Waymo Open Motion Dataset (WOMD) [15]. In contrast, joint prediction forecasts trajectories for mul-tiple agents simultaneously to capture social interactions. While mechanisms like cross-attention [16]–[18] are com-mon, recent advances such as BeTop [19] introduce Behav-ioral Topology to explicitly represent consensual behavioral patterns. We benchmark baselines from both marginal and joint prediction in our work. 
+
+B. Quantifying Feature Influence 
+
+For safety critical tasks, uncovering the decision-making mechanisms of black-box models is crucial to ensure reliable behavior in complex and unseen scenarios. But quantifying the influence of surrounding agents remains a challenging task due to the absence of ground truth labels. Prior work ad-dresses [5] the lack of ground-truth labels for agent influence by manually annotating agents as causal or non-causal. Their analysis based on removing these agents found that models are highly sensitive to non-causal ones due to spurious correlations. While a proposed training-time augmentation involving dropping these agents improved robustness, it re-quires prohibitively large labeling efforts for big datasets and is subjective. We generalize these findings across different models [1]–[4] and datasets [14], [15], and propose a plug-and-play solution that does not require additional labels or changes in the training setup. In You Mostly Walk Alone [10], Makansi et al. apply a Shapley value-based analysis to reveal that a target agent’s past trajectory dominates predictions, while interactions con-tribute little. By inserting random dummy agents, which received attribution scores nearly identical to real neighbors, they demonstrated that models often ignore relevant social context. Building on this, we use Shapley values for a systematic investigation across recent models. Unlike [10], we find that performance is limited not by a total absence of neighbor attention, but by the inconsistent influence of impactful agents, whose positive and negative contributions often cancel each other out. The limitations of standard interpretability tools, such as Transformer attention weights or gradient-based saliency maps, further justify the need for more robust attribution methods. While these mechanisms are often used to identify influential features, research indicates that they are frequently insufficient for explanation. Jain et al. [20] demonstrate that attention weights often do not correlate with feature impor-tance metrics. Furthermore, Adebayo et al. [21] highlight that many saliency methods fail basic sanity checks, acting as simple edge detectors that remain independent of both model parameters and the data-generating process. These observations motivate our Shapley-based analysis and the exploration of the Conditional Information Bottle-neck (CIB) [12] as a principled approach to filtering spurious agent information and improving robustness. 
+
+C. Focusing on relevant features 
+
+In the field of motion prediction for autonomous driv-ing, recent works seek to improve robustness and gener-alization by reducing the influence of non-causal agents. Causal trajectory prediction (CRiTIC) [22] proposes a Causal Discovery Network (CDN) trained to extract causal links between agents from their past trajectories. The CDN gener-ates a causal graph that guides prediction, and a sparsity regularization loss along with a self-supervised auxiliary task suppresses information from agents classified as non-causal. Similarly, Pourkeshavarz et al. [23] propose a causal disentanglement framework (CaDeT). Their method sepa-rates invariant (causal) from variant (spurious) features by training on an intervention set created from the measured uncertainty statistics in the latent space. Spurious features are replaced with samples from the intervention set, and the model is trained to remain invariant to these substitutions. Both CRiTIC and CaDeT draw inspiration from information bottleneck principles [24] and demonstrate gains in robust-ness. Building on this line of work, and complementing our Shapley-value-based agent attribution analysis, we evaluate the use of the CIB across multiple state-of-the-art archi-tectures. We perform an ablation study comparing model behavior with and without the CIB and examine how the CIB affects the decision-making process. III. P RELIMINARIES AND METHODOLOGY 
+
+To systematically analyze how trajectory prediction mod-els use information from surrounding agents, we first use Shapley-based attribution methods to quantify each agent’s individual contribution to prediction accuracy. We propose to classify agents with a performance-improving attribution as Super Agents. The prediction performance given only the Super Agents is a key aspect of our work. Based on the individual agent attributions, we propose to perform an 
+
+insertion test (see later) to evaluate how model performance varies when considering different subsets of agents. We then propose to implement the Conditional Information Bottle-neck as a potential method to mitigate the negative impact of non-beneficial agent information revealed by our analysis. The analysis is then again used to verify the effectiveness of the CIB approach. 
+
+A. Attributing performance to features 
+
+Feature attribution methods in Explainable AI [10] quan-tify how each input feature contributes to a model’s predic-tion. This analysis is performed post-hoc, requiring ground-truth data to evaluate feature importance with respect to a specific performance metric. Shapley values [9] iterate over all possible combinations of features in order to compute the marginal contribution each individual feature has to the prediction. The Shapley value ϕi for a feature i is given by: 
+
+ϕi(v) = X 
+
+> S⊆N\{ i}
+
+|S|!( |N | − | S| − 1)! 
+
+|N |! (v(S ∪ { i}) − v(S)) 
+
+(1) where:  
+
+> •
+
+N is the set of all features,  
+
+> •
+
+S is a subset of features not including feature i, 
+
+> •
+
+v(S) is the value function (e.g., model prediction) for the coalition of features in set S, 
+
+> •
+
+v(S ∪{ i})−v(S) is the marginal contribution of feature 
+
+i to coalition S.In this work, the value function v depends on both the underlying model and a target metric m(·), such that v(S) = 
+
+m(f (S)) , where f (S) is the model’s output when only features in S are used. In this work, we largely focus on the negative-log-likelihood (NLL) since it considers all aspects of the prediction. Computing exact Shapley values is expensive, scaling exponentially with the number of features ( 2n evaluations), which is impractical for large input sets. To address this, ApproShapley [25] offers an efficient approximation by randomly sampling a subset of feature permutations rather than enumerating all possibilities. To evaluate the faithfulness of attribution methods, Petsiuk et al. [26] introduced insertion and deletion tests for image classification. This approach assesses the attributions’ quality by sequentially adding (inserting) or removing (deleting) features according to their importance and observing the effect on the model’s output. A steep performance increase during insertion or a sharp decline during deletion indicates a more faithful attribution. Hama et al. [27] later extended this evaluation to regression models. Since this work focuses on the handling of the surrounding agent information, we adapt the aforementioned methodology to ablate individual surrounding agents. By sequentially inserting agents based on their attribution scores, we investigate the quantity and influence of helpful, irrelevant, and deteriorating agents. 
+
+B. Intra- and Inter-Model Agreement 
+
+Let ϕi,j, NLL be the Shapley value of Agent i for the j-th model regarding the NLL metric. The rate ri, NLL represents the agreement of N models on an agent i being helpful (ϕi, NLL < 0) to the prediction performance. Defined as the mean of an indicator function 1(ϕi,j, NLL < 0) over N total models for each agent i:
+
+ri, NLL = 1
+
+N
+
+> N
+
+X
+
+> j=1
+
+1(ϕi,j, NLL < 0) . (2) We propose to apply this analysis in the subsequent sections to assess attributional agreement across models. A value of 
+
+ri, NLL = 1 indicates consistent attribution with beneficial influence to agent i, whereas ri, NLL = 0 shows consistent identification of the agent as confounding. Intermediate val-ues ( 0 < r i, NLL < 1) capture ambiguous cases, reflecting divergences in the decision-making mechanisms of differ-ent models. This agreement-based perspective enables us to distinguish agents that are universally informative from those whose attributed importance is unstable and model-dependent. We distinguish between intra-model agreement, where the same model is evaluated using different infer-ence seeds, and inter-model agreement, where independently trained models of the same architecture are evaluated. 
+
+C. Attribution-based Performance 
+
+To analyze the contribution of surrounding agents, we evaluate model performance under three distinct conditions: (i) using All agents (default configuration), (ii) using only Super Agents, and (iii) No agents. The comparison between these settings allows us to disentangle the effects of Super versus Confounding Agents. Specifically, we define two performance gaps to isolate these influences with respect to a given evaluation metric m(·)∆m 
+
+> Super-All
+
+= m(Super ) − m(All ) (3) 
+
+∆m 
+
+> No-All
+
+= m(No ) − m(All ) (4) The gap ∆m 
+
+> Super-All
+
+captures the negative impact of including uninformative or confounding agents. Ideally, this gap should approach zero if all agents contribute positively or neutrally. In contrast, ∆m 
+
+> No-All
+
+quantifies the benefit of leveraging sur-rounding agent information relative to having no agents at all. The set of Super Agents is the set of all agents in a scene whose attribution value indicates a beneficial influence on prediction performance. Specifically, an agent is considered a Super Agent if its attribution with respect to the NLL metric is negative. Formally, 
+
+ASuper = {i ∈ A All | ϕi, NLL < 0}, (5) where ϕi, NLL denotes the attribution value of agent i with respect to the negative log-likelihood. D. Information Bottleneck 
+
+The Information Bottleneck (IB) principle, introduced by Tishby et al. [24], provides a theoretical framework for ex-tracting the most relevant information from an input variable 
+
+X with respect to a target variable Y . The goal is to learn a compressed representation T of X that preserves information required for predicting Y , while discarding irrelevant details. Formally, this trade-off is achieved by minimizing 
+
+LIB = −I(Y ; T ) + βI (X; T ), (6) where I(·; ·) denotes mutual information and β is aLagrange multiplier that controls the balance between com-pression and predictive power. The IB framework has been extended to deep learning through the Variational Informa-tion Bottleneck (VIB) [11]. In graph learning, for example, IB has been adapted to identify minimal yet informative substructures, allowing the model to focus on task-relevant subgraphs while suppressing redundancy in the input graph topology [12], [28]. 
+
+Conditional Information Bottleneck: While the standard Information Bottleneck (IB) framework considers compres-sion of an input variable with respect to a target, Lee et al. [12] extend this principle to the Conditional Information Bottleneck (CIB) framework, which addresses settings where the relevance of information depends on a given context. Given input variables X1, X2, and a target variable Y , the CIB framework seeks a compressed representation T1 of X1
+
+that preserves information about Y conditioned on X2. This is formalized by minimizing the Conditional Information Bottleneck objective: 
+
+LCIB = −I(Y ; T1 | X2) + βI (X1; T1 | X2), (7) where I(·; · | ·) denotes conditional mutual information, and β controls the trade-off between compressing X1 and preserving task-relevant information for predicting Y given 
+
+X2.In essence, the CIB objective encourages T1 to retain only those aspects of X1 that are informative for predicting Y
+
+given X2, while discarding irrelevant or redundant infor-mation. This conditional perspective is particularly useful in multi-view or paired-input settings, such as learning from paired graphs, where one graph provides context for interpreting the other [12], [29]. In autonomous driving, this is highly applicable: to predict a target agent’s trajectory Y
+
+from its own kinematic history X2, we condition on the information of relevant surrounding agents X1. The CIB framework would learn a representation of the surrounding agents T1 that emphasizes relevant movements with respect to the target agent’s movement. All models in our study follow an Encoder-Interactor-Decoder structure [1]–[4]. To investigate the effect of con-ditional information compression, we augment each model with a CIB module. The CIB is inserted after the encoding of the surrounding agent information and is conditioned on the encoding of the target agent as shown in Fig. 2.  
+
+> SurrAgent Encoder
+> Target Agent Encoder
+> Lane Graph Encoder
+> CIB
+> Interactor Decoder
+> {x, y, v x, v y, w, l, θ }s
+> {x, y, v x, v y, w, l, θ }t
+> Polyline nodes, Central lines
+
+Fig. 2: Overview of the proposed prediction architecture. The Conditional Information Bottleneck (CIB) module com-presses surrounding agent features while conditioning on the target agent’s state to extract relevant information. These are then fused with lane geometry and target agent embeddings within the Interactor before final trajectory decoding. IV. E XPERIMENTS 
+
+Our experimental investigations focus on two widely rec-ognized and comprehensive autonomous driving datasets: Waymo Open Motion Dataset (WOMD) [15] and nuScenes [14]. Both datasets offer rich multi-modal sensor data, de-tailed annotations of traffic participants, and high-definition maps, providing a robust foundation for evaluating motion prediction models. For the marginal prediction task, we investigate two state-of-the-art models for each dataset. For nuScenes, we evaluate QEANet [1] and LAformer [2]. For WOMD, we evaluate MTR [13] and EDA [4], using 20% of the dataset to reduce computational cost. To estimate variability, each model variant is trained with five different random seeds, and all experiments are conducted on each seed to compute the mean and standard deviation of the performance metrics. In addition to that, we assess BeTop [19] within the context of the Waymo Interaction Challenge for joint motion forecasting. To evaluate the impact of our proposed method, we train both the base BeTop model and a CIB-enhanced variant across three training seeds on the complete Waymo dataset. For CIB-enhanced variants, the bottleneck weight β was optimized via grid search in the range [10 −2, 10 2]. For eval-uation, we adopt standard trajectory prediction metrics [1], [2], [4], [13]. Average Displacement Error (ADE) measures the mean Euclidean distance between predicted and ground-truth trajectories, while Final Displacement Error (FDE) captures the error at the final timestep. Since models produce multiple trajectories, we report minADE/minFDE@K, which reflects the best among K predictions, and Miss Rate, the percentage of cases where none of the K trajectories lie within a threshold distance of the ground truth at the final timestep. To assess the quality of probabilistic predictions, the Negative Log-Likelihood (NLL) of the ground truth trajectory is measured. 1
+
+> 1Direct comparison between nuScenes and WOMD metrics is not possible due to differing evaluation protocols: nuScenes reports errors at a 6-second horizon, whereas WOMD averages across multiple horizons (e.g., 3, 5, 8 seconds).
+
+A. Robustness 
+
+We evaluate model robustness using two types of pertur-bations: removal-based and noise-based. The removal-based perturbations are introduced in [5]. Using agents labeled as causal or non-causal [5], we ana-lyze model behavior when removing either causally relevant or Non-Causal Agents. We apply this perturbation to the WOMD-based MTR [13] and EDA [4]. To complement the targeted removal perturbation, we introduce a noise-based perturbation that emulates sensor noise and perception errors common in real-world driving. By applying Gaussian noise to the input trajectories, we can measure the model’s stability and robustness to a different type of perturbation. We apply this perturbation to the nuScenes-based models: QEANet [1] and LAformer [2]. To quantify the sensitivity to these perturbations, we use the evaluation metric from [5]. Specifically, their investigations are based on the absolute deviation from the original performance: 
+
+Abs (∆) = 1
+
+n
+
+> n
+
+X
+
+> i=1
+
+minADE( f (xi, perturbed ), y i)
+
+− minADE( f (xi, original ), y i)
+
+(8) where n is the total number of samples, f is the prediction model, xi, original is the i-th original input scene, xi, perturbed is its corresponding perturbed version, yi is the ground truth trajectory. 0% No Agents          
+
+> 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% All Agents
+> 19 .5
+> 20 .0
+> 20 .5
+> 21 .0
+> 21 .5
+> NLL
+> QEANet@train QEANet@val
+
+Fig. 3: Insertion test performed on the train and validation set of nuScenes. On the validation dataset, the confounding agents have a much stronger effect compared to the training set, almost canceling out the Super Agents. V. R ESULTS 
+
+This section first analyzes how models utilize surrounding agents via the Insertion Test, followed by an investigation into Model Agreement and alignment with Causal Agents. Finally, we assess Benchmark Performance and Robustness across multiple architectures to quantify the CIB’s impact. 
+
+A. Insertion Test 
+
+Based on the insertion test introduced in III-A, we analyze the handling of surrounding agent information in QEANet. Fig. 3 shows that a small subset of agents is beneficial (Super Agents), while many others degrade performance 0/5 1/5 2/5 3/5 4/5 5/5 Rate of Performance-Improving Attributions rNLL   
+
+> 010000 20000 30000 # of Agents
+> Model Agreement on improving Influence for different inference seeds
+> Random Baseline
+> 0/5 1/5 2/5 3/5 4/5 5/5 Rate of Performance-Improving Attributions rNLL
+> −0.50.00.5Average Attribution Value
+> Average Attribution Value per Rate of Performance-Improving Attributions r
+
+(a) Intra-Model 0/5 1/5 2/5 3/5 4/5 5/5 Rate of Performance-Improving Attributions rNLL    
+
+> 010000 20000 30000 # of Agents
+> Model Agreement on improving Influence for different training seeds
+> Random Baseline
+> 0/5 1/5 2/5 3/5 4/5 5/5 Rate of Performance-Improving Attributions rNLL
+> −1.0
+> −0.50.00.51.0Average Attribution Value
+> Average Attribution Value per Rate of Performance-Improving Attributions r
+
+(b) Inter-Model 
+
+Fig. 4: Consistency of improving agent influence for the QEANet model on nuScenes. (a) Intra-model Agreement: A single trained model shows high consistency in agent attributions across five inference seeds. (b) Inter-model Dis-agreement: Models trained with different random seeds show significant variability, with agent influence profiles following a random baseline, indicating unstable learned decision-making. (Confounding Agents), an effect that is more pronounced on the validation set compared to the train set, which hints at overfitting on irrelevant information. These observations offer a key insight: while the model successfully uses Super Agents, it struggles to ignore Con-founding Agents. This leads us to investigate whether the model’s Super Agents align with the agents that are causally relevant in a scene. If this alignment exists, the model’s internal attribution values could potentially be leveraged as a powerful supervisory signal to guide and improve its relevancy predictions during training. 
+
+B. Intra- and Inter-Model Agreement 
+
+To account for the probabilistic nature of the predictor, we calculate the attribution ϕi, NLL for each agent i on the same model on five different inference seeds (Fig. 4a) and for five models trained on different training seeds (Fig. 4b). Based on the frequency of ϕi, NLL < 0 for each agent i
+
+in different settings, we can better understand the decision-making process. Fig. 4a shows that, within the same model and across inference seeds, most agents consistently either improve or degrade performance. Only a small number fall into an ambiguous middle range, indicating that individual agent influence is relatively consistent under different inference conditions. In contrast, Fig. 4b illustrates that models trained with different seeds disagree substantially on which agents are helpful and follow closely the Random Baseline indi-cator. Despite sharing the same architecture and training data, the models learn divergent decision-making patterns. This discrepancy suggests that the model does not robustly 0/5 1/5 2/5 3/5 4/5 5/5 Rate of Performance-Improving Attributions rNLL   
+
+> 010000 20000 # of Agents
+> Model Agreement on improving Influence of Causal Agents
+> Random Baseline
+> 0/5 1/5 2/5 3/5 4/5 5/5 Rate of Performance-Improving Attributions rNLL
+> −4
+> −2024Average Attribution Value  ×10 9
+> Average Attribution Value per Rate of Performance-Improving Attributions r
+
+(a) Causal Agents on MTR 0/5 1/5 2/5 3/5 4/5 5/5 Rate of Performance-Improving Attributions rNLL   
+
+> 050000 100000 150000 200000 # of Agents
+> Model Agreement on improving Influence of Non-Causal Agents
+> Random Baseline
+> 0/5 1/5 2/5 3/5 4/5 5/5 Rate of Performance-Improving Attributions rNLL
+> −4
+> −2024Average Attribution Value  ×10 9
+> Average Attribution Value per Rate of Performance-Improving Attributions r
+
+(b) Non-causal Agents on MTR 0/5 1/5 2/5 3/5 4/5 5/5 Rate of Performance-Improving Attributions rNLL   
+
+> 010000 20000 # of Agents
+> Model Agreement on improving Influence of Causal Agents
+> Random Baseline
+> 0/5 1/5 2/5 3/5 4/5 5/5 Rate of Performance-Improving Attributions rNLL
+> −4
+> −2024Average Attribution Value  ×10 9
+> Average Attribution Value per Rate of Performance-Improving Attributions r
+
+(c) Causal Agents on MTR+IB 0/5 1/5 2/5 3/5 4/5 5/5 Rate of Performance-Improving Attributions rNLL   
+
+> 050000 100000 150000 200000 # of Agents
+> Model Agreement on improving Influence of Non-Causal Agents
+> Random Baseline
+> 0/5 1/5 2/5 3/5 4/5 5/5 Rate of Performance-Improving Attributions rNLL
+> −4
+> −2024Average Attribution Value  ×10 9
+> Average Attribution Value per Rate of Performance-Improving Attributions r
+
+(d) Non-causal Agents on MTR+IB 
+
+Fig. 5: Consistency of improving agent influence for the MTR model and the MTR+IB model compared to human labels. (a) Causal Agents: Labeled Causal Agents are only slightly more likely to have a performance-improving influence. (b) Non-Causal Agents: The influence of Non-Causal Agents follows the random baseline, highlighting the models inability to identify them. The same analysis is done for the MTR+IB Model: (c) There is no increase in the number of Causal Agents used as improving agents but the average attribution value of agents with rNLL = 55 decreased significantly (d) The usage of Non-Causal Agents is still in line with the random baseline. 
+
+Model minADE 10 ↓ minADE 5 ↓ MissRate 10 ↓ MissRate 5 ↓ NLL ↓
+
+QEANet 1.053 ± 0.010 1.203 ± 0.012 0.479 ± 0.009 0.511 ± 0.009 20 .125 ± 0.210 
+
+- Super Agents 0.961 ± 0.012 1.106 ± 0.012 0.443 ± 0.009 0.475 ± 0.009 18 .336 ± 0.276 
+
+- No Agents 1.116 ± 0.014 1.317 ± 0.012 0.542 ± 0.010 0.574 ± 0.008 21 .025 ± 0.253 
+
+QEANet + IB 1.042 ± 0.016 1.191 ± 0.017 0.471 ± 0.008 0.504 ± 0.008 19 .820 ± 0.341 
+
+- Super Agents 0.977 ± 0.017 1.122 ± 0.013 0.448 ± 0.010 0.479 ± 0.006 18 .629 ± 0.338 
+
+- No Agents 1.109 ± 0.016 1.316 ± 0.018 0.538 ± 0.005 0.571 ± 0.002 20 .868 ± 0.328 
+
+LAformer 0.948 ± 0.012 1.604 ± 0.018 0.348 ± 0.003 0.504 ± 0.007 36 .914 ± 1.462 
+
+- Super Agents 0.882 ± 0.012 1.560 ± 0.018 0.326 ± 0.007 0.483 ± 0.002 32 .150 ± 0.982 
+
+- No Agents 1.024 ± 0.013 1.913 ± 0.042 0.406 ± 0.004 0.556 ± 0.004 38 .461 ± 2.130 
+
+LAformer + IB 0.985 ± 0.006 1.627 ± 0.020 0.380 ± 0.007 0.504 ± 0.004 35 .741 ± 0.830 
+
+- Super Agents 0.924 ± 0.007 1.592 ± 0.037 0.367 ± 0.007 0.498 ± 0.005 31 .412 ± 0.637 
+
+- No Agents 1.032 ± 0.012 1.810 ± 0.061 0.425 ± 0.009 0.548 ± 0.008 34 .029 ± 1.220 
+
+TABLE I: Results for QEANet and LAformer on the nuScenes test set. No Agents is the baseline without social context. Super Agents refers to the theoretical performance using only agents with an improving influence. Note: Super Agent identification is a post-hoc, model-dependent analysis relative to a specific metric (NLL in this case) and requires ground truth information. Results are averaged over five runs, reporting the mean and standard deviation. capture invariant relationships between agents, contradicting the expectation that models trained multiple times on the same dataset would identify the same decision-making mech-anisms. We further analyze how Shapley attributions correspond to human-labeled Causal Agents from the CausalAgents benchmark [5]. Figure 5a shows that Causal Agents exhibit a tendency toward negative Shapley values, indicating a weak performance-improving effect. Many Causal Agents are attributed with positive Shapley values, which degrade performance, indicating unfaithful decision-making. Complementing this finding, the influence distribution for Non-Causal agents (Fig. 5b) closely follows the random baseline. This confirms that the model processes surround-ing agent information without prioritizing causally relevant actors. Fig. 5c and Fig. 5d show that incorporating the Conditional Information Bottleneck does change the outcome in some aspects. Model agreement remains low, and the reliance on causal agents does not increase. Nevertheless, the average attribution value for the group with the highest agreement for the causal agents is significantly more negative. This decrease from about −0.5 to about −3 highlights an in-creased improving influence of many Causal Agents. In addition to that, the deteriorating influence of non-causal agents depicted in the bar at rNLL = 05 of Fig. 5d decreased from more than 4 to less than 3.5. This suggests that the CIB is able to encourage the model to prioritize causally relevant information, highlighting a benefit of this approach in addressing unfaithful attribution. C. Benchmark Performance 
+
+Tab. I shows that the Conditional Information Bottleneck (CIB) improves QEANet across all metrics. It is worth noting that similar performance gains are observed both with and without agent information, meaning the benefit is not due to better exploitation of surrounding agent information. The performance distance |∆m
+
+> No-All
+
+| remains the same. This suggests that the CIB is rather improving the overall model robustness. Another indicator is the decreased performance when using only Super Agents. QEANet combined with the IB has a smaller gap |∆m
+
+> Super-All
+
+| for all metrics m, showing reduced influence of Confounding Agents. For the LAformer-based architecture, the effect of the In-formation Bottleneck is less pronounced. Here, only the NLL can be slightly improved, while the other metrics show poor performance. The large difference between minADE 10 and minADE 5 performance suggests, that LAformer is overall weak at predicting the corresponding mode probabilities. A possible reason for this observation might be the archic-tecture which is structurally priored on filtering irrelevant lane-segments, leading to a less pronounced usage of sur-rounding agent information. Overall, IB consistently strengthens QEANet’s perfor-mance, whereas LAformer does not benefit from this exten-sion. When it comes to leveraging surrounding agent infor-mation, these results show that the amount of improvement by a Conditional Information Bottleneck is highly dependent on the model architecture. For the WOMD-based models, the results in Tab. II show a clear picture. The incorporation of the CIB is beneficial for both architectures across all metrics. The corresponding analysis is shown in Tab. III. The gap to the super-agent performance |∆m
+
+> Super-All
+
+| almost vanished, indicating that the Information Bottleneck is able to improve the decision-making regarding the surrounding agent information. For both models, MTR and EDA, we can see an improvement in benchmark performance, while the performance without agents stays mostly consistent. Therefore, the gap |∆m
+
+> No-All
+
+|
+
+increased, indicating more selective context utilization. Fur-thermore, the simultaneous improvement in MissRate con-firms that the CIB enhances predictive accuracy without inducing mode collapse or compromising trajectory diversity.                                           
+
+> Model minADE ↓minFDE ↓MissRate ↓
+> MTR 0.673 ±0.003 1.377 ±0.009 0.168 ±0.001
+> MTR + IB 0.664 ±0.003 1.354 ±0.004 0.164 ±0.001
+> EDA 0.654 ±0.004 1.365 ±0.011 0.151 ±0.001
+> EDA + IB 0.640 ±0.006 1.334 ±0.015 0.147 ±0.002
+
+TABLE II: Results for the different methods on the WOMD dataset on the val split. Using the Conditional Informa-tion Bottleneck we are able to consistently improve the Benchmark performance. All models were trained on a 20% subset of the WOMD dataset due to computational costs. A subsampling strategy justified by Shi et al. [13], leading to a distribution similar to the complete dataset is used. Extending our evaluation to the joint motion prediction                                                                                                                   
+
+> Model minADE ↓minFDE ↓MissRate ↓
+> MTR 0.700 ±0.026 1.440 ±0.042 0.164 ±0.003
+> - Super Agents 0.695 ±0.026 1.436 ±0.040 0.164 ±0.003
+> - No Agents 0.893 ±0.085 1.919 ±0.220 0.248 ±0.059
+> MTR + IB 0.683 ±0.009 1.397 ±0.004 0.160 ±0.004
+> - Super Agents 0.683 ±0.007 1.405 ±0.014 0.161 ±0.004
+> - No Agents 0.855 ±0.036 1.819 ±0.106 0.227 ±0.019
+> EDA 0.673 ±0.003 1.414 ±0.011 0.150 ±0.001
+> - Super Agents 0.667 ±0.007 1.397 ±0.017 0.148 ±0.002
+> - No Agents 0.841 ±0.050 1.843 ±0.120 0.220 ±0.030
+> EDA + IB 0.669 ±0.019 1.395 ±0.036 0.148 ±0.004
+> - Super Agents 0.667 ±0.017 1.387 ±0.031 0.147 ±0.003
+> - No Agents 0.840 ±0.044 1.832 ±0.126 0.217 ±0.030
+
+TABLE III: Results of the Shapley-Value based Analysis. Due to computational constraints, we analyze only scenes with not more than 24 agents. After inserting the information Bottleneck, we can actually decrease the gap between Super Agents and default (All agent) performance task, we quantify the marginal impact of surrounding agents on coupled trajectories. During computation, target trajecto-ries remain fixed while surrounding agents are systematically removed. As shown in Tab. IV, the baseline BeTop exhibits a significant performance drop when removing all non-target agents. Consistent with the marginal prediction results, utiliz-ing only Super Agents yields the best performance, suggest-ing that filtering non-essential interactors reduces predictive noise. This instability in decision-making persists across all investigated models. Even joint-prediction frameworks, despite being engineered for high-interaction environments, remain unstable to these perturbations.                                                             
+
+> Model minADE ↓minFDE ↓MissRate ↓
+> BeTop 0.988 ±0.002 2.267 ±0.016 0.298 ±0.012
+> - Super Agents 0.912 ±0.016 2.069 ±0.047 0.272 ±0.017
+> - No Agents 1.221 ±0.019 2.901 ±0.047 0.373 ±0.009
+> BeTop + IB 1.018 ±0.023 2.335 ±0.042 0.318 ±0.008
+> - Super Agents 0.937 ±0.043 2.143 ±0.113 0.288 ±0.005
+> - No Agents 1.241 ±0.035 2.939 ±0.067 0.383 ±0.004
+
+TABLE IV: Analysis for joint motion prediction. The marginal contribution of surrounding agents is estimated by fixing the two target trajectories while removing remaining actors to quantify their impact on predictive performance 
+
+D. Robustness                            
+
+> %Abs( ∆)Noise,0.2 ↓%Abs( ∆)Noise,0.4 ↓
+> QEANet 0.75% ±0.07% 1.48% ±0.15%
+> QEANet + IB 0.72 %±0.05 %1.33 %±0.15 %
+> LAformer 1.06% ±0.06% 2.06% ±0.10%
+> LAformer + IB 0.35 %±0.12 %0.71 %±0.24 %
+
+TABLE V: Results for noise-based perturbation robustness based on the minADE 10 performance Table V reports robustness under noise-based pertur-bations. For both QEANet and LAformer, incorporating the Conditional Information Bottleneck consistently reduces sensitivity to Gaussian noise. The effect is strongest for LAformer, where degradation is reduced by more than half compared to the baseline. %Abs (∆) Causal ↓ %Abs (∆) Non-Causal ↓
+
+MTR 61 .7% ± 6.3% 12 .7% ± 1.7% 
+
+MTR + IB 58 .1% ± 1.0% 11 .6% ± 0.3%
+
+EDA 72 .7% ± 1.5% 17 .0% ± 0.4% 
+
+EDA + IB 65 .6% ± 4.7% 14 .8% ± 0.7%
+
+TABLE VI: Results for the removal-based perturbation on the causal and non-causal agents on the minADE perfor-mance Table VI summarizes the removal-based perturbations. As expected, removing Causal Agents strongly degrades performance across all models. Incorporating the Conditional Information Bottleneck reduces this effect. Similarly, when removing Non-Causal Agents, models equipped with the bottleneck exhibit consistently lower sensitivity. For MTR the relative improvement is about 6% (Causal) and 9% (Non-Causal) while it is 10% (Causal) and 13% (Non-Causal) for EDA. As we observed an improved decision-making in Tab. II, this observation can be further supported here and is in line with the reduced influence of Confounding Agents we saw in Fig. 5d. VI. D ISCUSSION 
+
+Our investigation reveals a crucial paradox in modern trajectory prediction: while models are designed to leverage social context, many surrounding agents act as Confounders that actively degrade accuracy, often canceling out the bene-fits from the few truly helpful Super Agents. This inefficiency stems from an inconsistent learning process; our attribution analysis shows that models trained with different seeds learn vastly different decision-making schemes that fail to robustly align with human-annotated causal relationships. This inconsistency poses a significant reliability challenge for their deployment in safety-critical systems, as model behavior is unpredictably dependent on the specific training run. While our proposed Conditional Information Bottleneck improves general robustness by regularizing information flow, it does not solve this core problem, as it fails to equip models with an explicit mechanism for causal reasoning or improve their ability to distinguish causal from non-causal agents. Nevertheless, it can be seen as a starting point to guide future research. Ultimately, this work’s primary contribution is the exposure of this deep-seated flaw, demon-strating that simply adding more contextual information is insufficient without the ability to selectively and robustly focus on what truly matters. ACKNOWLEDGMENT 
+
+This work is part of BrainLinks-BrainTools which is funded by the Federal Ministry of Economics, Science and Arts of Baden-W¨ urttemberg within the sustainability program for projects of the excellence initiative II. The authors acknowledge the computation time provided by bwUniCluster funded by the Ministry of Science, Research and the Arts Baden-W¨ urttemberg and the Universities of the State of Baden-W¨ urttemberg, Germany, within the frame-work program bwHPC. This research was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under grant number 539134284, through EFRE (FEIH 2698644) and the state of Baden-W¨ urttemberg. 
+
+REFERENCES [1] J. Chen, Z. Wang, J. Wang, and B. Cai, “Q-EANet: Implicit social modeling for trajectory prediction via experience-anchored queries,” IET Intelligent Transport Systems ,vol. 18, no. 6, pp. 1004–1015, 2024. [Online]. Available: https://articlelibrary.wiley.com/doi/abs/10.1049/itr2.12477 [2] M. Liu, H. Cheng, L. Chen, H. Broszio, J. Li, R. Zhao, M. Sester, and M. Y. Yang, “LAformer: Trajectory Prediction for Autonomous Driving with Lane-Aware Scene Constraints,” 
+
+Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops , 2023. [Online]. Available: http://arxiv.org/abs/2302.13933 [3] S. Shi, L. Jiang, D. Dai, and B. Schiele, “MTR++: Multi-Agent Motion Prediction with Symmetric Scene Modeling and Guided Intention Querying,” IEEE Transactions on Pattern Analysis and Machine Intelligence , 2024. [Online]. Available: http://arxiv.org/abs/2306.17770 [4] L. Lin, X. Lin, T. Lin, L. Huang, R. Xiong, and Y. Wang, “EDA: Evolving and Distinct Anchors for Multimodal Motion Prediction,” 
+
+Proceedings of the AAAI Conference on Artificial Intelligence , 2023. [Online]. Available: http://arxiv.org/abs/2312.09501 [5] R. Roelofs, L. Sun, B. Caine, K. S. Refaat, B. Sapp, S. Ettinger, and W. Chai, “CausalAgents: A Robustness Benchmark for Motion Forecasting using Causal Relationships,” Oct. 2022. [6] Q. Zhang, S. Hu, J. Sun, Q. A. Chen, and Z. M. Mao, “On Adversarial Robustness of Trajectory Prediction for Autonomous Vehicles,” in 
+
+Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2022, pp. 15 159–15 168. [7] S. Saadatnejad, M. Bahari, P. Khorsandi, M. Saneian, S.-M. Moosavi-Dezfooli, and A. Alahi, “Are socially-aware trajectory prediction models really socially-aware?” Feb. 2022. [8] Y. Cao, C. Xiao, A. Anandkumar, D. Xu, and M. Pavone, “AdvDO: Realistic Adversarial Attacks for Trajectory Prediction,” Sep. 2022. [9] L. Shapley, “7. A Value for n-Person Games. Contributions to the Theory of Games II (1953) 307-317.” in Classics in Game Theory ,H. W. Kuhn, Ed. Princeton University Press, Nov. 2020, pp. 69–79. [10] O. Makansi, T. Brox, and B. Scholkopf, “YOU MOSTLY WALK ALONE: ANALYZING FEATURE ATTRIBUTION IN TRAJEC-TORY PREDICTION,” in International Conference on Learning Rep-resentations (ICLR) , 2022. [11] A. A. Alemi, I. Fischer, J. V. Dillon, and K. Murphy, “Deep Variational Information Bottleneck,” International Conference on Learning Representations (ICLR) , 2019. [Online]. Available: http://arxiv.org/abs/1612.00410 [12] N. Lee, D. Hyun, G. S. Na, S. Kim, J. Lee, and C. Park, “Conditional Graph Information Bottleneck for Molecular Relational Learning,” Jul. 2023. [Online]. Available: http://arxiv.org/abs/2305.01520 [13] S. Shi, L. Jiang, D. Dai, and B. Schiele, “Motion Transformer with global intention localization and local movement refinement,” in 
+
+Advances in Neural Information Processing Systems (NeurIPS) , 2022. [14] H. Caesar, V. Bankiti, A. H. Lang, S. Vora, V. E. Liong, Q. Xu, A. Krishnan, Y. Pan, G. Baldan, and O. Beijbom, “nuScenes: A multimodal dataset for autonomous driving,” Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 2020. [Online]. Available: http://arxiv.org/abs/1903.11027 [15] S. Ettinger, S. Cheng, B. Caine, C. Liu, H. Zhao, S. Pradhan, Y. Chai, B. Sapp, C. Qi, Y. Zhou, Z. Yang, A. Chouard, P. Sun, J. Ngiam, V. Vasudevan, A. McCauley, J. Shlens, and D. Anguelov, “Large scale interactive motion forecasting for autonomous driving: The Waymo Open Motion Dataset,” in Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV) , 2021, pp. 9710–9719. [16] Z. Zhou, J. Wang, Y. Li, and Y. Huang, “Query-Centric Trajectory Prediction,” in 2023 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) . IEEE, 2023, pp. 17 863–17 873. [Online]. Available: https://ieeexplore.ieee.org/document/10203873/ [17] Z. Zhou, Z. Wen, J. Wang, Y.-H. Li, and Y.-K. Huang, “QCNeXt: A Next-Generation Framework For Joint Multi-Agent Trajectory Prediction,” Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 2023. [Online]. Available: http://arxiv.org/abs/2306.10508 [18] M. Wang, H. Zou, Y. Liu, Y. Wang, and G. Li, “A joint prediction method of multi-agent to reduce collision rate,” 2024. [Online]. Available: http://arxiv.org/abs/2411.07612 [19] H. Liu, L. Chen, Y. Qiao, C. Lv, and H. Li, “Reasoning multi-agent behavioral topology for interactive autonomous driving,” in 
+
+Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 2024, pp. 15 918–15 928. [20] S. Jain and B. C. Wallace, “Attention is not Explanation,” 
+
+Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers) , 2019. [Online]. Available: http://arxiv.org/abs/1902.10186 [21] J. Adebayo, J. Gilmer, M. Muelly, I. Goodfellow, M. Hardt, and B. Kim, “Sanity Checks for Saliency Maps,” in Advances in Neural Information Processing Systems , vol. 31. Curran Associates, Inc., 2018. [22] E. Ahmadi, R. Mercurius, S. Alizadeh, K. Rezaee, and A. Rasouli, “Curb Your Attention: Causal Attention Gating for Robust Trajectory Prediction in Autonomous Driving,” Proceedings of the IEEE International Conference on Robotics and Automation (ICRA) , 2025. [Online]. Available: http://arxiv.org/abs/2410.07191 [23] M. Pourkeshavarz, J. Zhang, and A. Rasouli, “CaDeT: A Causal Disentanglement Approach for Robust Trajectory Prediction in Autonomous Driving,” in 2024 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) . IEEE, 2024, pp. 14 874–14 884. [Online]. Available: https://ieeexplore.ieee.org/document/10657124/ [24] N. Tishby, F. C. Pereira, and W. Bialek, “The information bottleneck method,” 2000. [Online]. Available: http://arxiv.org/abs/physics/0004057 [25] J. Castro, D. G´ omez, and J. Tejada, “Polynomial calculation of the Shapley value based on sampling,” Computers & Operations Research ,vol. 36, no. 5, pp. 1726–1730, May 2009. [26] V. Petsiuk, A. Das, and K. Saenko, “RISE: Randomized Input Sam-pling for Explanation of Black-box Models,” Sep. 2018. [27] N. Hama, M. Mase, and A. B. Owen, “Deletion and insertion tests in regression models,” Journal of Machine Learning Research , vol. 23, no. 1, 2022. [28] J. Yu, J. Cao, and R. He, “Improving Subgraph Recognition with Variational Graph Information Bottleneck,” in 2022 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) .New Orleans, LA, USA: IEEE, Jun. 2022, pp. 19 374–19 383. [Online]. Available: https://ieeexplore.ieee.org/document/9880086/ [29] M. Federici, A. Dutta, P. Forr´ e, N. Kushman, and Z. Akata, “Learning Robust Representations via Multi-View Information Bottleneck,” Feb. 2020. [Online]. Available: http://arxiv.org/abs/2002.07017
