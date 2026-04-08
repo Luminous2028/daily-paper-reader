@@ -1,0 +1,1019 @@
+Title: ProOOD: Prototype-Guided Out-of-Distribution 3D Occupancy Prediction
+
+URL Source: https://arxiv.org/pdf/2604.01081v1
+
+Published Time: Thu, 02 Apr 2026 01:27:38 GMT
+
+Number of Pages: 19
+
+Markdown Content:
+# ProOOD: Prototype-Guided Out-of-Distribution 3D Occupancy Prediction 
+
+## Yuheng Zhang 1 Mengfei Duan 1 Kunyu Peng 2,3,∗ Yuhang Wang 1 Di Wen 2
+
+## Danda Pani Paudel 3 Luc Van Gool 3 Kailun Yang 1,∗
+
+> 1
+
+Hunan University 2Karlsruhe Institute of Technology 3INSAIT, Sofia University “St. Kliment Ohridski” Misclassified as Bicyclist Misclassified as Bicyclist                    
+
+> Low OOD score High OOD score
+> Clothing
+> Image with OOD Object
+> OOD Ground Truth OOD Detection Result OOD Detection Result
+> 3D Occupancy P rediction R esult
+> SGN ProOOD (Ours) 14.01
+> Occupancy Performance
+> Long-tail Performance
+> OOD Performance (AuPRC)
+> ProOOD (+SGN)
+> VoxDet
+> ProOOD (+VoxDet)
+> SGN
+> (a) (b)
+> 3D Occupancy P rediction R esult
+> 14.51 (+3.6%)
+> 17.77
+> 18.12 (+2.0%)
+> 3.48
+> 4.35 (+24.8%)
+> 6.17
+> 6.34 (+2.8%)
+> 8.22
+> 27.56 (+19.34)
+> 4.57
+> 21.95 (+17.38)
+
+Figure 1. (a) Qualitative results on SemanticKITTI. The top row displays semantic occupancy predictions. The bottom row displays OOD detection maps, where OOD scores are visualized from low (blue) to high (red). (b) Performance comparisons with baselines. For SemanticKITTI, we report occupancy mIoU in the top panel and long-tailed classes mIoU in the middle panel. For VAA-KITTI, we report OOD detection performance using AuP RC r in the bottom panel. 
+
+## Abstract 
+
+3D semantic occupancy prediction is central to autonomous driving, yet current methods are vulnerable to long-tailed class bias and out-of-distribution (OOD) inputs, often over-confidently assigning anomalies to rare classes. We present ProOOD, a lightweight, plug-and-play method that cou-ples prototype-guided refinement with training-free OOD scoring. ProOOD comprises (i) prototype-guided semantic imputation that fills occluded regions with class-consistent features, (ii) prototype-guided tail mining that strengthens rare-class representations to curb OOD absorption, and (iii) EchoOOD, which fuses local logit coherence with local and global prototype matching to produce reliable voxel-level OOD scores. Extensive experiments on five datasets demonstrate that ProOOD achieves state-of-the-art perfor-mance on both in-distribution 3D occupancy prediction and OOD detection. On SemanticKITTI, it surpasses baselines by +3.57% mIoU overall and +24.80% tail-class mIoU; on VAA-KITTI, it improves AuPRC r by +19.34 points, with consistent gains across benchmarks. These improvements yield more calibrated occupancy estimates and more reli-able OOD detection in safety-critical urban driving. The source code is publicly available at https://github. 
+
+> ∗
+
+Corresponding authors (e-mail: kailun.yang@hnu.edu.cn, kunyu.peng@kit.edu ). 
+
+com/7uHeng/ProOOD .
+
+## 1. Introduction 
+
+Accurate semantic perception is vital for autonomous driv-ing, enabling reliable understanding of complex environ-ments for safe planning and navigation [28, 82]. How-ever, point cloud and Bird’s-Eye-View (BEV) methods, while effective for object localization, are constrained by sparse or top-down representations, limiting dense geomet-ric reasoning [47, 53, 69, 70]. To overcome this, 3D se-mantic occupancy prediction has emerged as a promising paradigm that generates voxel-level, geometry-aware se-mantic maps for precise spatial reasoning and safer motion planning [7, 92]. Recent camera-based approaches [34, 51, 53, 62, 63, 80] further improve joint geometric-semantic modeling, advancing scene comprehension and planning re-liability. However, autonomous vehicles operate in com-plex real-world environments where unknown objects and anomalous scenarios are prevalent, including construction barriers, animals, and extreme weather conditions [1, 15, 18, 39, 57, 58, 81, 96]. These situations often lie outside the training distribution, posing severe challenges to model reli-ability. Out-of-distribution detection for 3D occupancy pre-diction (OccOoD) is crucial for reliable scene understand-ing in safety-critical applications [107]. It enables models 
+
+> arXiv:2604.01081v1 [cs.CV] 1 Apr 2026
+
+to identify and handle novel environments, enhancing ro-bustness and trustworthiness in real-world deployment. Un-like BEV-based OOD detection, OccOoD operates in full 3D space, capturing volumetric uncertainties that BEV pro-jections overlook, which is vital for accurate obstacle per-ception and safe navigation and autonomous. Zhang et al. [107] pioneered OccOoD benchmarks, yet their method suffers from overconfident misclassification under distribution shifts, where even trivial anomalies ( e.g ., 
+
+clothing ) are falsely recognized as in-distribution classes (e.g ., bicyclist ), as shown in Fig. 1(a). This reveals a key limitation: current models lack principled mechanisms to jointly model long-tail calibration and voxel-level uncer-tainty, both essential for robust 3D OOD detection. In practice, existing models tend to show strong classification ,forcefully assigning anomalous objects to rare known cate-gories due to overconfidence in dominant classes and poor calibration for infrequent ones. As shown in Fig. 1(b), this overconfidence results in degraded OOD detection perfor-mance despite high in-distribution accuracy. This stems from two interrelated issues. First, models trained on long-tailed datasets such as SemanticKITTI [4], where rare classes constitute less than two percent of samples, tend to overassign ambiguous regions to dominant categories due to poor calibration on tail classes. Second, while existing OOD scoring methods, e.g ., maximum softmax [59, 94], entropy [93, 108], and energy [11, 90] are tailored for per-class classification tasks, recent studies [107] indicate lim-ited performance when applied directly to voxel-level pre-diction tasks, due to the absence of mechanisms for captur-ing spatial structure and semantic context in 3D scenes. This technical limitation reflects a deeper issue: the model lacks adequate mechanisms to represent tail-class semantics and express uncertainty towards unseen objects, which are both essential for the OccOoD task. Therefore, OOD detection and long-tail learning are inherently cou-pled in 3D occupancy prediction. Better recognition of tail classes improves robustness to rare in-distribution objects and enhances OOD sensitivity by reducing prediction over-confidence and improving model calibration. Although recent studies have examined OOD detection under sensor corruptions in OCCUQ [26] and proposed semantic-aware anomaly scoring for post-hoc detection in OccOoD [107], these efforts have not sufficiently explored the influence of long-tail class distributions on OOD detec-tion performance within 3D occupancy prediction. More importantly, they lack a unified framework explicitly link-ing long-tail learning with uncertainty quantification in the occupied voxel space. Without such a principled connection and joint optimization, existing methods remain limited in achieving robust and generalizable OccOoD performance across diverse and imbalanced real-world scenarios. To address these challenges, we propose ProOOD, a prototype-guided framework that unifies long-tail learning and OOD detection for 3D occupancy prediction. By lever-aging class-wise prototypes, ProOOD enhances semantic completion, strengthens tail-class representation, and quan-tifies voxel-wise uncertainty, achieving robust and gen-eralizable OccOoD performance. Our approach consists of three key components: First, depth-based query meth-ods [51, 102] often rely on local geometric consistency for occlusion completion, which fails to ensure semantic plau-sibility. We introduce Prototype-Guided Semantic Impu-tation (PGSI) to improve completion quality by aligning filled regions with class-level semantic prototypes. Sec-ond, we mitigate the strong classification by introducing the Prototype-Guided Tail Mining (PGTM) module, thereby enhancing the model’s modeling capability for rare cate-gories and improving performance on both occupancy pre-diction and OOD detection. Third, we propose EchoOOD, a prototype-based scoring mechanism that enforces semantic consistency via three cues: local logit alignment, local pro-totype matching, and global prototype matching, enabling effective OOD detection. Finally, the ProOOD solution is consistently beneficial atop mainstream voxel-based frame-works, e.g ., SGN [63] and VoxDet [49] (see Fig. 1(b)). Extensive experiments on five benchmarks show that ProOOD achieves state-of-the-art performance on both in-distribution 3D occupancy prediction and out-of-distribution detection, generalizing to real-world urban driving scenes. On SemanticKITTI [4], it surpasses the baseline by 3.57% mIoU overall and achieves a 24 .80% IoU gain on tail classes. On VAA-KITTI [107], these improve-ments translate to a 19 .34 points gain in AuPRC r , reflecting enhanced reliability for safety-critical perception tasks. Our contributions are summarized as follows: • We present ProOOD, the first to address OccOoD from a voxel prototype-guided perspective that jointly improves 3D occupancy prediction and OOD detection. • We introduce Prototype-Guided Semantic Imputation and Prototype-Guided Tail Mining to refine semantic comple-tion and strengthen rare-class representation. • We design EchoOOD, a prototype-based scoring strategy enforcing both local and global semantic consistency for reliable voxel-level OOD detection. • Extensive experiments across multiple benchmarks show that ProOOD achieves state-of-the-art in-distribution and OOD performance, yielding significant gains on tail classes and effective generalization to real-world scenes. 
+
+## 2. Related Work 
+
+3D Occupancy Prediction. 3D occupancy prediction aims to recover the occupancy state and semantic label of each voxel from sensor observations. Recent advances in 3D representation [2, 31, 32, 49, 62, 99, 113], context model-ing [10, 44, 56], modality fusion [12, 45, 104, 105, 110], and generative learning [19, 79, 86, 91, 112] have col-lectively improved both estimation quality and efficiency. Prototype-based queries are explored [38, 68], but remain agnostic to the long-tail distribution challenge. Meanwhile, recent works on open-vocabulary perception [5, 35, 48, 84, 98, 103, 109, 111] and occupancy world models [23, 36, 46, 50] extend semantic understanding beyond closed sets and mitigate long-tail issues, but remain ineffective under OOD conditions, failing to generalize beyond training semantic space. OccOoD [107] and OCCUQ [26] introduce OOD awareness into occupancy prediction, enabling uncertainty estimation [77, 89] and unseen semantics detection in 3D scenes. Yet, OccOoD lacks feature-level OOD detection, whereas OCCUQ mainly targets sensor-failure OOD cases. Although several works [41, 88, 97, 101] reveal the chal-lenges of long-tail categories through class re-balancing or feature enhancement, they still struggle to maintain robust-ness across OOD and long-tail scenarios. In real-world ap-plications, rare or unseen categories are often misidentified, posing potential safety risks. In contrast, our method lever-ages prototype learning to model representations of long-tail categories, enabling more robust and comprehensive scene understanding in real-world driving. 
+
+Out-of-Distribution Segmentation. OOD segmentation aims to identify anomalies in scenes while maintaining ac-curate recognition of in-distribution classes [3, 6, 42]. Most existing methods [14, 22, 73] focus on 2D road-scene im-ages, using per-pixel or mask-based transformer architec-tures combined with uncertainty estimation [8, 13, 27, 37, 66], reconstruction [20, 24, 55, 85, 95], or outlier expo-sure strategies [9, 11, 21, 60, 83]. Recent efforts have begun extending OOD detection to LiDAR data [17, 29, 40, 54, 65, 75, 76], yet few consider its interaction with long-tailed class distributions. In 3D scenes, long-tailed class distributions further complicate OOD detection: rare classes have limited training samples, which can cause se-mantic ambiguity and lead the model to misclassify anoma-lies as tail instances or overlook unseen objects. Recent studies [16, 33, 41, 64, 71, 101] explicitly address the long-tail problem to improve tail-class recognition. Some ap-proaches [26, 107] integrate OOD detection into 3D tasks, leveraging uncertainty quantification and post-hoc detection to identify unseen classes and anomalies. However, effec-tively combining long-tail learning with OOD detection in 3D remains underexplored. Our method explicitly strength-ens tail-class representations, thereby enhancing both se-mantic and overall OOD understanding performance. 
+
+## 3. Methodology 
+
+3.1. Preliminary 
+
+Task and notation. Given single or multi-view images, we estimate a voxel grid of size (H, W, Z ). Let F ∈
+
+RH×W ×Z×C denote the 3D feature volume and L ∈
+
+RH×W ×Z×Kcls represent the class logits for Kcls semantic classes. An occupancy head predicts semantic results ˆY ∈{0, . . . , K cls }H×W ×Z . An OOD scoring function f yields a voxel-wise anomaly map A = f (F, L) ∈ [0 , 1] H×W ×Z
+
+without extra supervision or training. 
+
+3.2. Method Overview 
+
+3D occupancy prediction aims to reconstruct a complete 3D scene representation from sparse and partial observations. This task is inherently challenging due to occlusions and the structural complexity of real-world scenes [82]. Current methods [63, 102] over-rely on geometric consistency to fill occluded regions, under-modeling long-tail classes and lacking effective OOD voxel sensitivity. To address these, we propose ProOOD , a plug-and-play method that lever-ages class-wise voxel prototypes (Sec. 3.3) to guide seman-tic completion in unobserved regions while simultaneously enhancing sensitivity to tail classes and out-of-distribution objects, all without modifying the backbone. Unlike meth-ods that use prototypes as query tokens [38, 68], ProOOD actively refines intermediate features through prototype-guided modulation, enabling consistent improvement in both long-tail performance and OOD awareness. As shown in Fig. 2, the pipeline begins with a 2D im-age encoder that extracts multi-scale features F 2D , which are projected into an initial 3D volume F 3D through the view transformation module. A depth-guided proposal then generates coarse 3D features F 3D
+
+> coarse
+
+. The Prototype-Guided Semantic Imputation (PGSI) module refines F 3D
+
+> coarse
+
+by filling occluded areas with semantically consistent con-tent. The Prototype-Guided Tail Mining (PGTM) module subsequently follows, identifying and reinforcing voxels likely belonging to underrepresented classes to improve cal-ibration and reduce overconfidence in dominant categories (Sec. 3.4). The enhanced features are then passed to the original 3D backbone to produce refined representations 
+
+F 3D
+
+> refined
+
+. From these, semantic occupancy predictions are derived via the occupancy head, and OOD scores are com-puted by the EchoOOD mechanism (Sec. 3.5). 
+
+3.3. Class-wise Voxel Prototype Learning 
+
+Voxel features in 3D scenes tend to form compact, well-separated clusters by semantic class, which motivates a prototype-based formulation. By learning representative prototypes per class, our method enforces semantic con-sistency across the occupancy field, improving spatial rea-soning and scene understanding. For each non-empty class 
+
+k ∈ { 1, . . . , K cls }, we maintain a global exponential mov-ing–average (EMA) prototype pg 
+
+> k
+
+∈ RC that tracks the canonical representation of that class over training. Pro-totypes are updated only with ground-truth voxels to ensure semantic purity, using refined voxel features x(t) 
+
+> i
+
+extracted RGB 
+
+> View
+> Transformation
+> 2D
+
+F
+
+> Image
+> Encoder
+> 3D
+> coarse
+
+F aux 
+
+> occ
+
+L
+
+> Prototype
+> Generator
+
+Coarse Prototype s
+
+> PGSI
+> PGTM
+> 3D
+> refined
+
+F
+
+> Prototype
+> Generator
+
+Occupancy 
+
+Head 
+
+> EchoOOD
+
+(a)   
+
+> Group by Label
+> Class-wise Mean
+> EMA Update
+> Maturity Gating
+> Class-wise Prototype
+
+Prototype Generator 
+
+(d)  
+
+> Unobserved
+> Regions
+> Coarse Prototype s
+> Flatten & Normalize
+> Similarity & Attention
+> Proto Weighted Sum
+
++
+
+> Non-empty & Masked
+> Unobserved
+> Enhanced
+> Features
+
+Prototype-Guided 
+
+Semantic Imputation (PGSI) 
+
+> 3D
+> coarse
+
+F
+
+(b) 
+
+Prototype-Guided Tail Mining (PGTM)  
+
+> Tail Prototype s
+> Flatten & Normalize
+> Compute  Similarity
+> Top-K Selection
+> Tail  Indices
+> TailProtoWeighted Sum
+
++ 
+
+> Tail Enhanced
+> Features
+> 3D
+> coarse
+
+F
+
+> Tail
+
+L
+
+(c) 
+
+Refined Prototype s 
+
+> Coarse Prototype s
+
+Figure 2. Overview of the proposed ProOOD framework. Coarse 3D features are derived from a 2D backbone and a view transformation module. These features are then refined by PGSI and PGTM modules, which leverage class-wise prototypes updated via EMA to enhance semantic completion and improve tail-class sensitivity. The resulting refined features are used to update the class prototypes, which in turn support both semantic occupancy prediction and OOD detection through the EchoOOD mechanism. 
+
+from F 3D 
+
+> refined
+
+at iteration t; empty voxels (class 0) are ex-cluded. Let Ωgt   
+
+> k(t)
+
+= { i | yi = k in the current batch },where yi denotes the ground-truth label. With EMA mo-mentum β ∈ (0 , 1) , indicator 1{·} , and stop-gradient oper-ator sg( ·), the update is: 
+
+pg 
+
+> k
+> (t)
+
+= pg 
+
+> k
+> (t−1)
+
++ γ(t)
+
+> k
+
+
+
+m(t) 
+
+> k
+
+− pg
+
+> k
+> (t−1)
+
+
+
+,γ(t) 
+
+> k
+
+= β 1
+
+n
+
+Ωgt  
+
+> k
+> (t)
+
+> 0
+
+o
+
+,
+
+m(t) 
+
+> k
+
+= 1
+
+Ωgt  
+
+> k(t)
+
+X 
+
+> i∈Ωgt
+> k(t)
+
+sg  x(t)
+
+> i
+
+.
+
+(1) This design leverages supervised evidence while remaining aligned with the evolving embedding space. If Ωgt   
+
+> k(t)
+
+= 0 ,the update is skipped. The stop-gradient prevents backprop-agation from updating prototypes and avoids destabilizing the feature encoder. 
+
+Maturity gating. Prototypes of poor quality fail to effec-tively distinguish between categories, limiting the model’s ability to model long-tail classes; to prevent such immature prototypes from influencing downstream modules, we gate their usage while maintaining continuous EMA updates throughout training. Let σ2,(t) 
+
+> k
+
+= Var  {x(t) 
+
+> i
+
+| yi = k}
+
+denote the current-batch intra-class variance and define a quality score q(t) 
+
+> k
+
+= 1  
+
+> σ2,(t)
+> k+ϵ
+
+with a small ϵ > 0. A class-k
+
+prototype is consulted only if t ≥ twarm , q(t) 
+
+> k
+
+> θ t, and 
+
+Ωgt   
+
+> k(t)
+
+≥ nmin , where 
+
+θt = θmax for t ≥ twarm , (2) and θmax is a positive scalar calibrated to the empirical range of q(t) 
+
+> k
+
+; nmin ∈ N is a small minimum-count thresh-old ( e.g ., nmin = 2 ) to avoid unreliable statistics. This gate applies to the prototype usage in PGSI and PGTM (Sec. 3.4) as well as to the global-prototype component of EchoOOD (Sec. 3.5); EMA updates proceed irrespective of the gate. 
+
+Normalization and local vs. global prototypes. For cosine-based operations used later, we employ numerically safe L2-normalized prototypes ¯pg 
+
+> k
+
+= pg
+
+> k
+
+/ max  ∥pg
+
+> k
+
+∥2, ϵ 
+
+with a small ϵ > 0. We distinguish these global EMA pro-totypes from the local scene-specific prototypes pℓk, which are constructed on-the-fly from confident predictions within a scene and are used by EchoOOD for local consistency scoring (Sec. 3.5). The former provide stable class anchors across scenes, the latter capture scene-local coherence. 
+
+3.4. Prototype-Guided Refinement 
+
+Prototype-Guided Semantic Imputation (PGSI). In un-observed regions, multiple geometrically plausible comple-tions may exist, but only a subset is semantically valid. While conventional methods prioritize geometric consis-tency, they often overlook semantic coherence, which limits their generalization to OOD objects. We address this limita-tion by leveraging learned global class prototypes to guide feature imputation in unobserved regions (see Fig. 2(b)). We define the unobserved set as: 
+
+U = { i | occ i > θ, i / ∈ V } , (3) where occ i = sigmoid( g(xcoarse  
+
+> i
+
+)) is the occupancy proba-bility from an auxiliary head g(·), θ ∈ (0 , 1) is a confidence threshold, and V is the set of visible voxels from the depth-guided proposal. For i ∈ U with coarse feature xcoarse  
+
+> i
+
+(from 
+
+F 3D
+
+> coarse
+
+), PGSI computes attention over mature global proto-types {pg
+
+> k
+
+}Kcls  
+
+> k=1
+
+:
+
+aik = exp( −∥ xcoarse  
+
+> i
+
+− pg
+
+> k
+
+∥2/τ att )
+
+PKcls  
+
+> k′=1
+
+exp( −∥ xcoarse  
+
+> i
+
+− pg 
+
+> k′
+
+∥2/τ att ) . (4) We then apply a residual update with weight αpgsi ∈ (0 , 1] :
+
+˜xcoarse  
+
+> i
+
+= xcoarse  
+
+> i
+
++ αpgsi 
+
+> Kcls
+
+X
+
+> k=1
+
+aik pg
+
+> k
+
+!
+
+. (5) This creates a self-reinforcing cycle: better completions yield more accurate prototypes, while improved prototypes enhance semantic reasoning in ambiguous regions. 
+
+Prototype-Guided Tail Mining (PGTM). Enhancing mod-eling of tail classes is beneficial for overall performance. We select tail-class candidates at the early semantic stage, where features remain coarse yet are already aligned with class prototypes (Fig. 2(c)). Let Ctail be the set of rare classes. Using the PGSI-updated coarse features ˜xcoarse  
+
+> i
+
+, we compute cosine similarity with global prototypes: 
+
+sik = ¯˜xcoarse  
+
+> i
+
+, ¯pg 
+
+> k
+
+, (6) 
+
+¯˜xcoarse  
+
+> i
+
+= ˜ xcoarse 
+
+> i
+
+∥˜xcoarse  
+
+> i
+
+∥2. (7) Let max k sik be the index of the largest value in 
+
+{sik }Kcls  
+
+> k=1
+
+, and second max k sik the second-largest value. We define the margin ∆i = max k sik − second max k sik 
+
+and select candidates via a two-stage filter followed by a Top-K operator: 
+
+Itail = TopK 
+
+
+
+{ i | max 
+
+> k∈C tail
+
+sik > η, ∆i > δ }, K top 
+
+
+
+, (8) with thresholds η, δ and selection size Ktop ∈ N. For i ∈Itail , we aggregate tail-class prototypes: 
+
+wik = exp( sik /τ tail )
+
+P 
+
+> k′∈C tail
+
+exp( sik ′ /τ tail ) , (9) 
+
+˜xcoarse  
+
+> i
+
+← ˜xcoarse  
+
+> i
+
++ ψ
+
+ X 
+
+> k∈C tail
+
+wik pg
+
+> k
+
+
+
+, (10) where ψ(·) is a lightweight MLP and τtail > 0 is a temper-ature. A dedicated head ϕ(·) predicts logits at Itail and is supervised after the 3D backbone refinement by: 
+
+Ltail = 1
+
+|I tail |
+
+X
+
+> i∈I tail
+
+ℓCE 
+
+ ϕ(xrefined  
+
+> i
+
+), y i
+
+, (11) where xrefined  
+
+> i
+
+denotes the feature of voxel i in F 3D 
+
+> refined
+
+and 
+
+yi is the ground-truth label. This coarse-to-refined strat-egy uses early semantic signals for candidate selection Label Filter 
+
+> Average
+> (a)
+> Prediction
+> Filter
+> Average
+> Local Voxel
+> Prototypes
+> Global Voxel
+> Prototypes
+> t-1
+> t
+> (b)
+> EchoOOD
+> t-1
+> t
+> Local ProtoOOD
+> Global ProtoOOD
+> Local LogitOOD
+> Complementary OOD Fusion
+> OOD Map
+> EMA
+
+Figure 3. (a) Generation of Local and Global Voxel Prototypes. (b) EchoOOD. It computes OOD maps via three cues: local logit alignment, and local/global prototype matching. 
+
+while grounding supervision on high-fidelity features, sig-nificantly improving rare-class performance. 
+
+Prototype-Based Contrastive Learning (PBCL). To en-force global semantic consistency, we apply a prototype-based contrastive loss on F 3D
+
+> refined
+
+. Let S denote the set of non-empty voxels with ground-truth labels. For non-empty voxels i ∈ S :
+
+si,k = ¯xi, sg(¯ pg
+
+> k
+
+) , k = 1 , . . . , K cls , (12) 
+
+πi,k = exp( si,k /τ cl )
+
+PKcls  
+
+> j=1
+
+exp( si,j /τ cl ) , (13) 
+
+Lproto = − 1
+
+|S| 
+
+X
+
+> i∈S
+
+log πi,y i . (14) where ¯xi = xi/∥xi∥2, τcl > 0 is a temperature, and sg( ·)
+
+stops gradients from flowing into prototypes. This loss is activated after prototype maturity is reached, promoting intra-class compactness and inter-class separation. 
+
+3.5. EchoOOD: Unsupervised Local & Global Pro-totype Scoring 
+
+Detecting out-of-distribution regions is critical for safe and reliable 3D scene understanding, particularly in real-world deployments where novel objects may appear. Importantly, this challenge is exacerbated in long-tailed settings. Rare classes often exhibit low feature density and high intra-class variance, which can cause models to misattribute uncertain predictions to these underrepresented categories. Unlike conventional OOD detection methods that re-quire auxiliary networks, we propose EchoOOD, aprototype-driven scoring mechanism within ProOOD that leverages the voxel prototypes (see Fig. 3(a)) already learned during occupancy prediction. ProOOD’s enhanced modeling of occluded regions and tail classes provides richer semantic priors, directly boosting EchoOOD’s de-tection performance. As illustrated in Fig. 3(b), EchoOOD computes three complementary OOD scores per voxel: Lo-cal prototype score (intra-class feature consistency), Local Method IoU road (15.30%) sidewalk (11.13%) parking (1.12%) other-grnd. (0.56%) building (14.1%) car (3.92%) truck (0.16%) bicycle (0.03%) motorcycle (0.03%) other-veh. (0.20%) vegetation (39.3%) trunk (0.51%) terrain (9.17%) person (0.07%) bicyclist (0.07%) motorcyclist (0.05%) fence (3.90%) pole (0.29%) traf.-sign (0.08%) mIoU 
+
+Tail 
+
+mIoU 
+
+SemanticKITTI 
+
+MonoScene [7] 34.16 54.70 27.10 24.80 5.70 14.40 18.80 3.30 0.50 0.70 4.40 14.90 2.40 19.50 1.00 1.40 0.40 11.10 3.30 2.10 11.08 2.29 TPVFormer [30] 34.25 55.10 27.20 27.40 6.50 14.80 19.20 3.70 1.00 0.50 2.30 13.90 2.60 20.40 1.10 2.40 0.30 11.00 2.90 1.50 11.26 2.25 OccFormer [106] 34.53 55.90 30.30 31.50 6.50 15.70 21.60 1.20 1.50 1.70 3.20 16.80 3.90 21.30 2.20 1.10 0.20 11.90 3.80 3.70 12.32 2.64 VoxFormer [51] 42.95 53.90 25.30 21.10 5.60 19.80 20.80 3.50 1.00 0.70 3.70 22.40 7.50 21.30 1.40 2.60 0.20 11.10 5.10 4.90 12.20 3.29 HASSC [87] 43.40 54.60 27.70 23.80 6.20 21.10 22.80 4.70 1.60 1.00 3.90 23.80 8.50 23.30 1.60 4.00 0.30 13.10 5.80 5.50 13.34 3.92 Symphonies [34] 42.19 58.40 29.30 26.90 11.70 24.70 23.60 3.20 3.60 2.60 5.60 24.20 10.00 23.10 3.20 1.90 2.00 16.10 7.70 8.00 15.04 5.41 SHTOcc [101] - 57.80 28.90 26.30 12.00 23.40 24.60 3.60 3.50 1.80 4.60 24.90 11.00 22.50 3.70 3.80 0.10 17.10 8.70 9.40 15.07 5.65 CGFormer [102] 44.41 64.30 34.20 34.10 12.10 25.80 26.10 4.30 3.70 1.30 2.70 24.50 11.20 29.30 1.70 3.60 0.40 18.70 8.70 9.30 16.63 5.36 SGN [63] 41.88 57.80 29.20 27.70 5.20 23.90 24.90 2.70 0.40 0.30 4.00 24.20 10.00 25.80 1.10 2.50 0.30 14.20 7.40 4.40 14.01 3.48 ProOOD (+SGN) [63] 43.14 57.10 28.00 28.00 7.10 23.80 24.70 4.20 1.30 0.90 2.40 25.20 11.40 24.80 2.10 2.00 0.30 16.20 8.10 8.00 14.51 4.35 
+
+VoxDet* [102] 46.69 65.80 35.50 33.90 11.40 27.10 27.50 5.20 5.10 5.60 4.50 27.70 11.90 31.20 2.30 2.70 0.50 21.10 9.50 9.20 17.77 6.17 ProOOD (+VoxDet) 46.75 66.20 36.40 34.90 11.40 27.70 27.60 4.30 4.10 5.00 7.20 28.40 12.90 32.20 2.50 2.80 0.40 21.30 9.60 9.50 18.12 6.34 
+
+VAA-KITTI 
+
+SGN [63] 39.07 46.62 26.54 15.88 0.12 18.34 20.51 0.62 0.44 0.35 1.23 24.76 6.40 21.78 0.48 1.29 0.00 12.25 8.70 4.57 11.10 2.20 ProOOD (+SGN) 40.26 49.34 27.14 16.47 0.15 20.07 19.94 3.32 0.43 0.94 1.31 26.08 6.50 23.10 1.57 1.18 0.00 12.89 9.06 5.87 11.86 2.76 
+
+VoxDet [49] 41.60 55.93 27.12 21.33 0.02 22.81 20.38 5.77 3.27 1.08 4.14 27.36 6.03 23.13 1.09 1.70 0.00 15.73 8.83 4.68 13.18 3.33 ProOOD (+VoxDet) 40.88 56.41 28.20 23.77 0.19 21.73 21.32 7.00 2.89 3.78 3.57 27.07 6.41 21.21 2.62 1.98 0.00 15.96 9.06 6.05 13.63 3.96 
+
+Table 1. Quantitative results on the SemanticKITTI test set [4] and VAA-KITTI [107] (Single-Frame Evaluation for Fair Comparison). * denotes results reproduced using the official code implementation. 
+
+logit score (logit distribution coherence), and Global proto-type score (alignment to canonical class prototypes). These scores are fused via a maximum-aggregation strategy to produce a final OOD map robust to long-tail biases. Given a voxel-wise feature map F ∈ RH×W ×Z×C and its semantic prediction ˆY ∈ RH×W ×Z (here F = F 3D
+
+refined ), EchoOOD computes the following scores for voxels with 
+
+ˆyi > 0:
+
+Local logit score. We measure logit coherence within each predicted class via the class-wise mean logit: 
+
+μk = 1
+
+|Ωk|
+
+X
+
+j∈Ωk
+
+lj ,slocal-logit 
+
+i = 1 − ⟨li, μˆyi ⟩∥li∥2 ∥μˆyi ∥2
+
+,
+
+(15) where li ∈ RKcls denotes the logits for voxel i.
+
+Local prototype score. For each predicted non-empty class 
+
+k, we form a local scene-specific prototype by averaging features of confident voxels: 
+
+pℓk = 1
+
+|Ωk|
+
+X
+
+j∈Ωk
+
+xj ,
+
+Ωk = { j | ˆyj = k, gap j > τ conf },
+
+(16) where ˆyj is the predicted class label of voxel j, gap j =
+
+p(1) 
+
+j − p(2) 
+
+j is the softmax top-2 probability gap of lj , and 
+
+τconf ∈ (0 , 1) is a confidence threshold. The local prototype score is: 
+
+slocal-proto 
+
+i = 1 − ⟨xi, pℓ
+
+ˆyi ⟩∥xi∥2 · ∥ pℓ
+
+ˆyi ∥2
+
+. (17) 
+
+Global prototype score. We evaluate alignment between each voxel and its corresponding global EMA prototype: 
+
+sglobal-proto 
+
+i = 1 − ⟨xi, pgˆyi ⟩∥xi∥2 · ∥ pgˆyi ∥2
+
+. (18) 
+
+Fusion and empty voxels. Each component score is min–max normalized to [0 , 1] over the scene before fusion. The final score uses maximum aggregation: 
+
+sfused 
+
+i = max 
+
+
+
+slocal-logit 
+
+i , s global-proto 
+
+i , s local-proto 
+
+i
+
+
+
+, (19) where voxels predicted as empty (class 0) are assigned 
+
+sfused 
+
+i = min j sfused 
+
+j , i.e. , the minimum fused score across the entire scene. EchoOOD requires no additional parameters or training. It directly exploits the semantic prototypes maintained for occupancy prediction, providing an efficient plug-and-play solution for OOD detection in 3D occupancy prediction. VAA-KITTI VAA-KITTI-360 VAA-STU Methods Anomaly Score Methods AuPRC r ↑ AuROC ↑ AuPRC r ↑ AuROC ↑ AuPRC r ↑ AuROC ↑
+
+0.8m 1.0m 1.2m 0.8m 1.0m 1.2m 0.8m 1.0m 1.2m
+
+VoxDet [49] ASS [107] 4.57 8.36 14.02 59.52 11.79 25.08 48.49 50.76 1.45 3.05 5.89 59.52 SGN [63] 8.22 14.45 22.93 60.51 13.27 28.57 52.99 47.27 2.91 5.74 11.32 64.51 OccOoD [107] 10.80 16.05 23.42 61.96 14.26 29.72 54.35 47.84 3.05 6.15 11.39 65.37 
+
+Ours (+VoxDet) EchoOOD 21.95 36.97 56.49 60.99 12.75 26.81 50.08 47.24 2.74 5.09 8.82 55.11 Ours (+SGN) 27.86 43.55 62.65 64.31 14.56 30.83 57.50 46.91 7.98 14.54 24.21 62.11 
+
+Table 2. Quantitative OOD results on VAA-KITTI, VAA-KITTI-360, and VAA-STU datasets [107].                                                                                                                                                                                                                                                                                   
+
+> Method IoU car (2.85%) bicycle (0.01%) motorcycle (0.01%) truck (0.16%) other-veh. (5.75%) person (0.02%) road (14.98%) parking (2.31%) sidewalk (6.43%) other-grnd. (2.05%) building (15.67%) fence (0.96%) vegetation (41.99%) terrain (7.10%) pole (0.22%) traf.sign (0.06%) other-struct. (4.33%) other-obj. (0.28%) mIoU
+> Tail
+> mIoU
+> SSCBench-KITTI-360
+> MonoScene [7] 37.87 19.34 0.43 0.58 8.02 2.03 0.86 48.35 11.38 28.13 3.32 32.89 3.53 26.15 16.75 6.92 5.67 4.20 3.09 12.31 3.61 TPVFormer [30] 40.22 21.56 1.09 1.37 8.06 2.57 2.38 52.99 11.99 31.07 3.78 34.83 4.80 30.08 17.52 7.46 5.86 5.48 2.70 13.64 4.13 VoxFormer [51] 38.76 17.84 1.16 0.89 4.56 2.06 1.63 47.01 9.67 27.21 2.89 31.18 4.97 28.99 14.69 6.51 6.92 3.79 2.43 11.91 3.44 OccFormer [106] 40.27 22.58 0.66 0.26 9.89 3.82 2.77 54.30 13.44 31.53 3.55 36.42 4.80 31.00 19.51 7.77 8.51 6.95 4.60 13.81 4.92 Symphonies [34] 44.12 30.02 1.85 5.90 25.07 12.06 8.20 54.94 13.83 32.76 6.93 35.11 8.58 38.33 11.52 14.01 9.57 14.44 11.28 18.58 10.84 SGN [63] 46.22 28.20 2.09 3.02 11.95 3.68 4.20 59.49 14.50 36.53 4.24 39.79 7.14 36.61 23.10 14.86 16.14 8.24 4.95 17.71 8.17 ProOOD (+SGN) 46.62 27.23 2.75 4.23 12.06 5.76 4.83 60.07 14.02 36.57 5.03 40.92 7.13 36.96 22.84 14.15 15.47 8.82 4.93 17.99 8.35
+> VoxDet* [49] 48.22 28.94 3.88 5.23 16.20 6.58 6.15 62.02 16.27 39.69 5.34 43.36 9.10 38.73 22.79 17.22 19.74 10.27 7.99 19.97 10.92 ProOOD (+VoxDet) 48.23 28.89 3.77 7.23 18.83 6.49 5.83 62.31 16.23 40.08 5.36 43.75 9.29 38.66 22.51 17.28 19.42 10.67 8.25 20.27 11.52
+> VAA-KITTI-360
+> SGN [63] 39.68 20.68 0.05 0.00 0.00 2.92 0.00 47.59 14.66 24.71 2.56 32.83 3.52 28.68 11.63 7.44 8.67 4.29 5.52 11.99 3.10 ProOOD (+SGN) 39.38 22.17 0.05 0.00 0.00 0.05 2.10 48.19 16.50 25.48 3.62 33.75 2.89 28.08 12.86 8.78 10.29 5.57 4.71 12.52 3.71
+> VoxDet [49] 42.22 21.38 0.99 0.00 0.00 0.37 2.61 51.41 12.19 28.84 2.68 36.19 3.50 29.86 12.54 9.30 15.83 5.46 8.35 13.42 5.29 ProOOD (+VoxDet) 42.54 23.11 0.17 0.00 0.00 0.07 3.60 51.49 14.49 28.51 3.60 37.31 4.01 29.79 12.47 10.64 19.01 7.17 9.83 14.18 6.18
+
+Table 3. Quantitative results on the SSCBench-KITTI-360 test set [52] and VAA-KITTI-360 [107] (Single-Frame Evaluation for Fair Comparison). * denotes results reproduced using the official code implementation. 
+
+## 4. Experiments 
+
+4.1. Experiment Setup 
+
+Datasets. We evaluate ProOOD on five datasets: Se-manticKITTI [4] and SSCBench-KITTI-360 [52] for 3D occupancy prediction; VAA-KITTI [107], VAA-KITTI-360 [107], and VAA-STU [107] for out-of-distribution de-tection following OccOoD [107]. SemanticKITTI provides RGB images ( 1226 ×370 ) and occupancy labels with 20 se-mantic classes ( 19 objects + free space), split into 10 train, 
+
+1 val, and 11 test sequences. SSCBench-KITTI-360 of-fers 1408 ×376 RGB images and labels with 19 classes ( 18 
+
+objects + free space), using 7 train, 1 val, and 1 test se-quences. VAA-KITTI [107] and VAA-KITTI-360 [107] are derived from SemanticKITTI and SSCBench-KITTI-360, respectively, each containing 500 test images with synthetic anomalies. VAA-STU [107] is constructed from two high-anomaly sequences of STU [67], a real-world 3D point cloud dataset containing genuine anomalies, yielding 578 
+
+test images. The point cloud ground truths are voxelized to facilitate evaluation in the 3D occupancy space. For more details, please refer to the supplement. 
+
+Evaluation Metrics. For 3D occupancy prediction, we re-port IoU and mIoU following standard protocols, supple-mented by tail mIoU to assess performance on underrepre-sented classes. In SemanticKITTI, tail classes ( e.g. , truck :
+
+0.16% , traffic-sign : 0.08% ) collectively account for 2% of total voxels. In SSCBench-KITTI-360, classes include bi-cycle (0.01% ) and other-object (0.28% ), comprising 0.8% 
+
+voxels of the dataset. Please see the supplement for the full class distributions. For OOD detection, we adopt the metrics from OccOoD [107]: AuP RC r and AuROC , for performance evaluation. AuP RC r incorporates spatial tol-erance via ground-truth dilation at 0.8m, 1.0m, and 1.2m;
+
+AuROC captures global separation quality. 
+
+Implementation Details. We integrate ProOOD into sev-eral state-of-the-art occupancy methods, e.g. , SGN [63] and VoxDet [49], following their original training configura-Baseline PBCL PGSI PGTM IoU mIoU Tail mIoU                                                    
+
+> ✓43.60 14.55 4.07
+> ✓✓43.69 14.63 4.44 (+9.09%)
+> ✓✓✓44.09 14.76 4.58 (+3.15%)
+> ✓✓✓✓44.02 14.97 4.89 (+6.77%)
+> Table 4. Ablation study of each component on the Se-manticKITTI [4] validation set for 3D Occupancy prediction. Anomaly Score Methods VAA-KITTI AuPRC r↑AuROC ↑
+> 0.8m1.0m1.2m
+> Postpro 5.81 10.02 16.22 63.85 Energy 6.80 12.11 20.08 66.69
+> Entropy 7.38 12.91 21.05 66.24 ASS [107] 14.47 20.96 29.65 64.20 EchoOOD (Ours) 27.86 43.55 62.65 64.31 Table 5. Ablation studies of anomaly score methods on the VAA-KITTI dataset [107] for OccOoD evaluation.
+
+tions. All models are reimplemented using 4 NVIDIA RTX 3090 GPUs. To accommodate GPU memory constraints, we adjust the batch size per GPU, such as reducing from the original setting in VoxDet [49], which used 2 A100 GPUs. Our method only introduces 0.28 M additional parameters, preserving efficiency while boosting the OOD detection ca-pability. More details of implementation and hyperparame-ters are provided in the supplementary material. 
+
+4.2. Experimental Results 
+
+3D Occupancy Prediction. As shown in Tab. 1 and Tab. 3, we present the experimental results of 3D occupancy pre-diction. Our method consistently outperforms the baseline model while significantly improving performance on tail classes. For instance, on the SemanticKITTI dataset com-pared to SGN [63], ProOOD achieves a substantial 24 .8% 
+
+improvement in mIoU for tail categories. Moreover, on Oc-cOoD benchmarks, OOD objects severely degrade model performance, particularly for tail classes. ProOOD handles such cases more effectively and exhibits stronger robust-ness, thanks to its prototype-guided design that enhances se-mantic plausibility in occluded regions and improves mod-eling of tail classes. On VAA-KITTI, for example, it im-proves tail mIoU by +0 .56% over the baseline. 
+
+Out-of-Distribution Detection. OccOoD, inherently built upon 3D occupancy prediction, requires balancing in-distribution confidence with overall accuracy. Our proposed method achieves new state-of-the-art performance not only in 3D occupancy prediction, but also in out-of-distribution detection, as shown in Tab. 2, with consistent gains in 
+
+AuP RC r across VAA-KITTI, VAA-KITTI-360, and the real-world anomaly dataset: VAA-STU. These gains arise from improved long-tail modeling during occupancy pre-diction, which mitigates strong classification and enhances the sensitivity to OOD voxels, alongside the incorporation of both local and global prototypes in EchoOOD, which en-able more precise identification of OOD voxels. 
+
+Visualization. As shown in Fig. 1, we compare the oc-cupancy and OOD visualization results of SGN [63] and the proposed method. SGN fails to accurately predict the occupancy state of the OOD object “ clothing ”, retaining only a few scattered voxels and assigning it a low anomaly score. In contrast, benefiting from the proposed PGSI mod-ule, ProOOD precisely reconstructs the occupancy state, while the PGTM further strengthens sensitivity to OOD ob-jects, resulting in a significantly higher anomaly score for it. More qualitative results are in the supplement. 
+
+4.3. Ablation Studies 
+
+In this section, we evaluate the effectiveness of each com-ponent and different anomaly score methods. More ablation studies are shown in the supplement. 
+
+Components. To dissect the contribution of each com-ponent, we conduct an ablation study as presented in Tab. 4. By introducing the Prototype-Based Contrastive Loss (PBCL), tail mIoU increases by 9.09% , validating its role in enhancing intra-class compactness and inter-class separation. Incorporating PGSI improves IoU, demonstrat-ing its effectiveness in recovering occluded regions through voxel prototypes. Furthermore, the PGTM increases mIoU by 1.42% and tail mIoU by 6.77% , highlighting its ability to effectively mine underrepresented tail-class voxels. 
+
+Anomaly Score Methods. Tab. 5 demonstrates the effec-tiveness of our proposed EchoOOD. Compared to the other scoring methods, EchoOOD improves AuP RC r by more than 12% across all scales, while maintaining comparable 
+
+AuROC . This validates that explicitly modeling long-tail categories robustly enhances OOD voxel detection, and fur-ther confirms the consistent efficacy of leveraging both local and global voxel prototypes for OOD detection. 
+
+## 5. Conclusion 
+
+In this paper, we introduce ProOOD, a plug-and-play method that enhances representations from a voxel prototype-guided perspective to simultaneously improve both 3D occupancy prediction and out-of-distribution detec-tion. ProOOD improves reconstruction in occluded regions through learned voxel prototypes and explicitly identifies latent long tail voxels, enabling us to investigate the impact of long tail categories on out-of-distribution 3D occupancy prediction. We further introduce EchoOOD, a lightweight prototype-based scoring mechanism for OOD detection, which effectively discriminates novel OOD voxels. Exten-sive experiments demonstrate that ProOOD achieves state-of-the-art performance on both 3D occupancy prediction and OOD detection across multiple benchmarks. Acknowledgment 
+
+This work was supported in part by the National Natural Science Foundation of China (Grant No. 62473139), in part by the Hunan Provincial Research and Development Project (Grant No. 2025QK3019), in part by the State Key Laboratory of Autonomous Intelligent Unmanned Systems (the opening project number ZZKF2025-2-10), and in part by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) - SFB 1574 - 471687386. This research was partially funded by the Ministry of Education and Science of Bulgaria (support for INSAIT, part of the Bulgarian National Roadmap for Research Infrastructure). 
+
+## References 
+
+[1] Omar Alama, Avigyan Bhattacharya, Haoyang He, Se-ungchan Kim, Yuheng Qiu, Wenshan Wang, Cherie Ho, Nikhil Keetha, and Sebastian Scherer. RayFronts: Open-set semantic ray frontiers for online scene understanding and exploration. arXiv preprint arXiv:2504.06994 , 2025. 1 [2] Zhengqi Bai, Wenjun Shi, Dongchen Zhu, Hanlong Kang, Guanghui Zhang, Gang Ye, Yang Xiao, Lei Wang, Xiaolin Zhang, Bo Li, and Jiamao Li. CVFormer: Learning circum-view representation and consistency for vision-based occu-pancy prediction via transformers. In ICRA , 2024. 2 [3] Ben Batten and Alessio Lomuscio. Improving weather-based OOD generalisation in lidar-based object detection models via adversarial training. In CVPRW , 2025. 3 [4] Jens Behley, Martin Garbade, Andres Milioto, Jan Quen-zel, Sven Behnke, Cyrill Stachniss, and Jurgen Gall. Se-manticKITTI: A dataset for semantic scene understanding of LiDAR sequences. In ICCV , 2019. 2, 6, 7, 8, 14, 15, 16, 17 [5] Simon Boeder, Fabian Gigengack, and Benjamin Risse. LangOcc: Open vocabulary occupancy estimation via vol-ume rendering. In 3DV , 2025. 3 [6] Daniel Bogdoll, Iramm Hamdard, Lukas Namgyu R¨ oßler, Felix Geisler, Muhammed Bayram, Felix Wang, Jan Imhof, Miguel de Campos, Anushervon Tabarov, Yitian Yang, Martin Gontscharow, Hanno Gottschalk, and J. Marius Z¨ ollner. AnoVox: A benchmark for multimodal anomaly detection in autonomous driving. In ECCVW , 2024. 3 [7] Anh-Quan Cao and Raoul De Charette. MonoScene: Monocular 3D semantic scene completion. In CVPR , 2022. 1, 6, 7, 14, 16 [8] Jun Cen, Peng Yun, Junhao Cai, Michael Yu Wang, and Ming Liu. Deep metric learning for open world semantic segmentation. In ICCV , 2021. 3 [9] Robin Chan, Matthias Rottmann, and Hanno Gottschalk. Entropy maximization and meta classification for out-of-distribution detection in semantic segmentation. In ICCV ,2021. 3 [10] Dubing Chen, Jin Fang, Wencheng Han, Xinjing Cheng, Junbo Yin, Chengzhong Xu, Fahad Shahbaz Khan, and Jianbing Shen. ALOcc: Adaptive lifting-based 3D seman-tic occupancy and cost volume-based flow predictions. In 
+
+ICCV , 2025. 2 [11] Hyunjun Choi, Hawook Jeong, and Jin Young Choi. Bal-anced energy regularization loss for out-of-distribution de-tection. In CVPR , 2023. 2, 3 [12] Wenbo Chu, Keyong Wang, Guofa Li, Bing Lu, Xiangyun Ren, Ling Zheng, Xiaolin Tang, and Keqiang Li. AFOcc: Multi-modal semantic occupancy prediction with accurate fusion. IEEE Sensors Journal , 2024. 2 [13] Charles Corbi` ere, Nicolas Thome, Avner Bar-Hen, Matthieu Cord, and Patrick P´ erez. Addressing failure pre-diction by learning model confidence. In NeurIPS , 2019. 3[14] Anja Delic, Matej Grcic, and Sinisa Segvic. Outlier detec-tion by ensembling uncertainty with negative objectness. In 
+
+BMVC , 2024. 3 [15] Yinan Deng, Jiahui Wang, Jingyu Zhao, Xinyu Tian, Guangyan Chen, Yi Yang, and Yufeng Yue. OpenGraph: Open-vocabulary hierarchical 3D graph representation in large-scale outdoor environments. IEEE Robotics and Au-tomation Letters , 2024. 1 [16] Baojie Fan, Xiaotian Li, Yuhan Zhou, Caixia Xia, Huijie Fan, Fengyu Xu, and Jiandong Tian. MGAF: LiDAR-camera 3D object detection with multiple guidance and adaptive fusion. IEEE Transactions on Pattern Analysis and Machine Intelligence , 2025. 3 [17] Ryan Faulkner, Luke Haub, Simon Ratcliffe, and Tat-Jun Chin. Finding outliers in a haystack: Anomaly detection for large pointcloud scenes. In ACPR , 2025. 3 [18] Lan Feng, Yang Gao, Eloi Zablocki, Quanyi Li, Wuyang Li, Sichao Liu, Matthieu Cord, and Alexandre Alahi. RAP: 3D rasterization augmented end-to-end planning. arXiv preprint arXiv:2510.04333 , 2025. 1 [19] Yuhang Gao, Xiang Xiang, Sheng Zhong, and Guoyou Wang. LOC: A general language-guided framework for open-set 3D occupancy prediction. arXiv preprint arXiv:2510.22141 , 2025. 3 [20] Matej Grcic, Petra Bevandic, Zoran Kalafatic, and Sinisa Segvic. Dense anomaly detection by robust learning on synthetic negative data. arXiv preprint arXiv:2112.12833 ,2021. 3 [21] Matej Grcic, Petra Bevandic, and Sinisa Segvic. DenseHy-brid: Hybrid anomaly detection for dense open-set recogni-tion. In ECCV , 2022. 3 [22] Matej Grcic, Josip Saric, and Sinisa Segvic. On advantages of mask-level recognition for outlier-aware segmentation. In CVPRW , 2023. 3 [23] Songen Gu, Wei Yin, Bu Jin, Xiaoyang Guo, Jun-ming Wang, Haodong Li, Qian Zhang, and Xiaoxiao Long. DOME: Taming diffusion model into high-fidelity controllable occupancy world model. arXiv preprint arXiv:2410.10429 , 2024. 3 [24] David Haldimann, Hermann Blum, Roland Siegwart, and Cesar Cadena. This is not what I imagined: Error detec-tion for semantic segmentation through visual dissimilarity. 
+
+arXiv preprint arXiv:1909.00676 , 2019. 3 [25] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for image recognition. In CVPR ,2016. 14 [26] Severin Heidrich, Till Beemelmanns, Alexey Nekrasov, Bastian Leibe, and Lutz Eckstein. OCCUQ: Exploring ef-ficient uncertainty quantification for 3D occupancy predic-tion. In ICRA , 2025. 2, 3 [27] Dan Hendrycks, Steven Basart, Mantas Mazeika, Andy Zou, Joseph Kwon, Mohammadreza Mostajabi, Jacob Steinhardt, and Dawn Song. Scaling out-of-distribution de-tection for real-world settings. In ICML , 2022. 3 [28] Yihan Hu, Jiazhi Yang, Li Chen, Keyu Li, Chonghao Sima, Xizhou Zhu, Siqi Chai, Senyao Du, Tianwei Lin, Wenhai Wang, Lewei Lu, Xiaosong Jia, Qiang Liu, Jifeng Dai, Yu Qiao, and Hongyang Li. Planning-oriented autonomous driving. In CVPR , 2023. 1 [29] Chengjie Huang, Van Duong Nguyen, Vahdat Abdelzad, Christopher Gus Mannes, Luke Rowe, Benjamin Th´ erien, Rick Salay, and Krzysztof Czarnecki. Out-of-distribution detection for LiDAR-based 3D object detection. In ITSC ,2022. 3 [30] Yuanhui Huang, Wenzhao Zheng, Yunpeng Zhang, Jie Zhou, and Jiwen Lu. Tri-perspective view for vision-based 3D semantic occupancy prediction. In CVPR , 2023. 6, 7, 16 [31] Yuanhui Huang, Wenzhao Zheng, Yunpeng Zhang, Jie Zhou, and Jiwen Lu. GaussianFormer: Scene as gaus-sians for vision-based 3D semantic occupancy prediction. In ECCV , 2024. 2 [32] Yuanhui Huang, Amonnut Thammatadatrakoon, Wenzhao Zheng, Yunpeng Zhang, Dalong Du, and Jiwen Lu. GaussianFormer-2: Probabilistic gaussian superposition for efficient 3D occupancy prediction. In CVPR , 2025. 2 [33] Chiyu Max Jiang, Mahyar Najibi, Charles R. Qi, Yin Zhou, and Dragomir Anguelov. Improving the intra-class long-tail in 3D detection via rare example mining. In ECCV , 2022. 3[34] Haoyi Jiang, Tianheng Cheng, Naiyu Gao, Haoyang Zhang, Tianwei Lin, Wenyu Liu, and Xinggang Wang. Sym-phonize 3D semantic scene completion with contextual in-stance queries. In CVPR , 2024. 1, 6, 7, 16 [35] Haochen Jiang, Yueming Xu, Yihan Zeng, Hang Xu, Wei Zhang, Jianfeng Feng, and Li Zhang. OpenOcc: Open vo-cabulary 3D scene reconstruction via occupancy represen-tation. In IROS , 2024. 3 [36] Bu Jin, Songen Gu, Xiaotao Hu, Yupeng Zheng, Xiaoyang Guo, Qian Zhang, Xiaoxiao Long, and Wei Yin. OccTENS: 3D occupancy world model via temporal next-scale predic-tion. arXiv preprint arXiv:2509.03887 , 2025. 3 [37] Sanghun Jung, Jungsoo Lee, Daehoon Gwak, Sungha Choi, and Jaegul Choo. Standardized max logits: A simple yet ef-fective approach for identifying unexpected road obstacles in urban-scene segmentation. In ICCV , 2021. 3 [38] Jungho Kim, Changwon Kang, Dongyoung Lee, Sehwan Choi, and Jun Won Choi. ProtoOcc: Accurate, efficient 3D occupancy prediction using dual branch encoder-prototype query decoder. In AAAI , 2025. 3 [39] Lingdong Kong, Wesley Yang, Jianbiao Mei, Youquan Liu, Ao Liang, Dekai Zhu, Dongyue Lu, Wei Yin, Xiaotao Hu, Mingkai Jia, Junyuan Deng, Kaiwen Zhang, Yang Wu, Tianyi Yan, Shenyuan Gao, Song Wang, Linfeng Li, Liang Pan, Yong Liu, Jianke Zhu, Wei Tsang Ooi, Steven C. H. Hoi, and Ziwei Liu. 3D and 4D world modeling: A survey. 
+
+arXiv preprint arXiv:2509.07996 , 2025. 1 [40] Michael K¨ osel, Marcel Schreiber, Michael Ulrich, Claudius Gl¨ aser, and Klaus Dietmayer. Revisiting out-of-distribution detection in LiDAR-based 3D object detection. In IV , 2024. 3[41] Jean Lahoud, Fahad Shahbaz Khan, Hisham Cholakkal, Rao Muhammad Anwer, and Salman Khan. Long-tailed 3D semantic segmentation with adaptive weight constraint and sampling. In ICRA , 2024. 3 [42] Zakaria Laskar, Tomas Vojir, Matej Grcic, Iaroslav Melekhov, Shankar Gangisetty, Juho Kannala, Jiri Matas, Giorgos Tolias, and C. V. Jawahar. A dataset for semantic segmentation in the presence of unknowns. In CVPR , 2025. 3[43] Mykola Lavreniuk. SPIdepth: Strengthened pose informa-tion for self-supervised monocular depth estimation. arXiv preprint arXiv:2404.12501 , 2024. 17 [44] Bohan Li, Xin Jin, Jiajun Deng, Yasheng Sun, Xiaofeng Wang, and Wenjun Zeng. Hierarchical context align-ment with disentangled geometric and temporal model-ing for semantic occupancy prediction. arXiv preprint arXiv:2412.08243 , 2024. 2 [45] Heng Li, Yuenan Hou, Xiaohan Xing, Xiao Sun, and Yany-ong Zhang. OccMamba: Semantic occupancy prediction with state space models. In CVPR , 2025. 2 [46] Leheng Li, Weichao Qiu, Yingjie Cai, Xu Yan, Qing Lian, Bingbing Liu, and Ying-Cong Chen. SyntheOcc: Synthe-size geometric-controlled street view images through 3D semantic MPIs. arXiv preprint arXiv:2410.00337 , 2024. 3[47] Miaoyu Li, Yachao Zhang, Xu Ma, Yanyun Qu, and Yun Fu. BEV-DG: Cross-modal learning under bird’s-eye view for domain generalization of 3D semantic segmentation. In 
+
+ICCV , 2023. 1 [48] Peizheng Li, Shuxiao Ding, You Zhou, Qingwen Zhang, Onat Inak, Larissa Triess, Niklas Hanselmann, Marius Cordts, and Andreas Zell. AGO: Adaptive grounding for open world 3D occupancy prediction. arXiv preprint arXiv:2504.10117 , 2025. 3 [49] Wuyang Li, Zhu Yu, and Alexandre Alahi. VoxDet: Re-thinking 3D semantic occupancy prediction as dense object detection. In NeurIPS , 2025. 2, 6, 7, 8, 13, 16, 17, 18 [50] Xiang Li, Pengfei Li, Yupeng Zheng, Wei Sun, Yan Wang, and Yilun Chen. Semi-supervised vision-centric 3D occu-pancy world model for autonomous driving. In ICLR , 2025. 3[51] Yiming Li, Zhiding Yu, Christopher B. Choy, Chaowei Xiao, Jos´ e M. ´ Alvarez, Sanja Fidler, Chen Feng, and An-ima Anandkumar. VoxFormer: Sparse voxel transformer for camera-based 3D semantic scene completion. In CVPR ,2023. 1, 2, 6, 7, 16, 17 [52] Yiming Li, Sihang Li, Xinhao Liu, Moonjun Gong, Kenan Li, Nuo Chen, Zijun Wang, Zhiheng Li, Tao Jiang, Fisher Yu, Yue Wang, Hang Zhao, Zhiding Yu, and Chen Feng. SSCBench: A large-scale 3D semantic scene completion benchmark for autonomous driving. In IROS , 2024. 7, 16 [53] Zhiqi Li, Wenhai Wang, Hongyang Li, Enze Xie, Chong-hao Sima, Tong Lu, Yu Qiao, and Jifeng Dai. BEVFormer: Learning bird’s-eye-view representation from multi-camera images via spatiotemporal transformers. In ECCV , 2022. 1 [54] Zizhao Li, Zhengkang Xiang, Jiayang Ao, Joseph West, and Kourosh Khoshelham. Relative energy learning for LiDAR out-of-distribution detection. arXiv preprint arXiv:2506.21185 , 2025. 3 [55] Krzysztof Lis, Krishna Nakka, Pascal Fua, and Mathieu Salzmann. Detecting the unexpected via image resynthe-sis. In ICCV , 2019. 3 [56] Enyu Liu, En Yu, Sijia Chen, and Wenbing Tao. Disen-tangling instance and scene contexts for 3D semantic scene completion. In ICCV , 2025. 2 [57] Lizhe Liu, Bohua Wang, Hongwei Xie, Daqi Liu, Li Liu, Zhiqiang Tian, Kuiyuan Yang, and Bing Wang. Sur-roundSDF: Implicit 3D scene understanding based on signed distance field. In CVPR , 2024. 1 [58] Pei Liu, Hongliang Lu, Haichao Liu, Haipeng Liu, Xin Liu, Ruoyu Yao, Shengbo Eben Li, and Jun Ma. OmniScene: Attention-augmented multimodal 4D scene understanding for autonomous driving. arXiv preprint arXiv:2509.19973 ,2025. 1 [59] Xixi Liu, Yaroslava Lochman, and Christopher Zach. GEN: Pushing the limits of softmax-based out-of-distribution de-tection. In CVPR , 2023. 2 [60] Yuyuan Liu, Choubo Ding, Yu Tian, Guansong Pang, Vasileios Belagiannis, Ian Reid, and Gustavo Carneiro. Residual pattern learning for pixel-wise out-of-distribution detection in semantic segmentation. In ICCV , 2023. 3 [61] Ilya Loshchilov and Frank Hutter. Decoupled weight decay regularization. In ICLR , 2019. 16 [62] Qihang Ma, Xin Tan, Yanyun Qu, Lizhuang Ma, Zhizhong Zhang, and Yuan Xie. COTR: Compact occupancy trans-former for vision-based 3D occupancy prediction. In 
+
+CVPR , 2024. 1, 2 [63] Jianbiao Mei, Yu Yang, Mengmeng Wang, Junyu Zhu, Jongwon Ra, Yukai Ma, Laijian Li, and Yong Liu. Camera-based 3D semantic scene completion with sparse guidance network. IEEE Transactions on Image Processing , 2024. 1, 2, 3, 6, 7, 8, 13, 16, 17, 18 [64] Lingchen Meng, Xiyang Dai, Jianwei Yang, Dongdong Chen, Yinpeng Chen, Mengchen Liu, Yi-Ling Chen, Zux-uan Wu, Lu Yuan, and Yu-Gang Jiang. Learning from rich semantics and coarse locations for long-tailed object detec-tion. In NeurIPS , 2023. 3 [65] Hanieh Shojaei Miandashti and Claus Brenner. Out-of-distribution detection in LiDAR semantic segmentation us-ing epistemic uncertainty from hierarchical GMMs. arXiv preprint arXiv:2510.08631 , 2025. 3 [66] Jishnu Mukhoti and Yarin Gal. Evaluating bayesian deep learning methods for semantic segmentation. arXiv preprint arXiv:1811.12709 , 2018. 3 [67] Alexey Nekrasov, Malcolm Burdorf, Stewart Worrall, Bas-tian Leibe, and Julie Stephany Berrio Perez. Spotting the unexpected (STU): A 3D LiDAR dataset for anomaly seg-mentation in autonomous driving. In CVPR , 2025. 7 [68] Gyeongrok Oh, Sungjune Kim, Heeju Ko, Hyung-gun Chi, Jinkyu Kim, Dongwook Lee, Daehyun Ji, Sungjoon Choi, Sujin Jang, and Sangpil Kim. 3D occupancy prediction with low-resolution queries via prototype-aware view transfor-mation. In CVPR , 2025. 3 [69] Cong Pan, Yonghao He, Junran Peng, Qian Zhang, Wei Sui, and Zhaoxiang Zhang. BAEFormer: Bi-directional and early interaction transformers for bird’s eye view semantic segmentation. In CVPR , 2023. 1 [70] Lang Peng, Zhirong Chen, Zhangjie Fu, Pengpeng Liang, and Erkang Cheng. BEVSegFormer: Bird’s eye view se-mantic segmentation from arbitrary camera rigs. In WACV ,2023. 1 [71] Neehar Peri, Achal Dave, Deva Ramanan, and Shu Kong. Towards long-tailed 3D detection. In CoRL , 2023. 3 [72] Jonah Philion and Sanja Fidler. Lift, splat, shoot: Encoding images from arbitrary camera rigs by implicitly unproject-ing to 3D. In ECCV , 2020. 15 [73] Shyam Nandan Rai, Fabio Cermelli, Barbara Caputo, and Carlo Masone. Mask2Anomaly: Mask transformer for uni-versal open-set segmentation. IEEE Transactions on Pat-tern Analysis and Machine Intelligence , 2024. 3 [74] Faranak Shamsafar, Samuel Woerz, Rafia Rahim, and An-dreas Zell. MobileStereoNet: Towards lightweight deep networks for stereo matching. In WACV , 2022. 14 [75] Hanieh Shojaei Miandashti, Qianqian Zou, and Max Mehltretter. Uncertainty estimation and out-of-distribution detection for LiDAR scene semantic segmentation. In EC-CVW , 2024. 3 [76] Louis Soum-Fontez, Jean-Emmanuel Deschaud, and Franc ¸ois Goulette. HD-OOD3D: Supervised and unsuper-vised out-of-distribution object detection in LiDAR data. In 
+
+IROS , 2025. 3 [77] Sanbao Su, Nuo Chen, Chenchen Lin, Felix Juefei-Xu, Chen Feng, and Fei Miao. α-OCC: Uncertainty-aware camera-based 3D semantic scene completion. arXiv preprint arXiv:2406.11021 , 2024. 3 [78] Mingxing Tan and Quoc V. Le. EfficientNet: Rethinking model scaling for convolutional neural networks. In ICML ,2019. 14 [79] Zhiyu Tan, Zichao Dong, Cheng Zhang, Weikun Zhang, Hang Ji, and Hao Li. OVO: Open-vocabulary occupancy. 
+
+arXiv preprint arXiv:2305.16133 , 2023. 3 [80] Pin Tang, Zhongdao Wang, Guoqing Wang, Jilai Zheng, Xiangxuan Ren, Bailan Feng, and Chao Ma. SparseOcc: Rethinking sparse latent representation for vision-based se-mantic occupancy prediction. In CVPR , 2024. 1 [81] Ran Tian, Boyi Li, Xinshuo Weng, Yuxiao Chen, Edward Schmerling, Yue Wang, Boris Ivanovic, and Marco Pavone. Tokenize the world into object-level knowledge to address long-tail events in autonomous driving. arXiv preprint arXiv:2407.00959 , 2024. 1 [82] Xiaoyu Tian, Tao Jiang, Longfei Yun, Yucheng Mao, Huitong Yang, Yue Wang, Yilun Wang, and Hang Zhao. Occ3D: A large-scale 3D occupancy prediction benchmark for autonomous driving. In NeurIPS , 2023. 1, 3 [83] Yu Tian, Yuyuan Liu, Guansong Pang, Fengbei Liu, Yuan-hong Chen, and Gustavo Carneiro. Pixel-wise energy-biased abstention learning for anomaly segmentation on complex urban driving scenes. In ECCV , 2022. 3 [84] Antonin Vobecky, Oriane Sim´ eoni, David Hurych, Spyri-don Gidaris, Andrei Bursuc, Patrick P´ erez, and Josef Sivic. POP-3D: Open-vocabulary 3D occupancy prediction from images. In NeurIPS , 2024. 3 [85] Tomas Vojir, Tom´ as Sipka, Rahaf Aljundi, Nikolay Chumerin, Daniel Olmeda Reino, and Jiri Matas. Road anomaly detection by partial image reconstruction with seg-mentation coupling. In ICCV , 2021. 3 [86] Guoqing Wang, Zhongdao Wang, Pin Tang, Jilai Zheng, Xi-angxuan Ren, Bailan Feng, and Chao Ma. OccGen: Gener-ative multi-modal 3D occupancy prediction for autonomous driving. In ECCV , 2024. 3 [87] Song Wang, Jiawei Yu, Wentong Li, Wenyu Liu, Xiaolu Liu, Junbo Chen, and Jianke Zhu. Not all voxels are equal: Hardness-aware semantic scene completion with self-distillation. In CVPR , 2024. 6, 16 [88] Siyuan Wang, Yuejie Lu, and Qiang Ling. OCC-Exoskeleton: A plug-and-play module to enhance CNN-based occupancy prediction networks. IEEE Transactions on Circuits and Systems for Video Technology , 2025. 3 [89] Song Wang, Zhongdao Wang, Jiawei Yu, Wentong Li, Bailan Feng, Junbo Chen, and Jianke Zhu. Reliable and calibrated semantic occupancy prediction by hybrid uncer-tainty learning. In IJCAI , 2025. 3 [90] Yezhen Wang, Bo Li, Tong Che, Kaiyang Zhou, Ziwei Liu, and Dongsheng Li. Energy-based open-world uncertainty modeling for confidence calibration. In ICCV , 2021. 2 [91] Yunshen Wang, Yicheng Liu, Tianyuan Yuan, Yucheng Mao, Yingshi Liang, Xiuyu Yang, Honggang Zhang, and Hang Zhao. Diffusion-based generative models for 3D oc-cupancy prediction in autonomous driving. In ICRA , 2025. 3[92] Yi Wei, Linqing Zhao, Wenzhao Zheng, Zheng Zhu, Jie Zhou, and Jiwen Lu. SurroundOcc: Multi-camera 3D oc-cupancy prediction for autonomous driving. In ICCV , 2023. 1[93] Jiaxi Wu, Jiaxin Chen, and Di Huang. Entropy-based ac-tive learning for object detection with progressive diversity constraint. In CVPR , 2022. 2 [94] Guoxuan Xia and Christos-Savvas Bouganis. Augmenting softmax information for selective classification with out-of-distribution data. In ACCV , 2022. 2 [95] Yingda Xia, Yi Zhang, Fengze Liu, Wei Shen, and Alan L. Yuille. Synthesize then compare: Detecting failures and anomalies for semantic segmentation. In ECCV , 2020. 3 [96] Runsheng Xu, Hubert Lin, Wonseok Jeon, Hao Feng, Yu-liang Zou, Liting Sun, John Gorman, Kate Tolstaya, Sarah Tang, Brandyn White, Ben Sapp, Mingxing Tan, Jyh-Jing Hwang, and Drago Anguelov. WOD-E2E: Waymo open dataset for end-to-end driving in challenging long-tail sce-narios. arXiv preprint arXiv:2510.26125 , 2025. 1 [97] Rongtao Xu, Jinzhou Lin, Jialei Zhou, Jiahua Dong, Chang-wei Wang, Ruisheng Wang, Li Guo, Shibiao Xu, and Xiao-dan Liang. Complementary information guided occupancy prediction via multi-level representation fusion. In ICRA ,2025. 3 [98] Chi Yan and Dan Xu. Progressive gaussian transformer with anisotropy-aware sampling for open vocabulary occu-pancy prediction. arXiv preprint arXiv:2510.04759 , 2025. 3[99] Songyue Yang, Hongbo Li, Zhangyu Wang, Guizhen Yu, Peng Chen, Wenwen Luo, Jun Zhang, and Junjie Zhang. CsoOcc: An occupancy network for train forward percep-tion based on cascade sparsity octree. IEEE Sensors Jour-nal , 2025. 2 [100] Jiawei Yao, Chuming Li, Keqiang Sun, Yingjie Cai, Hao Li, Wanli Ouyang, and Hongsheng Li. NDC-Scene: Boost monocular 3D semantic scene completion in normalized device coordinates space. In ICCV , 2023. 16 [101] Qiucheng Yu, Yuan Xie, and Xin Tan. SHTOcc: Effective 3D occupancy prediction with sparse head and tail voxels. 
+
+arXiv preprint arXiv:2505.22461 , 2025. 3, 6 [102] Zhu Yu, Runmin Zhang, Jiacheng Ying, Junchen Yu, Xi-aohai Hu, Lun Luo, Si-Yuan Cao, and Hui-Liang Shen. Context and geometry aware voxel transformer for seman-tic scene completion. In NeurIPS , 2024. 2, 3, 6, 13, 15, 16, 17 [103] Zhu Yu, Bowen Pang, Lizhe Liu, Runmin Zhang, Qihao Peng, Maochun Luo, Sheng Yang, Mingxia Chen, Si-Yuan Cao, and Hui-Liang Shen. Language driven occupancy pre-diction. In ICCV , 2025. 3 [104] Ji Zhang, Yiran Ding, and Zixin Liu. OccFusion: Depth estimation free multi-sensor fusion for 3D occupancy pre-diction. In ACCV , 2024. 2 [105] Ji Zhang, Yiran Ding, and Zixin Liu. OccLoff: Learning optimized feature fusion for 3D occupancy prediction. In 
+
+WACV , 2025. 2 [106] Yunpeng Zhang, Zheng Zhu, and Dalong Du. OccFormer: Dual-path transformer for vision-based 3D semantic occu-pancy prediction. In ICCV , 2023. 6, 7, 16 [107] Yuheng Zhang, Mengfei Duan, Kunyu Peng, Yuhang Wang, Ruiping Liu, Fei Teng, Kai Luo, Zhiyong Li, and Kailun Yang. Out-of-distribution semantic occupancy prediction. 
+
+arXiv preprint arXiv:2506.21185 , 2025. 1, 2, 3, 6, 7, 8, 15, 17 [108] Zhilu Zhang and Mert Sabuncu. Generalized cross entropy loss for training deep neural networks with noisy labels. In 
+
+NeurIPS , 2018. 2 [109] Zongkai Zhang, Bin Gao, Jingrui Ye, Huan Jin, Lihui Jiang, and Wenming Yang. CLIP prior-guided 3D open-vocabulary occupancy prediction. Pattern Recognition ,2025. 3 [110] Lingjun Zhao, Sizhe Wei, James Hays, and Lu Gan. Gaus-sianFormer3D: Multi-modal gaussian-based semantic oc-cupancy prediction with 3D deformable attention. arXiv preprint arXiv:2505.10685 , 2025. 2 [111] Jilai Zheng, Pin Tang, Zhongdao Wang, Guoqing Wang, Xiangxuan Ren, Bailan Feng, and Chao Ma. VEON: Vocabulary-enhanced occupancy prediction. In ECCV ,2024. 3 [112] Benjin Zhu, Zhe Wang, and Hongsheng Li. nuCraft: Craft-ing high resolution 3D semantic occupancy for unified 3D scene understanding. In ECCV , 2024. 3 [113] Sicheng Zuo, Wenzhao Zheng, Xiaoyong Han, Longchao Yang, Yong Pan, and Jiwen Lu. QuadricFormer: Scene as superquadrics for 3D semantic occupancy prediction. In 
+
+> NeurIPS , 2025. 2
+
+In the supplementary material, we provide a more de-tailed description of the experimental setup, including all hyperparameters, additional qualitative results, additional quantitative results, and extensive ablation studies, along with the results of ProOOD (+CGFormer). We further dis-cuss the limitations of our proposed approach and point out future research directions. 
+
+## 6. Additional Qualitative Results 
+
+3D Occupancy Prediction Results. As shown in Figure 4, we present qualitative comparisons between SGN [63] and VoxDet [49], demonstrating the effectiveness of our ap-proach from a voxel prototype-guided perspective. Benefit-ing from the Prototype-Guided Semantic Imputation mod-ule’s ability to complete occluded regions, our method im-proves environmental consistency and achieves more ef-fective instance-level separation. Furthermore, as indi-cated by the yellow boxes, the enhanced model leverag-ing Prototype-Guided Tail Mining significantly improves the recognition performance for long-tail categories. 
+
+Out-of-Distribution Detection Results. As illustrated in Figure 5, our method demonstrates superior performance in detecting OOD voxels. In comparison to the baseline method SGN [63], ProOOD (+SGN) achieves higher ac-curacy in identifying OOD voxels. It is worth noting that the highlighted regions in the figure correspond to voxels of the ”road” class, a result attributable to the conserva-tive strategy employed. In contrast, the baseline method VoxDet [49] exhibits almost no OOD detection capability. Although VoxDet achieves stronger in-distribution accu-racy, its overconfidence leads to a failure in detecting OOD voxels. ProOOD (+VoxDet) effectively mitigates this over-confidence tendency, thereby endowing the model with a certain level of OOD detection capability. 
+
+## 7. Additional Quantitative Results 
+
+Table 6 presents the comparative results on the Se-manticKITTI validation set, including the performance of ProOOD (+CGFormer). Our ProOOD framework consis-tently outperforms all respective baselines, achieving up to 
+
+18 .86 mIoU and 8.46 tail mIoU, demonstrating a signifi-cant improvement in long-tail modeling capability. Specif-ically, ProOOD (+SGN) improves SGN [63]’s tail mIoU by 0.82 , while ProOOD (+VoxDet) enhances VoxDet [49]’s tail mIoU by 1.02 . Furthermore, we validate our approach on a state-of-the-art method, CGFormer [102], where it also brings consistent gains of 0.60 mIoU and 0.44 tail mIoU. With the exception of the truck class, which exhibits per-formance fluctuations due to long-tail effects, our imple-mentation essentially reproduces the results reported in the original paper. This demonstrates both the plug-and-play flexibility and effectiveness of our method. 
+
+ECE analysis. As in Table 7, on VAA-KITTI, where OOD samples severely worsen calibration for both semantic and tail classes, our method consistently reduces ECE sem ,
+
+ECE geo , and ECE tail , demonstrating effective mitigation of overconfidence, especially for tail classes, and providing direct quantitative support for our claim. 
+
+## 8. Additional Ablation Studies 
+
+Exponential Moving Average (EMA) Momentum. Ta-ble 8 presents an analysis of the impact of the EMA momen-tum β, used for updating global voxel prototypes, on model performance. When β is set to 0.01 , both mIoU and tail mIoU are suboptimal, as the prototypes evolve too slowly and remain overly influenced by their initial states. A β
+
+value of 0.1 yields the best overall mIoU, though tail mIoU begins to decline. This decline becomes more pronounced at β = 0 .2, where excessive update rates lead to prototype instability. We therefore select β = 0 .05 as it achieves an optimal balance between mIoU and tail mIoU. 
+
+Ablation of Hyperparameters As in Table 9, we system-atically evaluate the impact of the similarity threshold η
+
+and margin δ on both overall and tail performance. Our default setting (Exp. 3) achieves the best trade-off, yield-ing the highest tail-mIoU while maintaining strong mIoU. With η = 0 .1 (Exp. 1), the relaxed similarity criterion risks mismatched injections, but δ = 0 .1 filters many ambigu-ous cases, limiting tail-mIoU degradation to just 0.29 . In contrast, reducing δ to 0.05 (Exp. 2) weakens inter-class separation, severely harming tail performance. Increasing δ
+
+to 0.20 (Exp. 4) overly excludes difficult voxels, especially in tail classes, lowering tail-mIoU to 4.70 despite a slight mIoU gain, directly reflecting the reviewer’s concern. Fi-nally, raising η to 0.5 (Exp. 5) restricts guidance to only highly confident voxels, excluding informative but uncer-tain tail samples and reducing tail-mIoU to 4.38 .
+
+Prototype Warm-up Iterations. Table 10 presents the impact of prototype warm-up iterations on model perfor-mance. When the warm-up iterations twarm are set to 500 ,the tail mIoU remains suboptimal, primarily because the feature representations learned in early stages are insuffi-cient for effective prototype initialization. Setting twarm to 
+
+750 yields the best tail mIoU, while further increasing it to 
+
+1000 or 1500 leads to a slight degradation in performance. This suggests that involving prototypes earlier in the train-ing process is beneficial for modeling tail categories, as it helps prevent the accumulation of erroneous features dur-ing initial training stages. Based on these observations, we Ground-truth SGN ProOOD (+SGN) VoxDet ProOOD (+VoxDet) Figure 4. Qualitative results of 3D occupancy prediction on the SemanticKITTI validation set [4]. 
+
+select twarm = 750 as the optimal configuration. 
+
+## 9. Implementation Details 
+
+Backbone Network. Our setup follows the baseline con-figurations. For ProOOD (+SGN) and ProOOD (+VoxDet), we employ ResNet-50 [25] as the 2D image feature ex-traction backbone, while ProOOD (+CGFormer) adopts EfficientNet-B7 [78]. As for the depth estimation network, we adhere to the unified SSC setup commonly used in re-cent years, utilizing MobileStereoNet [74]. 
+
+View Transformation. Our setup follows the baseline configurations. ProOOD (+SGN) adopts the FLoSP from MonoScene [7], which constructs 3D features by sampling 2D features via a 3D-2D projection mapping using camera parameters. This approach projects voxel points to image pixels via geometric transformation, then aggregates multi-Ground-truth SGN ProOOD (+SGN) VoxDet ProOOD (+VoxDet) Figure 5. Qualitative results of out-of-distribution detection on the 07VAA sequence of VAA-KITTI [107]. 
+
+view 2D features through averaging while masking out non-visible regions. In contrast, ProOOD (+CGFormer) and ProOOD (+VoxDet) follow CGFormer [102]: given an im-age I, we extract 2D feature F2D and depth map Z, then use a depth refinement module with LSS [72] to estimate depth distribution and generate voxel queries VQ ∈ RX×Y ×Z×C
+
+with spatial resolution 128 × 128 × 16 and C = 128 . Each pixel (u, v ) is transformed to a 3D point (x, y, z ) via camera intrinsic and extrinsic matrices, forming query proposals Q
+
+in voxel space, followed by 3D deformable cross-attention to transfer 2D features into 3D space. 
+
+Hyperparameter. We align the warm-up iterations twarm 
+
+for prototype initialization with the baseline settings. Specifically, twarm is set to 750 for ProOOD (+SGN) on both datasets, while for ProOOD (+CGFormer) and ProOOD (+VoxDet), it is set to 1500 on SemanticKITTI [4] Method road (15.30%) sidewalk (11.13%) parking (1.12%) other-grnd. (0.56%) building (14.1%) car (3.92%) truck (0.16%) bicycle (0.03%) motorcycle (0.03%) other-veh. (0.20%) vegetation (39.3%) trunk (0.51%) terrain (9.17%) person (0.07%) bicyclist (0.07%) motorcyclist (0.05%) fence (3.90%) pole (0.29%) traf.-sign (0.08%) mIoU 
+
+Tail 
+
+mIoU 
+
+SemanticKITTI 
+
+MonoScene [7] 57.47 27.05 15.72 0.87 14.24 23.55 7.83 0.20 0.77 3.59 18.12 2.57 30.76 1.79 1.03 0.00 6.39 4.11 2.48 11.50 2.29 TPVFormer [30] 56.50 25.87 20.60 0.85 13.88 23.81 8.08 0.36 0.05 4.35 16.92 2.26 30.38 0.51 0.89 0.00 5.94 3.14 1.52 11.36 2.00 VoxFormer [51] 54.76 26.35 15.50 0.70 17.65 25.79 5.63 0.59 0.51 3.77 24.39 5.08 29.96 1.78 3.32 0.00 7.64 7.11 4.18 12.35 2.97 OccFormer [106] 58.85 26.88 19.61 0.31 14.40 25.09 25.53 0.81 1.19 8.52 19.63 3.93 32.62 2.78 2.82 0.00 5.61 4.26 2.86 13.46 4.82 NDC-scene [100] 59.20 28.24 21.42 1.67 14.94 26.26 14.75 1.67 2.37 7.73 19.09 3.51 31.04 3.60 2.74 0.00 6.65 4.53 2.73 12.70 4.12 HASSC [87] 57.05 28.25 15.90 1.04 19.05 27.23 9.91 0.92 0.86 5.61 25.48 6.15 32.94 2.80 4.71 0.00 6.58 7.68 4.05 13.48 3.97 Symphonies [34] 57.11 27.79 16.97 1.22 21.74 29.08 14.36 3.75 3.06 14.38 25.32 6.87 29.70 4.27 2.76 0.08 8.71 9.50 6.24 14.89 6.04 SGN [63] 59.32 30.51 18.46 0.42 21.43 31.88 13.18 0.58 0.17 5.68 25.98 7.43 34.42 1.28 1.49 0.00 9.66 9.83 4.71 14.55 4.07 ProOOD (+SGN) 59.35 27.94 20.32 0.08 21.60 31.50 14.54 0.82 0.91 5.67 26.06 8.70 34.05 3.01 2.33 0.00 9.83 10.88 6.85 14.97 4.89 
+
+CGFormer* [102] 64.79 32.11 21.80 0.02 23.19 33.94 1.50 2.90 4.14 7.21 27.24 7.56 38.16 1.75 3.06 0.00 9.90 10.71 7.12 15.64 4.18 ProOOD (+CGFormer) 66.87 33.61 24.63 0.34 22.61 33.78 1.42 5.50 3.41 5.94 27.01 8.18 38.51 2.87 5.33 0.00 10.70 10.62 7.22 16.24 4.62 
+
+VoxDet* [49] 66.50 34.47 19.83 0.36 24.77 34.63 24.74 3.79 5.41 13.23 28.96 9.01 41.57 3.57 2.89 0.00 10.89 11.71 7.18 18.08 7.44 ProOOD (+VoxDet) 67.18 34.87 23.64 0.59 24.54 34.09 30.60 3.75 5.95 15.57 29.18 9.67 41.25 3.75 3.95 0.00 10.59 11.62 7.57 18.86 8.46 
+
+Table 6. Quantitative results on the SemanticKITTI val set [4] (single-frame evaluation for fair comparison). * denotes results reproduced using the official code implementation. Methods ECE sem ↓ ECE tail ↓ ECE geo ↓ mIoU ↑ Tail mIoU ↑ AuROC ↑            
+
+> SGN 51.10 57.49 4.93 11.10 2.20 60.51 Ours (+SGN) 47.28 53.91 4.41 11.86 2.76 64.31
+
+Table 7. Quantitative evaluation of calibration quality. EMA Momentum mIoU Tail mIoU 0.01 14.75 4.32 0.05 14.97 4.89 
+
+0.10 15.14 4.55 0.20 15.01 4.36 Table 8. Ablation study on the impact of different EMA mo-mentum parameters for 3D occupancy prediction on the Se-manticKITTI validation set [4]. 
+
+Exp. ID η δ mIoU Tail mIoU 1 0.1 0.10 14.89 4.60 2 0.3 0.05 14.75 4.25 3 0.3 0.10 14.97 4.89 
+
+4 0.3 0.20 15.16 4.70 5 0.5 0.10 14.84 4.38 
+
+Table 9. Ablation study of hyperparameters. 
+
+and 1600 on SSCBench-KITTI-360 [52]. The exponential moving average (EMA) momentum β for prototype updates is set to 0.05 . The quality score thresholds θmin and θmax 
+
+Warm-up Iterations mIoU Tail mIoU 500 15.08 4.68 750 14.97 4.89 
+
+1000 15.09 4.80 1500 15.01 4.73 Table 10. Ablation on different prototype warm-up iterations for 3D occupancy prediction on the SemanticKITTI validation set [4]. 
+
+are set to 0.3 and 0.7, respectively. For Prototype-Guided Semantic Imputation (PGSI), the auxiliary occupancy head is weighted by a loss factor of 0.2, and the residual blend-ing coefficient αpgsi is initialized as a learnable parameter with value 0.2. In Prototype-Guided Tail Mining (PGTM), the margin η, the scaling factor δ, and the top-K selection ratio Ktop are set to 0.3, 0.1, and 0.02 for SemanticKITTI and 0.0078 for SSCBench-KITTI-360, corresponding to the proportion of tail classes in each dataset. The loss weights for Ltail and Lproto are both set to 1.
+
+Training Setup. We follow the training configurations of each baseline method. For ProOOD (+SGN), we use 4
+
+NVIDIA RTX 3090 GPUs with a batch size of 4, optimized with AdamW [61] at an initial learning rate of 2 × 10 −4
+
+and weight decay of 1 × 10 −2. For ProOOD (+CGFormer), we employ 4 NVIDIA RTX 3090 GPUs with a batch size of 4, utilizing a cosine annealing schedule with 5% warm-up, a maximum learning rate of 3 × 10 −4, weight decay of 0.01 , and Adam parameters β1 = 0 .9, β2 = 0 .99 . For ProOOD (+VoxDet), we similarly adopt a cosine anneal-ing schedule with 5% warm-up, maximum learning rate of 
+
+3 × 10 −4, weight decay of 0.01 , and β1 = 0 .9, β2 = 0 .99 ,but adjust the batch size per GPU to accommodate memory constraints, deviating from the original VoxDet [49] config-uration which used 2 A100 GPUs. 
+
+3D Occupancy Prediction Evaluation Configuration. We evaluate ProOOD on SemanticKITTI, SSCBench-KITTI-360, VAA-KITTI, and VAA-KITTI-360 for 3D occupancy prediction performance. To ensure fair comparison and align with the evaluation protocols of the latter three datasets that only provide single-frame benchmarks without temporal assessment, all models are evaluated without uti-lizing temporal information. Since the latter three datasets do not provide stereo images, we follow OccOoD [107] and replace the stereo depth estimation model with the monoc-ular depth model SPI [43]. 
+
+Out-of-Distribution Detection Evaluation Configura-tion. We evaluate ProOOD on VAA-KITTI, VAA-KITTI-360, and VAA-STU datasets for unsupervised out-of-distribution detection. Specifically, as VAA-KITTI is de-rived from sequences 07, 09, and 10 of SemanticKITTI, we train our model on sequences 00–06 of SemanticKITTI using the aforementioned monocular depth estimation ap-proach, then evaluate OOD detection on VAA-KITTI. Sim-ilarly, for SSCBench-KITTI-360, we employ the same monocular depth model with its default training sequences and assess the OOD performance on VAA-KITTI-360. For VAA-STU, OOD testing is performed directly using weights pre-trained on SemanticKITTI. 
+
+Tail classes. Tail classes are defined as those with low occurrence frequency in the dataset. In SemanticKITTI, we classify a class as long-tail if it constitutes less than 0.60% of the total points. As summarized in Ta-ble 11, this includes 11 classes: other-ground , truck ,
+
+bicycle , motorcycle , other-vehicle , trunk ,
+
+person , bicyclist , motorcyclist , pole , and 
+
+traffic-sign . Similarly, in SSCBench-KITTI-360, long-tail classes are defined as those representing fewer than 0.30% of total points. As shown in Table 12, there are 7 such classes: bicycle , motorcycle , truck ,
+
+person , pole , traffic-sign , and other-object .
+
+## 10. Plug-and-play Effectiveness 
+
+We further apply our method to the previous state-of-the-art CGFormer [102] and the widely adopted VoxFormer [51]. As shown in Table 13, consistent performance gains on both models further demonstrate its plug-and-play capability. 
+
+Class Percentage Tail 
+
+road 15.30% –sidewalk 11.13% –parking 1.12% –other-ground 0.56% ✓
+
+building 14.10% –car 3.92% –truck 0.16% ✓
+
+bicycle 0.03% ✓
+
+motorcycle 0.03% ✓
+
+other-vehicle 0.20% ✓
+
+vegetation 39.30% –trunk 0.51% ✓
+
+terrain 9.17% –person 0.07% ✓
+
+bicyclist 0.07% ✓
+
+motorcyclist 0.05% ✓
+
+fence 3.90% –pole 0.29% ✓
+
+traffic-sign 0.08% ✓     
+
+> Table 11. Class distribution in SemanticKITTI [4]. Tail classes (proportion <0.60% ) are marked with ✓.
+
+Class Percentage Tail 
+
+car 2.85% –bicycle 0.01% ✓
+
+motorcycle 0.01% ✓
+
+truck 0.16% ✓
+
+other-vehicle 5.75% –person 0.02% ✓
+
+road 14.98% –parking 2.31% –sidewalk 6.43% –other-ground 2.05% –building 15.67% –fence 0.96% –vegetation 41.99% –terrain 7.10% –pole 0.22% ✓
+
+traffic-sign 0.06% ✓
+
+other-structure 4.33% –other-object 0.28% ✓   
+
+> Table 12. Class distribution in SSCBench-KITTI-360. Tail classes (proportion <0.30% ) are marked with ✓.
+
+## 11. Model Efficiency 
+
+As shown in Table 14, our proposed method introduces min-imal computational overhead while significantly enhancing out-of-distribution detection capabilities. For the SGN [63] baseline, we observe a parameter increase of only 0.28 M ,RGB Input with OOD Object Ground-truth ProOOD (+SGN) Figure 6. Failure case due to inaccurate occupancy prediction for OOD voxels. 
+
+Figure 7. Failure cases under challenging long-range and heavy occlusion scenarios. 
+
+Methods mIoU Tail mIoU VoxFormer 12.86 2.87 Ours (+VoxFormer) 13.32 (+0.46) 3.15 (+0.28) CGFormer 15.64 4.18 Ours (+CGFormer) 16.24 (+0.60) 4.62 (+0.44) 
+
+Table 13. Plug-and-play performance. Method SGN [63] ProOOD (+SGN) VoxDet [49] ProOOD (+VoxDet) #Parameter (M) 28.16 28.44 55.34 55.35 FLOPs (G) 522.34 580.66 1311.10 1311.48 Table 14. Comparison of model efficiency with baselines. Methods FPS Inf. Mem. mIoU Tail mIoU SGN 7.6 5.16 (GB) 14.55 4.07 Ours (+SGN) 7.0 5.30 (GB) 14.97 4.89         
+
+> VoxDet 5.0 4.34 (GB) 18.08 7.44 Ours (+VoxDet) 4.9 4.47 (GB) 18.86 8.46
+
+Table 15. FPS and GPU memory comparisons. 
+
+where the core prototype learning components contribute merely 0.01 M parameters, with the remaining overhead at-tributed to an auxiliary occupancy prediction head. More notably, when integrated with VoxDet [49], our framework adds only 0.01 M parameters and 0.40 G FLOPs, demon-strating exceptional efficiency. This negligible cost stems from our strategic reuse of VoxDet’s existing auxiliary pre-diction modules, eliminating the need for additional archi-tectural components. These results underscore the compu-tational efficiency of our approach, proving that substantial improvements in OOD detection can be achieved with min-imal impact on model complexity and inference cost. 
+
+FPS and GPU memory. As in Table 15, our method im-proves performance over the baseline with negligible FPS or memory overhead, demonstrating its efficiency. 
+
+## 12. Failure Case Analyses 
+
+As illustrated in Figure 6, a typical failure mode occurs when small OOD objects are not reliably activated in the oc-cupancy volume. Since ProOOD leverages occupancy fea-tures for OOD scoring, incorrect occupancy predictions di-rectly lead to missed detections. This interdependence sug-gests that improving occupancy accuracy, particularly for rare and small categories, is crucial. Further limitations manifest under extreme geometric conditions, as shown in Figure 7. In the first row, a dis-tant OOD object is missed due to its small scale and weak geometric or semantic cues. In the second row, while foreground OOD instances are correctly identified, heav-ily occluded background regions are erroneously classified as OOD, caused by ambiguous semantic boundaries during 2D-to-3D feature lifting. Potential remedies include: (1) adopting stronger 2D backbones with higher-resolution features; (2) designing object-aware refinement modules to enhance representation learning for small instances; and (3) designing a special-ized loss function that imposes a higher penalty on misclas-sifying small-object voxels to address their current under-representation in the optimization objective. 
+
+## 13. Limitations and Future Work 
+
+Although ProOOD achieves state-of-the-art performance on OccOoD, it critically relies on the quality of depth estima-tion, a dependency stemming from the mainstream frame-work it extends. Since depth estimation is currently im-plemented as an external module and not integrated into the end-to-end training pipeline, errors from this compo-nent can propagate through the system. This modular de-sign also constrains the model’s ability to generalize across diverse scenes. A promising direction for future work is to incorporate depth estimation directly into the framework, enabling joint optimization and reducing error propagation to enhance performance and generalization. 
+
+## 14. Societal Impacts 
+
+This research on 3D occupancy prediction and out-of-distribution detection holds broad potential for societal ap-plications, particularly in domains such as autonomous driving and robotic systems. The improved capability to recognize rare objects and detect unknown categories can enhance the safety of autonomous vehicles in complex urban environments, potentially reducing accident risks caused by unexpected obstacles. However, it should be noted that all perception systems have inherent limitations. The failure of our method to detect small or distant objects may still pose risks in safety-critical scenarios. Our reliance on depth estimation quality and the performance limitations in diverse environments indicate that further optimization is required before real-world deployment. We encourage the research community to not only focus on improving tech-nical metrics but also to strive for enhancing the robustness and reliability of such systems under varying environmental conditions.

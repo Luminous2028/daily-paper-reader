@@ -1,0 +1,488 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-08T20:12:22.406543+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 12,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2604.05449v1",
+      "title": "Not All Agents Matter: From Global Attention Dilution to Risk-Prioritized Game Planning",
+      "abstract": "End-to-end autonomous driving resides not in the integration of perception and planning, but rather in the dynamic multi-agent game within a unified representation space. Most existing end-to-end models treat all agents equally, hindering the decoupling of real collision threats from complex backgrounds. To address this issue, We introduce the concept of Risk-Prioritized Game Planning, and propose GameAD, a novel framework that models end-to-end autonomous driving as a risk-aware game problem. The GameAD integrates Risk-Aware Topology Anchoring, Strategic Payload Adapter, Minimax Risk-Aware Sparse Attention, and Risk Consistent Equilibrium Stabilization to enable game theoretic decision making with risk prioritized interactions. We also present the Planning Risk Exposure metric, which quantifies the cumulative risk intensity of planned trajectories over a long horizon for safe autonomous driving. Extensive experiments on the nuScenes and Bench2Drive datasets show that our approach significantly outperforms state-of-the-art methods, especially in terms of trajectory safety.",
+      "authors": [
+        "Kang Ding",
+        "Hongsong Wang",
+        "Jie Gui",
+        "Lei He"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-07T05:33:54+00:00",
+      "link": "https://arxiv.org/pdf/2604.05449v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "end-to-end autonomous driving motion planning and risk modeling",
+      "llm_evidence_cn": "端到端自动驾驶运动规划与风险建模",
+      "llm_evidence": "端到端自动驾驶运动规划与风险建模",
+      "canonical_evidence": "端到端自动驾驶运动规划与风险建模",
+      "llm_tldr_en": "GameAD models autonomous driving as a risk-prioritized game to improve planning in complex scenarios.",
+      "llm_tldr_cn": "GameAD将自动驾驶建模为风险优先博弈问题，提升了复杂场景下的规划能力。",
+      "llm_tldr": "GameAD将自动驾驶建模为风险优先博弈问题，提升了复杂场景下的规划能力。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.05430v1",
+      "title": "Synergizing Efficiency and Reliability for Continuous Mobile Manipulation",
+      "abstract": "Humans seamlessly fuse anticipatory planning with immediate feedback to perform successive mobile manipulation tasks without stopping, achieving both high efficiency and reliability. Replicating this fluid and reliable behavior in robots remains fundamentally challenging, not only due to conflicts between long-horizon planning and real-time reactivity, but also because excessively pursuing efficiency undermines reliability in uncertain environments: it impairs stable perception and the potential for compensation, while also increasing the risk of unintended contact. In this work, we present a unified framework that synergizes efficiency and reliability for continuous mobile manipulation. It features a reliability-aware trajectory planner that embeds essential elements for reliable execution into spatiotemporal optimization, generating efficient and reliability-promising global trajectories. It is coupled with a phase-dependent switching controller that seamlessly transitions between global trajectory tracking for efficiency and task-error compensation for reliability. We also investigate a hierarchical initialization that facilitates online replanning despite the complexity of long-horizon planning problems. Real-world evaluations demonstrate that our approach enables efficient and reliable completion of successive tasks under uncertainty (e.g., dynamic disturbances, perception and control errors). Moreover, the framework generalizes to tasks with diverse end-effector constraints. Compared with state-of-the-art baselines, our method consistently achieves the highest efficiency while improving the task success rate by 26.67\\%--81.67\\%. Comprehensive ablation studies further validate the contribution of each component. The source code will be released.",
+      "authors": [
+        "Chengkai Wu",
+        "Ruilin Wang",
+        "Yixin Zeng",
+        "Jiayuan Wang",
+        "Mingjie Zhang",
+        "Guiyong Zheng",
+        "Qun Niu",
+        "Juepeng Zheng",
+        "Jun Ma",
+        "Boyu Zhou"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-07T04:55:16+00:00",
+      "link": "https://arxiv.org/pdf/2604.05430v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reliability-aware trajectory planner for uncertain environments",
+      "llm_evidence_cn": "用于不确定环境的可靠性感知轨迹规划器",
+      "llm_evidence": "用于不确定环境的可靠性感知轨迹规划器",
+      "canonical_evidence": "用于不确定环境的可靠性感知轨迹规划器",
+      "llm_tldr_en": "Features a reliability-aware planner that embeds uncertainty to balance efficiency and safety in manipulation.",
+      "llm_tldr_cn": "采用可靠性感知规划器，通过嵌入不确定性来平衡操作的效率与安全性。",
+      "llm_tldr": "采用可靠性感知规划器，通过嵌入不确定性来平衡操作的效率与安全性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.01081v1",
+      "title": "ProOOD: Prototype-Guided Out-of-Distribution 3D Occupancy Prediction",
+      "abstract": "3D semantic occupancy prediction is central to autonomous driving, yet current methods are vulnerable to long-tailed class bias and out-of-distribution (OOD) inputs, often overconfidently assigning anomalies to rare classes. We present ProOOD, a lightweight, plug-and-play method that couples prototype-guided refinement with training-free OOD scoring. ProOOD comprises (i) prototype-guided semantic imputation that fills occluded regions with class-consistent features, (ii) prototype-guided tail mining that strengthens rare-class representations to curb OOD absorption, and (iii) EchoOOD, which fuses local logit coherence with local and global prototype matching to produce reliable voxel-level OOD scores. Extensive experiments on five datasets demonstrate that ProOOD achieves state-of-the-art performance on both in-distribution 3D occupancy prediction and OOD detection. On SemanticKITTI, it surpasses baselines by +3.57% mIoU overall and +24.80% tail-class mIoU; on VAA-KITTI, it improves AuPRCr by +19.34 points, with consistent gains across benchmarks. These improvements yield more calibrated occupancy estimates and more reliable OOD detection in safety-critical urban driving. The source code is publicly available at https://github.com/7uHeng/ProOOD.",
+      "authors": [
+        "Yuheng Zhang",
+        "Mengfei Duan",
+        "Kunyu Peng",
+        "Yuhang Wang",
+        "Di Wen",
+        "Danda Pani Paudel",
+        "Luc Van Gool",
+        "Kailun Yang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG",
+        "cs.RO",
+        "eess.IV"
+      ],
+      "published": "2026-04-01T16:11:59+00:00",
+      "link": "https://arxiv.org/pdf/2604.01081v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "3D occupancy prediction and OOD scoring for autonomous driving",
+      "llm_evidence_cn": "自动驾驶中的3D占据预测与OOD评分",
+      "llm_evidence": "自动驾驶中的3D占据预测与OOD评分",
+      "canonical_evidence": "自动驾驶中的3D占据预测与OOD评分",
+      "llm_tldr_en": "Proposes a method for OOD detection and semantic occupancy prediction in autonomous driving scenarios.",
+      "llm_tldr_cn": "提出了一种用于自动驾驶场景中离群点检测和语义占据预测的方法。",
+      "llm_tldr": "提出了一种用于自动驾驶场景中离群点检测和语义占据预测的方法。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.05673v1",
+      "title": "Rectified Schrödinger Bridge Matching for Few-Step Visual Navigation",
+      "abstract": "Visual navigation is a core challenge in Embodied AI, requiring autonomous agents to translate high-dimensional sensory observations into continuous, long-horizon action trajectories. While generative policies based on diffusion models and Schrödinger Bridges (SB) effectively capture multimodal action distributions, they require dozens of integration steps due to high-variance stochastic transport, posing a critical barrier for real-time robotic control. We propose Rectified Schrödinger Bridge Matching (RSBM), a framework that exploits a shared velocity-field structure between standard Schrödinger Bridges ($\\varepsilon=1$, maximum-entropy transport) and deterministic Optimal Transport ($\\varepsilon\\to 0$, as in Conditional Flow Matching), controlled by a single entropic regularization parameter $\\varepsilon$. We prove two key results: (1) the conditional velocity field's functional form is invariant across the entire $\\varepsilon$-spectrum (Velocity Structure Invariance), enabling a single network to serve all regularization strengths; and (2) reducing $\\varepsilon$ linearly decreases the conditional velocity variance, enabling more stable coarse-step ODE integration. Anchored to a learned conditional prior that shortens transport distance, RSBM operates at an intermediate $\\varepsilon$ that balances multimodal coverage and path straightness. Empirically, while standard bridges require $\\geq 10$ steps to converge, RSBM achieves over 94% cosine similarity and 92% success rate in merely 3 integration steps -- without distillation or multi-stage training -- substantially narrowing the gap between high-fidelity generative policies and the low-latency demands of Embodied AI.",
+      "authors": [
+        "Wuyang Luan",
+        "Junhui Li",
+        "Weiguang Zhao",
+        "Wenjian Zhang",
+        "Tieru Wu",
+        "Rui Ma"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-04-07T10:22:27+00:00",
+      "link": "https://arxiv.org/pdf/2604.05673v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "diffusion models and Schrödinger Bridges for action trajectories",
+      "llm_evidence_cn": "用于动作轨迹的扩散模型和薛定谔桥",
+      "llm_evidence": "用于动作轨迹的扩散模型和薛定谔桥",
+      "canonical_evidence": "用于动作轨迹的扩散模型和薛定谔桥",
+      "llm_tldr_en": "Presents a framework using Schrödinger Bridges and diffusion-like structures for efficient visual navigation.",
+      "llm_tldr_cn": "提出一种利用薛定谔桥和类扩散结构进行高效视觉导航的框架。",
+      "llm_tldr": "提出一种利用薛定谔桥和类扩散结构进行高效视觉导航的框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.02821v1",
+      "title": "Goal-Conditioned Neural ODEs with Guaranteed Safety and Stability for Learning-Based All-Pairs Motion Planning",
+      "abstract": "This paper presents a learning-based approach for all-pairs motion planning, where the initial and goal states are allowed to be arbitrary points in a safe set. We construct smooth goal-conditioned neural ordinary differential equations (neural ODEs) via bi-Lipschitz diffeomorphisms. Theoretical results show that the proposed model can provide guarantees of global exponential stability and safety (safe set forward invariance) regardless of goal location. Moreover, explicit bounds on convergence rate, tracking error, and vector field magnitude are established. Our approach admits a tractable learning implementation using bi-Lipschitz neural networks and can incorporate demonstration data. We illustrate the effectiveness of the proposed method on a 2D corridor navigation task.",
+      "authors": [
+        "Dechuan Liu",
+        "Ruigang Wang",
+        "Ian R. Manchester"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-04-03T07:40:14+00:00",
+      "link": "https://arxiv.org/pdf/2604.02821v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Learning-based all-pairs motion planning with safety guarantees",
+      "llm_evidence_cn": "具有安全保证的基于学习的全对运动规划",
+      "llm_evidence": "具有安全保证的基于学习的全对运动规划",
+      "canonical_evidence": "具有安全保证的基于学习的全对运动规划",
+      "llm_tldr_en": "Uses Neural ODEs to provide safety and stability guarantees for learning-based motion planning.",
+      "llm_tldr_cn": "使用神经常微分方程为基于学习的运动规划提供安全性和稳定性保证。",
+      "llm_tldr": "使用神经常微分方程为基于学习的运动规划提供安全性和稳定性保证。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.06067v1",
+      "title": "HiPolicy: Hierarchical Multi-Frequency Action Chunking for Policy Learning",
+      "abstract": "Robotic imitation learning faces a fundamental trade-off between modeling long-horizon dependencies and enabling fine-grained closed-loop control. Existing fixed-frequency action chunking approaches struggle to achieve both. Building on this insight, we propose HiPolicy, a hierarchical multi-frequency action chunking framework that jointly predicts action sequences at different frequencies to capture both coarse high-level plans and precise reactive motions. We extract and fuse hierarchical features from history observations aligned to each frequency for multi-frequency chunk generation, and introduce an entropy-guided execution mechanism that adaptively balances long-horizon planning with fine-grained control based on action uncertainty. Experiments on diverse simulated benchmarks and real-world manipulation tasks show that HiPolicy can be seamlessly integrated into existing 2D and 3D generative policies, delivering consistent improvements in performance while significantly enhancing execution efficiency.",
+      "authors": [
+        "Jiyao Zhang",
+        "Zimu Han",
+        "Junhan Wang",
+        "Xionghao Wu",
+        "Shihong Lin",
+        "Jinzhou Li",
+        "Hongwei Fan",
+        "Ruihai Wu",
+        "Dongjiang Li",
+        "Hao Dong"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-07T16:47:38+00:00",
+      "link": "https://arxiv.org/pdf/2604.06067v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "entropy-guided execution based on action uncertainty in planning",
+      "llm_evidence_cn": "基于规划中动作不确定性的熵引导执行",
+      "llm_evidence": "基于规划中动作不确定性的熵引导执行",
+      "canonical_evidence": "基于规划中动作不确定性的熵引导执行",
+      "llm_tldr_en": "Proposes a hierarchical framework using action uncertainty to balance long-horizon planning and reactive control.",
+      "llm_tldr_cn": "提出一种分层框架，利用动作不确定性来平衡长时程规划与反应式控制。",
+      "llm_tldr": "提出一种分层框架，利用动作不确定性来平衡长时程规划与反应式控制。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.03023v1",
+      "title": "Behavior-Constrained Reinforcement Learning with Receding-Horizon Credit Assignment for High-Performance Control",
+      "abstract": "Learning high-performance control policies that remain consistent with expert behavior is a fundamental challenge in robotics. Reinforcement learning can discover high-performing strategies but often departs from desirable human behavior, whereas imitation learning is limited by demonstration quality and struggles to improve beyond expert data. We propose a behavior-constrained reinforcement learning framework that improves beyond demonstrations while explicitly controlling deviation from expert behavior. Because expert-consistent behavior in dynamic control is inherently trajectory-level, we introduce a receding-horizon predictive mechanism that models short-term future trajectories and provides look-ahead rewards during training. To account for the natural variability of human behavior under disturbances and changing conditions, we further condition the policy on reference trajectories, allowing it to represent a distribution of expert-consistent behaviors rather than a single deterministic target. Empirically, we evaluate the approach in high-fidelity race car simulation using data from professional drivers, a domain characterized by extreme dynamics and narrow performance margins. The learned policies achieve competitive lap times while maintaining close alignment with expert driving behavior, outperforming baseline methods in both performance and imitation quality. Beyond standard benchmarks, we conduct human-grounded evaluation in a driver-in-the-loop simulator and show that the learned policies reproduce setup-dependent driving characteristics consistent with the feedback of top-class professional race drivers. These results demonstrate that our method enables learning high-performance control policies that are both optimal and behavior-consistent, and can serve as reliable surrogates for human decision-making in complex control systems.",
+      "authors": [
+        "Siwei Ju",
+        "Jan Tauberschmidt",
+        "Oleg Arenz",
+        "Peter van Vliet",
+        "Jan Peters"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-03T13:13:47+00:00",
+      "link": "https://arxiv.org/pdf/2604.03023v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "receding-horizon predictive mechanism for trajectory-level control",
+      "llm_evidence_cn": "用于轨迹级控制的收敛时界预测机制",
+      "llm_evidence": "用于轨迹级控制的收敛时界预测机制",
+      "canonical_evidence": "用于轨迹级控制的收敛时界预测机制",
+      "llm_tldr_en": "Proposes a behavior-constrained RL framework using future trajectory modeling for high-performance control.",
+      "llm_tldr_cn": "提出了一种利用未来轨迹建模进行高性能控制的行为约束强化学习框架。",
+      "llm_tldr": "提出了一种利用未来轨迹建模进行高性能控制的行为约束强化学习框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.03310v1",
+      "title": "Diffusion Path Alignment for Long-Range Motion Generation and Domain Transitions",
+      "abstract": "Long-range human movement generation remains a central challenge in computer vision and graphics. Generating coherent transitions across semantically distinct motion domains remains largely unexplored. This capability is particularly important for applications such as dance choreography, where movements must fluidly transition across diverse stylistic and semantic motifs. We propose a simple and effective inference-time optimization framework inspired by diffusion-based stochastic optimal control. Specifically, a control-energy objective that explicitly regularizes the transition trajectories of a pretrained diffusion model. We show that optimizing this objective at inference time yields transitions with fidelity and temporal coherence. This is the first work to provide a general framework for controlled long-range human motion generation with explicit transition modeling.",
+      "authors": [
+        "Haichao Wang",
+        "Alexander Okupnik",
+        "Yuxing Han",
+        "Gene Wen",
+        "Johannes Schneider",
+        "Kyriakos Flouris"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-31T11:35:20+00:00",
+      "link": "https://arxiv.org/pdf/2604.03310v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion-based stochastic optimal control for motion generation",
+      "llm_evidence_cn": "基于扩散模型的随机最优控制运动生成",
+      "llm_evidence": "基于扩散模型的随机最优控制运动生成",
+      "canonical_evidence": "基于扩散模型的随机最优控制运动生成",
+      "llm_tldr_en": "Proposes an inference-time optimization for diffusion models to generate coherent long-range motion transitions.",
+      "llm_tldr_cn": "提出了一种扩散模型推理优化框架，用于生成连贯的长距离运动过渡。",
+      "llm_tldr": "提出了一种扩散模型推理优化框架，用于生成连贯的长距离运动过渡。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.04491v1",
+      "title": "Isokinetic Flow Matching for Pathwise Straightening of Generative Flows",
+      "abstract": "Flow Matching (FM) constructs linear conditional probability paths, but the learned marginal velocity field inevitably exhibits strong curvature due to trajectory superposition. This curvature severely inflates numerical truncation errors, bottlenecking few-step sampling. To overcome this, we introduce Isokinetic Flow Matching (Iso-FM), a lightweight, Jacobian-free dynamical regularizer that directly penalizes pathwise acceleration. By using a self-guided finite-difference approximation of the material derivative Dv/Dt, Iso-FM enforces local velocity consistency without requiring auxiliary encoders or expensive second-order autodifferentiation. Operating as a pure plug-and-play addition to single-stage FM training, Iso-FM dramatically improves few-step generation. On CIFAR-10 (DiT-S/2), Iso-FM slashes conditional non-OT FID at 2 steps from 78.82 to 27.13 - a 2.9x relative efficiency gain - and reaches a best-observed FID at 4 steps of 10.23. These results firmly establish acceleration regularization as a principled, compute-efficient mechanism for fast generative sampling.",
+      "authors": [
+        "Tauhid Khan"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-06T07:32:02+00:00",
+      "link": "https://arxiv.org/pdf/2604.04491v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "pathwise straightening of generative flows to reduce trajectory curvature",
+      "llm_evidence_cn": "生成流的路径平直化以减少轨迹曲率",
+      "llm_evidence": "生成流的路径平直化以减少轨迹曲率",
+      "canonical_evidence": "生成流的路径平直化以减少轨迹曲率",
+      "llm_tldr_en": "Introduces Isokinetic Flow Matching to regularize pathwise acceleration and improve generative flow sampling.",
+      "llm_tldr_cn": "引入等速流匹配以正则化路径加速度，并改进生成流的采样效率。",
+      "llm_tldr": "引入等速流匹配以正则化路径加速度，并改进生成流的采样效率。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty:composite"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty:composite",
+      "matched_query_text": "Papers central to 自动驾驶轨迹生成中利用扩散模型进行不确定性解耦、量化、追溯的论文检索, especially work that connects or combines: c; trajectory generation and path planning; autonomous driving motion planning and prediction; diffusion models for trajectory generation in autonomous driving; modeling aleatoric uncertainty in autonomous driving scenarios; estimating epistemic uncertainty in neural motion planners; diffusion models for uncertainty decoupling in autonomous driving trajectory generation; quantifying and tracing uncertainty in diffusion based motion planning; aleatoric and epistemic uncertainty decomposition in diffusion trajectory models; diffusion models for uncertainty estimation in autonomous driving trajectory generation.",
+      "matched_requirement_id": "req-composite-diffusion-conf-uncertainty",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.04662v1",
+      "title": "Anticipatory Reinforcement Learning: From Generative Path-Laws to Distributional Value Functions",
+      "abstract": "This paper introduces Anticipatory Reinforcement Learning (ARL), a novel framework designed to bridge the gap between non-Markovian decision processes and classical reinforcement learning architectures, specifically under the constraint of a single observed trajectory. In environments characterised by jump-diffusions and structural breaks, traditional state-based methods often fail to capture the essential path-dependent geometry required for accurate foresight. We resolve this by lifting the state space into a signature-augmented manifold, where the history of the process is embedded as a dynamical coordinate. By utilising a self-consistent field approach, the agent maintains an anticipated proxy of the future path-law, allowing for a deterministic evaluation of expected returns. This transition from stochastic branching to a single-pass linear evaluation significantly reduces computational complexity and variance. We prove that this framework preserves fundamental contraction properties and ensures stable generalisation even in the presence of heavy-tailed noise. Our results demonstrate that by grounding reinforcement learning in the topological features of path-space, agents can achieve proactive risk management and superior policy stability in highly volatile, continuous-time environments.",
+      "authors": [
+        "Daniel Bloch"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-fin.MF",
+        "q-fin.PR",
+        "q-fin.ST"
+      ],
+      "published": "2026-04-06T13:15:44+00:00",
+      "link": "https://arxiv.org/pdf/2604.04662v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "generative path-laws and jump-diffusions for path-dependent geometry",
+      "llm_evidence_cn": "生成式路径规律与跳跃扩散模型用于路径依赖几何",
+      "llm_evidence": "生成式路径规律与跳跃扩散模型用于路径依赖几何",
+      "canonical_evidence": "生成式路径规律与跳跃扩散模型用于路径依赖几何",
+      "llm_tldr_en": "Introduces Anticipatory RL using jump-diffusions to capture path-dependent geometry for accurate foresight.",
+      "llm_tldr_cn": "引入前瞻性强化学习，利用跳跃扩散模型捕捉路径依赖几何以实现准确预测。",
+      "llm_tldr": "引入前瞻性强化学习，利用跳跃扩散模型捕捉路径依赖几何以实现准确预测。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.04822v1",
+      "title": "Bridging Data-Driven Reachability Analysis and Statistical Estimation via Constrained Matrix Convex Generators",
+      "abstract": "Data-driven reachability analysis enables safety verification when first-principles models are unavailable. This requires constructing sets of system models consistent with measured trajectories and noise assumptions. Existing approaches rely on zonotopic or box-based approximations, which do not fit the geometry of common noise distributions such as Gaussian disturbances and can lead to significant conservatism, especially in high-dimensional settings. This paper builds on ellipsotope-based representations to introduce mixed-norm uncertainty sets for data-driven reachability. The highest-density region defines the exact minimum-volume noise confidence set, while Constrained Convex Generators (CCG) and their matrix counterpart (CMCG) provide compatible geometric representations at the noise and parameter level. We show that the resulting CMCG coincides with the maximum-likelihood confidence ellipsoid for Gaussian disturbances, while remaining strictly tighter than constrained matrix zonotopes for mixed bounded-Gaussian noise. For non-convex noise distributions such as Gaussian mixtures, a minimum-volume enclosing ellipsoid provides a tractable convex surrogate. We further prove containment of the CMCG times CCG product and bound the conservatism of the Gaussian-Gaussian interaction. Numerical examples demonstrate substantially tighter reachable sets compared to box-based approximations of Gaussian disturbances. These results enable less conservative safety verification and improve the accuracy of uncertainty-aware control design.",
+      "authors": [
+        "Peng Xie",
+        "Zhen Zhang",
+        "Rolf Findeisen",
+        "Amr Alanwar"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-04-06T16:24:39+00:00",
+      "link": "https://arxiv.org/pdf/2604.04822v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "mixed-norm uncertainty sets for data-driven reachability and noise confidence",
+      "llm_evidence_cn": "用于数据驱动可达性和噪声置信度的混合范数不确定性集",
+      "llm_evidence": "用于数据驱动可达性和噪声置信度的混合范数不确定性集",
+      "canonical_evidence": "用于数据驱动可达性和噪声置信度的混合范数不确定性集",
+      "llm_tldr_en": "Develops mixed-norm uncertainty sets to improve safety verification and noise estimation in system models.",
+      "llm_tldr_cn": "开发混合范数不确定性集，以改进系统模型中的安全验证和噪声估计。",
+      "llm_tldr": "开发混合范数不确定性集，以改进系统模型中的安全验证和噪声估计。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "modeling aleatoric uncertainty in autonomous driving scenarios",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.05544v1",
+      "title": "Referring-Aware Visuomotor Policy Learning for Closed-Loop Manipulation",
+      "abstract": "This paper addresses a fundamental problem of visuomotor policy learning for robotic manipulation: how to enhance robustness in out-of-distribution execution errors or dynamically re-routing trajectories, where the model relies solely on the original expert demonstrations for training. We introduce the Referring-Aware Visuomotor Policy (ReV), a closed-loop framework that can adapt to unforeseen circumstances by instantly incorporating sparse referring points provided by a human or a high-level reasoning planner. Specifically, ReV leverages the coupled diffusion heads to preserve standard task execution patterns while seamlessly integrating sparse referring via a trajectory-steering strategy. Upon receiving a specific referring point, the global diffusion head firstly generates a sequence of globally consistent yet temporally sparse action anchors, while identifies the precise temporal position for the referring point within this sequence. Subsequently, the local diffusion head adaptively interpolates adjacent anchors based on the current temporal position for specific tasks. This closed-loop process repeats at every execution step, enabling real-time trajectory replanning in response to dynamic changes in the scene. In practice, rather than relying on elaborate annotations, ReV is trained only by applying targeted perturbations to expert demonstrations. Without any additional data or fine-tuning scheme, ReV achieve higher success rates across challenging simulated and real-world tasks.",
+      "authors": [
+        "Jiahua Ma",
+        "Yiran Qin",
+        "Xin Wen",
+        "Yixiong Li",
+        "Yuyu Sun",
+        "Yulan Guo",
+        "Liang Lin",
+        "Ruimao Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-04-07T07:41:11+00:00",
+      "link": "https://arxiv.org/pdf/2604.05544v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "coupled diffusion heads for trajectory-steering in manipulation",
+      "llm_evidence_cn": "用于操作中轨迹引导的耦合扩散头",
+      "llm_evidence": "用于操作中轨迹引导的耦合扩散头",
+      "canonical_evidence": "用于操作中轨迹引导的耦合扩散头",
+      "llm_tldr_en": "Uses diffusion heads for closed-loop visuomotor policy learning and trajectory steering in robotic tasks.",
+      "llm_tldr_cn": "在机器人任务中利用扩散头进行闭环视觉运动策略学习和轨迹引导。",
+      "llm_tldr": "在机器人任务中利用扩散头进行闭环视觉运动策略学习和轨迹引导。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

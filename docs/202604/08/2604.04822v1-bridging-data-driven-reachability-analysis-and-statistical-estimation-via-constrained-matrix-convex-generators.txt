@@ -1,0 +1,1495 @@
+Title: Bridging Data-Driven Reachability Analysis and Statistical Estimation via Constrained Matrix Convex Generators
+
+URL Source: https://arxiv.org/pdf/2604.04822v1
+
+Published Time: Tue, 07 Apr 2026 02:04:22 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# Bridging Data-Driven Reachability Analysis and Statistical Estimation via Constrained Matrix Convex Generators 
+
+Peng Xie, Zhen Zhang, Rolf Findeisen, Amr Alanwar 
+
+Abstract — Data-driven reachability analysis enables safety verification when first-principles models are unavailable. This requires constructing sets of system models consistent with mea-sured trajectories and noise assumptions. Existing approaches rely on zonotopic or box-based approximations, which do not fit the geometry of common noise distributions such as Gaussian disturbances and can lead to significant conservatism, especially in high-dimensional settings. This paper builds on ellipsotope-based representations to introduce mixed-norm uncertainty sets for data-driven reachability. The highest-density region defines the exact minimum-volume noise confidence set, while Constrained Convex Generators (CCG) and their matrix coun-terpart (CMCG) provide compatible geometric representations at the noise and parameter level. We show that the resulting CMCG coincides with the maximum-likelihood confidence ellip-soid for Gaussian disturbances, while remaining strictly tighter than constrained matrix zonotopes for mixed bounded-Gaussian noise. For non-convex noise distributions such as Gaussian mixtures, a minimum-volume enclosing ellipsoid provides a tractable convex surrogate. We further prove containment of the CMCG × CCG product and bound the conservatism of the Gaussian–Gaussian interaction. Numerical examples demon-strate substantially tighter reachable sets compared to box-based approximations of Gaussian disturbances. These results enable less conservative safety verification and improve the accuracy of uncertainty-aware control design. 
+
+I. I NTRODUCTION 
+
+Reachability analysis computes the set of all states a dynamical system can reach under all admissible inputs and disturbances, a fundamental tool for safety verification [1]– [3]. When a first-principles model is unavailable, data-driven methods compute reachable sets directly from measured input-state trajectories. A central ingredient is the model set of all system matrices consistent with the data and a noise assumption. Under bounded noise, the model set can be represented as a constrained matrix zonotope (CMZ), building on zonotopic uncertainty representations widely used in set-based estimation and fault diagnosis [4], and propagated forward in time [5]–[7]. Existing probabilistic zonotope methods [8] truncate Gaus-sian confidence regions with ∞-norm boxes, though the nat-ural geometry is the 2-norm ball. In dimension q, this inflates the confidence-region volume by 2q /V q (6× for q = 5 , 310 ×
+
+for q = 10 ). This paper replaces the ∞-norm truncation by                             
+
+> P. Xie, Z. Zhang and A. Alanwar are with the TUM School of Computation, Information and Technology, Department of Computer Engineering, Technical University of Munich, 74076 Heilbronn, Germany.
+> (e-mail: p.xie@tum.de, zhangzhenzhang@tum.de, alanwar@tum.de)
+> Rolf Findeisen is with the Control and Cyber-Physical Systems Lab-oratory (CCPS), Technical University of Darmstadt, 64283 Darmstadt, Germany. (e-mail: rolf.findeisen@iat.tu-darmstadt.de)
+
+the mixed-p geometry of ellipsotopes [9], and carries this correction through model-set construction and propagation. The Highest Density Region (HDR) [10] gives the statisti-cally exact noise confidence region; the Constrained Convex Generators (CCG) representation provides the set calculus for pullback and propagation. For non-convex HDRs from Gaussian-mixture noise, we include a preliminary treatment based on the minimum-volume enclosing ellipsoid (MVEE). The paper makes three contributions. First, it shows how mixed-p CCG/CMCG sets can be used systematically in data-driven reachability for bounded, Gaussian, mixed bounded-Gaussian, and (via an MVEE surrogate) Gaussian-mixture noise. Second, it proves a pullback theorem from noise-level CCG to parameter-level CMCG and shows that, by exploiting the orthogonal projection independence of Gaussian noise, the CMCG coincides with the MLE con-fidence ellipsoid (CMCG = MLE ⊂ CMZ). Third, it proves containment of the CMCG × CCG product and bounds the Gaussian ×Gaussian truncation conservatism. Constrained zonotopes were introduced in [11]; [5] extended the idea to data-driven reachability with matrix zonotopes. Probabilistic zonotopes [8] combine bounded and Gaussian uncertainty but truncate the Gaussian part with ∞-norm boxes. [9] introduced ellipsotopes, unifying ellipsoids and zonotopes; CCG extends this to mixed p-norms. The work in [12] developed the Sign-Perturbed Sums method for exact finite-sample confidence regions. The results of this paper establish a principled connection between statistical estimation and data-driven reachability by aligning uncertainty representations with the underlying noise geometry. In particular, the proposed CMCG repre-sentation recovers the maximum-likelihood confidence set for Gaussian disturbances while avoiding the conservatism induced by box-based approximations, and extends naturally to mixed bounded and stochastic uncertainty. This enables substantially tighter reachable sets and provides a foundation for less conservative safety verification and uncertainty-aware control design in data-driven settings. The remainder of the paper introduces the proposed set representations, derives the corresponding parameter sets via pullback, and develops tractable propagation schemes together with numerical validation. II. P RELIMINARIES AND PROBLEM STATEMENT 
+
+Matrices are denoted by capitals (A, B), vectors by lowercase ( x, c), sets by calligraphic letters ( Z, M). The identity matrix is I, Rn is n-dimensional Euclidean space, 
+
+> arXiv:2604.04822v1 [eess.SY] 6 Apr 2026
+
+time indices are subscripts ( xk), and M † denotes the Moore– Penrose pseudoinverse. 
+
+A. Zonotope and matrix zonotope Definition 1 (Zonotope [2]) . A zonotope Z ⊂ Rn with center 
+
+c ∈ Rn and generator matrix G ∈ Rn×γ is the set 
+
+Z = ⟨c, G ⟩ := 
+
+n
+
+c + Gβ ∥β∥∞ ≤ 1
+
+o
+
+. (1) 
+
+Definition 2 (Matrix zonotope [1]) . A matrix zonotope M ⊂ 
+
+Rn×p with center C ∈ Rn×p and generators G(i) ∈ Rn×p,
+
+i = 1 , . . . , γ , is the set 
+
+M = C, G (1) , . . . , G (γ) := 
+
+n
+
+C+Pγi=1 βiG(i) ∥β∥∞ ≤ 1
+
+o
+
+.
+
+Zonotopes are closed under linear maps and Minkowski sums: for R ∈ Rm×n and two zonotopes Z1 = ⟨c1, G 1⟩,
+
+Z2 = ⟨c2, G 2⟩,
+
+R Z1 = ⟨Rc 1, RG 1⟩, Z1 ⊕ Z 2 = c1 + c2, [G1 G2] .
+
+B. Constrained Convex Generators (CCG) 
+
+Kousik et al. [9] introduced ellipsotopes, which partition the coefficient vector into index groups each constrained by a 2-norm, and noted that other p-norms could be assigned per group [9, Remark 6]. We adopt this mixed-p extension and call the resulting sets Constrained Convex Generators (CCG), reserving “ellipsotope” for the case pk = 2 for all groups. 
+
+Definition 3 (Constrained Convex Generators (CCG) [9]) . ACCG set E ⊂ Rn is defined as 
+
+E = {c + Gβ | ∥ βIk ∥pk ≤ 1 ∀ k = 1 , . . . , K, Aβ = b} ,
+
+where c ∈ Rn is the center, G ∈ Rn×m is the generator matrix, {I k}Kk=1 are disjoint index sets partitioning the coefficients β, each with its own norm pk, and Aβ = b
+
+are optional linear equality constraints. Special cases: pk = 2 gives an ellipsotope [9]; all pk = ∞
+
+with singleton index sets and no constraints gives a zonotope; adding linear constraints gives a constrained zonotope [11]; different pk values produce a mixed-index CCG. 
+
+Definition 4 (Constrained Matrix Convex Generators (CMCG)) . A CMCG N ⊂ Rn×p is defined as 
+
+N := 
+
+n
+
+C +Pγk=1 βkG(k) ∥βIj ∥pj ≤ 1 ∀ j, P 
+
+> k
+
+βkA(k)= B
+
+o
+
+,
+
+where C is the center matrix, G(k) are generator matrices, and A(k), B define the linear equality constraints. The CMCG is the matrix form of the CCG, used to represent parameter sets. When all norms are pj = ∞ with singleton index sets, the CMCG reduces to a constrained matrix zonotope (CMZ) [5]. 
+
+C. Probabilistic zonotope and probabilistic matrix zonotope Definition 5 (Probabilistic zonotope [1]) . A probabilistic zonotope Zp ⊂ Rn with center c ∈ Rn, bounded generators 
+
+Gb ∈ Rn×γb , and Gaussian generators Gg ∈ Rn×γg is the set 
+
+Zp =
+
+n
+
+c + Gbβ + Gg ξ ∥β∥∞ ≤ 1, ξ ∼ N (0 , I γg )
+
+o
+
+. (2) 
+
+Definition 6 (Probabilistic matrix zonotope [1]) . A proba-bilistic matrix zonotope Mp ⊂ Rn×p with center C ∈
+
+Rn×p, bounded generators G(i) 
+
+> b
+
+∈ Rn×p, i = 1 , . . . , γ b, and Gaussian generators G(j) 
+
+> g
+
+∈ Rn×p, j = 1 , . . . , γ g , is the set 
+
+Mp =
+
+n
+
+C + Pγb 
+
+> i=1
+
+βiG(i) 
+
+> b
+
++ Pγg 
+
+> j=1
+
+ξj G(j)
+
+> g
+
+∥β∥∞ ≤ 1, ξ ∼ N (0 , I γg )
+
+o
+
+. (3) 
+
+Proposition 1 (Confidence truncation: from probabilistic zonotope to CCG) . Let Zp be a probabilistic zonotope (Definition 5) with Gaussian generators Gg ∈ Rn×γg , and let 
+
+1 − α be a prescribed confidence level. Define the truncation radius 
+
+ρ := 
+
+q
+
+χ2  
+
+> γg,1−α
+
+, (4) where χ2  
+
+> γg,1−α
+
+denotes the (1 − α)-quantile of the chi-squared distribution with γg degrees of freedom. Then the 
+
+(1 − α)-confidence truncation of Zp is the CCG 
+
+Z1−αp =
+
+n
+
+c + Gbβ(b) + ρ G g β(g)
+
+∥β(b)∥∞ ≤ 1, ∥β(g)∥2 ≤ 1
+
+o
+
+, (5) with index groups Ib for the bounded coefficients ( pb = ∞)and Ig for the Gaussian coefficients ( pg = 2 ). The same construction applied to a probabilistic matrix zonotope yields a CMCG. 
+
+Proof. Since ξ ∼ N (0 , I γg ), ∥ξ∥22 ∼ χ2 
+
+> γg
+
+, so Pr {∥ ξ∥2 ≤
+
+ρ} = 1 − α. Substituting β(g) := ξ/ρ maps {∥ ξ∥2 ≤ ρ} to 
+
+{∥ β(g)∥2 ≤ 1} with Gg ξ = ρ G g β(g). The resulting set (5) has exactly the CCG structure of Definition 3 with pb = ∞
+
+and pg = 2 .
+
+Remark 1 (Norm mismatch in prior probabilistic zonotope approaches) . Prior work [8] truncates with ∥ξ∥∞ ≤ m,whereas the true (1 − α) confidence region is ∥ξ∥2 ≤q
+
+χ2
+
+> q, 1−α
+
+. The box inflates the volume by 2q /V q (Vq = unit 
+
+q-ball volume): 
+
+q 2q /V q over-approx. 
+
+2 1.27 27% 5 6.08 508% 10 310 31 ,000% 
+
+The CCG avoids this inflation by using the correct 2-norm for Gaussian generators. Figure 1 illustrates this for the mixed bounded-Gaussian case: the CCG (solid) uses a 2-norm ball for the Gaus-sian part, while the probabilistic zonotope (dashed) over-approximates it with a box. 
+
+D. Highest Density Region (HDR) Definition 7 (Highest Density Region [10]) . Given a density 
+
+fW on Rq , the (1 − α) highest density region (HDR) is defined as 
+
+HW, 1−α := {w ∈ Rq : fW (w) ≥ τα}, (6) where τα is the largest threshold such that Pr {W ∈HW, 1−α} ≥ 1 − α.010 0.01 0.02 0.03 10 50.04                   
+
+> p(x)
+> 0.05 5
+> x2
+> 00.06
+> x1
+> 0.07 00.08 -5 -5 -10 -10 -8 -6 -4 -2 02468
+> x1
+> -8 -6 -4 -2 02468
+> x2
+> 3<CCG 3<zonotope 2<CCG 2<zonotope 1<CCG 1<zonotope Center
+> (a) (b)
+
+Fig. 1. Mixed bounded-Gaussian truncation. (a) 3D density surface. (b) mσ 
+
+level sets: CCG (solid) vs. probabilistic zonotope (dashed). The CCG uses a 2-norm ball for the Gaussian part, avoiding the box over-approximation. TABLE I HDR SHAPE FOR THE NOISE DISTRIBUTIONS CONSIDERED .Distribution HDR shape Convex i.i.d. Gaussian ∥W ∥2 
+
+> F
+
+≤ σ2χ2 
+
+> q, 1−α
+
+✓
+
+i.i.d. uniform ∥W ∥∞ ≤ a ✓
+
+Gaussian mixture non-convex, possibly disjoint ×
+
+Remark 2 (Properties of the HDR) . The HDR is the smallest-volume set with coverage 1 − α [10]. For bounded and Gaussian noise it is convex, whereas for Gaussian-mixture noise it can be non-convex and disconnected. 
+
+E. Problem statement 
+
+Consider a discrete-time linear time-invariant system 
+
+xk+1 = Ax k + Bu k + wk, (7) where xk ∈ Rn, uk ∈ Rm, and wk ∈ Rn are the state, input, and process disturbance. The matrices A ∈ Rn×n,
+
+B ∈ Rn×m are unknown. We assume access to a trajectory 
+
+{(u0, x 0), . . . , (uT −1, x T −1), x T }.Given initial set X0 ⊂ Rn and input set U ⊂ Rm, the reachability problem is to enclose all states reachable at time 
+
+k under all data-consistent system matrices and admissible disturbances. We assume that the noise density fW is known. III. F ROM HDR TO CCG S URROGATE 
+
+This section constructs the CCG surrogate for each noise type. 
+
+A. HDR as exact noise confidence region 
+
+Given the noise density fW on Rq (with q = nT ), the 
+
+(1 −α) HDR (Definition 7) defines the exact noise confidence region: 
+
+HW, 1−α = W ∈ Rn×T : fW (vec( W )) ≥ τα , (8) with Pr {W⋆ ∈ H W, 1−α} = 1 − α. Table I lists the HDR shapes considered. 
+
+B. Exact likelihood-consistent model set 
+
+The data equation X+ = Θ M +W (Section IV-A) defines the likelihood-consistent model set as all Θ whose residual lies in the HDR: 
+
+Sexact Σ,1−α := Θ ∈ Rn×(n+m) : X+ − ΘM ∈ H W, 1−α . (9) This set inherits the HDR geometry, with MLE ˆΘ =arg max Θ fW (vec( X+ − ΘM )) . Under bounded noise it re-duces to the set-membership feasible set [5]; under Gaussian noise, to a Frobenius ball; under Gaussian-mixture noise, to the corresponding non-convex geometry. 
+
+Remark 3 (Scope) . The developments below are exact for convex HDRs (bounded, Gaussian, mixed). Non-convex HDRs are treated via the MVEE surrogate in Section III-E. 
+
+C. CCG surrogate: definition and coverage guarantee Definition 8 (CCG surrogate) . A CCG surrogate for the (1 −
+
+α) noise HDR HW, 1−α is a CCG set (Definition 3) 
+
+ECCG  
+
+> W
+
+= {cW + GW β | ∥ βIk ∥pk ≤ 1 ∀ k, A 0β = b0}
+
+(10) satisfying HW, 1−α ⊆ E CCG  
+
+> W
+
+.
+
+Proposition 2 (Coverage guarantee) . If HW, 1−α ⊆ E CCG  
+
+> W
+
+,then 
+
+Pr {W⋆ ∈ E CCG  
+
+> W
+
+} ≥ Pr {W⋆ ∈ H W, 1−α} = 1 − α. (11) 
+
+D. Convex HDR: exact CCG representation 
+
+When the HDR is convex, the CCG surrogate can be constructed directly. 
+
+Gaussian noise: The HDR is the Frobenius ball ∥W ∥2 
+
+> F
+
+≤
+
+σ2χ2
+
+> q, 1−α
+
+. With cW = 0 , a single index group p = 2 , and 
+
+GW G⊤ 
+
+> W
+
+= σ2χ2
+
+> q, 1−α
+
+I, the CCG matches the HDR exactly as an ellipsotope. 
+
+Bounded noise: The HDR is the box ∥W ∥∞ ≤ a. With 
+
+cW = 0 , singleton groups pk = ∞, and GW = aI nT , the CCG coincides with the HDR in zonotopic form. 
+
+Remark 4 (Approximation vs. exactness) . For Gaussian and bounded noise, the CCG surrogate is exact. For non-convex HDRs, such as Gaussian mixtures, a single convex CCG becomes approximate and must be interpreted as an outer surrogate. 
+
+E. Non-convex HDR: preliminary MVEE surrogate 
+
+When the HDR is non-convex, a convex CCG cannot match it exactly. A simple remedy is to replace it by its minimum-volume enclosing ellipsoid. 
+
+Proposition 3 (MVEE surrogate for non-convex HDRs) . Let 
+
+HW, 1−α ⊂ Rq be a bounded, possibly non-convex HDR, and let EMVEE  
+
+> W
+
+denote its minimum-volume enclosing ellipsoid. Then 
+
+HW, 1−α ⊆ E MVEE  
+
+> W
+
+, Pr {W⋆ ∈ E MVEE  
+
+> W
+
+} ≥ 1 − α. (12) Moreover, EMVEE  
+
+> W
+
+admits a one-group CCG representation with p = 2 .
+
+Proof. By definition EMVEE  
+
+> W
+
+⊇ H W, 1−α; coverage follows from Proposition 2. Any ellipsoid admits a one-group CCG with p = 2 .
+
+Remark 5 (Limitation) . The MVEE preserves HDR coverage but is not exact. Richer representations such as polynomial CCG sets are left to future work. IV. D ATA -C ONSISTENT CONSTRAINED MATRIX CONVEX 
+
+GENERATORS (CMCG) This section derives the pullback from noise-level CCG to parameter-level CMCG, first in general and then for Gaussian, bounded, and mixed noise. 
+
+A. Data equation 
+
+Collect input–state data from (7) into 
+
+X− := [ x0, . . . , x T −1] ∈ Rn×T ,U− := [ u0, . . . , u T −1] ∈ Rm×T ,X+ := [ x1, . . . , x T ] ∈ Rn×T . (13) Define Θ := A B ∈ Rn×(n+m) and M := 
+
+X−
+
+U−
+
+
+
+∈
+
+R(n+m)×T . The data equation is 
+
+X+ = Θ M + W, (14) with W ∈ Rn×T stacking the disturbances. We assume M
+
+has full row rank. 
+
+B. Pullback theorem: noise CCG to parameter CMCG 
+
+Let ECCG  
+
+> W
+
+be a CCG surrogate as in (10) with center 
+
+cW , generators G(j) 
+
+> W
+
+, index groups {I k, p k}, and constraints 
+
+A0β = b0. Let M⊥ ∈ RT ×d span ker( M ).
+
+Theorem 1 (Pullback) . The data-consistent parameter set 
+
+N CMCG Σ := Θ ∈ Rn×(n+m) : X+ − ΘM ∈ E CCG  
+
+> W
+
+(15) 
+
+is a CMCG (Definition 4): 
+
+N CMCG Σ =
+
+n
+
+CΣ + P 
+
+> j
+
+βj G(j)Σ
+
+∥βIk ∥pk ≤ 1 ∀ k, A cβ = bc
+
+o
+
+, (16) 
+
+with 
+
+CΣ := ( X+ − cW )M †, G(j)Σ := −G(j) 
+
+> W
+
+M †. (17) 
+
+The constraints combine CCG constraints with kernel solv-ability: 
+
+A(j) 
+
+> c
+
+:= A(j)⊤ 
+
+> 0
+
+(G(j) 
+
+> W
+
+M⊥)⊤⊤,bc := b⊤ 
+
+> 0
+
+(( X+ − cW )M⊥)⊤⊤. (18) 
+
+Coverage carries over: Pr {Θ⋆ ∈ N CMCG Σ } ≥ 1 − α.Proof. The constraint X+ − ΘM ∈ E CCG  
+
+> W
+
+means that there exists β with ∥βIk ∥pk ≤ 1 and A0β = b0 such that 
+
+X+ − ΘM = cW + P 
+
+> j
+
+βj G(j) 
+
+> W
+
+. For the linear equation 
+
+ΘM = X+ − cW − P 
+
+> j
+
+βj G(j) 
+
+> W
+
+to be solvable in Θ, the right-hand side must lie in the row space of M , i.e., (X+ −
+
+cW − P 
+
+> j
+
+βj G(j) 
+
+> W
+
+)M⊥ = 0 . This gives the kernel constraint 
+
+P 
+
+> j
+
+βj G(j) 
+
+> W
+
+M⊥ = (X+ − cW )M⊥. The solution is then 
+
+Θ = ( X+ − cW − P 
+
+> j
+
+βj G(j) 
+
+> W
+
+)M † = CΣ + P 
+
+> j
+
+βj G(j)Σ . The norm constraints on β are inherited directly from the CCG surrogate, and the coverage follows from Proposition 2. The pullback is distribution-agnostic: the CMCG form depends only on the CCG surrogate; the noise model enters through cW , G(j) 
+
+> W
+
+, and {I k, p k}.
+
+C. Corollary 1: Gaussian noise — const. matrix ellipsotope 
+
+For i.i.d. Gaussian noise Wij ∼ N (0 , σ 2), the HDR is the Frobenius ball ∥W ∥2 
+
+> F
+
+≤ σ2χ2 
+
+> q, 1−α
+
+(q = nT ), and the CCG surrogate is exact (Section III-D) with cW = 0 and a single p = 2 group. A direct application of Theorem 1 gives the intermediate set {Θ | ∥ X+ −ΘM ∥2 
+
+> F
+
+≤ σ2χ2
+
+> q, 1−α
+
+}.However, this q-dimensional ball is unnecessarily large: an orthogonal decomposition shows that only d = n(n + m)
+
+of the q noise dimensions affect the parameters, yielding the following tighter characterization. a) Orthogonal decomposition. Let ˆΘ = X+M † be the OLS estimate, PM =
+
+M ⊤(M M ⊤)−1M the projector onto the row space of M .Decompose W = W∥ + W⊥ with W∥ := W P M and 
+
+W⊥ := W (IT − PM ). The estimation error depends only on W∥:
+
+tr  (Θ − ˆΘ) M M ⊤ (Θ − ˆΘ) ⊤ = ∥W∥∥2 
+
+> F
+
+, (19) since W⊥M † = 0 . Under the Gaussian assumption, W∥ ⊥⊥
+
+W⊥ and ∥W∥∥2 
+
+> F
+
+/σ 2 ∼ χ2
+
+> d
+
+. The (1 −α) CMCG is therefore: 
+
+N 1−α 
+
+> Σ
+
+=
+
+n
+
+Θ | tr  (Θ − ˆΘ) M M ⊤ (Θ − ˆΘ) ⊤ ≤ σ2 χ2 
+
+> d, 1−α
+
+o
+
+,
+
+(20) with coverage Pr {Θ⋆ ∈ N 1−α 
+
+> Σ
+
+} = Pr {∥ W∥∥2 
+
+> F
+
+≤
+
+σ2χ2
+
+> d, 1−α
+
+} = 1 − α. Note the radius uses χ2 
+
+> d
+
+(d = n(n + m),the parameter dimension), not χ2 
+
+> q
+
+(q = nT , the noise dimension): the q − d directions in W⊥ do not influence the parameter estimate and are eliminated by the projection. b) Equivalence with the MLE confidence ellipsoid. The estimation error ˆΘ − Θ⋆ = W M † is Gaussian with  
+
+> 1
+> σ2
+
+tr(( ˆΘ − Θ⋆) M M ⊤ ( ˆΘ − Θ⋆)⊤) ∼ χ2
+
+> d
+
+. The (1 −α) MLE confidence ellipsoid is 
+
+E1−α 
+
+> Θ
+
+=
+
+n
+
+Θ | tr  (Θ − ˆΘ) M M ⊤ (Θ − ˆΘ) ⊤ ≤ σ2 χ2
+
+> d, 1−α
+
+o
+
+.
+
+(21) Comparing (20) and (21), N 1−α 
+
+> Σ
+
+= E1−α 
+
+> Θ
+
+: the Gaussian CMCG coincides exactly with the MLE confidence ellipsoid. 
+
+Proposition 4 (Containment hierarchy: CMCG = MLE ⊆
+
+CMZ) . For purely Gaussian noise, the CMCG (20) equals the MLE ellipsoid (21). Both are contained in the CMZ whenever the box ∥W ∥∞ ≤ mσ covers the χ2 
+
+> d
+
+ellipsoid. 
+
+Remark 6 (Why the CMCG is much tighter than the CMZ) .
+
+The CMZ replaces the ∥ · ∥ 2-ball by a ∥ · ∥ ∞-box in all q =
+
+nT noise coordinates, with volume inflation exponential in q
+
+(Remark 1). The CMCG uses χ2 
+
+> d
+
+(d = n(n+m) ≪ q) because the remaining q−d directions do not affect parameters. For 
+
+n = 1 , T = 30 : CMZ operates in q = 30 dimensions, CMCG in d = 2 .
+
+D. Corollary 2: Bounded-support noise — CMZ 
+
+Suppose each entry of W is bounded: |Wij | ≤ a. The HDR is the box ∥W ∥∞ ≤ a, which the CCG exactly rep-resents as a zonotope ( p = ∞, singleton index groups). The pullback (Theorem 1) yields a constrained matrix zonotope (CMZ). TABLE II STRUCTURAL PARALLEL BETWEEN THE BOUNDED AND GAUSSIAN NOISE FRAMEWORKS .
+
+Level Bounded (∥ · ∥ ∞)Gaussian (∥ · ∥ 2)Noise set zonotope ellipsoid Unconstr. MZ ME + kernel CMZ (exact) CMCG = MLE 
+
+The CMZ form was established in [5]; we restate it for completeness. The noise set is Mw = {Cw + P 
+
+> i
+
+βiG(i) 
+
+> w
+
+|∥β∥∞ ≤ 1}, and kernel solvability (X+ −W )M⊥ = 0 yields 
+
+Pγw 
+
+> i=1
+
+βiA(i) 
+
+> w
+
+= Bw,A(i) 
+
+> w
+
+:= G(i) 
+
+> w
+
+M⊥, Bw := ( X+ −Cw)M⊥. (22) The parameter set is the CMZ 
+
+NΣ =
+
+n
+
+CΣ + Pγw 
+
+> i=1
+
+βiG(i)Σ
+
+P 
+
+> i
+
+βiA(i) 
+
+> w
+
+= Bw, ∥β∥∞ ≤ 1
+
+o
+
+,
+
+(23) with CΣ = ( X+ − Cw)M † and G(i)Σ = −G(i) 
+
+> w
+
+M †.a) MLE equivalence under uniform noise. When the noise is i.i.d. uniform, Wij ∼ Unif([ −a, a ]) ,the likelihood is flat over its support: 
+
+L(Θ) = (2 a)−nT 1(∥X+ − ΘM ∥∞ ≤ a) . (24) Every feasible Θ maximizes L, so the MLE solution set equals the feasible model set: 
+
+arg max  
+
+> Θ
+
+L(Θ) = {Θ | ∥ X+ − ΘM ∥∞ ≤ a} = NΣ. (25) Under uniform noise, set-membership identification coin-cides with maximum-likelihood estimation [14], [15]. 
+
+E. Mixed bounded-Gaussian noise 
+
+Consider the additive mixed noise model 
+
+wk = wb,k + wg,k , (26) where wb,k = Gb βk with ∥βk∥∞ ≤ 1 and Gb ∈ Rn×pb , and 
+
+wg,k ∼ N (0 , σ 2In), independent across k.a) Mixed-index noise confidence region. Stacking over T steps, W = Wb + Wg with Wb a matrix zonotope ( |β(b) 
+
+> k
+
+| ≤ 1) and Wg Gaussian. At the noise level, the Gaussian part is truncated by its q-dimensional Frobenius ball ( ∥β(g)∥2 ≤ 1). The noise confidence region is a mixed-index CCG: 
+
+Wmix 1−α =
+
+(X
+
+> k
+
+β(b) 
+
+> k
+
+G(k) 
+
+> Wb
+
++ X
+
+> k
+
+β(g) 
+
+> k
+
+G(k)
+
+> Wg
+
+∥β(b)∥∞ ≤ 1,
+
+∥β(g)∥2 ≤ 1
+
+)
+
+.
+
+(27) b) The CMCG for mixed noise. Applying Theorem 1 to (27) gives: 
+
+CΣ := X+M †, G(k)Σ,b := −G(k) 
+
+> Wb
+
+M †,G(k)Σ,g := −G(k) 
+
+> Wg
+
+M †, A(k) 
+
+> b
+
+:= G(k) 
+
+> Wb
+
+M⊥,A(k) 
+
+> g
+
+:= G(k) 
+
+> Wg
+
+M⊥, BW := X+M⊥. (28) The parameter set is the CMCG: 
+
+N 1−α 
+
+> Σ
+
+=
+
+n
+
+CΣ + P 
+
+> k
+
+β(b) 
+
+> k
+
+G(k)Σ,b + P 
+
+> k
+
+β(g) 
+
+> k
+
+G(k)Σ,g 
+
+∥β(b)∥∞ ≤ 1, ∥β(g)∥2 ≤ 1,
+
+P 
+
+> k
+
+β(b) 
+
+> k
+
+A(k) 
+
+> b
+
++ P 
+
+> k
+
+β(g) 
+
+> k
+
+A(k) 
+
+> g
+
+= BW
+
+o
+
+. (29) 
+
+Proposition 5 (Coverage of the mixed CMCG with χ2
+
+> d
+
+radius) . In the CMCG (29), the Gaussian generators G(k)Σ,g 
+
+are scaled by rg = σ
+
+q
+
+χ2 
+
+> d, 1−α
+
+with d = n(n + m). Then 
+
+Pr {Θ⋆ ∈ N 1−α 
+
+> Σ
+
+} ≥ 1 − α.
+
+Proof. Three facts are used: (i) Wb and Wg are indepen-dent by the noise model (26); (ii) Wg, ∥ := Wg PM and 
+
+Wg, ⊥ := Wg (IT − PM ) are independent under Gaussianity, and ∥Wg, ∥∥2 
+
+> F
+
+/σ 2 ∼ χ2 
+
+> d
+
+(Section IV-C); (iii) the param-eter estimate depends on Wg only through Wg, ∥ (since 
+
+Wg, ⊥M † = 0 ), so the χ2 
+
+> d
+
+distribution of Wg, ∥ is not affected by the presence of Wb. Therefore 
+
+Pr {Θ⋆ ∈ N 1−α 
+
+> Σ
+
+} = Pr {Wb ∈ M Wb }
+
+| {z }
+
+> = 1
+
+× Pr {∥ Wg, ∥∥2 
+
+> F
+
+≤ σ2χ2
+
+> d, 1−α
+
+}
+
+| {z }
+
+> = 1 −α
+
+= 1 − α. 
+
+Remark 7 (CMCG as bridge) . The CMCG (29) unifies the noise scenarios: σ = 0 recovers the CMZ (23); Gb = 0 
+
+recovers the MLE ellipsoid (20). In the mixed case, both generator families remain present: the bounded generators with ∥β(b)∥∞ ≤ 1 capture worst-case set-membership un-certainty, while the Gaussian generators with ∥β(g)∥2 ≤ 1
+
+and radius rg = σ
+
+q
+
+χ2 
+
+> d, 1−α
+
+retain the exact ellipsoidal confidence geometry at the parameter level. 
+
+Proposition 6 (Tightness over CMZ) . Let N CMZ Σ denote the CMZ obtained by replacing the Gaussian noise wg,k by the box ∥wg,k ∥∞ ≤ mσ (e.g., m = 3 ) [5]. Then N 1−α 
+
+> Σ
+
+⊆N CMZ Σ , with the inclusion strict whenever qg ≥ 2.
+
+Proof. The box ∥wg,k ∥∞ ≤ mσ contains the 2-norm ball, strictly so for n ≥ 2 since 2n/V n > 1. This noise-level inclusion propagates to the parameter level via W 7 → (X+ −
+
+W )M †.
+
+Remark 8 (Optimality of the mixed CMCG) . One might try to use the distribution of Wg, ⊥ to further tighten the bounded coefficients via Wb, ⊥ = R⊥ − Wg, ⊥. However, bounded generators are typically low-rank (rank-1 when 
+
+pb = 1 ), making the resulting LP infeasible, and the coupling 
+
+∥Wb∥∞ ≤ a between Wb, ∥ and Wb, ⊥ prevents the orthogonal independence needed for further projection. The CMCG is thus equivalent to a profile likelihood approach: bounded noise is handled by set-membership, Gaussian noise by its marginal likelihood over the parameter-identifiable subspace, using χ2 
+
+> d
+
+rather than χ2 
+
+> q
+
+. Their Minkowski-sum combination is already the tightest achievable for mixed noise. V. F ORWARD PROPAGATION AND NUMERICAL 
+
+EVALUATION 
+
+The CMCG × CCG multiplication preserves the correct 
+
+p-norm for each generator type ( 2-norm for Gaussian, ∞-norm for bounded), whereas standard zonotope propagation treats all generators with ∥ · ∥ ∞.
+
+A. Basic CCG operations 
+
+Let E1 and E2 be two CCG sets of the form (3), with bounded generators Gb,i , Gaussian generators Gg,i , and constraints Ab,i , Ag,i , Bi for i = 1 , 2. Then 
+
+E1 ⊕ E 2 = c1 + c2 + Gb, 1β(b)1 + Gb, 2β(b)2
+
++ Gg, 1β(g)1 + Gg, 2β(g)2 ∥β(b) 
+
+> i
+
+∥∞ ≤ 1, ∥β(g) 
+
+> i
+
+∥2 ≤ 1 ,Ab := blkdiag( Ab, 1, A b, 2), A g := blkdiag( Ag, 1, A g, 2),B := B⊤ 
+
+> 1
+
+B⊤
+
+> 2
+
+⊤, (30) and for any linear map R,
+
+RE1 = ⟨Rc 1, RG b, 1, RG g, 1, A b, 1, A g, 1, B 1⟩. (31) Both norm and equality constraints are preserved through block-diagonal augmentation. 
+
+B. Multiplying a CMCG by a CCG 
+
+Let Θ ∈ E Θ be a CMCG as in (29) and let z be a CCG with center cz , bounded generators G(ℓ)
+
+> z,b
+
+, and Gaussian generators 
+
+G(r) 
+
+> z,g
+
+. The product y = Θ z is over-approximated by a CCG with the following components: 
+
+cy = CΣ cz , (32) 
+
+Gy,b =  G(k)Σ,b cz
+
+| {z } 
+
+> Ab
+
+CΣGz,b 
+
+| {z }
+
+> lin
+
+dkℓ G(k)Σ,b G(ℓ)
+
+> z,b
+
+| {z }
+
+> b×b
+
+ρΘρz G(j)Σ,g G(r)
+
+> z,g
+
+| {z }
+
+> e×e
+
+, (33) 
+
+Gy,g =  G(j)Σ,g cz
+
+| {z } 
+
+> Ag
+
+CΣGz,g 
+
+| {z }
+
+> lin
+
+¯βk G(k)Σ,b G(r)
+
+> z,g
+
+| {z }
+
+> b×e
+
+¯αℓ G(j)Σ,g G(ℓ)
+
+> z,b
+
+| {z }
+
+> e×b
+
+, (34) Here dkℓ = ¯βk ¯αℓ, where ¯βk and ¯αℓ are upper bounds on 
+
+|β(b) 
+
+> k
+
+| and |α(b) 
+
+> ℓ
+
+| from the ∥ · ∥ ∞ constraints or auxiliary LPs. The radii ρΘ =
+
+q
+
+χ2  
+
+> γg, Θ,1−δ/ 2
+
+and ρz =
+
+q
+
+χ2  
+
+> γg,z ,1−δ/ 2
+
+truncate the Gaussian coefficients into a confidence event with probability ≥ 1 − δ, converting the Gaussian ×Gaussian bilinear term into a bounded block. Unlike prior probabilistic zonotope constructions, these radii come from the χ2 distri-bution of ∥ξ∥22 rather than a box ∥ξ∥∞ ≤ m, avoiding the volume inflation of Remark 1. The constraint matrices are padded with zeros so that only the original coefficients remain coupled: 
+
+Aout  
+
+> b
+
+= Ab 0, Aout  
+
+> g
+
+= Ag 0, Bout = BW .
+
+(35) The first two blocks of (33)–(34) retain the original coefficients; the bilinear blocks introduce fresh variables: 
+
+δbb (∥ · ∥ ∞ ≤ 1), ηbg k and ηgb ℓ (∥ · ∥ 2 ≤ 1), and λgg 
+
+(∥ · ∥ ∞ ≤ 1). The equality constraints (35) act only on the original coefficients. 
+
+Theorem 2 (Containment of the CMCG × CCG over-ap-proximation) . Let Pδ (EΘ, Ez ) denote the exact product set 
+
+{Θz} generated by all admissible bounded coefficients and by all Gaussian coefficients satisfying the confidence event 
+
+∥ξΘ∥2 ≤ ρΘ, ∥ξz ∥2 ≤ ρz . Then 
+
+Pδ (EΘ, Ez ) ⊆ E y , (36) 
+
+where Ey is the CCG defined by (32) –(35) .Proof. Write 
+
+Θ = CΣ + P 
+
+> k
+
+β(b) 
+
+> k
+
+G(k)Σ,b + P 
+
+> j
+
+ξΘ,j G(j)Σ,g ,z = cz + P 
+
+> ℓ
+
+α(b) 
+
+> ℓ
+
+G(ℓ) 
+
+> z,b
+
++ P 
+
+> r
+
+ξz,r G(r) 
+
+> z,g
+
+.
+
+Expanding y = Θz gives eight groups of terms: center ×center, two center ×generator blocks, two generator ×center blocks, and four bilinear blocks. The linear blocks are represented exactly by the first two blocks of (33) and (34), while the original equality constraints on β(b) and ξΘ are retained through (35). For the bounded ×bounded block, 
+
+β(b) 
+
+> k
+
+α(b) 
+
+> ℓ
+
+= δbb kℓ ¯βk ¯αℓ, |δbb kℓ | ≤ 1,
+
+so the term is contained in the generator block 
+
+dkℓ G(k)Σ,b G(ℓ)
+
+> z,b
+
+. For the bounded ×Gaussian block, define 
+
+ηbg k := ( β(b) 
+
+> k
+
+/ ¯βk) ξz ; then ∥ηbg k ∥2 ≤ 1, so the corresponding term lies in the block ¯βkG(k)Σ,b G(r) 
+
+> z,g
+
+. Similarly, for the Gaussian ×bounded block, ηgb ℓ := (α(b) 
+
+> ℓ
+
+/¯αℓ) ξΘ satisfies 
+
+∥ηgb ℓ ∥2 ≤ 1, so the term lies in the block ¯αℓG(j)Σ,g G(ℓ)
+
+> z,b
+
+.Finally, on the event ∥ξΘ∥2 ≤ ρΘ, ∥ξz ∥2 ≤ ρz , each coefficient product satisfies |ξΘ,j ξz,r | ≤ ρΘρz . Hence 
+
+ξΘ,j ξz,r = λgg jr ρΘρz , |λgg jr | ≤ 1,
+
+which places the Gaussian ×Gaussian block in the bounded generator family of (33). Therefore every exact product realization belongs to Ey .
+
+Remark 9 (Where the over-approximation enters) . Linear terms are exact. Over-approximation enters in the bilinear blocks, where products of shared coefficients are replaced by fresh variables, dropping algebraic dependence (the wrap-ping effect). The Gaussian ×Gaussian block adds further conservatism by replacing the rank-one matrix ξΘξ⊤ 
+
+> z
+
+with independent bounded coefficients λgg jr .
+
+Proposition 7 (Rough bound for the Gaussian ×Gaussian block) . Let 
+
+Hjr := G(j)Σ,g G(r) 
+
+> z,g
+
+,
+
+and define the exact truncated Gaussian ×Gaussian set 
+
+Sgg := 
+
+X
+
+> j,r
+
+ξΘ,j ξz,r Hjr ∥ξΘ∥2 ≤ ρΘ, ∥ξz ∥2 ≤ ρz
+
+ ,
+
+and its bounded-generator over-approximation 
+
+bSgg := 
+
+X
+
+> j,r
+
+λjr ρΘρz Hjr ∥λ∥∞ ≤ 1
+
+ .
+
+For any support direction h with ∥h∥2 = 1 ,
+
+0 ≤ h bSgg (h) − hSgg (h)
+
+≤ ρΘρz
+
+ √γg, Θγg,z − 1 X 
+
+> j,r
+
+∥Hjr ∥2
+
+> F
+
+1/2
+
+. (37) Proof. Let Mh ∈ Rγg, Θ×γg,z be defined by (Mh)jr := 
+
+⟨h, H jr ⟩. Then 
+
+hSgg (h) = ρΘρz ∥Mh∥2, h bSgg (h) = ρΘρz
+
+X
+
+> j,r
+
+|(Mh)jr |.
+
+Therefore 
+
+0 ≤ h bSgg (h) − hSgg (h) ≤ ρΘρz
+
+ ∥Mh∥1,entry − ∥ Mh∥2
+
+.
+
+Using ∥Mh∥1,entry ≤ √γg, Θγg,z ∥Mh∥F and ∥Mh∥2 ≤∥Mh∥F gives 
+
+∥Mh∥1,entry − ∥ Mh∥2 ≤  √γg, Θγg,z − 1∥Mh∥F .
+
+Finally, 
+
+∥Mh∥2 
+
+> F
+
+= X
+
+> j,r
+
+⟨h, H jr ⟩2 ≤ X
+
+> j,r
+
+∥Hjr ∥2 
+
+> F
+
+∥h∥22,
+
+which yields (37). 
+
+Remark 10 (Wrapping error propagation) . With 
+
+κ := sup Θ∈N 1−α
+
+> Σ
+
+∥Θ∥2 and one-step error εprod 
+
+(bounded by Proposition 7), the Hausdorff error satisfies 
+
+dH ( eRk+1 , Rexact  
+
+> k+1
+
+) ≤ κ d H ( eRk, Rexact  
+
+> k
+
+) + εprod , giving 
+
+dH ≤ 1−κK 
+
+> 1−κ
+
+εprod for κ < 1. Since κ is the same for both schemes, the 2-norm improvement is not washed out. 
+
+C. End-to-end one-step reachability 
+
+For the system xk+1 = Ax k + Bu k + wb,k + wg,k with 
+
+Θ = [ A B ] ∈ N 1−α 
+
+> Σ
+
+(CMCG), wb,k ∈ W b (zonotopic), and wg,k with ∥wg,k ∥2 ≤ σ
+
+q
+
+χ2 
+
+> n, 1−αw
+
+(ellipsoidal), define the augmented state-input set Zk := Xk × U . The one-step reachable set satisfies 
+
+Xk+1 ⊇ N 1−α 
+
+> Σ
+
+× Z k ⊕ W b ⊕ W g , (38) with × the CMCG–CCG product, Zk = Xk × U , and ⊕ the Minkowski sum. By (30)–(35), each term remains a CCG, preserving the bounded/Gaussian distinction. 
+
+Proposition 8 (Guaranteed outer bound) . At every propaga-tion step k, the CMCG-based reachable set satisfies Rtrue  
+
+> k
+
+⊆RCMCG  
+
+> k
+
+, where Rtrue  
+
+> k
+
+is the true reachable set under all admissible noise realizations and system matrices in Sexact Σ,1−α.This follows from Sexact Σ,1−α ⊆ N CMCG Σ , Theorem 2, and set-monotonicity. 
+
+D. Numerical evaluation 
+
+We validate the proposed approach with three numerical studies. The first compares the parameter sets produced by CMCG, MLE, and CMZ. The second compares CMCG-based and CMZ-based reachability [5]. The third illustrates a preliminary Gaussian-mixture treatment through the MVEE surrogate introduced in Proposition 3. 
+
+1) Experiment 1: Parameter-Set Hierarchy: Consider a scalar system xk+1 = a x k + b u k + wk with n = 1 , m = 1 ,
+
+T = 30 , σ = 0 .02 , and confidence level 1 − α = 0 .95 .The noise dimension is q = nT = 30 and the parameter dimension d = n(n + m) = 2 .Fig. 2 shows the parameter sets in the (a, b )-plane. The CMCG (green) and MLE (blue, dashed) coincide exactly, confirming Proposition 4. The CMZ (red) is much larger because it replaces the 2-norm ball by a 5σ box in q = 30 
+
+dimensions (Remark 1), while the CMCG uses only the d =2 parameter-relevant directions. 0.78 0.8 0.82 0.84 0.86 0.88 0.9 0.92 0.94 0.96                          
+
+> a
+> 0.42 0.44 0.46 0.48 0.5 0.52 0.54 0.56 0.58
+> b
+> CMZ CMCG MLE ^##?
+> Fig. 2. Parameter-set comparison for a scalar system ( n= 1 ,T= 30 ). The CMZ (red, dash-dot) over-approximates Gaussian noise by a 5σbox in q= 30 dimensions, yielding a large polytope. The CMCG (green, solid) uses the χ2
+> dradius with d= 2 , coinciding exactly with the MLE ellipsoid (blue, dashed). OLS estimate ˆΘ(black +); true parameters Θ⋆(red ×). TABLE III COMPUTATION TIME AND FINAL INTERVAL -HULL VOLUME FOR THE 5D
+> REACHABILITY PROBLEM (T= 120 ,K= 5 STEPS ).
+
+Model CMZ CMCG Offline time (s) <0.01 274.1 0.13 
+
+Total time (s) 0.01 275.8 0.20 
+
+Final volume ( k = 5 ) 1.12e-3 8.85e-1 3.99e-3 
+
+2) Experiment 2: CMCG vs. CMZ Reachability: We com-pare CMCG-based and CMZ-based [5] reachability on a 5-dimensional system ( n = 5 , m = 1 , ∆t = 0 .05 s) with mixed noise wk = wb,k + wg,k , wb,k ∈ [−a, a ]n (a = 10 −4), 
+
+wg,k ∼ N (0 , σ 2In) (σ = 6 × 10 −4), and T = 120 samples. The Gaussian component is six times larger than the bounded one. Fig. 3 shows five propagation steps. The hierarchy Rk ⊆
+
+˜RCMCG  
+
+> k
+
+⊆ ˜RCMZ  
+
+> k
+
+holds at every step, with the gap widening with dimension as predicted by the volume ratio in Remark 1. Table III quantifies the gap: VCMZ /V CMCG = 221 .6× at 
+
+k = 5 , and the CMCG is 1275 × faster because the CCG product avoids the LP solves of the kernel-constrained CMZ. 
+
+3) Experiment 3: Gaussian-Mixture Noise via MVEE: 
+
+Consider the same scalar system but with bimodal noise 
+
+wk ∼ 12 N (−μ, σ 2) + 12 N (μ, σ 2), μ = 0 .15 , σ = 0 .05 .
+
+(39) The marginal HDR splits into two disjoint intervals; we replace it by the MVEE (Proposition 3) and propagate the resulting CMCG for five steps. Fig. 4 shows the bimodal density with its HDR and MVEE surrogate (a), and the five-step reachable sets (b). The MVEE-based CMCG remains a valid outer approximation while being substantially tighter than a conservative single-Gaussian surrogate. 
+
+4) Discussion: All three experiments confirm the the-ory: CMCG = MLE ⊂ CMZ for Gaussian noise (Fig. 2), 0.2 0.4 0.6 0.8 1 1.2 1.4             
+
+> x1
+> 11.5 22.5 33.5 44.5
+> x2
+> (a)
+> Initial set X0
+> Model-based Rk
+> CMZ: ~RCMZ
+> k
+> CMCG: ~RCMCG
+> k(ours)
+> 11.5 22.5
+> x3
+> 11.2 1.4 1.6 1.8 22.2
+> x4
+> (b)
+> 11.2 1.4 1.6 1.8 22.2
+> x4
+> 11.2 1.4 1.6 1.8 22.2 2.4 2.6 2.8 3
+> x5
+> (c)
+
+Fig. 3. Reachable-set comparison over 5 propagation steps for a 5D system, shown in three 2D projections: (a) (x1, x 2), (b) (x3, x 4), (c) (x4, x 5). Rk
+
+denotes the model-based reachable set (blue, gray fill), ˜RCMZ  
+
+> k
+
+the CMZ over-approximation (red, outermost), and ˜RCMCG  
+
+> k
+
+our CMCG-based set (green). The CMCG sets are consistently tighter because the CCG propagation preserves the correct 2-norm for Gaussian generators. -0.5 0 0.5        
+
+> w
+> 01234
+> fW (w)
+> (a)
+> fW(GMM) MVEE
+> =0:95
+> 012345
+> Step k
+> -5 0510
+> xk
+> (b)
+> Conservative MVEE CMCG Model-based
+
+Fig. 4. Gaussian-mixture case study. (a) Bimodal scalar density with its 
+
+95% HDR (shaded) and the MVEE surrogate (red dashed). (b) Five-step reachable sets: conservative single-Gaussian (red), MVEE-based CMCG (green), and model-based (blue dashed). The MVEE construction gives a tighter outer approximation by convexifying the non-convex HDR. 
+
+˜RCMCG  
+
+> k
+
+⊂ ˜RCMZ  
+
+> k
+
+at every step with a volume ratio of 
+
+221 .6× at k = 5 (Table III), and the MVEE surrogate handles non-convex noise (Fig. 4). VI. C ONCLUSION 
+
+This paper shows how mixed-p CCG/CMCG sets sys-tematically improve data-driven reachability by keeping the correct norm for each noise component. The CMCG coin-cides with the MLE ellipsoid for Gaussian noise (CMCG =
+
+MLE ⊂ CMZ) and remains strictly tighter than the CMZ for mixed bounded-Gaussian noise, with a formal contain-ment proof for the CMCG × CCG product. As a result, the proposed approach yields substantially tighter and less conservative reachable sets while maintaining computational tractability. Numerical results confirm both improved ac-curacy and efficiency in reachable-set computation. These properties make the approach particularly relevant for safety verification and uncertainty-aware control design in data-driven settings. Future work includes polynomial CCG sets for exact non-convex HDR representations and conformal prediction [12] for distribution-free guarantees. REFERENCES [1] M. Althoff, “Reachability analysis and its application to the safety as-sessment of autonomous cars,” Ph.D. dissertation, Tech. Univ. Munich, 2010. [2] A. Girard, “Reachability of uncertain linear systems using zonotopes,” in Hybrid Systems: Computation and Control (HSCC) . Springer, 2005, pp. 291–305. [3] W. Kühn, “Rigorously computed orbits of dynamical systems without the wrapping effect,” Computing , vol. 61, no. 1, pp. 47–67, 1998. [4] J. K. Scott, R. Findeisen, R. D. Braatz, and D. M. Raimondo, “Input design for guaranteed fault diagnosis using zonotopes,” in Proc. IEEE American Control Conf. (ACC) , 2013, pp. 3561–3566. [5] A. Alanwar, A. Koch, F. Allgöwer, and K. H. Johansson, “Data-driven reachability analysis from noisy data,” IEEE Trans. Autom. Control ,vol. 68, no. 5, pp. 3054–3069, 2023. [6] A. Alanwar, A. Berndt, K. H. Johansson, and H. Sandberg, “Data-driven set-based estimation using matrix zonotopes with set contain-ment guarantees,” in Proc. Eur. Control Conf. (ECC) , 2022, pp. 875– 881. [7] A. Alanwar, F. J. Jiang, M. Sharifi, D. V. Dimarogonas, and K. H. Johansson, “Enhancing data-driven reachability analysis using tempo-ral logic side information,” in Proc. IEEE Int. Conf. Robot. Autom. (ICRA) , 2022, pp. 6793–6799. [8] M. Althoff, “An introduction to CORA 2015,” in Proc. Workshop Appl. Verif. Continuous Hybrid Syst. , 2015, pp. 120–151. [9] S. Kousik, A. Dai, and G. X. Gao, “Ellipsotopes: Uniting ellipsoids and zonotopes for reachability analysis and fault detection,” IEEE Trans. Autom. Control , vol. 68, no. 6, pp. 3440–3452, 2023. [10] R. J. Hyndman, “Computing and graphing highest density regions,” 
+
+Amer. Statist. , vol. 50, no. 2, pp. 120–126, 1996. [11] J. K. Scott, D. M. Raimondo, G. R. Marseglia, and R. D. Braatz, “Constrained zonotopes: A new tool for set-based estimation and fault detection,” Automatica , vol. 69, pp. 126–136, 2016. [12] B. C. Csáji, M. C. Campi, and E. Weyer, “Sign-perturbed sums (SPS): A method for constructing exact finite-sample confidence regions for general linear systems,” in Proc. IEEE Conf. Decision Control (CDC) ,2012, pp. 7321–7326. [13] M. Althoff, O. Stursberg, and M. Buss, “Safety assessment for stochastic linear systems using enclosing hulls of probability density functions,” in Proc. Eur. Control Conf. (ECC) , 2009, pp. 625–630. [14] K. Knight, “On the asymptotic distribution of the l∞ estimator in linear regression,” Tech. Rep., Dept. Stat. Sci., Univ. Toronto, 2020. [15] Y. Yi and M. Neykov, “Non-asymptotic bounds for the ℓ∞ estimator in linear regression with uniform noise,” Bernoulli , vol. 30, no. 1, pp. 534–553, 2024.
