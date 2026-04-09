@@ -1,0 +1,1436 @@
+Title: Generative Path-Law Jump-Diffusion: Sequential MMD-Gradient Flows and Generalisation Bounds in Marcus-Signature RKHS
+
+URL Source: https://arxiv.org/pdf/2604.05008v1
+
+Published Time: Wed, 08 Apr 2026 00:02:20 GMT
+
+Number of Pages: 26
+
+Markdown Content:
+# Quantitative Analytics 
+
+# Generative Path-Law Jump-Diffusion: Sequential MMD-Gradient Flows and Generalisation Bounds in Marcus-Signature RKHS 
+
+# Daniel Bloch 27th of February 2026 
+
+The copyright to this computer software and documentation is the property of Quant Finance Ltd. It may be used and/or copied only with the written consent of the company or in accordance with the terms and conditions stipulated in the agreement/contract under which the material has been supplied. Copyright © 2026 Quant Finance Ltd Quantitative Analytics, London 
+
+Created: 8 April 2026 
+
+> arXiv:2604.05008v1 [stat.ML] 6 Apr 2026
+
+# Generative Path-Law Jump-Diffusion: Sequential MMD-Gradient Flows and Generalisation Bounds in Marcus-Signature RKHS 
+
+## Daniel B LOCH *
+
+## UNIVERSITY OF PARIS 6 & V IN UNIVERSITY 
+
+## Working Paper 
+
+†
+
+## 27th of February 2026 Version : 1.0.0 
+
+Abstract 
+
+This paper introduces a novel generative framework for synthesising forward-looking, càdlàg stochastic trajecto-ries that are sequentially consistent with time-evolving path-law proxies, thereby incorporating anticipated structural breaks, regime shifts, and non-autonomous dynamics. By framing path synthesis as a sequential matching problem on restricted Skorokhod manifolds, we develop the Anticipatory Neural Jump-Diffusion (ANJD) flow, a generative mechanism that effectively inverts the time-extended Marcus-sense signature. Central to this approach is the Antic-ipatory Variance-Normalised Signature Geometry (AVNSG), a time-evolving precision operator that performs dy-namic spectral whitening on the signature manifold to ensure contractivity during volatile regime shifts and discrete aleatoric shocks. We provide a rigorous theoretical analysis demonstrating that the joint generative flow constitutes an infinitesimal steepest descent direction for the Maximum Mean Discrepancy functional relative to a moving tar-get proxy. Furthermore, we establish statistical generalisation bounds within the restricted path-space and analyse the Rademacher complexity of the whitened signature functionals to characterise the expressive power of the model under heavy-tailed innovations. The framework is implemented via a scalable numerical scheme involving Nyström-compressed score-matching and an anticipatory hybrid Euler-Maruyama-Marcus integration scheme. Our results demonstrate that the proposed method captures the non-commutative moments and high-order stochastic texture of complex, discontinuous path-laws with high computational efficiency. 
+
+Keywords: Anticipatory Neural Jump-Diffusion (ANJD), Marcus-Sense Signature, Skorokhod Space, MMD-Gradient Flow, Adaptive Variance-Normalised Signature Geometry (AVNSG), Schrödinger Bridge, Euler-Maruyama-Marcus (EMM) Integration, Nyström Approximation, Stochastic Synthesis, Spectral Whitening. 
+
+# 1 Introduction 
+
+## 1.1 High-level goal 
+
+The primary objective of this work is to establish a rigorous generative framework for the synthesis of forward-looking, càdlàg stochastic trajectories; by enforcing sequential consistency with time-evolving path-law proxies, the model natively incorporates expected structural breaks, regime shifts, and evolving volatility patterns into the generative  
+
+> *
+
+Visting Professor at the College of Engineering and Computer Science, VinUniversity, Hanoi.  
+
+> †
+
+All mistakes are ours. 
+
+1Quantitative Analytics 
+
+process. While previous advancements in signature-based filtering have enabled the recursive estimation of expected path-dynamics, the inversion of these abstract, infinite-dimensional moments into concrete, synthetic realisations on the restricted Skorokhod manifolds Ds, particularly those containing discrete discontinuities, remains a formidable challenge. This paper seeks to bridge this gap by treating the generative task as a sequential anticipatory transport problem within the Skorokhod space, equipped with a time-varying signature-based metric. Our goal is to develop the Anticipatory Neural Jump-Diffusion (ANJD) flow, a mechanism that inverts the time-extended Marcus-sense signature Bochner integral (Marcus [ 1981 ], Yosida [ 1995 ]) to produce an ensemble of paths whose collective law μs is infinitesimally coerced toward a moving target proxy ˆΦs|t for s P r t, t ` τ s.Crucially, we justify the representational sufficiency of the signature in this discontinuous setting by appealing to recent universal approximation results for càdlàg paths (Cuchiero et al. [ 2025 ]), which demonstrate that linear functionals of the time-extended signature can uniformly approximate any continuous functional on the Skorokhod manifold. Fur-thermore, following Friz et al. [2017 , 2018 ], we treat these jump-diffusions as Lévy rough paths, ensuring that the Marcus-sense signature remains a group-valued descriptor that uniquely characterises the path-law. By leveraging a time-varying, precision-weighted geometry (AVNSG), we ensure that the resulting synthesis maintains high-fidelity stochastic texture, capturing non-linear dependencies and non-commutative higher-order moments even in the pres-ence of significant non-stationarity and forecasted aleatoric shocks. 
+
+## 1.2 Motivation and literature positioning 
+
+The generative modelling of high-frequency, non-stationary stochastic processes remains a critical frontier in quan-titative finance and physical sciences (Caulfield et al. [2024 ]). Traditional architectures, such as TimeGAN (Yoon et al. [2019 ]), FinGAN (Vuleti´ c et al. [2024 ]), or Variational Autoencoders (VAEs) (Buehler et al. [2020 ]), often struggle to maintain the path-geometric integrity required to capture higher-order dependencies, such as leverage ef-fects and volatility clusters, especially when the underlying law undergoes abrupt regime shifts or exhibits discrete structural breaks. While Neural SDEs (Li et al. [ 2020 ], Kidger et al. [ 2021 ]) and Diffusion models (Ho et al. [ 2020 ]) have provided a robust continuous-time framework for path-generation, they frequently lack a structural mechanism to anchor the synthesis to a rigorous, infinite-dimensional representation of the conditional path-law in the presence of jump-discontinuities. This work is positioned at the intersection of path-signature theory (Lyons et al. [2007 , 2011 , 2022 ], Chevyrev et al. [2016 ]) and generative stochastic transport (Elworthy [ 1982 ], Chen et al. [2016 ]). We build directly upon the recursive filtering framework established in Bloch [ 2026a , 2026b ], which utilises the signature of the observational filtration to track a latent proxy in the Signature RKHS. While recent literature has explored the use of signatures as loss functionals in GAN-based settings (Liao et al. [ 2020 ], Issa et al. [ 2023 ], Bayer et al. [ 2026 ]), these approaches often treat the signature as a static descriptor of continuous paths. In contrast, our framework leverages the expected Marcus signature as a dynamic target within a jump-diffusion Schrödinger Bridge formulation. By introducing the Anticipatory Neural Jump-Diffusion (ANJD) and the Adaptive Variance-Normalised Signature Geometry (AVNSG) (Bloch [2025a , 2025b ]), we extend the literature on signature kernels to càdlàg environments. This provides a metric-driven approach to spectral whitening that ensures the gen-erative flow remains stable under heavy-tailed innovations and heteroskedastic shocks, explicitly accounting for the non-commutative nature of discrete jumps in the Skorokhod space. 
+
+## 1.3 Main contributions 
+
+The primary contributions of this paper are summarised as follows: • Sequential Anticipatory Flow Framework: We introduce the Anticipatory Neural Jump-Diffusion (ANJD) architecture, a novel generative paradigm that bridges recursive filtering and path synthesis. By conditioning a 
+
+2Quantitative Analytics 
+
+non-Markovian Jump-SDE on a time-evolving path-law proxy ˆΦs|t, we enable the sequential matching of càdlàg trajectories on restricted Skorokhod manifolds Ds, ensuring consistency with forecasted structural breaks and non-autonomous regime shifts. • Theoretical Foundation of Infinitesimal MMD Flows: We establish that the generative drift and jump inten-sity constitute the infinitesimal steepest descent direction for the Maximum Mean Discrepancy (MMD) func-tional relative to a moving target proxy. We provide a rigorous proof (Theorem 4.1 ) linking the infinitesimal generator of the ANJD process to the continuous minimisation of path-law discrepancy. • Adaptive Variance-Normalised Signature Geometry (AVNSG): We define a time-evolving precision operator 
+
+Qs that performs dynamic spectral whitening on the pd ` 1q-dimensional signature manifold. This geometry ensures stability under forecasted volatility explosions and provides a mechanism to prioritise the matching of principal structural modes during the flow. • Statistical Generalisation in Restricted Spaces: We derive high-probability bounds for the generalisation error of the empirical expected signature within the Ds topology (Theorem 5.1 ). We further characterise the expressive power of the model via the Rademacher complexity of whitened signature functionals, providing explicit bounds that scale with the spectral radius of the moving AVNSG operator. • Scalable Implementation via Dynamic Nyström Updates: We present an efficient numerical scheme utilising Nyström-compressed score-matching and Opm2q rank-1 precision updates. This allows the model to propa-gate the infinite-dimensional geometry through both continuous diffusion and discrete jump-discontinuities by tracking the innovation in the signature kernel feature map. 
+
+## 1.4 Organisation of the paper 
+
+The remainder of the paper is organised as follows. Section ( 2) establishes the mathematical foundations of path-law embeddings in the signature RKHS and introduces the AVNSG precision operator for spectral whitening. Section (3) details the construction of the Anticipatory Generative Flow, framing the synthesis task as an Anticipatory Neu-ral Jump-Diffusion (ANJD) process. We formalise the path evolution as a sequential matching problem on restricted Skorokhod manifolds Ds, where the drift, diffusion, and jump intensity are dynamically regulated by the velocity of the moving target proxy ˆΦs|t. In Section ( 4), we provide the theoretical justification for the generative drift, proving its optimality as an infinitesimal steepest descent direction in the MMD sense. Section ( 5) derives the statistical gen-eralisation bounds and complexity results for the whitened signature functionals within the time-evolving geometry. In Section ( 6), we detail the practical implementation of the model through joint signature score-matching and an anticipatory Euler-Maruyama-Marcus (EMM) integration scheme, utilising dynamic Nyström-compressed updates to propagate the coupled jump-geometry system in Opm2q complexity. 
+
+# 2 Mathematical foundations 
+
+In this section, we formalise the representation of probability measures over path-space as elements of the Signature RKHS and define the adaptive geometry required for non-stationary transport. 
+
+## 2.1 Preliminaries: Recursive filtering and latent propagation 
+
+We establish our framework on a complete probability space pΩ, F, Pq supporting an F-adapted semimartingale X. In practice, we operate under the observational filtration A “ p Atqtě0, where At “ σptp ti, X ti , M ti q : ti ď tuq Ă Ft,representing the information set of irregularly sampled and masked observations. To handle this discrete data while maintaining a continuous causal structure, we utilise the rectilinear interpolation scheme ˜Xďt, which ensures the observed history is a continuous process of bounded variation. For notational simplicity in the subsequent sections, we shall denote the rectilinear interpolation ˜Xďt simply as Xt.
+
+3Quantitative Analytics 
+
+Following Bloch [2026a , 2026b ], the state of the system is characterised by a conditional path-law proxy Φt|At P
+
+Hsig , representing the expected signature of the process conditioned on the observational filtration At.
+
+Definition 2.1 (Filtered Proxy and Jump-Flow Latent Propagation) The proxy Φt|At is recovered from a latent state Zt P Z via a tensorial readout map Pθ. The latent state Zt is a hidden controller governed by a Jump-Flow Controlled Differential Equation (CDE) that reconciles continuous drift with discrete information shocks: 
+
+Φt|At “ Pθ pZtq, dZ t “ fθpZt´, π r pXqq dt ` p ρθ pZt´, X t, M tq ´ Zt´qdN t, (2.1) 
+
+where fθ is the continuous flow vector field, ρθ is the discrete rectification operator triggered by the counting process 
+
+Nt, and πr pXq is the truncated signature of the path history. 
+
+For out-of-sample synthesis, the latent state is sequentially extrapolated across the future horizon s P r t, t ` τ s.In the absence of new observations ( ∆Nu “ 0 for u ą t), the estimator anticipates the evolution of the latent geometry by integrating the non-autonomous continuous flow, resulting in a time-evolving path-law proxy that tracks the infinitesimal deformation of the signature manifold. 
+
+Definition 2.2 (Anticipatory Latent Propagation) Given the observational filtration At and a forward path exten-sion ˆXt:s, the time-evolving path-law proxy ˆΦs|t is defined as the push-forward of the latent state Zs through the topological embedding Pθ :
+
+ˆΦs|t “ Pθ pZsq, Zs “ Zt `
+
+ż st
+
+Fθ pZu, ˆΦu|tq d ˆXu (2.2) 
+
+where Fθ denotes the operator-valued generator of the Neural CDE drift for s P r t, t ` τ s.
+
+Remark 2.1 (Historical Reconstruction) While the primary focus of this framework is the anticipatory synthesis of future trajectories, the formulation is natively symmetric with respect to the temporal direction. Specifically, the same generative mechanism can be applied to historical reconstruction or "in-sample" synthesis within a range rt ´ τ, t s. In such cases, the latent state is conditioned on the observed filtration As and the realised path Xt´τ :s, where the moving target becomes the filtered path-law proxy Φs|As for s P r t ´ τ, t s. This dual capability ensures that the ANJD flow can be utilised both as a predictive engine for future aleatoric shocks and as a high-fidelity structural interpolator for historical data, maintaining consistency with the time-evolving signature geometry across any arbitrary sub-interval of the Skorokhod manifold. 
+
+## 2.2 Synthesis of the anticipatory path-drift 
+
+The forward path extension ˆXt:t`τ provides the necessary control for the predictive flow across the restricted Sko-rokhod manifolds Ds. In this framework, the generated future path ˆXt:s is synthesised by a deterministic neural architecture, typically denoted as the actor or forecaster μθ . This network serves as a generative mapping that ingests the current filtered latent state Zt and its associated tensorial proxy ˆΦt|t to output a sequence of predicted increments 
+
+d ˆXu across the future horizon u P r t, s s. Conceptually, this construction represents the agent’s ex-ante "best guess" or imagined trajectory, providing the necessary physical grounding to evaluate the self-consistency of the underlying signature flow against the anticipated latent evolution. Formally, the infinitesimal increments of the anticipated path are governed by the deterministic mapping μθ :
+
+d ˆXu “ μθpu, Z t, ˆΦt|tqdu, u P r t, s s, (2.3) such that the integrated future trajectory is recovered as: 
+
+ˆXs “ Xt `
+
+ż st
+
+μθpu, Z t, ˆΦt|tqdu. (2.4) This drift serves as the control input for the latent propagation, ensuring that the evolution of the signature manifold is tied to a concrete, albeit synthetic, realisation of the process. 
+
+4Quantitative Analytics 
+
+## 2.3 The signature Bochner integral and path-law embeddings 
+
+Let D “ Dpr 0, T s, Rdq denote the Skorokhod space of càdlàg paths, and let PpDq be the set of Borel probability measures on D. To ensure a universal and injective representation for jump-diffusions, we consider the time-extended path ˜γs “ p s, γ sq, which embeds the temporal evolution directly into the path geometry. 
+
+Definition 2.3 (Signature Mean Embedding) For a probability measure μ P PpDq, the path-law proxy Φμ P Hsig 
+
+is defined as the signature Bochner integral of the time-extended Marcus-signature map S : D Ñ Hsig over the realised paths γ P D:
+
+Φμ :“ EμrSp˜γqs “ 
+
+ż
+
+> D
+
+Sp˜γq dμ pγq. (2.5) 
+
+Following Yosida [ 1995 ], this construction ensures that the expected signature is the unique element in the tensor algebra Hsig such that for any linear functional L P H˚ 
+
+> sig
+
+, the relation LpΦμq “ EμrLpSp˜γqqs holds, providing a rigorous foundation for the inversion of path-laws from their non-commutative moments. 
+
+Remark 2.2 (Transition from Filtered to Generative Proxy) While the filtered proxy Φt|At introduced in preced-ing work (Bloch [ 2026a , 2026b ]) serves as a retrospective point-estimate, summarising the expected path-dynamics given historical observations, the generative embedding Φμ functions as a canonical representative of the conditional path-measure μ. In this prospective context, Φμ is treated as a moment-generating element in Hsig that uniquely characterises the distributional flow. The generative task is thus framed as the inversion of this signature Bochner integral, where we seek to synthesise an ensemble of trajectories whose collective signature moments coincide with the target proxy under the AVNSG metric. 
+
+Proposition 1 (Injectivity and Universal Approximation) The time-extended signature map S is a universal and characteristic kernel on the space of càdlàg paths. Following Cuchiero et al. [2025 ], the inclusion of the time component ensures that the embedding μ Þ Ñ Φμ is injective on PpDq. Furthermore, linear functionals of the signature can uniformly approximate any continuous functional on compact subsets of the Skorokhod space, justifying the use of Φμ as a sufficient statistic for the law of jump-diffusions. 
+
+See proof in Appendix ( 8.1 ). 
+
+## 2.4 AVNSG metric spaces and spectral whitening 
+
+To account for local heteroskedasticity and the non-uniform temporal distribution of jumps, we equip the Hilbert space with a time-varying metric derived from the infinitesimal variations of the time-extended signature. 
+
+Definition 2.4 (Adaptive Precision Operator) Let ˜St be the time-extended Marcus signature. Let Ωt P LpHsig q
+
+be the Long-Run Covariance (LRC) operator of the signature process, capturing the second-order statistics of the augmented path increments pdt, dX tq. The AVNSG Precision Operator Qt is defined via the regularised inverse: 
+
+Qt :“ p Ωt ` λI q´1, λ ą 0. (2.6) 
+
+The induced AVNSG inner product is given by xu, v yQt “ x u, QtvyHsig , defining a geometry where features, including temporal duration and jump magnitudes, are asymptotically decorrelated and variance-normalised. 
+
+By incorporating the temporal coordinate into the LRC, Qt effectively weights the relevance of path-dependent fea-tures relative to the intensity of the underlying Lévy measure. In regions of high jump frequency, the metric compresses the importance of individual increments, whereas in quiescent periods, the precision operator amplifies the significance of the "drift" component, ensuring a consistent gradient signal for the generative flow. 
+
+5Quantitative Analytics 
+
+## 2.5 Kernel herding in tensor algebra 
+
+The transition from the proxy Φμ to representative sample paths is governed by the minimisation of the Maximum Mean Discrepancy (MMD) on the time-extended signature manifold. 
+
+Lemma 2.1 (Greedy Path Reconstruction) Given a target proxy Φ˚, a sequence of Dirac measures δγi is generated via the inductive herding rule over the space of time-extended paths ˜γ “ p s, γ sq:
+
+γk`1 “ arg max 
+
+> γPX
+
+C
+
+Φ˚ ´ 1
+
+k
+
+> k
+
+ÿ
+
+> i“1
+
+Sp˜γiq, S p˜γq
+
+G
+
+> Qt
+
+. (2.7) 
+
+The empirical average of the time-extended signatures ˆΦk “ 1
+
+> k
+
+řki“1 Sp˜γiq converges to the target Φ˚ in the Qt-norm at a rate of Op1{kq, ensuring that the reconstructed ensemble captures the non-commutative moments and temporal evolution of the underlying measure. 
+
+See proof in Appendix ( 8.2 ). 
+
+# 3 Generative path-law dynamics 
+
+This section details the transition from the recursive filtering of the latent proxy to the synthesis of sample paths via a conditioned stochastic flow. 
+
+## 3.1 The VJF-encoder and latent initialisation 
+
+The filtered latent state Zt P Z from the VJF-Kernel serves as a compressed representation of the filtration At. We define the encoding process that bridges the filtering manifold to the generative path-space. 
+
+Definition 3.1 (Manifold-Conditioned Initialisation) Let Eθ : Z Ñ Rd be a learned encoding map. The generative process for a future horizon s P r t, t ` τ s is initialised at the current filtered observation Xt, with the drift dynamics conditioned on the latent proxy: 
+
+Xt|t “ Xt, Vt “ EθpZtq. (3.8) 
+
+The vector Vt encapsulates the local velocity and curvature constraints inherited from the historical path-geometry. 
+
+Remark 3.1 (Readout vs. Encoding Maps) It is critical to distinguish the encoding map Eθ from the tensorial read-out map Pθ utilised in the filtering stage. While Pθ : Z Ñ Hsig recovers the global coordinate-free representation of the path-law proxy, the encoding map Eθ : Z Ñ Rd performs a local projection back into the physical tangent space. This ensures that the generative SDE is seeded with initial conditions, such as instantaneous velocity and local trend, that are consistent with the latent manifold’s geometry, effectively bridging the abstract Hilbert space with the concrete path-space realisation. 
+
+## 3.2 The anticipatory path-SDE 
+
+The evolution of the synthetic trajectories is governed by an Anticipatory Neural Jump-Diffusion (ANJD) process, where the drift, diffusion, and jump intensity are explicitly regularised by the clock s, the forecasted path-law proxy 
+
+ˆΦs|t, and the adaptive geometry Qs.
+
+6Quantitative Analytics 
+
+Definition 3.2 (Anticipatory Generative Flow) Let pΩ, F, tFsusět, Pq be a filtered probability space. The genera-tive path Xs for s P r t, t ` τ s is defined as the unique càdlàg solution to the following time-augmented path-dependent Jump-SDE: 
+
+dX s “ fθps, X s, ˆΦs|tq ds ` gθps, X s, ˆΦs|tq ˛ dW s ` hθ ps, X s´, ˆΦs|tq dN s (3.9) 
+
+where ˛ denotes the Marcus integration (to ensure the solution remains on the appropriate manifold), Ws is a d-dimensional Fs-Wiener process, and Ns is a non-homogeneous Poisson process with an Fs-predictable intensity 
+
+λs “ λθ ps, X s´, ˆΦs|tq. The model parameters θ “ t θf , θ g, θ h, θ λu parameterise the drift f , diffusion g, jump-amplitude h, and intensity λ, respectively. We assume the coefficients f, g, h satisfy the required Lipschitz and linear growth conditions in their spatial arguments to ensure the existence of a unique strong solution. The continuous part of Eq. ( 3.9 ) is interpreted in the Marcus sense to ensure the signature remains group-valued across discontinuities. 
+
+Proposition 2 (Structural Coupling and Jump-Aware Dynamics) The Anticipatory Generative Flow defined in Eq. (3.9 ) constitutes a novel class of Neural Jump-SDEs characterised by the following properties: 1. C1-Boundary Consistency: The drift fθ is constrained by the initial boundary condition fθ pt, X t, ˆΦt|tq “ Vt,ensuring first-order continuity between the historical trajectory and the generated flow at the junction s “ t.2. Polynomial Tractability and Universality: Following Cuchiero et al. [ 2025 ], we justify the coupling pfθ, g θ, h θ , λ θ q
+
+to the signature proxy ˆΦs|t and the clock s by noting that Lévy-type signature models are polynomial processes on the extended tensor algebra. This ensures that the law of the process can be evolved and "pushed" by linear functionals of the time-extended signature, providing a universal representation for any continuous functional of càdlàg paths. 3. Infinitesimal Signature Matching: The drift fθ is functionally coupled to the latent path-law proxy such that the expected infinitesimal signature of the ensemble aligns with the tangent of the push-forward mapping in the RKHS. Specifically, the drift satisfies the differential matching: 
+
+dEμs rSps, X sqs « ∇s ˆΦs|t ds “ ∇Zs Pθ ¨ Fθ pZs, ˆΦs|tq d ˆXs, (3.10) 
+
+where ∇Zs Pθ is the Jacobian of the topological embedding, ensuring the flow reacts to the manifold dynamics of the latent state Zs.4. Discontinuous Structural Breaks: The inclusion of the Fs-predictable intensity λs “ λθ ps, X s´, ˆΦs|tq enables the flow to exhibit jump-discontinuities. This allows the model to trigger endogenous "shocks" or regime shifts that are structurally conditioned on the absolute time and the anticipated geometry of the path-law. 5. Non-Gaussianity and Tail Risk: The joint non-linear dependence of the diffusion gθ and jump-amplitude hθ on 
+
+ps, ˆΦs|tq allows the transition densities to capture extreme kurtosis and heavy-tailed innovations, providing a mechanism for modeling black-swan events consistent with the signature manifold. 6. Non-Markovian Path-Dependency: As ˆΦs|t provides a non-commutative summary of the path’s filtered history, the process Xs is inherently non-Markovian. This ensures the generative flow captures long-range dependencies and high-order statistical effects, such as path-dependent volatility and leverage. 7. Càdlàg Regularity: The sample paths of Xs are almost surely càdlàg. This property preserves the local diffusive regularity provided by Ws while rigorously accommodating the discrete jumps driven by the Poisson component 
+
+Ns.
+
+See proof in Appendix ( 8.3 ). 
+
+7Quantitative Analytics 
+
+## 3.3 Schrödinger bridges in signature RKHS 
+
+To ensure the ensemble of generated càdlàg paths μ remains consistent with the evolving path-law, we formulate the generative task as a sequential constrained optimal transport problem on the Skorokhod manifold using the time-extended path representation. Unlike static bridge formulations, the ANJD flow targets the moving proxy ˆΦs|t, effec-tively solving a time-continuous sequence of infinitesimal Schrödinger Bridge problems. 
+
+Proposition 3 (Jump-Diffusion Entropy Minimisation) Let P0 be a prior jump-diffusion law on the Skorokhod space D. The optimal generative measure μ˚ 
+
+> s
+
+at any horizon s P r t, t ` τ s is the solution to the entropic regular-isation problem: 
+
+μ˚ 
+
+> s
+
+“ arg min  
+
+> μPPpDsq
+
+KL pμ}P0q s.t. 
+
+ż
+
+> Ds
+
+Sp˜γq dμ pγq “ ˆΦs|t, (3.11) 
+
+where Sp˜γq is the Marcus-sense signature of the time-extended path ˜γu “ p u, γ uquPr t,s s. The solution μ˚ 
+
+> s
+
+admits a Radon-Nikodym derivative 
+
+dμ ˚
+
+> s
+
+dP0
+
+9 exp `xαs, S p˜γqy Hsig 
+
+˘
+
+for a time-varying dual vector αs P Hsig . In the AVNSG geometry, αs is dynamically aligned with the principal eigenvectors of the precision operator Qs, ensuring that the drift and jump-intensities are infinitesimally rectified to track the moving target ˆΦs|t while minimising deviation from the prior stochastic texture. 
+
+See proof in Appendix ( 8.4 ). 
+
+## 3.4 Synthesis of control and structural modulation 
+
+The synthesis of forward-looking càdlàg trajectories is governed by a tripartite control mechanism that bifurcates the generative task into topological anchoring, intensity modulation, and structural regulation. A single forward path extension ˆX P D, constructed as a learned secondary Neural Jump-ODE, provides the physical control for the latent manifold. This extension acts as the driving signal for the underlying Neural CDE, modulating both the first-order drift and the discrete jump-discontinuities of the latent state Zs. This ensures that the extrapolated trajectory of the path-law proxy remains anchored to a feasible realisation in the Skorokhod space, accounting for structural breaks. Complementary to this physical control, the time-evolving Marcus-signature proxy ˆΦs|t P Hsig functions as the 
+
+structural regulator for the Anticipatory Neural Jump-Diffusion (ANJD) flow Xs. While ˆX governs the evolution of the latent coordinates, the moving signature proxy encapsulates the instantaneous higher-order statistical invariants, including non-linear curvature, volatility clusters, and the non-commutative moments of forecasted shocks, character-ising the conditional path-measure μ˚ 
+
+> s
+
+at each horizon s P r t, t ` τ s.By minimising the precision-weighted MMD-discrepancy relative to the moving target ˆΦs|t within the AVNSG ge-ometry, the generative flow is actively coerced into reproducing the expected stochastic texture and jump-intensity of the measure in a sequential, infinitesimal manner. This dualism allows the model to natively incorporate antici-pated regime shifts and structural trends into the generative process, bridging the deterministic extrapolation of the latent manifold with the high-fidelity synthesis of a forward-looking ensemble that respects the algebraic constraints of discontinuous path-dynamics. 
+
+# 4 Theoretical framework: MMD-gradient flows 
+
+In this section, we establish that the generative drift fθ and jump intensity λθ of the Anticipatory Neural Jump-Diffusion 
+
+(ANJD) process are the driving components that infinitesimally minimise the Maximum Mean Discrepancy (MMD) 
+
+8Quantitative Analytics 
+
+between the synthetic path-measure μs and the time-evolving latent proxy ˆΦs|t. We frame this as a sequential MMD-gradient flow on the Skorokhod manifold Ds, where the continuous drift fθ tracks the expected differential geometry and the jump term hθ dN s enables the instantaneous transport of probability mass across structural discontinuities in the signature manifold. 
+
+## 4.1 The one-step-ahead MMD loss 
+
+We quantify the fidelity of the generative jump-diffusion process by evaluating the discrepancy between the expected signature of the time-extended càdlàg ensemble and the moving target proxy within the adapted geometry Qs. This approach treats the generative task as a sequential infinitesimal matching problem rather than a static boundary value problem. 
+
+Definition 4.1 (One-Step-Ahead AVNSG-MMD) Let Ds “ Dpr t, s s, Rdq be the Skorokhod space of càdlàg func-tions restricted to the interval rt, s s. Let μs P PpDsq be the probability law of the generated path Xs at time s, and let 
+
+ˆΦs|t P Hsig be the time-evolving target path-law proxy. The One-Step-Ahead MMD Loss is defined as the infinitesimal discrepancy: 
+
+J pμsq :“ 1
+
+2
+
+››› ˆΦs|t ´ Eμs rSp ˜Xsqs 
+
+›››2
+
+> Qs
+
+(4.12) 
+
+where Qs is the anticipatory precision operator derived from the time-augmented LRC, and ˜Xs “ p s, X sq is the time-extended path. The signature Sp ˜Xsq is rigorously defined in the sense of Marcus, ensuring that discrete spatial jumps ∆Xs are canonically embedded into the tensor algebra Hsig via the exponential map exp p0, ∆Xsq while the temporal coordinate s remains continuous. 
+
+Following Cuchiero et al. [ 2025 ], the use of the MMD objective in the signature RKHS is rigorously justified for càdlàg processes. By targeting the moving proxy ˆΦs|t, the generative flow aims to satisfy the differential relation 
+
+dEμs rSp ˜Xsqs « ∇s ˆΦs|t ds . Since the time-extended signature is a universal and characteristic feature for the law of jump-diffusions, the Bochner integral Eμs rSp ˜Xsqs acts as a complete descriptor of the measure μs. Consequently, the minimisation of J pμsq at each instant s is equivalent to the direct transport of the path-measure along the anticipated infinitesimal flow of the latent law on the Skorokhod manifold. 
+
+## 4.2 The drift and intensity as a steepest descent in Hsig 
+
+We now show that the evolution of the time-extended càdlàg path-measure μs under the time-augmented Jump-SDE can be interpreted as a constrained gradient flow in the Wasserstein-type manifold of jump-diffusions. 
+
+Theorem 4.1 (Dual Minimisation of the MMD-Flow) Let the generative drift fθ and the jump intensity λθ be func-tionally coupled to the clock s and the signature residual Ψs “ Qsp ˆΦs|t ´ Eμs rSp ˜Xsqsq . Under the assumption that the time-extended signature kernel is Lipschitz continuous on D, the components tfθ, λ θ u constitute the steepest descent direction for the functional J pμsq. Specifically, the infinitesimal change in the loss satisfies: 
+
+d
+
+ds J pμsq “ ´ Eμs
+
+„›››∇xxΨs, S p ˜Xsqy 
+
+›››2
+
+´ Eμs rλθ ¨ Gps, h θ, Ψsqs ` Rpgθq (4.13) 
+
+where Gps, h θ, Ψsq “ x Ψs, S p ˜Xs ` p 0, h θqq ´ Sp ˜Xs´qy represents the discrete reduction in MMD discrepancy achieved by the jump mechanism in the time-extended space, and Rpgθ q is the diffusive entropy-driven residual. 
+
+See proof in Appendix ( 8.5 ). 
+
+9Quantitative Analytics 
+
+## 4.3 Convergence and stability under metric expansion 
+
+The stability of the generative flow is contingent upon the regularity of the precision operator Qs and the boundedness of the jump-diffusion parameters. 
+
+Proposition 4 (Stability under Spectral Stretching and Jump-Discontinuity) Suppose the forecasted geometry Qs
+
+undergoes a local expansion, defined by an increase in the spectral radius of the precision operator Ωs. The ANJD-gradient flow remains contractive in the Skorokhod topology if the rate of expansion Bsλmax pΩsq is bounded relative to the joint Lipschitz constant of the drift fθ and the intensity λθ . Specifically, the AVNSG normalisation ensures that even under anticipated regime shifts, the jump-driven mass displacement remains dissipative. The stability is pre-served provided that the jump-induced energy Eμs rλθ }hθ}2 
+
+> Qs
+
+s does not exceed the infinitesimal dissipation rate of the MMD-gradient, thereby preventing explosive sample-path trajectories during forecasted aleatoric shocks. 
+
+See proof in Appendix ( 8.6 ). 
+
+# 5 Generalisation and complexity 
+
+In this section, we derive the statistical guarantees for the Anticipatory Neural Jump-Diffusion (ANJD) process. Given that the generative flow operates as a sequential matching problem on the restricted Skorokhod spaces Ds “
+
+Dpr t, s s, Rdq for s P r t, t ` τ s, we establish rigorous bounds on the discrepancy between the time-evolving theoretical path-law proxy and its empirical realisation via finite càdlàg sample paths. We demonstrate that the interplay between the jump-diffusion regularity and the AVNSG precision operator ensures robust convergence of the infinitesimal flow even in the presence of heavy-tailed structural breaks. 
+
+## 5.1 Generalisation error of the expected signature 
+
+The fidelity of the generative model depends on the capacity of the time-extended càdlàg ensemble to represent the infinite-dimensional moments of the target measure μs P PpDsq at any horizon s P r t, t ` τ s. We provide a bound on the generalisation error within the AVNSG-weighted Hilbert space, accounting for the increased variance introduced by discrete structural breaks and the deterministic temporal drift. 
+
+Theorem 5.1 (Generalisation Bound for Jump-Diffusion Proxies) Let γ1, . . . , γ n be n independent càdlàg sample paths drawn from the generated jump-diffusion measure μs on Ds, and let ˆΦn,s “ 1
+
+> n
+
+řni“1 Sp˜γiq be the empirical expected signature of the time-extended paths ˜γi,u “ p u, γ i,u quPr t,s s. For any δ P p 0, 1q, with probability at least 
+
+1 ´ δ, the generalisation error in the Qs-geometry is bounded by: 
+
+›››Φμs ´ ˆΦn,s 
+
+›››Qs
+
+ď 2
+
+n E
+
+«› ››››
+
+> n
+
+ÿ
+
+> i“1
+
+σiSp˜γiq
+
+›››››Qs
+
+ff 
+
+` Rs
+
+c log p1{δq
+
+2n (5.14) 
+
+where σi are independent Rademacher variables and Rs “ sup γPsupp pμs q }Sp˜γq} Qs is the uniform bound of the time-augmented signature map under the whitened geometry at time s.
+
+See proof in Appendix ( 8.7 ). 
+
+Remark 5.1 In the ANJD framework, the term Rs accounts for both the linear growth of the clock s and the ex-ponential growth of the signature during jumps, where }Sp˜γq} scales with exp p} ∆ ˜X}q . However, Rs is explicitly regularised by the time-augmented AVNSG precision operator Qs “ p Ωs ` λI q´1. By performing asymptotic spectral whitening on the pd ` 1q-dimensional path increments, Qs dampens the high-frequency components and heavy-tailed innovations, ensuring that the effective radius Rs remains stable even when the sample paths exhibit extreme kurtosis or black-swan discontinuities at the current horizon s.
+
+10 Quantitative Analytics 
+
+## 5.2 Rademacher complexity of signature functional classes 
+
+To quantify the expressive power of the Anticipatory Neural Jump-Diffusion flows, we analyse the Rademacher com-plexity of the class of linear functionals on the time-extended signature manifold, specifically accounting for the jump-induced variance and temporal drift within the restricted space Ds.
+
+Proposition 5 (Complexity of Whitened Jump-Signature Functionals) Let FM,s “ t f P Hsig : }f }Qs ď M u be the ball of signature functionals with bounded AVNSG-norm at horizon s P r t, t ` τ s. For a set of càdlàg sample paths 
+
+tγiuni“1 P Ds, the empirical Rademacher complexity pRnpFM,s q satisfies: 
+
+pRnpFM,s q ď M
+
+n
+
+gffe nÿ
+
+> i“1
+
+}Sp˜γiq} 2 
+
+> Qs
+
+“ M
+
+n
+
+gffe nÿ
+
+> i“1
+
+xSp˜γiq, QsSp˜γiqy Hsig . (5.15) 
+
+where Sp˜γiq is the signature of the time-extended path ˜γi,u “ p u, γ i,u quPr t,s s. This bound implies that the complexity of the ANJD model is regularised by the spectral alignment between the time-augmented sample signatures and the principal eigenspaces of the moving precision operator Qs, effectively capping the influence of high-order "black-swan" terms and deterministic temporal growth as the generative flow progresses. 
+
+See proof in Appendix ( 8.8 ). 
+
+## 5.3 Nyström-compressed error propagation 
+
+In practice, the ANJD generative flow is implemented via a supervised Nyström approximation to handle the high-dimensional signature manifold. We characterise the error introduced by this finite-dimensional projection, specifically focusing on its stability under the sequential evolution of the jump-diffusion process and the s-dependent spectral geometry. 
+
+Lemma 5.1 (Projection Error Stability for ANJD) Let Pm,s : Hsig Ñ Vm,s be the Nyström projection onto an 
+
+m-dimensional subspace aligned with the principal eigenspaces of Qs at time s. The error in the joint MMD-gradient flow induced by the projection, ǫproj,s “ } ∇J pμsq ´ ∇J pPm,s μsq} , is bounded by the spectral tail of the time-evolving LRC operator: 
+
+ǫproj,s ď Cf,λ,s ¨
+
+˜ 8ÿ
+
+> j“m`1
+
+λj pΩsq
+
+¸1{2
+
+(5.16) 
+
+where Cf,λ,s is a constant depending on the joint Lipschitz regularity of the generative drift fθ and the jump intensity 
+
+λθ relative to the moving target ˆΦs|t. Consequently, the generative fidelity is preserved if the Nyström basis is dynam-ically updated to track the dominant modes of the anticipated spectral geometry, including the high-rank signature components activated by structural discontinuities. 
+
+See proof in Appendix ( 8.9 ). 
+
+# 6 Implementation: Generative VJF-kernel 
+
+The practical realisation of the ANJD framework requires the translation of the infinite-dimensional gradient flow on the restricted Skorokhod manifolds Ds into a finite-dimensional jump-diffusion sampling scheme. We achieve this by approximating the joint MMD-gradient relative to the moving target proxy ˆΦs|t through a Nyström-compressed signature basis and integrating the resulting path-dynamics via a hybrid Euler-Maruyama-Marcus (EMM) scheme. This sequential matching ensures that the synthesised paths maintain the structural properties of càdlàg processes while remaining contractive toward the anticipated latent geometry as it evolves across the forecast horizon. 
+
+11 Quantitative Analytics 
+
+## 6.1 Joint score-matching on jump-signature manifolds 
+
+To bypass the intractable partition function of the càdlàg path-measure μ˚ 
+
+> s
+
+, we learn the joint score function represent-ing both the continuous flow and the discrete jump intensity by aligning the infinitesimal generator of the process with the velocity of the moving target proxy. 
+
+Definition 6.1 (Jump-Signature Score Function) The joint score Ψps, X s, ˆΦs|tq “ p ψf , ψ λq is defined as the gra-dient of the log-density in the Skorokhod manifold Ds. Under the ANJD framework, the score is approximated by the precision-weighted infinitesimal residual between the target proxy and the current path-state, where the target’s evolution is governed by the latent Jacobian. We define: 
+
+Ψps, X s, ˆΦs|tq « ˆQs
+
+´ ˆΦs|t ´ Sp ˜Xsq
+
+¯
+
+P Hsig , (6.17) 
+
+where ˜Xs “ p s, X sq is the time-augmented state. The continuous score ψf drives the drift fθ to match the target velocity ∇s ˆΦs|t “ ∇Zs Pθ ¨ Fθ pZs, ˆΦs|tq d ˆXs 
+
+> ds
+
+via the spatial gradient ∇xxΨ, S p ˜Xsqy , while the jump score ψλ mod-ulates the intensity λθ through the inner product with the jump-increment operator in the augmented tensor space. In the m-dimensional Nyström subspace, the time-dependent precision matrix ˆQs regularises the joint score, ensuring that the jump-diffusion dynamics are dominated by the principal modes of the anticipated spectral geometry. This explicit coupling to the Jacobian of the embedding Pθ allows the score to capture the non-autonomous nature of the flow, forcing the generative dynamics to track the differential manifold evolution of the latent state Zs as it navigates time-varying regime shifts. 
+
+## 6.2 Anticipatory Euler-Maruyama-Marcus integration 
+
+Sampling from the càdlàg path-law is performed via a hybrid jump-diffusion flow that sequentially tracks the mov-ing target proxy (or filtered proxy). We define the discrete-time update for the synthetic ensemble Xpiq 
+
+> s
+
+, explicitly incorporating the clock s into the state vector to satisfy the time-extension requirement for signature universality on 
+
+Ds.
+
+12 Quantitative Analytics 
+
+Algorithm 1 Flexible Anticipatory Jump-Diffusion Sampling (ANJD) 
+
+Given a filtered state Zt, horizon τ , step size h, and temporal mode mode P t Forecast , Reconstruction u:1. Initialise: 
+
+• If mode “ Forecast: Set tstart “ t, tend “ t ` τ , and Xpiq 
+
+> tstart
+
+“ Xt.• If mode “ Reconstruction: Set tstart “ t ´ τ , tend “ t, and Xpiq 
+
+> tstart
+
+“ Xt´τ .Set the initial clock s “ tstart and sample zpiq 
+
+> 0
+
+„ N p0, I q for i “ 1, . . . , N .2. Sequential Evaluation: Evaluate the time-evolving path-law proxy ˆΦs|t (or filtered proxy Φs|As ) and update the time-extended precision operator Qs via the Opm2q Nyström innovation update. 3. Jump Logic: Sample a Poisson increment ∆N piq 
+
+> s
+
+„ Poisson pλθ ps, X piq 
+
+> s
+
+, ˆΦs|tqhq, where the intensity is condi-tioned on the instantaneous signature discrepancy. 4. Update Step (EMM): 
+
+Xpiq 
+
+> s`h
+
+“ Xpiq 
+
+> s
+
+` fθps, X piq 
+
+> s
+
+, ˆΦs|tqhlooooooooomooooooooon 
+
+> Continuous Drift
+
+` gθ∆W piq
+
+> s
+
+looomooon 
+
+> Diffusion
+
+` hθps, X piq 
+
+> s
+
+, ˆΦs|tq∆N piq
+
+> s
+
+looooooooooooomooooooooooooon 
+
+> Marcus Jump
+
+(6.18) where fθ is the MMD-steepest descent velocity tracking the moving target velocity ∇s ˆΦs|t, hθ is the Marcus-corrected jump amplitude, and ∆W piq 
+
+> s
+
+„ N p0, hI q.5. Clock Update: Set s Ð s ` h. Repeat steps 2–4 until s “ tend .
+
+## 6.3 Numerical integration of the coupled jump-geometry system 
+
+To maintain computational efficiency within the ANJD framework, the time-augmented precision operator Qs is not re-inverted at every integration sub-step. Instead, we employ a generalised Sherman-Morrison-Woodbury update to propagate the Nyström coefficients through the sequential matching of the moving target proxy, accounting for both continuous diffusion and discrete jump-discontinuities. 
+
+Proposition 6 (Jump-Aware Low-Rank Precision Update) Let ˆQs be the m ˆ m Nyström-compressed precision matrix representing the whitened geometry at horizon s. Depending on the temporal mode, the Nyström anchor points are initialised at tstart P t t ´ τ, t u to span the relevant restricted Skorokhod manifold Ds. Upon the arrival of a jump 
+
+∆Xs, a change in the clock s, or an infinitesimal shift in the target proxy ∇s ˆΦs|t, the anticipatory precision is evolved via: 
+
+ˆQs`h “ ˆQs ´ αs
+
+ˆQskskTs ˆQs
+
+1 ` αskTs ˆQsks
+
+(6.19) 
+
+where ks P Rm is the innovation vector representing the differential change in the signature kernel feature map 
+
+Sp ˜Xsq relative to the mode-specific anchor points. In the presence of a structural break ∆Xs, the update vector ks
+
+captures the instantaneous redistribution of spectral energy across the pd ` 1q-dimensional signature tensor, allowing the precision geometry to track the non-autonomous flow in Opm2q complexity while maintaining numerical stability across both forecasting and reconstruction regimes. 
+
+See proof in Appendix ( 8.10 ). 
+
+13 Quantitative Analytics 
+
+# 7 Conclusion 
+
+In this paper, we have introduced a rigorous generative framework for forward-looking stochastic trajectories that bridges the gap between recursive path-signature filtering and sequential path-law realisation. By interpreting the generative task as a non-autonomous transport problem on restricted Skorokhod manifolds Ds, we developed the 
+
+Anticipatory Neural Jump-Diffusion (ANJD) flow. This hybrid architecture ensures that both the continuous drift and discrete jump intensities are governed by the infinitesimal gradient of an MMD functional anchored to moving path-law proxies, actively incorporating expected structural breaks and regime shifts into the generative process through the non-commutative lens of the Marcus-sense signature. Central to our approach is the Anticipatory Variance-Normalised Signature Geometry (AVNSG), which provides a time-evolving precision operator that effectively whitens the signature manifold. This mechanism ensures the con-tractivity and stability of the sequential matching flow even under severe non-stationarity and forecasted aleatoric shocks. Our theoretical analysis established that the joint gradient flow constitutes the steepest descent direction in the signature RKHS relative to the moving target ˆΦs|t. Furthermore, we provided robust statistical guarantees through generalisation bounds and Rademacher complexity analysis, demonstrating that the model’s capacity is regularised by the spectral structure of the precision operator, which attenuates the influence of high-rank "black-swan" tensor components as the flow evolves. Finally, by leveraging Nyström projections and rank-1 Sherman-Morrison updates, we demonstrated that this infinite-dimensional framework can be implemented with Opm2q computational efficiency, enabling real-time synthesis of complex càdlàg trajectories. This work lays the foundation for a new class of structural generative models that are actively coerced into reproducing the expected non-commutative moments and stochastic texture of complex, dis-continuous path-laws. Future research will focus on the extension of this framework to multi-agent jump-diffusion dynamics and the integration of these flows into large-scale risk management and decision-making systems under extreme uncertainty. 
+
+14 Appendix 8 Proofs of the main results 
+
+## 8.1 Proof of the injectivity and characteristic property 
+
+In this appendix we prove Proposition ( 1). 
+
+proof 8.1 The proof is extended to the Skorokhod space D by leveraging time-augmentation to move from tree-like equivalence to strict path-uniqueness. 
+
+1. Injectivity and Time-Augmentation: Let D be the space of càdlàg paths. Unlike the standard signature, which is invariant under tree-like reparameterisation, the time-extended signature map ˜S : γ Þ Ñ Spt, γ tq is strictly injective. Following Cuchiero et al. [ 2025 ], the inclusion of the strictly increasing component t ensures that for any two paths 
+
+γ, η P D, ˜Spγq “ ˜Spηq implies γ “ η in the Skorokhod topology. This effectively collapses the tree-like equivalence classes ˜D into unique path points. 
+
+2. Universal Approximation on D: Consider the algebra of linear functionals F “ tx w, ˜Spγqy : w P Hsig u. Since the Marcus-signature of a càdlàg path remains a group-like element, the shuffle product identity xw1, ˜Syx w2, ˜Sy “ xw1  w2, ˜Sy holds. Because ˜S separates points in D and the coordinate maps are continuous, the Stone-Weierstrass theorem for non-compact spaces (or specifically the version for càdlàg functionals in Cuchiero et al. [ 2025 ]) estab-lishes that F is dense in CpK, Rq for any compact K Ă D. This confirms ˜S as a universal kernel for jump-diffusions. 
+
+3. Injectivity of the Mean Embedding: Let μ1, μ 2 P PpDq be two Borel probability measures such that Φμ1 “
+
+Φμ2 . By the properties of the signature Bochner integral, this equality implies: 
+
+ż
+
+> D
+
+f pγq dμ 1pγq “ 
+
+ż
+
+> D
+
+f pγq dμ 2pγq @f P F. (8.20) 
+
+Since F is dense in the space of continuous functionals on the Skorokhod space, and given that the signature moments of jump-diffusions satisfy the required growth conditions for the Hamburger moment problem (ensuring the measure is determined by its moments), it follows that μ1 “ μ2. Thus, the embedding μ Þ Ñ Φμ is injective, and the expected signature is a characteristic statistic for the law of the jump-diffusion process. 
+
+## 8.2 Proof of the greedy path reconstruction 
+
+In this appendix we prove Lemma ( 2.1 ). 
+
+proof 8.2 The proof proceeds by analysing the recursion of the approximation error in the Hilbert space Hsig 
+
+equipped with the Qt-metric, specifically considering the time-extended path representation ˜γs “ ps, γ sq. Let 
+
+Ek “ Φ˚ ´ ˆΦk denote the residual proxy at step k, where ˆΦk “ 1
+
+> k
+
+řki“1 Sp˜γiq. By the definition of the empiri-cal average, we have the update rule: 
+
+ˆΦk`1 “ k
+
+k ` 1 ˆΦk ` 1
+
+k ` 1 Sp˜γk`1q. (8.21) 
+
+Substituting this into the error term Ek`1 “ Φ˚ ´ ˆΦk`1, we obtain the recursive step: 
+
+Ek`1 “ k
+
+k ` 1 Ek ` 1
+
+k ` 1 pΦ˚ ´ Sp˜γk`1qq . (8.22) 
+
+Taking the squared Qt-norm on both sides: 
+
+}Ek`1}2 
+
+> Qt
+
+“ k2
+
+pk ` 1q2 }Ek}2 
+
+> Qt
+
+` 2k
+
+pk ` 1q2 xEk, Φ˚ ´ Sp˜γk`1qy Qt ` 1
+
+pk ` 1q2 }Φ˚ ´ Sp˜γk`1q} 2 
+
+> Qt
+
+. (8.23) 15 Quantitative Analytics 
+
+By the inductive herding rule, γk`1 is chosen to maximise xEk, S p˜γqy Qt . Since the target proxy Φ˚ lies within the closed convex hull of the time-extended signature manifold (being the Bochner integral of the measure μ), there exists a representation Φ˚ “ ş Sp˜γqdμ pγq. It follows from the properties of the supremum that: 
+
+xEk, S p˜γk`1qy Qt “ sup 
+
+> γPX
+
+xEk, S p˜γqy Qt ě
+
+ż
+
+xEk, S p˜γqy Qt dμ pγq “ x Ek, Φ˚yQt . (8.24) 
+
+This inequality implies that the cross-term xEk, Φ˚ ´ Sp˜γk`1qy Qt ď 0. Let R “ sup γ }Φ˚ ´ Sp˜γq} Qt be the bounded radius of the time-augmented signature embedding under the whitened geometry. The recurrence simplifies to: 
+
+}Ek`1}2 
+
+> Qt
+
+ď k2
+
+pk ` 1q2 }Ek}2 
+
+> Qt
+
+` R2
+
+pk ` 1q2 . (8.25) 
+
+Applying induction, if we assume }Ek}2 
+
+> Qt
+
+ď R2 
+
+> k
+
+, then for the next step: 
+
+}Ek`1}2 
+
+> Qt
+
+ď k2
+
+pk ` 1q2
+
+R2
+
+k ` R2
+
+pk ` 1q2 “ pk ` 1qR2
+
+pk ` 1q2 “ R2
+
+k ` 1 . (8.26) 
+
+Thus, the squared discrepancy }Φ˚ ´ ˆΦk}2 
+
+> Qt
+
+converges at a rate of Op1{kq. This greedy herding procedure effec-tively "quantises" the continuous path-law into a discrete ensemble of time-extended paths, ensuring the reconstructed ensemble preserves the non-commutative moments and the temporal ordering mandated by Φ˚.
+
+## 8.3 Proof of the structural coupling and jump-aware dynamics 
+
+In this appendix we prove Proposition ( 2). 
+
+proof 8.3 We establish the properties of the Anticipatory Generative Flow by considering the analytical structure of the Jump-SDE defined in Eq. ( 3.9 ). 
+
+1. C1-Boundary Consistency: By definition, the velocity of the observed trajectory at time t is Vt “ lim sÑt´ dX s 
+
+> ds
+
+.For the generative flow Xs to be C1-consistent at the junction s “ t, we require ErdX ts “ Vtdt . Since dW t and dN t
+
+are centered or have zero expected infinitesimal increment in the absence of a jump at exactly s “ t, the first-order behaviour is dominated by the drift fθ . The constraint fθpt, X t, ˆΦt|tq “ Vt ensures that the forward-looking trajectory preserves the terminal velocity of the history, preventing a first-order "kink" in the sample paths. This consistency is maintained by the explicit dependence of the drift on the clock s, allowing the neural network to learn the transition dynamics specifically at the boundary s “ t.
+
+2. Polynomial Tractability and Universality: The justification for the functional coupling in Eq. ( 3.9 ) rests on the characterisation of the signature of a càdlàg jump-diffusion as a polynomial process. Following Cuchiero et al. [2025 ], let X be a d-dimensional Lévy-type process and SpXqt,s its time-extended Marcus-signature. The generator 
+
+A of the joint process pXs, SpXqsq acts on the space of linear functionals on the tensor algebra T pRdq. Specifically, for any word w in the tensor alphabet, the action of the generator satisfies: 
+
+Axw, SpXqsy “ ÿ
+
+> |v|ď| w|
+
+cw,v xv, SpXqsy, (8.27) 
+
+where cw,v are constants derived from the Lévy triplet (drift, diffusion, and jump measure). This closure property ensures that the expected signature ˆΦs|t “ ErSpXsq| Ats evolves according to a linear system of differential equations within the RKHS. Consequently, any continuous functional F on the Skorokhod space D can be uniformly approximated by a linear functional of the signature: F pγq « x ℓ, S pγqy . By parameterising the tuple pfθ , g θ, h θ, λ θ q as non-linear map of 
+
+ˆΦs|t, the ANJD flow effectively "pushes" the path-measure μ along the manifold of polynomial processes. Since the 
+
+16 Quantitative Analytics 
+
+signature is a sufficient statistic for the law of jump-diffusions (Friz et al. [ 2017 , 2018 ]), this coupling provides a universal generative mechanism capable of replicating any path-dependent statistics, including those governed by discrete structural breaks and non-Gaussian shocks. 
+
+3. Infinitesimal Signature Matching: Let Sps, X sq denote the time-extended signature of the path up to time 
+
+s. Using the extension of the Marcus-Itô formula for jump-diffusions, the infinitesimal generator L applied to the coordinate functionals of the signature leads to the expected evolution 
+
+dEμs rSps, X sqs “ Eμs rLSps, X sqs ds. (8.28) 
+
+The model parameterises the drift fθ and jump logic pλθ , h θq to satisfy: 
+
+Eμs rLSps, X sqs ds « ∇s ˆΦs|t ds “ ∇Zs Pθ ¨ FθpZs, ˆΦs|tq d ˆXs. (8.29) 
+
+By aligning the generator’s action with the Jacobian of the topological embedding Pθ acting on the Neural CDE latent flow, the drift functions as a vector field forcing the ensemble to track the predicted mean-path geometry. The inclusion of the explicit temporal coordinate in the signature ensures that the "clock-velocity" of the proxy is strictly matched by the synthetic flow, while the coupling to the Jacobian ∇Zs Pθ ensures the generative dynamics are fundamentally driven by the latent manifold’s differential evolution. This structural matching effectively propagates higher-order non-commutative moments across the restricted Skorokhod space. 
+
+4. Discontinuous Structural Breaks: The term hθ ps, X s´, ˆΦs|tqdN s introduces a compound Poisson component. Since Ns is a point process with intensity λs, the probability of a jump in rs, s ` ds s is λθ ps, X s´, ˆΦs|tqds . Because the intensity λθ and jump-amplitude hθ are functions of both the clock s and the path-law proxy ˆΦs|t, the "hazard rate" and magnitude of a structural break are explicitly coupled to the absolute time and forecasted geometry. If the anticipated path-law indicates a temporal regime change or a localised spike in volatility, λθ increases, triggering a discontinuity Xs “ Xs´ ` hθ . The explicit dependence on s ensures that the model can capture seasonality or time-specific vulnerabilities in the jump distribution, which is a key requirement for non-homogeneous càdlàg processes. 
+
+5. Non-Gaussianity and Tail Risk: The increment ∆Xs over a small interval ∆s is a mixture of a conditionally Gaussian component N pfθ ∆s, g 2 
+
+> θ
+
+∆sq, where the parameters are functionally dependent on the non-commutative path history ˆΦs|t, and a jump component. While the infinitesimal noise dW s is Gaussian, the marginal distribution of the process Xs exhibits significant non-Gaussianity. The excess kurtosis κ is driven by the jump term hθ , with the fourth moment dominated by the jump magnitude and the intensity λθ . This enables the model to generate fat-tailed distributions and capture black-swan risks encoded in the signature manifold that are inaccessible to standard pure-diffusion Neural SDEs. 
+
+6. Non-Markovian Path-Dependency: A process is Markovian if its future depends only on its current state 
+
+Xs. Here, the coefficients f, g, h, λ depend on ˆΦs|t. Since ˆΦs|t is a functional of the historical path Xr0,t s (and its projected law), the infinitesimal generators at time s ą t are conditioned on the path’s non-commutative history. This functional dependence breaks the Markov property, allowing the flow to satisfy constraints like long-range memory and path-dependent volatility. 
+
+7. Càdlàg Regularity: Following standard SDE theory for jump-diffusions, given that f, g, h satisfy local Lipschitz conditions and linear growth, the solution Xs exists and is unique. The sample paths consist of a continuous part (driven by Ws) and a discrete part (driven by Ns). By construction, Xs is right-continuous with left limits (càdlàg), where the limits Xs´ are used in the coefficients to ensure the stochastic integrals are well-defined and predictable. 
+
+## 8.4 Proof of the jump-diffusion entropy minimisation 
+
+In this appendix we prove Proposition ( 3). 
+
+proof 8.4 The problem is framed as a sequential constrained convex optimisation over the Skorokhod space PpDsq for each s P r t, t ` τ s using the time-extended path representation. We introduce the Lagrangian functional Lpμs, α s, λ sq
+
+17 Quantitative Analytics 
+
+by incorporating the Marcus-sense signature moment constraint of the augmented path ˜γu “ p u, γ uquPr t,s s with a time-varying dual vector αs P Hsig and the normalisation constraint: 
+
+Lpμs, α s, λ sq “ 
+
+ż
+
+> Ds
+
+log 
+
+ˆ dμ s
+
+dP0
+
+˙
+
+dμ s ´
+
+B
+
+αs,
+
+ż
+
+> Ds
+
+Sp˜γqdμ s ´ ˆΦs|t
+
+F
+
+> Hsig
+
+´ λs
+
+ˆż 
+
+> Ds
+
+dμ s ´ 1
+
+˙
+
+. (8.30) 
+
+By the principle of minimum discrimination information, the optimal measure μ˚ 
+
+> s
+
+is found by taking the Gâteaux derivative of L with respect to μs. Setting the variation to zero, we obtain the pointwise optimality condition for the Radon-Nikodym derivative on the càdlàg path-space: 
+
+log 
+
+ˆ dμ ˚
+
+> s
+
+dP0
+
+pγq
+
+˙
+
+` 1 ´ x αs, S p˜γqy Hsig ´ λs “ 0. (8.31) 
+
+Rearranging and exponentiating gives the time-dependent Gibbs-form density: 
+
+dμ ˚
+
+> s
+
+dP0
+
+pγq “ 1
+
+Zspαsq exp px αs, S p˜γqy Hsig q, (8.32) 
+
+where Zspαsq “ ş 
+
+> Ds
+
+exp px αs, S p˜γqyq dP0pγq is the partition function. For càdlàg paths, the use of the Marcus integral on the time-extended path pu, γ uq ensures that Sp˜γq satisfies Chen’s identity and remains an element of the tensor algebra. Crucially, as shown in Cuchiero et al. [ 2025 ], the time-extension ensures that the exponential tilt is injective on the path-law μs.To determine the dual vector αs, we solve the dual objective α˚ 
+
+> s
+
+“ arg max αpx α, ˆΦs|ty ´ log Zspαqq . In the AVNSG framework, the curvature of log Zspαq is governed by the time-extended signature covariance under the jump-diffusion prior P0. Since the AVNSG metric Qs performs spectral whitening across the signature manifold, it rescales the directions in Hsig to account for the energy redistribution caused by anticipated jumps and the deterministic temporal drift at each instant s.As a result, the optimal tilt αs is predominantly aligned with the principal eigenvectors of the precision operator Qs.This ensures that the entropy-minimising measure μ˚ 
+
+> s
+
+prioritises matching the structural non-commutative moments (the "skeleton" of the path-law) while remaining robust to the high-frequency volatility and discrete shocks inherent in the Skorokhod geometry, as the moving target ˆΦs|t prevents the collapse of the measure and ensures the generated ensemble tracks the anticipated infinitesimal flow of the latent law. 
+
+## 8.5 Proof of the dual minimisation of the MMD-flow 
+
+In this appendix we prove Theorem ( 4.1 ). 
+
+proof 8.5 We analyse the time evolution of the one-step-ahead loss J pμsq for the law μs of the time-extended jump-diffusion process ˜Xs “ p s, X sq. Let Φμs “ Eμs rSp ˜Xsqs denote the mean time-extended signature in Hsig . The loss is given by: 
+
+J pμsq “ 1
+
+2 x ˆΦs|t ´ Φμs , Qsp ˆΦs|t ´ Φμs qy Hsig . (8.33) 
+
+Defining the precision-weighted signature residual as Ψs “ Qsp ˆΦs|t ´ Φμs q, and assuming the local stationarity of the time-augmented precision operator Qs and target ˆΦs|t relative to the infinitesimal flow, the temporal variation of the loss is governed by: 
+
+d
+
+ds J pμsq “ ´ 
+
+B
+
+Ψs, d
+
+ds Φμs
+
+F
+
+> Hsig
+
+. (8.34) 
+
+18 Quantitative Analytics 
+
+The evolution of the expected signature for a jump-diffusion is determined by the time-dependent infinitesimal gener-ator Ls,θ “ B s ` Ldif f ` Ljump . Applying Ls,θ to the coordinate functionals of the time-extended signature Sp ˜Xsq,we obtain: 
+
+d
+
+ds Φμs “ Eμs rB sSp ˜Xsq ` fθ ¨ ∇xSp ˜Xsq ` 1
+
+2 Tr pgθgTθ ∇2
+
+> x
+
+Sp ˜Xsqq ` λθ pSp ˜Xs´ ` p 0, h θqq ´ Sp ˜Xs´qqs . (8.35) 
+
+Note that BsSp ˜Xsq represents the deterministic growth of the signature due to the clock s. Substituting this into the in-ner product with Ψs yields the specified components. First, the continuous drift term, with fθps, ¨q “ ∇xxΨs, S p ˜Xsqy ,satisfies: 
+
+´Eμs
+
+”
+
+xΨs, f θ ¨ ∇xSp ˜Xsqy 
+
+ı
+
+“ ´ Eμs
+
+„›››∇xxΨs, S p ˜Xsqy 
+
+›››2
+
+. (8.36) 
+
+This term represents the steepest descent in the Wasserstein-type geometry of the time-extended signature manifold. Second, the jump component contributes a discrete reduction in discrepancy: 
+
+´Eμs
+
+”
+
+xΨs, λ θ pSp ˜Xs´ ` p 0, h θqq ´ Sp ˜Xs´qqy 
+
+ı
+
+“ ´ Eμs rλθ ¨ Gps, h θ , Ψsqs , (8.37) 
+
+where Gps, h θ , Ψsq “ x Ψs, S p ˜Xs´ ` p 0, h θqq ´ Sp ˜Xs´qy . This term quantifies the MMD reduction achieved by "tele-porting" probability mass across the signature space via the jump mechanism hθ at clock s. Finally, the deterministic temporal drift and second-order diffusion terms are collected into the residual: 
+
+Rpgθq “ ´ Eμs
+
+„B 
+
+Ψs, BsSp ˜Xsq ` 1
+
+2 Tr pgθgTθ ∇2
+
+> x
+
+Sp ˜Xsqq 
+
+F 
+
+. (8.38) 
+
+The joint minimisation of J pμsq is thus achieved by the time-dependent drift fθ herding the continuous flow and the intensity λθ modulating the frequency of discrete structural breaks to align the time-augmented ensemble law μs with the target proxy ˆΦs|t.
+
+## 8.6 Proof of the stability under spectral stretching and jump-discontinuity 
+
+In this appendix we prove Proposition ( 4). 
+
+proof 8.6 To establish the stability of the ANJD-gradient flow under a time-varying metric, we treat the MMD loss 
+
+J pμsq as a Lyapunov functional on the space of càdlàg measures PpDq. The total time derivative of the loss decom-poses into geometric evolution and transport terms: 
+
+d
+
+ds J pμsq “ 1
+
+2 x∆Φ s, pB sQsq∆Φ syHsig 
+
+looooooooooooooomooooooooooooooon 
+
+> Geometric Sensitivity
+
+` x Qs∆Φ s, BsEμs rSpXsqsy loooooooooooooomoooooooooooooon 
+
+> Flow Dissipation
+
+(8.39) 
+
+where ∆Φ s “ ˆΦs|t ´ Eμs rSpXsqs .
+
+1. Geometric Sensitivity and AVNSG Normalisation: Recall Qs “ p Ωs ` λI q´1. The geometric sensitivity term involves the derivative BsQs “ ´ QspB sΩsqQs. Under spectral expansion ( Bsλmax pΩsq ą 0), the operator BsQs is negative semi-definite. Consequently, a forecasted increase in uncertainty or a regime shift leads to a non-positive contribution to 9J , effectively "compressing" the signature residual. This proves that the metric expansion itself is dissipative for the MMD loss. 
+
+2. Dissipation under Jump-Diffusion: From Theorem 4.1 , the flow dissipation term is: Flow Dissipation “ ´ Eμs
+
+”
+
+}∇xxΨs, S pXsqy} 2 ` λθ Gphθ , Ψsq
+
+ı
+
+` Rpgθq. (8.40) 
+
+19 Quantitative Analytics 
+
+Stability in the Skorokhod topology requires that the discrete mass shifts do not induce divergence. By the proposition’s hypothesis, the jump-induced energy Eμs rλθ }hθ}2 
+
+> Qs
+
+s is bounded by the dissipation rate. Specifically, for a jump to be stabilising, the "jump gain" Gphθ , Ψsq must be non-negative. Since hθ is defined as a descent step in the signature manifold, we have xΨs, S pXs´ ` hθ qy ą x Ψs, S pXs´qy , ensuring λθ G ą 0.
+
+3. Contractivity Condition: The flow remains contractive if 9J ď ´ KJ for some K ą 0. Combining the terms, we have: 9J ď ´ λmin pQsq} ∆Φ s}2 ´ Eμs rλθ Gs ` Rpgθ q. (8.41) 
+
+As Ωs expands, λmin pQsq Ñ p λmax pΩsq ` λq´1. Stability is preserved if the "explosive" potential of the diffusion residual Rpgθ q is dominated by the combined damping of the AVNSG precision and the dissipative jump intensity λθ .Thus, the AVNSG mechanism acts as a regulariser that clip-scales the flow velocity precisely when the latent geometry becomes volatile, ensuring the path-measure μs converges toward the proxy ˆΦs|t without sample-path divergence. 
+
+## 8.7 Proof of the generalisation bound for path-law proxies 
+
+In this appendix we prove Theorem ( 5.1 ). 
+
+proof 8.7 The proof establishes the generalisation capability of the empirical signature estimator for time-extended jump-diffusion processes by analysing the concentration of the path-measure μs in the restricted Skorokhod space Ds
+
+under the time-evolving AVNSG-induced metric Qs.
+
+1. Symmetrisation on Sequential Measures: Let S “ t γ1, . . . , γ nu and S1 “ t γ1
+
+> 1
+
+, . . . , γ 1
+
+> n
+
+u be independent sets of sample paths drawn from the jump-diffusion law μs P PpDsq. We consider the expected discrepancy of the time-extended signatures ˜Si “ Sp˜γiq in the Qs-weighted Hilbert space: 
+
+E
+
+„›››Φμs ´ ˆΦn,s 
+
+›››Qs
+
+
+
+“ ES
+
+«› ››››ES1
+
+«
+
+1
+
+n
+
+> n
+
+ÿ
+
+> i“1
+
+pSp˜γ1
+
+> i
+
+q ´ Sp˜γiqq 
+
+ff› ››››Qs
+
+ff 
+
+. (8.42) 
+
+By Jensen’s inequality and the introduction of Rademacher variables σi P t´ 1, 1u, we bound the norm of the ex-pectation. Since the Marcus-sense signature of the time-augmented path Sp˜γiq is a well-defined Hsig -valued random variable for càdlàg paths on rt, s s, the symmetry of increments yields: 
+
+E
+
+„›››Φμs ´ ˆΦn,s 
+
+›››Qs
+
+
+
+ď 2
+
+n ES,σ 
+
+«› ››››
+
+> n
+
+ÿ
+
+> i“1
+
+σiSp˜γiq
+
+›››››Qs
+
+ff 
+
+. (8.43) 
+
+2. Concentration under Infinitesimal Flow and Jumps: We define the functional Fspγ1, . . . , γ nq “ } Φμs ´
+
+> 1
+> n
+
+ř Sp˜γiq} Qs . The stability of Fs is ensured by the time-evolving AVNSG operator Qs “ p Ωs ` λI q´1, which tracks the infinitesimal geometry of the flow. Replacing a single càdlàg path γi with γ1 
+
+> i
+
+restricted to Ds yields the coordinate sensitivity: 
+
+|Fsp. . . , γ i, . . . q ´ Fsp. . . , γ 1
+
+> i
+
+, . . . q| ď 1
+
+n }Sp˜γiq ´ Sp˜γ1
+
+> i
+
+q} Qs ď Rs
+
+n . (8.44) 
+
+The term Rs “ sup γPsupp pμsq }Sp˜γq} Qs remains finite because Qs performs spectral whitening on the pd ` 1q-dimensional augmented space, attenuating the high-order tensor components where jump-induced energy and deter-ministic temporal growth reside at horizon s. Applying McDiarmid’s inequality to this bounded variation functional: 
+
+P pFs ´ ErFss ě ǫq ď exp 
+
+ˆ
+
+´ 2nǫ 2
+
+R2
+
+> s
+
+˙
+
+. (8.45) 
+
+Solving for ǫ “ Rs
+
+b log p1{δq 
+
+> 2n
+
+and combining with the Rademacher bound, we confirm that the empirical time-extended proxy ˆΦn,s converges to Φμs at the rate Op1{?nq. This confirms that the AVNSG normalisation and Ds restriction provide the necessary regularisation to handle the sequential evolution of discontinuous jumps and the linear growth of the clock coordinate. 
+
+20 Quantitative Analytics 
+
+## 8.8 Proof of the complexity of whitened signature functionals 
+
+In this appendix we prove Proposition ( 5). 
+
+proof 8.8 The proof quantifies the expressive power of the signature functional class FM,s on the restricted Skorokhod space Ds by evaluating its Rademacher complexity under the time-evolving AVNSG-weighted metric at horizon s Prt, t ` τ s. We define the empirical Rademacher complexity for the class of linear functionals FM,s in the Hilbert space 
+
+Hsig equipped with the Qs-inner product: 
+
+pRnpFM,s q “ Eσ
+
+«
+
+sup  
+
+> fPFM,s
+
+1
+
+n
+
+> n
+
+ÿ
+
+> i“1
+
+σixf, S p˜γiqy Qs
+
+ff 
+
+, (8.46) 
+
+where σi are independent Rademacher variables and Sp˜γiq is the Marcus-sense signature of the i-th time-extended càdlàg sample path ˜γi,u “ p u, γ i,u quPr t,s s. By the Riesz representation theorem, the inner product is maximised when 
+
+f is collinear with the empirical average of the Rademacher-weighted signatures: 
+
+pRnpFM,s q “ M
+
+n Eσ
+
+«› ››››
+
+> n
+
+ÿ
+
+> i“1
+
+σiSp˜γiq
+
+›››››Qs
+
+ff 
+
+. (8.47) 
+
+Applying Jensen’s inequality to the expectation of the norm, we bound the complexity by the square root of the expected squared norm. Utilising the independence of the Rademacher variables ( Erσiσj s “ δij ), the cross-terms in the expansion of the squared norm vanish: 
+
+pRnpFM,s q ď M
+
+n
+
+gffeEσ
+
+«ÿ
+
+> i,j
+
+σiσj xSp˜γiq, S p˜γj qy Qs
+
+ff 
+
+“ M
+
+n
+
+gffe nÿ
+
+> i“1
+
+}Sp˜γiq} 2 
+
+> Qs
+
+. (8.48) 
+
+The term }Sp˜γiq} 2 
+
+> Qs
+
+“ x Sp˜γiq, QsSp˜γiqy Hsig represents the energy of the time-extended càdlàg path in the signature manifold up to time s. For jump-diffusion processes, this norm specifically accounts for the linear temporal drift and the exponential contribution of discrete jumps within the sub-interval rt, s s.The result demonstrates that the complexity of the ANJD model is governed by the alignment between the time-augmented jump sample signatures and the spectral filtration provided by the moving precision operator Qs. Specif-ically, the AVNSG operator acts as a dynamic spectral mask that attenuates the influence of high-rank tensor compo-nents associated with both deterministic temporal growth and extreme jumps (black-swan events) as they occur in the flow. This confirms that the complexity of the functional class FM,s remains regularised against explosive sample-path variations while maintaining the injectivity provided by the continuous clock coordinate u.
+
+## 8.9 Proof of the projection error stability 
+
+In this appendix we prove Lemma ( 5.1 ). 
+
+proof 8.9 The proof establishes the stability of the Nyström-approximated gradient flow for jump-diffusion processes by decomposing the MMD-gradient into the principal and residual components of the signature Hilbert space Hsig 
+
+under the sequential càdlàg path-measure μs on Ds.
+
+1. Joint Gradient Decomposition and Time-Varying Projection: The joint MMD-gradient ∇J pμsq controls the continuous drift fθ and the jump intensity λθ relative to the moving target ˆΦs|t. Let Ψs “ Qsp ˆΦs|t ´ Φμs q be the instantaneous signature residual. The time-evolving Nyström projection Pm,s maps Hsig onto the m-dimensional subspace Vm,s spanned by the leading m eigenvectors tej,s umj“1 of the current LRC operator Ωs. The projection error in the infinitesimal flow ǫproj,s is given by the norm of the residual gradient: 
+
+ǫproj,s “ }p I ´ Pm,s qQsp ˆΦs|t ´ Φμs q} Hsig . (8.49) 
+
+21 Quantitative Analytics 
+
+2. Spectral Tail Analysis on Ds: We expand the squared error in the instantaneous eigenbasis of Ωs. For j ą m,the eigenvalues of the precision operator are ωj,s “ p λj,s ` λq´1. In the jump-diffusion setting, the signature Sp ˜Xsq
+
+contains high-rank tensor components activated by the jump increments exp p0, ∆Xsq. The projection error satisfies: 
+
+ǫ2 
+
+> proj,s
+
+“
+
+> 8
+
+ÿ
+
+> j“m`1
+
+1
+
+pλj,s ` λq2 x ˆΦs|t ´ Φμs , e j,s y2 
+
+> Hsig
+
+. (8.50) 
+
+By the Riesz representation, the coefficients x∆Φ s, e j,s y2 are bounded by the spectral energy of the càdlàg ensemble restricted to rt, s s. Given the joint Lipschitz regularity Cf,λ,s of the drift and intensity with respect to the signature residual at the current horizon: 
+
+ǫ2 
+
+> proj,s
+
+ď C2
+
+> f,λ,s
+> 8
+
+ÿ
+
+> j“m`1
+
+λj pΩsq. (8.51) 
+
+3. Stability under Anticipatory Geometry: Taking the square root yields the bound ǫproj,s ď Cf,λ,s př8 
+
+> j“m`1
+
+λj q1{2.This result demonstrates that the Nyström approximation is stable for the ANJD flow if the subspace Vm,s is dynami-cally updated to capture the spectral modes corresponding to both the continuous latent diffusion and the anticipated structural breaks. Because jumps redistribute energy into higher-order signature terms, the stability of the generative flow relies on the decay rate of the time-evolving LRC spectral tail. The AVNSG normalisation Qs ensures that the contribution of omitted high-frequency jump components to the gradient error is suppressed by the spectral weighting, preserving the global convergence of the measure toward the moving proxy ˆΦs|t.
+
+## 8.10 Proof of the jump-aware low-rank precision update 
+
+In this appendix we prove Proposition ( 6). 
+
+proof 8.10 The proof establishes the recursive update for the time-dependent precision matrix ˆQs by treating the arrival of discrete jumps, clock increments, and the evolution of the moving target proxy ˆΦs|t as sequential rank-1 innovations in the Nyström-subsampled feature space. 
+
+1. Covariance Augmentation and Infinitesimal Innovations: Let φp ˜Xsq P Rm denote the feature mapping of the time-extended signature Sp ˜Xsq projected onto the m-dimensional Nyström subspace Vm,s . To maintain the sequential matching property, the empirical LRC operator Cs must track the non-autonomous flow. Upon a structural break ∆Xs, a clock increment h, or a shift in the target velocity ∇s ˆΦs|t, we define the innovation vector ks “
+
+φpSp ˜Xs`hqq ´ φpSp ˜Xsqq . The covariance evolves via the rank-1 augmentation: 
+
+Cs`h “ Cs ` αskskTs , (8.52) 
+
+where αs scales the influence of the anticipated jump or the deterministic temporal stretching. This ensures that the spectral energy of the discontinuous innovation is instantaneously integrated into the latent geometry. 
+
+2. Application of the Sherman-Morrison Identity: The anticipatory precision is defined as ˆQs “ p Cs ` λIq´1.To propagate this operator through the flow without direct inversion, we apply the Sherman-Morrison identity to the perturbed system pCs ` αskskTs q´1:
+
+pA ` uv T q´1 “ A´1 ´ A´1uv T A´1
+
+1 ` vT A´1u . (8.53) 
+
+Substituting A “ Cs ` λI and u “ v “ ?αsks, the recursive update for the precision matrix becomes: 
+
+ˆQs`h “ ˆQs ´ αs
+
+ˆQskskTs ˆQs
+
+1 ` αskTs ˆQsks
+
+. (8.54) 
+
+3. Sequential Complexity Analysis: The numerical integration of the ANJD flow requires updating the precision at each EMM step. The complexity breakdown is: 
+
+22 Quantitative Analytics 
+
+• Innovation Mapping: Computing ks via the time-augmented Marcus mapping requires Opm ¨ p d ` 1qkq for a signature of depth k.
+
+• Precision Propagation: The matrix-vector product ˆQsks and subsequent outer product require Opm2q opera-tions. The total complexity per update is Opm2q, bypassing the Opm3q cost of full re-inversion. This allows the ANJD to react to high-frequency structural breaks and the continuous flow of the moving target proxy in real-time, as the precision matrix ˆQs dynamically "contracts" the gradient flow along the jump-induced principal components with minimal computational overhead. 
+
+23 Quantitative Analytics 
+
+# References 
+
+[2023] Andersson W., Heiss J., Krach F., Teichmann J., Extending path-dependent NJ-ODEs to noisy observations and a dependent observation framework. Working Paper, arXiv:2307.13147. [2026] Bayer C., dos Reis G., Horvath B., Oberhauser H., Signature methods in finance: An introduction with computational applications. Springer. [2025a] Bloch D., Adaptive variance-normalised signature geometry for localised functional inference. Working Paper, SSRN id “ 5881422 , University of Paris 6 Pierre et Marie Curie. [2025b] Bloch D., Unified adaptive signature geometry: Fine-grained sequential inference for symmetric moments and non-commutative causal structure. Working Paper, SSRN id “ 5958374 , University of Paris 6 Pierre et Marie Curie. [2026a] Bloch D., Jump-flow filtered tensorial moment hierarchies: Recursive path-estimation under discontinuous filtrations and non-Markovian dynamics. Working Paper, SSRN id “ 6076109 , University of Paris 6 Pierre et Marie Curie. [2026b] Bloch D., Variational signature jump-flow in reproducing kernel Hilbert spaces: Non-parametric filtering of the conditional path-law proxy. Working Paper, SSRN id “ 6302498 , University of Paris 6 Pierre et Marie Curie. [2020] Buehler H., Horvath B., Lyons T., Perez Arribas I., Wood B., A data-driven market simulator for small data environments. Working Paper, arXiv:2006.14498. [2016] Chen Y., Georgiou T.T., Pavon M., On the relation between optimal transport and Schrödinger bridges: : A stochastic control viewpoint. Journal of Optimization Theory and Applications , 16 , (2). Also in arXiv:1412.4430 . [2018] Chen R.T.Q., Rubanova Y., Bettencourt Y., Duvenaud D., Neural ordinary differential equations. Working Paper, arXiv:1806.07366. [2016] Chevyrev I., Lyons T., Characteristic functions of measures on geometric rough paths. Annals of Probability ,
+
+> 44
+
+, (6), pp 4049–4091. Also Working Paper, arXiv:1307.3580. [2024] Caulfield H., Gleeson J.P., Systematic comparison of deep generative models applied to multivariate financial time series. Working Paper, arXiv:2412.06417. [2025] Crowell R.A., Krach F., Teichmann J., Neural jump ODEs as generative models. Working Paper, arXiv:2510.02757. [2025] Cuchiero C., Primavera F., Svaluto-Ferro S., Universal approximation theorems for continuous functions of càdlàg paths and Lévy-type signature models. Finance Stoch , 29 , pp 289–342. [1982] Elworthy K.D., Stochastic differential equations on manifolds. Cambridge University Press, London Mathe-matical Society Lecture Note Series (70). [2017] Friz P.K., Shekhar A., General rough integration, Lévy rough paths and a Lévy?Kintchine-type formula. The Annals of Probability , 45 , (4), pp 2707–2765. Also in arXiv:1212.5888. [2018] Friz P.K., Zhang H., Differential equations driven by rough paths with jumps. Journal of Differential Equations ,
+
+> 264
+
+, (10), pp 6226–6301. Also in arXiv:1709.05241. [2010] Hambly B., Lyons T., Uniqueness for the signature of a path of bounded variation and the reduced path group. 
+
+> Annals of Mathematics
+
+, 171 , pp 109–167. Also Working Paper in 2005, arXiv:math/0507536. 
+
+24 Quantitative Analytics 
+
+[2021] Herrera H., Krach F., Teichmann J., Neural jump ordinary differential equations: Consistent continuous-time prediction and filtering. In International Conference on Learning Representations .[2020] Ho J., Jain A., Abbeel P., Denoising diffusion probabilistic models. Advances in Neural Information Processing Systems (NeurIPS) . Also in arXiv:2006.11239v2. [2023] Issa Z., Horvath B., Lemercier M., Salvi C., Non-adversarial training of Neural SDEs with signature kernel scores. In 37th Conference on Neural Information Processing Systems (NeurIPS 2023) .[2020] Kidger P., Morrill J., Foster J., Lyons T., Neural controlled differential equations for irregular time series. Working Paper, arXiv:2005.08926. [2021] Kidger P., Foster J., Li X., Lyons T., Neural SDEs as infinite-dimensional GANs. In International Conference on Machine Learning (ICML) , and also arXiv:2102.03657. [2022] Krach F., Nübel M., Teichmann J., Optimal estimation of generic dynamics by path-dependent neural jump ODEs. Working Paper, arXiv:2206.14284. [2020] Li X., Wong T-K.L., Chen R.T., Duvenaud D., Scalable gradients and variational inference for stochastic differential equations. In International Conference on Artificial Intelligence and Statistics AISTATS .[2020] Liao S., Ni H., Szpruch L., Wiese M., Sabate-Vidales M., Xiao B., Conditional Sig-Wasserstein GANs for time series generation. Working Paper, arXiv:2006.05421. [2025] Lucchese L., Pakkanen M.S., Veraart A.E.D., Learning with expected signatures: Theory and applications. Working Paper, arXiv:2505.20465. [2007] Lyons T.J., Caruana M., Levy T., Differential equations driven by rough paths. volume 1908 of Lecture Notes in Mathematics, Springer, Berlin. [2011] Lyons T., Ni H., Expected signature of two dimensional Brownian motion up to the first exit time of the domain. Working Paper, arXiv:1101.5902v4. [2022] Lyons T., McLeod A.D., Signature methods in machine learning. Working Paper, arXiv:2206.14674. [1981] Marcus S., Modeling and approximation of stochastic differential equations driven by semimartingales. 
+
+> Stochastics: An International Journal of Probability and Stochastic Processes
+
+, 4, (3), pp 223–245. [2021] Morrill J., Salvi C., Kidger P., Foster J., Neural rough differential equations for long time series. In Pro-ceedings of the 38th International Conference on Machine Learning , PMLR, 139 , pp 7829–7838. Also Working Paper, arXiv:2009.08295. [2024] Vuleti´ c M., Prenzel F., Cucuringu M., Fin-gan: Forecasting and classifying financial time series via genera-tive adversarial networks. Quantitative Finance , 24 , (2), pp 175–199. [2019] Yoon J., Jarrett D., van der Schaar M., Time-series generative adversarial networks. In Neural Information Processing Systems .[1995] Yosida K., Functional analysis. Classics in Mathematics. Springer-Verlag, Berlin Heidelberg, 6th edition, 1995. 
+
+25

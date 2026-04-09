@@ -1,0 +1,466 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-09T20:08:05.374977+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 12,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2604.06387v1",
+      "title": "Uncertainty Estimation for Deep Reconstruction in Actuatic Disaster Scenarios with Autonomous Vehicles",
+      "abstract": "Accurate reconstruction of environmental scalar fields from sparse onboard observations is essential for autonomous vehicles engaged in aquatic monitoring. Beyond point estimates, principled uncertainty quantification is critical for active sensing strategies such as Informative Path Planning, where epistemic uncertainty drives data collection decisions. This paper compares Gaussian Processes, Monte Carlo Dropout, Deep Ensembles, and Evidential Deep Learning for simultaneous scalar field reconstruction and uncertainty decomposition under three perceptual models representative of real sensor modalities. Results show that Evidential Deep Learning achieves the best reconstruction accuracy and uncertainty calibration across all sensor configurations at the lowest inference cost, while Gaussian Processes are fundamentally limited by their stationary kernel assumption and become intractable as observation density grows. These findings support Evidential Deep Learning as the preferred method for uncertainty-aware field reconstruction in real-time autonomous vehicle deployments.",
+      "authors": [
+        "Samuel Yanes Luis",
+        "Alejandro Casado Pérez",
+        "Alejandro Mendoza Barrionuevo",
+        "Dame Seck Diop",
+        "Sergio Toral Marín",
+        "Daniel Gutiérrez Reina"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-04-07T19:17:44+00:00",
+      "link": "https://arxiv.org/pdf/2604.06387v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "uncertainty decomposition and estimation for autonomous vehicle path planning",
+      "llm_evidence_cn": "自动驾驶车辆路径规划中的不确定性分解与估计",
+      "llm_evidence": "自动驾驶车辆路径规划中的不确定性分解与估计",
+      "canonical_evidence": "自动驾驶车辆路径规划中的不确定性分解与估计",
+      "llm_tldr_en": "Compares uncertainty quantification methods for scalar field reconstruction to drive informative path planning.",
+      "llm_tldr_cn": "比较了用于标量场重建的不确定性量化方法，以驱动自动驾驶中的信息路径规划。",
+      "llm_tldr": "比较了用于标量场重建的不确定性量化方法，以驱动自动驾驶中的信息路径规划。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.05008v1",
+      "title": "Generative Path-Law Jump-Diffusion: Sequential MMD-Gradient Flows and Generalisation Bounds in Marcus-Signature RKHS",
+      "abstract": "This paper introduces a novel generative framework for synthesising forward-looking, càdlàg stochastic trajectories that are sequentially consistent with time-evolving path-law proxies, thereby incorporating anticipated structural breaks, regime shifts, and non-autonomous dynamics. By framing path synthesis as a sequential matching problem on restricted Skorokhod manifolds, we develop the \\textit{Anticipatory Neural Jump-Diffusion} (ANJD) flow, a generative mechanism that effectively inverts the time-extended Marcus-sense signature. Central to this approach is the Anticipatory Variance-Normalised Signature Geometry (AVNSG), a time-evolving precision operator that performs dynamic spectral whitening on the signature manifold to ensure contractivity during volatile regime shifts and discrete aleatoric shocks. We provide a rigorous theoretical analysis demonstrating that the joint generative flow constitutes an infinitesimal steepest descent direction for the Maximum Mean Discrepancy functional relative to a moving target proxy. Furthermore, we establish statistical generalisation bounds within the restricted path-space and analyse the Rademacher complexity of the whitened signature functionals to characterise the expressive power of the model under heavy-tailed innovations. The framework is implemented via a scalable numerical scheme involving Nyström-compressed score-matching and an anticipatory hybrid Euler-Maruyama-Marcus integration scheme. Our results demonstrate that the proposed method captures the non-commutative moments and high-order stochastic texture of complex, discontinuous path-laws with high computational efficiency.",
+      "authors": [
+        "Daniel Bloch"
+      ],
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG",
+        "q-fin.MF",
+        "q-fin.ST"
+      ],
+      "published": "2026-04-06T13:23:59+00:00",
+      "link": "https://arxiv.org/pdf/2604.05008v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "generative framework for synthesising stochastic trajectories",
+      "llm_evidence_cn": "合成随机轨迹的生成式框架",
+      "llm_evidence": "合成随机轨迹的生成式框架",
+      "canonical_evidence": "合成随机轨迹的生成式框架",
+      "llm_tldr_en": "Introduces ANJD flow for generating stochastic trajectories consistent with time-evolving path-laws.",
+      "llm_tldr_cn": "引入ANJD流，用于生成与随时间演变的路径规律一致的随机轨迹。",
+      "llm_tldr": "引入ANJD流，用于生成与随时间演变的路径规律一致的随机轨迹。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.00320v1",
+      "title": "Hierarchical Motion Planning and Control under Unknown Nonlinear Dynamics via Predicted Reachability",
+      "abstract": "Autonomous motion planning under unknown nonlinear dynamics requires learning system properties while navigating toward a target. In this work, we develop a hierarchical planning-control framework that enables online motion synthesis with limited prior system knowledge. The state space is partitioned into polytopes and approximates the unknown nonlinear system using a piecewise-affine (PWA) model. The local affine models are identified once the agent enters the corresponding polytopes. To reduce computational complexity, we introduce a non-uniform adaptive state space partition strategy that refines the partition only in task-relevant regions. The resulting PWA system is abstracted into a directed weighted graph, whose edge existence is incrementally verified using reach control theory and predictive reachability conditions. Certified edges are weighted using provable time-to-reach bounds, while uncertain edges are assigned information-theoretic weights to guide exploration. The graph is updated online as new data becomes available, and high-level planning is performed by graph search, while low-level affine feedback controllers are synthesized to execute the plan. Furthermore, the conditions of classical reach control theory are often difficult to satisfy in underactuated settings. We therefore introduce relaxed reachability conditions to extend the framework to such systems. Simulations demonstrate effective exploration-exploitation trade-offs with formal reachability guarantees.",
+      "authors": [
+        "Zhiquan Zhang",
+        "Melkior Ornik"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-03-31T23:36:11+00:00",
+      "link": "https://arxiv.org/pdf/2604.00320v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "hierarchical motion planning and online motion synthesis",
+      "llm_evidence_cn": "分层运动规划与在线运动综合",
+      "llm_evidence": "分层运动规划与在线运动综合",
+      "canonical_evidence": "分层运动规划与在线运动综合",
+      "llm_tldr_en": "Develops a hierarchical framework for motion planning under unknown nonlinear dynamics using reachability.",
+      "llm_tldr_cn": "开发了一个利用可达性在未知非线性动力学下进行运动规划的分层框架。",
+      "llm_tldr": "开发了一个利用可达性在未知非线性动力学下进行运动规划的分层框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.06598v1",
+      "title": "Train-Small Deploy-Large: Leveraging Diffusion-Based Multi-Robot Planning",
+      "abstract": "Learning based multi-robot path planning methods struggle to scale or generalize to changes, particularly variations in the number of robots during deployment. Most existing methods are trained on a fixed number of robots and may tolerate a reduced number during testing, but typically fail when the number increases. Additionally, training such methods for a larger number of agents can be both time consuming and computationally expensive. However, analytical methods can struggle to scale computationally or handle dynamic changes in the environment. In this work, we propose to leverage a diffusion model based planner capable of handling dynamically varying number of agents. Our approach is trained on a limited number of agents and generalizes effectively to larger numbers of agents during deployment. Results show that integrating a single shared diffusion model based planner with dedicated inter-agent attention computation and temporal convolution enables a train small deploy-large paradigm with good accuracy. We validate our method across multiple scenarios and compare the performance with existing multi-agent reinforcement learning techniques and heuristic control based methods.",
+      "authors": [
+        "Siddharth Singh",
+        "Soumee Guha",
+        "Qing Chang",
+        "Scott Acton"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-04-08T02:32:54+00:00",
+      "link": "https://arxiv.org/pdf/2604.06598v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "diffusion model based planner for multi-robot path planning",
+      "llm_evidence_cn": "基于扩散模型的规划器用于多机器人路径规划",
+      "llm_evidence": "基于扩散模型的规划器用于多机器人路径规划",
+      "canonical_evidence": "基于扩散模型的规划器用于多机器人路径规划",
+      "llm_tldr_en": "Proposes a diffusion-based planner that generalizes to varying numbers of agents in multi-robot path planning.",
+      "llm_tldr_cn": "提出一种基于扩散模型的规划器，可推广至多机器人路径规划中不同数量的智能体。",
+      "llm_tldr": "提出一种基于扩散模型的规划器，可推广至多机器人路径规划中不同数量的智能体。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.03405v1",
+      "title": "Steering with Contingencies: Combinatorial Stabilization and Reach-Avoid Filters",
+      "abstract": "In applications such as autonomous landing and navigation, it is often desirable to steer toward a target while retaining the ability to divert to at least $r$ (out of $p$) alternative sites if conditions change. In this work, we formalize this combinatorial contingency requirement and develop tractable control filters for enforcement. Combinatorial stabilization requires asymptotic stability of a selected equilibrium while ensuring the trajectory remains within the safe region of attraction of at least $r$-out-of-$p$ candidates. To enforce this requirement, we use control Lyapunov functions (CLFs) to construct regions of attraction, which are combined combinatorially within an optimization-based filter. Combinatorial targeting extends this framework to finite-horizon problems using Hamilton-Jacobi backward reach-avoid sets, accommodating shrinking reachable regions due to finite horizons or resource depletion. In both formulations, the resulting combinatorial stability filter and combinatorial reach-avoid filter require only $p+1$ constraints, preventing combinatorial blow-up and enabling safe real-time switching between targets. The framework is demonstrated on two examples where the filters ensure steering with contingency and enable safe diversion.",
+      "authors": [
+        "Yana Lishkova",
+        "Pio Ong",
+        "Sander Tonkens",
+        "Sylvia Herbert",
+        "Aaron D. Ames"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-04-03T19:07:30+00:00",
+      "link": "https://arxiv.org/pdf/2604.03405v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "trajectory steering with combinatorial contingency requirements",
+      "llm_evidence_cn": "具有组合应急要求的轨迹引导",
+      "llm_evidence": "具有组合应急要求的轨迹引导",
+      "canonical_evidence": "具有组合应急要求的轨迹引导",
+      "llm_tldr_en": "Develops control filters for autonomous navigation to ensure safety across multiple contingency scenarios.",
+      "llm_tldr_cn": "为自主导航开发控制滤波器，确保在多种突发情况下的轨迹安全性。",
+      "llm_tldr": "为自主导航开发控制滤波器，确保在多种突发情况下的轨迹安全性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.07072v1",
+      "title": "Epistemic Robust Offline Reinforcement Learning",
+      "abstract": "Offline reinforcement learning learns policies from fixed datasets without further environment interaction. A key challenge in this setting is epistemic uncertainty, arising from limited or biased data coverage, particularly when the behavior policy systematically avoids certain actions. This can lead to inaccurate value estimates and unreliable generalization. Ensemble-based methods like SAC-N mitigate this by conservatively estimating Q-values using the ensemble minimum, but they require large ensembles and often conflate epistemic with aleatoric uncertainty. To address these limitations, we propose a unified and generalizable framework that replaces discrete ensembles with compact uncertainty sets over Q-values. %We further introduce an Epinet based model that directly shapes the uncertainty sets to optimize the cumulative reward under the robust Bellman objective without relying on ensembles. We also introduce a benchmark for evaluating offline RL algorithms under risk-sensitive behavior policies, and demonstrate that our method achieves improved robustness and generalization over ensemble-based baselines across both tabular and continuous state domains.",
+      "authors": [
+        "Abhilash Reddy Chenreddy",
+        "Erick Delage"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-08T13:26:00+00:00",
+      "link": "https://arxiv.org/pdf/2604.07072v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "conflating epistemic with aleatoric uncertainty in reinforcement learning",
+      "llm_evidence_cn": "强化学习中认识不确定性与偶然不确定性的混淆问题",
+      "llm_evidence": "强化学习中认识不确定性与偶然不确定性的混淆问题",
+      "canonical_evidence": "强化学习中认识不确定性与偶然不确定性的混淆问题",
+      "llm_tldr_en": "Proposes a framework to handle epistemic uncertainty in offline RL by replacing ensembles with uncertainty sets.",
+      "llm_tldr_cn": "提出一种离线强化学习框架，通过不确定性集合处理认识不确定性，避免模型混淆。",
+      "llm_tldr": "提出一种离线强化学习框架，通过不确定性集合处理认识不确定性，避免模型混淆。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "aleatoric and epistemic uncertainty decomposition in diffusion trajectory models",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.05257v1",
+      "title": "Extending Tabular Denoising Diffusion Probabilistic Models for Time-Series Data Generation",
+      "abstract": "Diffusion models are increasingly being utilised to create synthetic tabular and time series data for privacy-preserving augmentation. Tabular Denoising Diffusion Probabilistic Models (TabDDPM) generate high-quality synthetic data from heterogeneous tabular datasets but assume independence between samples, limiting their applicability to time-series domains where temporal dependencies are critical. To address this, we propose a temporal extension of TabDDPM, introducing sequence awareness through the use of lightweight temporal adapters and context-aware embedding modules. By reformulating sensor data into windowed sequences and explicitly modeling temporal context via timestep embeddings, conditional activity labels, and observed/missing masks, our approach enables the generation of temporally coherent synthetic sequences. Compared to baseline and interpolation techniques, validation using bigram transition matrices and autocorrelation analysis shows enhanced temporal realism, diversity, and coherence. On the WISDM accelerometer dataset, the suggested system produces synthetic time-series that closely resemble real world sensor patterns and achieves comparable classification performance (macro F1-score 0.64, accuracy 0.71). This is especially advantageous for minority class representation and preserving statistical alignment with real distributions. These developments demonstrate that diffusion based models provide effective and adaptable solutions for sequential data synthesis when they are equipped for temporal reasoning. Future work will explore scaling to longer sequences and integrating stronger temporal architectures.",
+      "authors": [
+        "Umang Dobhal",
+        "Christina Garcia",
+        "Sozo Inoue"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-06T23:46:40+00:00",
+      "link": "https://arxiv.org/pdf/2604.05257v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion models for time-series sensor data generation",
+      "llm_evidence_cn": "用于时间序列传感器数据生成的扩散模型",
+      "llm_evidence": "用于时间序列传感器数据生成的扩散模型",
+      "canonical_evidence": "用于时间序列传感器数据生成的扩散模型",
+      "llm_tldr_en": "Extends tabular diffusion models to handle temporal dependencies in time-series sensor data generation.",
+      "llm_tldr_cn": "扩展了表格扩散模型，以处理时间序列传感器数据生成中的时间依赖性。",
+      "llm_tldr": "扩展了表格扩散模型，以处理时间序列传感器数据生成中的时间依赖性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.07084v1",
+      "title": "Flow Motion Policy: Manipulator Motion Planning with Flow Matching Models",
+      "abstract": "Open-loop end-to-end neural motion planners have recently been proposed to improve motion planning for robotic manipulators. These methods enable planning directly from sensor observations without relying on a privileged collision checker during planning. However, many existing methods generate only a single path for a given workspace across different runs, and do not leverage their open-loop structure for inference-time optimization. To address this limitation, we introduce Flow Motion Policy, an open-loop, end-to-end neural motion planner for robotic manipulators that leverages the stochastic generative formulation of flow matching methods to capture the inherent multi-modality of planning datasets. By modeling a distribution over feasible paths, Flow Motion Policy enables efficient inference-time best-of-$N$ sampling. The method generates multiple end-to-end candidate paths, evaluates their collision status after planning, and executes the first collision-free solution. We benchmark the Flow Motion Policy against representative sampling-based and neural motion planning methods. Evaluation results demonstrate that Flow Motion Policy improves planning success and efficiency, highlighting the effectiveness of stochastic generative policies for end-to-end motion planning and inference-time optimization. Experimental evaluation videos are available via this \\href{https://zh.engr.tamu.edu/wp-content/uploads/sites/310/2026/03/FMP-Website.mp4}{link}.",
+      "authors": [
+        "Davood Soleymanzadeh",
+        "Xiao Liang",
+        "Minghui Zheng"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-04-08T13:38:58+00:00",
+      "link": "https://arxiv.org/pdf/2604.07084v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "motion planning using flow matching models to capture multi-modality",
+      "llm_evidence_cn": "利用流匹配模型捕捉多模态性的运动规划",
+      "llm_evidence": "利用流匹配模型捕捉多模态性的运动规划",
+      "canonical_evidence": "利用流匹配模型捕捉多模态性的运动规划",
+      "llm_tldr_en": "Introduces Flow Motion Policy, using flow matching to model distributions over feasible paths for manipulators.",
+      "llm_tldr_cn": "引入流运动策略，利用流匹配为机械臂建模可行路径的分布。",
+      "llm_tldr": "引入流运动策略，利用流匹配为机械臂建模可行路径的分布。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.06113v1",
+      "title": "SEM-ROVER: Semantic Voxel-Guided Diffusion for Large-Scale Driving Scene Generation",
+      "abstract": "Scalable generation of outdoor driving scenes requires 3D representations that remain consistent across multiple viewpoints and scale to large areas. Existing solutions either rely on image or video generative models distilled to 3D space, harming the geometric coherence and restricting the rendering to training views, or are limited to small-scale 3D scene or object-centric generation. In this work, we propose a 3D generative framework based on $Σ$-Voxfield grid, a discrete representation where each occupied voxel stores a fixed number of colorized surface samples. To generate this representation, we train a semantic-conditioned diffusion model that operates on local voxel neighborhoods and uses 3D positional encodings to capture spatial structure. We scale to large scenes via progressive spatial outpainting over overlapping regions. Finally, we render the generated $Σ$-Voxfield grid with a deferred rendering module to obtain photorealistic images, enabling large-scale multiview-consistent 3D scene generation without per-scene optimization. Extensive experiments show that our approach can generate diverse large-scale urban outdoor scenes, renderable into photorealistic images with various sensor configurations and camera trajectories while maintaining moderate computation cost compared to existing approaches.",
+      "authors": [
+        "Hiba Dahmani",
+        "Nathan Piasco",
+        "Moussab Bennehar",
+        "Luis Roldão",
+        "Dzmitry Tsishkou",
+        "Laurent Caraffa",
+        "Jean-Philippe Tarel",
+        "Roland Brémond"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-07T17:24:29+00:00",
+      "link": "https://arxiv.org/pdf/2604.06113v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "semantic-conditioned diffusion model for large-scale driving scene generation",
+      "llm_evidence_cn": "用于大规模驾驶场景生成的语义条件扩散模型",
+      "llm_evidence": "用于大规模驾驶场景生成的语义条件扩散模型",
+      "canonical_evidence": "用于大规模驾驶场景生成的语义条件扩散模型",
+      "llm_tldr_en": "SEM-ROVER uses semantic voxel-guided diffusion to generate consistent large-scale 3D driving scenes.",
+      "llm_tldr_cn": "SEM-ROVER 利用语义体素引导的扩散模型生成一致的大规模三维驾驶场景。",
+      "llm_tldr": "SEM-ROVER 利用语义体素引导的扩散模型生成一致的大规模三维驾驶场景。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.07126v1",
+      "title": "Self-Discovered Intention-aware Transformer for Multi-modal Vehicle Trajectory Prediction",
+      "abstract": "Predicting vehicle trajectories plays an important role in autonomous driving and ITS applications. Although multiple deep learning algorithms are devised to predict vehicle trajectories, their reliant on specific graph structure (e.g., Graph Neural Network) or explicit intention labeling limit their flexibilities. In this study, we propose a pure Transformer-based network with multiple modals considering their neighboring vehicles. Two separate tracks are employed. One track focuses on predicting the trajectories while the other focuses on predicting the likelihood of each intention considering neighboring vehicles. Study finds that the two track design can increase the performance by separating spatial module from the trajectory generating module. Also, we find the the model can learn an ordered group of trajectories by predicting residual offsets among K trajectories.",
+      "authors": [
+        "Diyi Liu",
+        "Zihan Niu",
+        "Tu Xu",
+        "Lishan Sun"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-04-08T14:20:09+00:00",
+      "link": "https://arxiv.org/pdf/2604.07126v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "multi-modal vehicle trajectory prediction in autonomous driving",
+      "llm_evidence_cn": "自动驾驶中的多模态车辆轨迹预测",
+      "llm_evidence": "自动驾驶中的多模态车辆轨迹预测",
+      "canonical_evidence": "自动驾驶中的多模态车辆轨迹预测",
+      "llm_tldr_en": "Proposes a Transformer-based network for multi-modal vehicle trajectory prediction using separate tracks.",
+      "llm_tldr_cn": "提出一种基于Transformer的网络，通过双轨设计实现自动驾驶中的多模态车辆轨迹预测。",
+      "llm_tldr": "提出一种基于Transformer的网络，通过双轨设计实现自动驾驶中的多模态车辆轨迹预测。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.06413v1",
+      "title": "ODE-free Neural Flow Matching for One-Step Generative Modeling",
+      "abstract": "Diffusion and flow matching models generate samples by learning time-dependent vector fields whose integration transports noise to data, requiring tens to hundreds of network evaluations at inference. We instead learn the transport map directly. We propose Optimal Transport Neural Flow Matching (OT-NFM), an ODE-free generative framework that parameterizes the flow map with neural flows, enabling true one-step generation with a single forward pass. We show that naive flow-map training suffers from mean collapse, where inconsistent noise-data pairings drive all outputs toward the data mean. We prove that consistent coupling is necessary for non-degenerate learning and address this using optimal transport pairings with scalable minibatch and online coupling strategies. Experiments on synthetic benchmarks and image generation tasks (MNIST and CIFAR-10) demonstrate competitive sample quality while reducing inference to a single network evaluation.",
+      "authors": [
+        "Xiao Shou"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-07T19:49:57+00:00",
+      "link": "https://arxiv.org/pdf/2604.06413v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "ODE-free generative framework for flow mapping",
+      "llm_evidence_cn": "用于流映射的无ODE生成框架",
+      "llm_evidence": "用于流映射的无ODE生成框架",
+      "canonical_evidence": "用于流映射的无ODE生成框架",
+      "llm_tldr_en": "Proposes OT-NFM for one-step generative modeling by learning transport maps directly.",
+      "llm_tldr_cn": "提出OT-NFM框架，通过直接学习传输映射实现单步生成建模。",
+      "llm_tldr": "提出OT-NFM框架，通过直接学习传输映射实现单步生成建模。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty:composite"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty:composite",
+      "matched_query_text": "Papers central to 自动驾驶轨迹生成中利用扩散模型进行不确定性解耦、量化、追溯的论文检索, especially work that connects or combines: c; trajectory generation and path planning; autonomous driving motion planning and prediction; diffusion models for trajectory generation in autonomous driving; modeling aleatoric uncertainty in autonomous driving scenarios; estimating epistemic uncertainty in neural motion planners; diffusion models for uncertainty decoupling in autonomous driving trajectory generation; quantifying and tracing uncertainty in diffusion based motion planning; aleatoric and epistemic uncertainty decomposition in diffusion trajectory models; diffusion models for uncertainty estimation in autonomous driving trajectory generation.",
+      "matched_requirement_id": "req-composite-diffusion-conf-uncertainty",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.06936v1",
+      "title": "Adaptive Distributionally Robust Optimal Control with Bayesian Ambiguity Sets",
+      "abstract": "In stochastic optimal control (SOC), uncertainty may arise from incomplete knowledge of the true probability distribution of the underlying environment, which is known as Knightian or epistemic uncertainty. Distributionally robust optimal control (DROC) models are subsequently proposed to tackle this source of uncertainty. While such models are effective in some practical applications, most existing DROC models are offline and can be overly conservative when data are scarce. Moreover, they cannot be applied to the case when samples are generated episodically. Motivated by the Bayesian SOC framework recently proposed by Shapiro et al.~\\cite{shapiro2025episodic}, we propose an adaptive DROC model in which the ambiguity set is updated via Bayesian learning from new data. Under some moderate conditions, we derive a tractable risk-averse reformulation, establish consistency of the optimal value function and optimal policy for an infinite-horizon SOC and establish a finite-sample posterior credibility guarantee for the policy value induced by the proposed episodic Bayesian DROC model. We also study the stability and statistical robustness of the proposed model with respect to sample perturbations that often arise in data-driven environments. To solve the episodic Bayesian DROC model, we propose a Bellman-operator cutting-plane (BOCP) algorithm that is computationally efficient and provably convergent. Numerical results on an inventory control problem demonstrate the effectiveness, adaptivity, and robust performance of the proposed model and algorithm.",
+      "authors": [
+        "Wentao Ma",
+        "Zhiping Chen",
+        "Huifu Xu",
+        "Enlu Zhou"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-04-08T10:58:49+00:00",
+      "link": "https://arxiv.org/pdf/2604.06936v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "epistemic uncertainty in distributionally robust optimal control",
+      "llm_evidence_cn": "分布鲁棒最优控制中的认知不确定性",
+      "llm_evidence": "分布鲁棒最优控制中的认知不确定性",
+      "canonical_evidence": "分布鲁棒最优控制中的认知不确定性",
+      "llm_tldr_en": "Addresses epistemic uncertainty in stochastic optimal control using Bayesian ambiguity sets.",
+      "llm_tldr_cn": "利用贝叶斯模糊集解决随机最优控制中的认知不确定性问题。",
+      "llm_tldr": "利用贝叶斯模糊集解决随机最优控制中的认知不确定性问题。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "estimating epistemic uncertainty in neural motion planners",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
