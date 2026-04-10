@@ -1,0 +1,4799 @@
+Title: Adaptive Distributionally Robust Optimal Control with Bayesian Ambiguity Sets
+
+URL Source: https://arxiv.org/pdf/2604.06936v2
+
+Published Time: Fri, 10 Apr 2026 01:08:18 GMT
+
+Number of Pages: 43
+
+Markdown Content:
+# Adaptive Distributionally Robust Optimal Control with Bayesian Ambiguity Sets 
+
+Wentao Ma ∗1,2 , Zhiping Chen †1,2 , Huifu Xu ‡3, and Enlu Zhou §41School of Mathematics and Statistics, Xi’an Jiaotong University, Xi’an, Shaanxi, P. R. China 
+
+> 2
+
+Research Center for Optimization Technology and Intelligent Game, Xi’an International Academy for Mathematics and Mathematical Technology, Xi’an, P. R. China 
+
+> 3
+
+Department of Systems Engineering and Engineering Management, The Chinese University of Hong Kong, Hong Kong 
+
+> 4
+
+H. Milton Stewart School of Industrial and Systems Engineering, Georgia Institute of Technology, Atlanta, USA 
+
+Abstract 
+
+In stochastic optimal control (SOC), uncertainty may arise from incomplete knowledge of the true probability distribution of the underlying environment, which is known as Knightian or epis-temic uncertainty. Distributionally robust optimal control (DROC) models are subsequently pro-posed to tackle this source of uncertainty. While such models are effective in some practical ap-plications, most existing DROC models are offline and can be overly conservative when data are scarce. Moreover, they cannot be applied to the case when samples are generated episodically. Motivated by the Bayesian SOC framework recently proposed by Shapiro et al. [58], we propose an adaptive DROC model in which the ambiguity set is updated via Bayesian learning from new data. Under some moderate conditions, we derive a tractable risk-averse reformulation, establish consis-tency of the optimal value function and optimal policy for an infinite-horizon SOC and establish a finite-sample posterior credibility guarantee for the policy value induced by the proposed episodic Bayesian DROC model. We also study the stability and statistical robustness of the proposed model with respect to sample perturbations that often arise in data-driven environments. To solve the episodic Bayesian DROC model, we propose a Bellman-operator cutting-plane (BOCP) algorithm that is computationally efficient and provably convergent. Numerical results on an inventory control problem demonstrate the effectiveness, adaptivity, and robust performance of the proposed model and algorithm. 
+
+Key words. Adaptive DROC, Bayesian ambiguity set, consistency, stability and statistical robustness, BOCP algorithm 
+
+# 1 Introduction 
+
+Stochastic optimal control (SOC) provides a principled framework for sequential decision-making under uncertainty, where system dynamics evolve according to stochastic processes. In classical SOC models, the underlying randomness is often assumed to follow a known probability distribution. For instance, a standard infinite-horizon discrete-time SOC problem [6, 26] seeks an optimal policy π (a decision 
+
+> ∗
+
+Email: mwtmwt7@stu.xjtu.edu.cn 
+
+> †
+
+Email: zchen@mail.xjtu.edu.cn 
+
+> ‡
+
+Email: hfxu@se.cuhk.edu.hk 
+
+> §
+
+Email: enlu.zhou@isye.gatech.edu 
+
+1
+
+> arXiv:2604.06936v2 [math.OC] 9 Apr 2026
+
+rule mapping states to actions) over the feasible policy set Π that minimizes the expected long-term discounted cost: min  
+
+> π∈Π
+
+EπP c
+
+" ∞X
+
+> t=1
+
+γt−1C(st, a t, ξ t)
+
+#
+
+, (1.1) where the expectation is taken with respect to the known joint distribution of the random variables involved [4]. Here, st ∈ S ⊆ Rm and at ∈ A ⊆ Rn denote the system state and action at time t,respectively, S and A are nonempty closed sets. The cost function C : S × A × Ξ → R represents the immediate cost, with γ ∈ [0 , 1) being the discount factor. The randomness is modeled by an independent and identically distributed (i.i.d.) sequence {ξt}t≥1 of random vectors with support set Ξ ⊆ Rk and probability distribution P c ∈ P(Ξ), where P(Ξ) denotes the set of all Borel probability measures on (Ξ , B(Ξ)). The dynamics follow st+1 = g(st, a t, ξ t), where g : S × A × Ξ → S is the transition function. The SOC model has been extensively applied across various domains [6]. The formulation (1.1) fits within the framework of dynamic stochastic programming by treating the state-action pair ( st, a t) as the decision, exemplified in inventory management [57] and hydrothermal planning [19]. Moreover, g
+
+together with the distribution of ξt induces the transition kernel of a Markov decision process (MDP) [37]. For a detailed discussion on the connections between SOC and MDP frameworks, readers may refer to Chapter 3.5 of [50]. It is well known [6, 65] that the optimal value function V ∗ : S → R and the optimal policy π∗ for (1.1) can be derived by the Bellman equation: 
+
+V ∗(s) = inf  
+
+> a∈A
+
+EP c [C(s, a, ξ ) + γV ∗(g(s, a, ξ ))] . (1.2) However, in some practical applications, particularly data-driven problems, the true distribution P c is unknown and consequently solving (1.2) directly is infeasible. This introduces an additional layer of uncertainty beyond the intrinsic randomness of ξ; see, e.g., [64, 40] and the references therein. Such uncertainty about P c is referred to as epistemic (Knightian) uncertainty [14], which may arise from incomplete information about P c due to limited, noisy, or contaminated observations. In contrast, the irreducible randomness in the system represented by ξ, even when P c is known, is termed aleatoric uncertainty . The distributional uncertainty prevents exact evaluation of the expectation in (1.2) and motivates data-driven approximations and robust control strategies. A common approach approximates the unknown distribution by a nominal distribution ˆP E  
+
+> N1
+
+derived via methods such as Monte Carlo sampling [12, 25] (also known as sample average approximation (SAA) in stochastic programming), leading to the empirical Bellman equation: 
+
+V E 
+
+> N
+
+(s) = inf  
+
+> a∈A
+
+E ˆP E
+
+> N
+
+[C(s, a, ξ ) + γV E 
+
+> N
+
+(g(s, a, ξ ))] , (1.3) where V E 
+
+> N
+
+denotes the associated value function. Although convergence results for (1.3) are well estab-lished in [25], the empirical approach can be sensitive to data scarcity and model misspecification, which may yield policies that perform poorly in the true environment. To mitigate approximation errors due to limited sample size, distributionally robust optimization (DRO) has subsequently been integrated into the SOC framework. By constructing an ambiguity set P ⊆ P(Ξ) around the empirical distri-bution, distributionally robust optimal control (DROC) optimizes against the worst-case distribution within P [69, 71]. The DROC problem yields the distributionally robust Bellman equation: 
+
+V DRO (s) = inf  
+
+> a∈A
+
+sup  
+
+> P∈P
+
+EP [C(s, a, ξ ) + γV DRO (g(s, a, ξ ))] , (1.4) where V DRO denotes the corresponding value function. Various constructions of P have been explored, including moment-based sets [13, 63] and Wasserstein distance-based sets [31, 24, 60] for linear-quadratic control, and total variation distance-based sets [61] for infinite-horizon average cost control. By duality principles, many distributionally robust formulations admit equivalent or closely related risk-averse     
+
+> 1We use the subscript Nto indicate that the variable is constructed from the sample set with Nobservations.
+
+2interpretations [19, 57]. Despite their robustness, many existing DROC models are calibrated from offline data and may not adapt efficiently to newly observed samples [58]. Another important research direction for addressing distributional uncertainty is Bayesian adaptive control [44, 59], which integrates learning of the unknown dynamics with policy optimization by con-tinuously updating distribution estimates from observed data via Bayesian inference. Such approaches typically assume that P c belongs to a parametric family {Pθ : θ ∈ Θ} with parameter space Θ ⊆ Rd.That is, there exists an unknown parameter θc ∈ Θ such that P c ≡ Pθc . One starts from a prior distri-bution μ0 based on the available information and then updates it at each episode using newly observed data. The resulting posterior distribution μN quantifies the epistemic uncertainty and can be viewed as a belief (information) state, augmenting the physical state to form an extended state space. Dynamic programming techniques applied to this augmented state space yield policies that treat distributional uncertainty as a partially observed state [37, 52]. Further, a unified framework for SOC models based on the Bayesian composite risk approach was proposed in [40]. Nevertheless, such approaches often become computationally intractable due to the infinite-dimensional nature of the belief state. Recently, Shapiro et al. [58] proposed an adaptive episodic approximation that focuses on the Bayesian average counterpart of (1.2) with respect to the posterior μN :
+
+V B 
+
+> N
+
+(s) = inf  
+
+> a∈A
+
+EμN EPθ [C(s, a, ξ ) + γV B 
+
+> N
+
+(g(s, a, ξ ))] , (1.5) where V B 
+
+> N
+
+denotes the value function associated with (1.5). Despite its adaptivity, this method can reduce to a point-estimation-based technique in some cases. For instance, when the parametric family depends affinely on θ (e.g., finite mixture family [39]), the value function induced by (1.5) coincides with that of (1.3) with the nominal distribution chosen as ˆP E 
+
+> N
+
+:= PˆθN , where ˆθN = EμN [θ] is the posterior mean [10]. Consequently, this method may inherit part of the sensitivity to data variability exhibited by the empirical method (1.3). Moreover, when prior structural knowledge is limited, reliance on a specific low-dimensional family may increase the risk of model misspecification in practice, especially when the underlying data exhibit features such as multimodality, skewness, or heavy tails [68]. Such features may induce persistent model misspecification even with large datasets. More broadly, vulnerability to imperfect data is a generic issue in data-driven optimal control. In practice, data-driven SOC and DROC models depend critically on finite historical data and may be affected by poor data quality, limited sample sizes, data contamination, or adversarial perturbations [70, 49]. Such effects can distort the estimated uncertainty model and, in turn, compromise the robustness and stability of the resulting policies. While related questions have been extensively studied in static DRO problems [32], their dynamic counterparts in DROC remain relatively underexplored, especially from the perspectives of quantitative stability and statistical robustness. These considerations motivate two complementary lines of analysis: (i) developing an episodic, data-adaptive DROC formulation to handle epistemic uncertainty; and (ii) establishing stability and statistical robustness under data perturbations and contamination. To this end, we propose an episodic Bayesian DROC framework and study the associated Bellman equation: 
+
+VN (s) = inf  
+
+> a∈A
+
+sup  
+
+> P∈P μN
+
+EP [C(s, a, ξ ) + γV N (g(s, a, ξ ))] , (1.6) where VN denotes the associated value function and PμN is a Bayesian ambiguity set induced by the posterior μN , which is updated using newly observed data after each episode. Unlike standard DROC with a fixed ambiguity set, our formulation combines the robustness of (1.4) with the Bayesian adaptivity of (1.5), thereby quantifying and mitigating epistemic uncertainty through adaptive posterior learning while preserving distributional robustness. To make (1.6) operational and theoretically well-founded, we focus on the following key questions: (a) how to explicitly construct the ambiguity set PμN and derive a tractable reformulation of (1.6); (b) whether the induced Bellman operator admits a unique fixed point and the corresponding optimal value function is well-defined; (c) how the resulting value function and the associated optimal policy respond statistically to changes in the observations; and (d) how to efficiently compute the optimal value function and policy, particularly in the multi-episode setting where the ambiguity set is repeatedly updated. The main contributions of this study include: 3• Modeling framework. We introduce an adaptive Bayesian DROC model where the ambiguity set is updated episodically. An important feature of the model is that the center of the ambiguity set is updated via Bayes’ rule using the samples observed in each episode and its radius is calibrated via a (1 − α)-credible region (Proposition 1, Remark 1). The Bayesian DROC model reduces to a Bayesian SOC model when α = 1 (Remark 2). Unlike traditional Bayesian models, which typically assume that the true distribution belongs to or can be well approximated by a parametric family, we consider instead the case where the true distribution has a known finite support set but an unknown probability vector, which is learned from data. This makes the proposed model applicable to arbitrary finite-support distributions without imposing specific shape restrictions such as unimodality, symmetry, or light tails. The framework can also be extended to settings where the true distribution is continuous, by first discretizing it and then applying the proposed method to obtain an approximate solution. Finally, the box-type ambiguity set yields an explicit mean-risk reformulation of the worst-case expectation (Theorem 1) as a convex combination of an expectation term and a CVaR term under suitable reference measures. This yields a coherent risk-measure interpretation of the induced Bellman operator and clarifies how robustness against epistemic uncertainty translates into risk aversion in the SOC objective. 
+
+• Theoretical analysis. We conduct theoretical analysis from three perspectives: episodic asymp-totic convergence analysis of the ambiguity set and the resulting robust value function as the number of episodes N tends to infinity (Theorems 2 and 3); quantitative stability analysis of the value function and optimal policies with respect to perturbations in the ambiguity set (Theorems 5 and 6); and statistical robustness analysis of the statistical estimators of the value function under potential contamination of sample data (Theorem 7). Unlike standard analysis in the MDP/SOC literature under the sup-norm [58], all analyses are performed under a weighted supremum norm to accommodate potentially unbounded costs. The episodic convergence analysis addresses not only the consistency of the value function but also establishes a finite-sample posterior credibility guarantee for the associated policy value (Theorem 4), i.e., the robust value function obtained by solving (1.6) serves as a posterior-credible upper bound on the true value of the correspond-ing policy at a prescribed credibility level. Notably, a (1 − α) posterior credible ambiguity set calibrated from the one-step model already yields the same (1 − α) posterior guarantee for the infinite-horizon discounted problem, with no horizon-dependent adjustment. The quantitative stability analysis yields explicit bounds on the value function in terms of perturbations in the ambiguity set. Finally, the statistical robustness analysis quantifies the impact of contaminated samples on the induced distribution of the estimated value function. 
+
+• Solution method. We develop a Bellman-operator cutting-plane (BOCP) algorithm for the infinite-horizon Bayesian DROC problem and establish a monotonicity property (Lemma 10) and uniform convergence on compact state spaces (Theorem 8). The proposed method iteratively refines the value-function approximation via a sequence of cutting-plane updates to the Bellman operator. To further reduce computational cost in the multi-episode setting, we develop a provably safe warm-start mechanism that reuses cutting planes across posterior updates via an explicit va-lidity test (Proposition 4). We validate the approach on an inventory control problem, illustrating its convergence, robustness properties, and adaptivity across episodes. The rest of the paper is structured as follows. Section 2 introduces the episodic Bayesian DROC model with posterior-driven box-type ambiguity sets via Bayesian adaptive learning. We also derive an equivalent mean-risk reformulation of the resulting Bellman operator. Section 3 establishes the asymptotic convergence of the episodic Bayesian DROC value functions and optimal policies to their true counterparts as the number of episodes grows, and also presents a finite-sample posterior credibility guarantee for the associated policy value based on posterior credible ambiguity sets. Section 4 studies stability and statistical robustness of the proposed model under data perturbations and contamination. Section 5 develops a computational method based on a Bellman-operator cutting-plane (BOCP) scheme. Section 6 reports numerical results for the episodic Bayesian DROC model, illustrating the effectiveness and applicability. 4Throughout the paper, we use the following notation. For a metric space ( X, dl ), we write dl (x, S )for the distance from a point x ∈ X to a set S ⊆ X, D (S1, S 2; dl ) for the excess of a set S1 ⊆ X over another set S2 ⊆ X associated with distance dl , i.e., 
+
+D (S1, S 2; dl ) = sup 
+
+> x∈S1
+
+dl (x, S 2) = sup 
+
+> x∈S1
+
+inf 
+
+> y∈S2
+
+dl (x, y )and H (S1, S 2; dl ) for the Hausdorff distance between the two nonempty compact sets, that is, 
+
+H (S1, S 2; dl ) = max {D (S1, S 2; dl ) , D (S2, S 1; dl )} .
+
+# 2 Episodic Bayesian DROC Model 
+
+In this section, we present the episodic Bayesian DROC framework (1.6), construct a Bayesian ambiguity set based on a posterior credible region, and establish a mean-risk reformulation that connects the episodic Bayesian DROC objective to a risk-averse SOC formulation. Since many practical MDP/SOC implementations rely on finite or discretized representations of uncertainty [65], we adopt a finite support set for the associated random vectors (see, e.g., [8, 45]). Motivated by this and for clarity of exposition, we make the following basic assumption. 
+
+Assumption 1. Assume that Ξ := {ξ1, . . . , ξ J } ⊆ Rk is a finite, known support set with J ∈ N+.
+
+Under Assumption 1, each distribution P ∈ P(Ξ) can be represented by the probability vector (pj )Jj=1 := ( p1, . . . , p J ) with pj = P (ξ = ξj ) for j = 1 , . . . , J . With a slight abuse of notation for brevity, we use P to denote both the distribution and its probability vector, as they are in one-to-one correspondence. Hence, under this identification, we may write P(Ξ) := {P ∈ [0 , 1] J : PJj=1 pj = 1 }.When Bayesian learning is considered, we treat the unknown distribution as a random probability vector P ∈ P(Ξ) with a posterior distribution, which we will introduce in the next subsection. To address the uncertainty in the true distribution P c, we adopt an ambiguity set centered at a reference distribution. This approach is consistent with widely used DRO formulations for discrete distributions, which construct ambiguity sets around a reference distribution using distances such as L1, L∞ norms [29, 27], χ2-divergence [47], Burg entropy [66], and total variation distance [51]. Specifically, following [41], we consider the box-type ambiguity set 
+
+P =
+
+n
+
+P ∈ P(Ξ) : ˆP l ≤ P ≤ ˆP uo
+
+, (2.1) where ˆP l = ˆP − ˆr and ˆP u = ˆP + ˆ r denote the componentwise lower and upper bounds associated with a reference distribution ˆP = (ˆ pj )Jj=1 := (ˆ p1, . . . , ˆpJ ) and tolerance vector ˆ r = (ˆ rj )Jj=1 := (ˆ r1, . . . , ˆrJ ). Notably, when ˆ r1 = . . . = ˆ rJ , the box-type ambiguity set (2.1) reduces to an L∞ norm set. In what follows, we show how to construct and update the ambiguity set PμN of the form (2.1) using the posterior 
+
+μN .Assumption 1 plays a critical role in both the formulation of the episodic Bayesian DROC model and the subsequent analysis. When ξ is continuously distributed, one common approach is to discretize it using optimal quantization [46]. This involves partitioning the support set Ξ into mutually exclusive regions via Voronoi tessellation [33], and then using the corresponding cell centers as support points for a discrete approximation. Under suitable conditions, it is possible to derive bounds on the resulting approximation errors; see [20] for results pertaining to one-stage stochastic programs. It should be noted that this approach is generally applicable only when the support set is bounded 2. A comprehensive investigation of these discretization techniques and the associated error analysis is beyond the scope of this paper and is left for future research. 
+
+> 2In cases where the support set is unbounded, one may truncate the tails under suitable tightness conditions.
+
+52.1 Episodic Bayesian ambiguity sets 
+
+We now proceed to discuss the construction of an adaptive reference distribution and the corresponding tolerance within the ambiguity set (2.1), guided by Bayesian learning principles. From a Bayesian viewpoint, the unknown P c is treated as a random distribution, initially characterized by a prior distribution μ0 in the absence of new observations. The prior reflects initial beliefs about P c. Here, we adopt the conjugate Dirichlet distribution as the prior. In the absence of prior information, different kinds of noninformative priors (see [18]) can be used as special cases of the Dirichlet distribution. Under this setting, the unknown P c has the prior density μ0(P ) = B(τ0)−1 QJj=1 pτj, 0−1 
+
+> j
+
+. Here, we set 
+
+τj, 0 > 1 for j = 1 , . . . , J with B(τ0) serving as a normalizing constant. Upon observing a data sequence ⃗
+
+ˆξN := ( ˆξ1, . . . , ˆξN ), beliefs about P c are updated episodically, resulting in the posterior distribution 
+
+μN (P ). We assume that the observations are drawn i.i.d. from the true P c. Under Bayesian inference, 
+
+μN also evolves as a Dirichlet distribution with updated parameters τN := ( τj,N )Jj=1 , defined by 
+
+τj,N = τj, 0 +
+
+> N
+
+X
+
+> i=1
+
+1{ ˆξi=ξj }, (2.2) where 1{ ˆξi=ξj } equals 1 if ˆξi = ξj and 0 otherwise. Explicitly, the update of the posterior distribution is as follows: 
+
+μN (P ) := μ(P |⃗ ˆξN ) = B(τN )−1
+
+> J
+
+Y
+
+> j=1
+
+pτj,N −1 
+
+> j
+
+. (2.3) This posterior μN reflects the epistemic uncertainty about P c given the cumulative data ⃗ ˆξN . Based on this posterior belief μN , we seek to construct an adaptive ambiguity set PμN in the form of (2.1) with a prescribed posterior credibility. Specifically, following the standard Bayesian credible regions discussed in [3, 18], given the dataset ⃗ ˆξN and a credible level α ∈ (0 , 1), we say that a posterior-based set PμN is a (1 − α)-posterior credible region for P c if 
+
+PμN (P c ∈ P μN ) ≥ 1 − α, 
+
+where PμN denotes the posterior probability measure induced by μN .It is important to distinguish a posterior credible region in the Bayesian setting from a classical confidence region in the frequentist setting. A confidence region evaluates the long-run coverage of a random set under repeated sampling, with P c treated as fixed but unknown. In our framework, however, the ambiguity set is updated sequentially as new data are accumulated across episodes. Accordingly, the relevant probabilistic notion here is posterior credibility conditional on the observed data, rather than repeated-sampling coverage. While the data-generating distribution P c remains fixed but unknown, our uncertainty about it after observing ⃗ ˆξN is represented by the posterior distribution μN . For this reason, we formulate the ambiguity set through posterior credibility rather than frequentist confidence. For broader discussions on the differences and trade-offs between frequentist and Bayesian approaches, we refer the reader to [15, 22]. This posterior-credibility-based perspective has been widely used in constructing ambiguity sets for DRO; see, e.g., [11, 35, 36]. Following this line of literature, the next proposition provides a concrete construction of such an ambiguity set under our setting. The proposed construction is computationally convenient and will be crucial to the mean-risk reformulation in Theorem 1. It is motivated by tractable coordinate-wise bounds used in [34, 43], together with a local normal approximation of the posterior around the posterior mode. To obtain a joint credibility level 1 − α across all J coordinates, we apply a Bonferroni correction with α′ = α/J .
+
+Proposition 1 (Approximate posterior credible region) . Fix α ∈ (0 , 1) and let α′ = α/J . For j =1, . . . , J , define 
+
+ˆpj,N = τj,N − 1
+
+PJk=1 τk,N − J , ˆrj,N := z1− α′
+
+> 2
+
+s
+
+ˆpj,N (1 − ˆpj,N )
+
+PJk=1 τk,N − J , (2.4) 6where τj,N are the posterior parameters in (2.2) and z1− α′
+
+> 2
+
+is the (1 − α′/2) -quantile of the standard normal distribution. Consider the box-type ambiguity set 
+
+PμN = P( ˆPN , ˆrN ) := 
+
+n
+
+P ∈ P(Ξ) : ˆ pj,N − ˆrj,N ≤ pj ≤ ˆpj,N + ˆ rj,N , j = 1 , . . . , J 
+
+o
+
+. (2.5) 
+
+Then PμN is an approximate (1 − α) posterior credible region for P c. That is, 
+
+PμN (P c ∈ P( ˆPN , ˆrN )) ≥ 1 − α + o(1) , (2.6) 
+
+where o(1) denotes a quantity that vanishes as N → ∞ .
+
+Remark 1. Let ˆP0 = ( τj, 0−1  
+
+> PJk=1 τk, 0−J
+
+)Jj=1 denote the prior-only reference distribution (Dirichlet mode) and ˆP E 
+
+> N
+
+:= (     
+
+> PNi=1 1{ˆξi=ξj}
+> N
+
+)Jj=1 the data-only empirical distribution. Then the reference distribution ˆPN
+
+proposed in Proposition 1, as the center of the Bayesian ambiguity set, admits the convex decomposition: 
+
+ˆPN = ωN ˆP0 + (1 − ωN ) ˆP E 
+
+> N
+
+,
+
+where ωN =    
+
+> PJk=1 τk, 0−J
+> PJk=1 τk,N −J
+
+and ωN ↓ 0 as N → ∞ . This representation makes explicit that ˆPN is a Bayesian adjusted estimator that blends the decision-maker’s prior τ0 with the data ⃗ ˆξN , and that the influence of the prior decays as more data are accumulated. Prior beliefs can be elicited from historical data, expert judgment or domain knowledge, allowing the ambiguity set to reflect credible information beyond the sample. Compared with purely data-driven approaches, such adaptability of the proposed Bayesian ambiguity set helps improve robustness by incorporating prior information in addition to sample frequencies. 
+
+Remark 2 (Connection to episodic Bayesian SOC) . Under Assumption 1, the mapping P 7 → EP [Z(ξ)] 
+
+is affine in the probability vector P for any integrable function Z(ξ). Thus, the Bayesian-average objective satisfies 
+
+EμN EP [C(s, a, ξ ) + γV N (g(s, a, ξ ))] = E ¯PN [C(s, a, ξ ) + γV N (g(s, a, ξ ))] ,
+
+where ¯PN := EμN [P ] = 
+
+ τj,N  
+
+> PJk=1 τk,N
+
+Jj=1 
+
+is the Dirichlet posterior mean (which also coincides with the posterior predictive distribution of ξ [18]). Moreover, if we choose the center of the ambiguity set as 
+
+¯PN and let the credibility level degenerate by setting α = 1 (i.e., 1 − α = 0 ), then one may take the corresponding posterior credible region to be the singleton set { ¯PN }, namely, the box radius collapses to 
+
+0. In this degenerate case, the distributionally robust Bellman equation (1.6) reduces to 
+
+VN (s) = inf  
+
+> a∈A
+
+E ¯PN
+
+C(s, a, ξ ) + γV N
+
+ g(s, a, ξ ) ,
+
+which coincides with the episodic Bayesian Bellman equation (1.5) in [58]. Furthermore, the center 
+
+ˆPN is the Dirichlet posterior mode under parameters τN , but it can also be interpreted as the Dirichlet posterior mean under shifted parameters (τN − 1) :
+
+ˆpj,N = τj,N − 1
+
+PJk=1 τk,N − J = ˜τj,N 
+
+PJk=1 ˜τk,N 
+
+, ˜τj,N := τj,N − 1.
+
+Therefore, the episodic Bayesian SOC model in [58] with prior ˜τ0 = τ0 − 1 coincides with our episodic Bayesian DROC model with prior τ0 in the degenerate case α = 1 .
+
+The following result illustrates that as the number of episodes N grows, the Bayesian posterior of P
+
+becomes increasingly concentrated around P c. Let ∥ · ∥ denote the Euclidean norm. The convergence is in the almost surely (a.s.) sense with respect to the data-generating distribution, i.e., for almost every sequence { ˆξ1, ˆξ2, . . . }.7Lemma 1 (Bayesian consistency) . The reference distribution ˆPN a.s. converges to P c. Furthermore, for any ϵ > 0,
+
+lim  
+
+> N→∞
+
+Z  
+
+> ∥P−Pc∥≤ ϵ
+
+μ(P |⃗ ˆξN )dP = 1 , a.s. (2.7) 
+
+Proof. The first part of the claim follows from the law of large numbers, that is,     
+
+> PNi=1 1{ˆξi=ξj}
+> N
+
+→ pcj as 
+
+N → ∞ almost surely for all j = 1 , . . . , J . Thus ˆ pj,N → pcj and ˆPN → P c almost surely. For the second part, let ¯PN := EμN [P ] and Σ N := Cov μN (P ). By Chebyshev’s inequality, 
+
+Z  
+
+> ∥P−Pc∥≤ ϵ
+
+μ(P |⃗ ˆξN )dP ≥ 1 − tr(Σ N ) + ∥ ¯PN − P c∥2
+
+ϵ2 . (2.8) According to the Dirichlet posterior (2.3), we have ¯pj,N = τj, 0 + PNi=1 1{ ˆξi=ξj }
+
+PJk=1 τk, 0 + N , tr(Σ N ) = 
+
+> J
+
+X
+
+> j=1
+
+(τj, 0 + PNi=1 1{ ˆξi=ξj })( PJk=1 τk, 0 + N − τj, 0 − PNi=1 1{ ˆξi=ξj })(PJk=1 τk, 0 + N )2(PJk=1 τk, 0 + N + 1) .
+
+Consequently, by the law of large numbers, it follows that tr(Σ N ) → 0 and ¯ pj,N → pcj almost surely as 
+
+N → ∞ . These facts and (2.8) ensure the posterior consistency as stated in (2.7). Lemma 1 establishes posterior consistency and the convergence of the Bayesian reference distribution ˆPN to P c. Since the ambiguity set is defined as a box around ˆPN with ˆ rN , we then consider the convergence for the ambiguity set PμN = P( ˆPN , ˆrN ). To this end, we use the Hausdorff metric to measure the distance between compact subsets of the probability simplex. 
+
+Lemma 2 (Hausdorff Lipschitz continuity of Bayesian ambiguity sets) . Let U := {(P, r ) ∈ P(Ξ) ×RJ 
+
+> +
+
+:
+
+P(P, r )̸ = ∅} . Then for any ( ˆPN , ˆrN ), ( ˆP ′ 
+
+> N
+
+, ˆr′ 
+
+> N
+
+) ∈ U ,
+
+H
+
+
+
+P( ˆPN , ˆrN ), P( ˆP ′ 
+
+> N
+
+, ˆr′ 
+
+> N
+
+); ∥ · ∥ ∞
+
+
+
+≤ ∥ ˆPN − ˆP ′ 
+
+> N
+
+∥∞ + ∥ˆrN − ˆr′ 
+
+> N
+
+∥∞. (2.9) 
+
+In particular, under the Bayesian construction in Proposition 1, 
+
+H
+
+
+
+P( ˆPN , ˆrN ), P(P c, 0); ∥ · ∥ ∞
+
+
+
+→ 0 a.s. Proof. Let s(y, C ) denote the support function of a compact set C. By H¨ ormander formula (see e.g., Theorem II. 18 of [9]), 
+
+H
+
+
+
+P( ˆPN , ˆrN ), P( ˆP ′ 
+
+> N
+
+, ˆr′ 
+
+> N
+
+); ∥ · ∥ ∞
+
+
+
+= sup 
+
+> ∥y∥1≤1
+
+s(y, P( ˆPN , ˆrN )) − s(y, P( ˆP ′ 
+
+> N
+
+, ˆr′ 
+
+> N
+
+)) .
+
+Thus 
+
+H
+
+
+
+P( ˆPN , ˆrN ), P( ˆP ′ 
+
+> N
+
+, ˆr′ 
+
+> N
+
+); ∥ · ∥ ∞
+
+
+
+≤ H
+
+
+
+P( ˆPN , ˆrN ), P( ˆPN , ˆr′ 
+
+> N
+
+); ∥ · ∥ ∞
+
+
+
++ H
+
+
+
+P( ˆPN , ˆr′ 
+
+> N
+
+), P( ˆP ′ 
+
+> N
+
+, ˆr′ 
+
+> N
+
+); ∥ · ∥ ∞
+
+
+
+≤ ∥ˆrN − ˆr′ 
+
+> N
+
+∥∞ + sup 
+
+> ∥y∥1≤1
+
+s(y, P( ˆPN , ˆr′ 
+
+> N
+
+)) − s(y, P( ˆP ′ 
+
+> N
+
+, ˆr′ 
+
+> N
+
+)) 
+
+= ∥ˆrN − ˆr′ 
+
+> N
+
+∥∞ + sup 
+
+> ∥y∥1≤1
+
+yT ( ˆPN − ˆP ′ 
+
+> N
+
+)
+
+≤ ∥ˆrN − ˆr′ 
+
+> N
+
+∥∞ + ∥ ˆPN − ˆP ′ 
+
+> N
+
+∥∞.
+
+Finally, the convergence follows from Lemma 1 since ( ˆPN , ˆrN ) → (P c, 0) almost surely as N → ∞ .In light of the Bayesian credible region and Lemmas 1 and 2, as episode N tends to infinity, PμN =
+
+P( ˆPN , ˆrN ) almost surely converges to the singleton P(P c, 0) = {P c}. This shows that Bayesian learning dynamically shrinks the ambiguity set to the true distribution as data accumulate. 8Remark 3. In the preceding discussion, ˆPN and ˆrN denote the reference distribution and tolerance radius of the Bayesian ambiguity set constructed from the sample set ⃗ ˆξN . To clarify the functional dependence on the empirical data, we write ˆPN and ˆrN as functions of ˆP E 
+
+> N
+
+as follows: 
+
+ˆpj,N ( ˆP E 
+
+> N
+
+) := τj, 0 − 1 + N ˆpE
+
+> j,N
+
+PJk=1 τk, 0 − J + N , ˆrj,N ( ˆP E 
+
+> N
+
+) := z1− α′
+
+> 2
+
+s
+
+ˆpj,N ( ˆP E 
+
+> N
+
+)(1 − ˆpj,N ( ˆP E 
+
+> N
+
+)) 
+
+PJk=1 τk, 0 − J + N .
+
+This representation reveals that ˆPN is an affine function of ˆP E 
+
+> N
+
+(also shown in Remark 1) and ˆrN is continuous in ˆP E 
+
+> N
+
+. Let ΦN ( ˆP E 
+
+> N
+
+) := P( ˆPN ( ˆP E 
+
+> N
+
+), ˆrN ( ˆP E 
+
+> N
+
+)) . Then Lemma 2 implies that ΦN is Hausdorff continuous with respect to the ∥ · ∥ ∞ metric. Hence the ambiguity set PμN depends continuously on the empirical distribution of the observed data ⃗ ˆξN .
+
+## 2.2 Bellman equation and reformulation 
+
+With the ambiguity set defined as in (2.5), we can write the episodic Bayesian DROC Bellman equation (1.6) as 
+
+VN (s) = inf  
+
+> a∈A
+
+sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP [C(s, a, ξ ) + γV N (g(s, a, ξ ))] . (2.10) Let ˆV ∗ 
+
+> N
+
+denote the value function satisfying (2.10). The corresponding optimal policy can then be defined as: ˆπ∗ 
+
+> N
+
+(s) ∈ arg inf  
+
+> a∈A
+
+sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP [C(s, a, ξ ) + γ ˆV ∗ 
+
+> N
+
+(g(s, a, ξ ))] . (2.11) The next theorem states that the distributionally robust counterpart (2.10) can be equivalently refor-mulated as a mean-risk Bellman equation within the SOC framework. Specifically, we show that the reformulation takes the form of a convex combination of the expected cost and the Conditional Value at Risk (CVaR) of the cost. This result provides a risk-averse interpretation of the robust control formulation under the Bayesian ambiguity set (2.5). 
+
+Theorem 1. Let P lN and P u−lN represent the probability measures induced by the lower and upper bounds 
+
+ˆP lN = max {0, ˆPN − ˆrN } and ˆP uN = min {1, ˆPN + ˆ rN } with respect to ˆPN and ˆrN as 
+
+plj,N ≡ P lN (ξ = ξj ) = ˆplj,N 
+
+L , p u−lj,N ≡ P u−lN (ξ = ξj ) = ˆpuj,N − ˆplj,N 
+
+U − L
+
+for j = 1 , . . . , J , where L = PJk=1 ˆplk,N ∈ (0 , 1) and U = PJk=1 ˆpuk,N > 1. Then, for any s ∈ S and 
+
+a ∈ A ,
+
+sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP [C(s, a, ξ ) + γV N (g(s, a, ξ ))] = LEP lN [C(s, a, ξ ) + γV N (g(s, a, ξ ))] + (1 − L)CVaR (U−1) /(U−L) 
+
+> Pu−lN
+
+[C(s, a, ξ ) + γV N (g(s, a, ξ ))] .
+
+Proof. The result is similar to [29, Theorem 5] with L∞ norm ambiguity sets. For completeness, we provide a proof for the more general box-type ambiguity set considered here. Without loss of generality, by relabeling the support points if necessary, we may assume that 
+
+C(s, a, ξ i) + γV N (g(s, a, ξ i)) ≤ C (s, a, ξ j ) + γV N (g(s, a, ξ j )) for all i ≤ j and i, j ∈ { 1, . . . , J }.
+
+Due to the finiteness of the support set, sup P ∈P( ˆPN ,ˆrN ) EP [C(s, a, ξ ) + γV N (g(s, a, ξ ))] is equal to the optimal value of the following optimization problem: sup  
+
+> P∈RJ
+> J
+
+X
+
+> j=1
+
+pj h(ξj )s.t. 
+
+> J
+
+X
+
+> j=1
+
+pj = 1 , ˆplj,N ≤ pj ≤ ˆpuj,N , j = 1 , . . . , J, 
+
+(2.12) 9where h(ξj ) := C(s, a, ξ j ) + γV N (g(s, a, ξ j )), and P ∈ P( ˆPN , ˆrN ) is described by the constraints in (2.12). The Lagrangian dual problem corresponding to problem (2.12) is inf 
+
+> du,d l≥0,d 0
+
+sup  
+
+> P∈RJ
+> J
+
+X
+
+> j=1
+
+h(ξj )pj +
+
+> J
+
+X
+
+> j=1
+
+duj (ˆ puj,N − pj ) + 
+
+> J
+
+X
+
+> j=1
+
+dlj (pj − ˆplj,N ) + d0
+
+1 −
+
+> J
+
+X
+
+> j=1
+
+pj
+
+ ,
+
+where du ≥ 0, dl ≥ 0 and d0 are the dual variables corresponding to the upper and lower bounded constraints and the equality constraint, respectively. Thus we have inf 
+
+> du,d l≥0,d 0
+
+sup  
+
+> P∈RJ
+> J
+
+X
+
+> j=1
+
+h(ξj )pj +
+
+> J
+
+X
+
+> j=1
+
+duj (ˆ puj,N − pj ) + 
+
+> J
+
+X
+
+> j=1
+
+dlj (pj − ˆplj,N ) + d0
+
+1 −
+
+> J
+
+X
+
+> j=1
+
+pj
+
+
+
+= inf 
+
+> du,d l≥0,d 0
+
+d0 +
+
+> J
+
+X
+
+> j=1
+
+(duj ˆpuj,N − dlj ˆplj,N ) + 
+
+> J
+
+X
+
+> j=1
+
+sup  
+
+> pj∈R
+
+ h(ξj ) + dlj − duj − d0 pj
+
+= inf 
+
+> du,d l≥0,d 0
+
+d0 +
+
+> J
+
+X
+
+> j=1
+
+(duj ˆpuj,N − dlj ˆplj,N )s.t. h(ξj ) + dlj − duj − d0 = 0 , j = 1 , . . . , J 
+
+= inf  
+
+> d0
+
+d0 +
+
+> J
+
+X
+
+> j=1
+
+inf   
+
+> duj,d lj≥0
+
+duj ˆpuj,N − dlj ˆplj,N 
+
+s.t. h(ξj ) + dlj − duj − d0 = 0 , j = 1 , . . . , J 
+
+= inf  
+
+> d0
+
+d0 +
+
+> j∗
+
+X
+
+> j=1
+
+(h(ξj ) − d0)ˆ plj,N +
+
+> J
+
+X
+
+> j=j∗+1
+
+(h(ξj ) − d0)ˆ puj,N 
+
+= inf  
+
+> d0
+
+d0 +
+
+> J
+
+X
+
+> j=1
+
+(h(ξj ) − d0)ˆ plj,N +
+
+> J
+
+X
+
+> j=j∗+1
+
+(h(ξj ) − d0)(ˆ puj,N − ˆplj,N )=LEP lN [h(ξ)] + (1 − L) inf 
+
+> d0
+
+
+
+d0 + U − L
+
+1 − L EP u−lN
+
+(h(ξ) − d0)+
+
+=LEP lN [h(ξ)] + (1 − L)CVaR (U−1) /(U−L) 
+
+> Pu−lN
+
+[h(ξ)] ,
+
+where [ x]+ := max {x, 0}, j∗ := max {j ∈ { 1, . . . , J } : h(ξj ) ≤ d0} if h(ξ1) ≤ d0, and j∗ := 0 otherwise. The last equality follows from the standard minimization representation of CVaR in [54]. Theorem 1 shows that the Bellman equation for episodic Bayesian DROC admits a risk-averse SOC interpretation in terms of a convex combination of an expectation (under P lN ) and CVaR (under P u−lN ). Define the coherent risk measure ρN (·) := λN EP lN [·] + (1 − λN )CVaR υN 
+
+> Pu−lN
+
+[·], where λN = L and 
+
+υN = U−1 
+
+> U−L
+
+. Then the Bayesian distributionally robust Bellman equation (2.10) can be rewritten as 
+
+VN (s) = inf  
+
+> a∈A
+
+sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP [C(s, a, ξ ) + γV N (g(s, a, ξ ))] = inf  
+
+> a∈A
+
+ρN (C(s, a, ξ ) + γV N (g(s, a, ξ ))) . (2.13) Consequently, the corresponding optimal policy (2.11) can also be determined by ˆπ∗ 
+
+> N
+
+(s) ∈ arg inf  
+
+> a∈A
+
+ρN [C(s, a, ξ ) + γ ˆV ∗ 
+
+> N
+
+(g(s, a, ξ ))] . (2.14) With the above reformulation, we now outline the solution approach for episodic Bayesian DROC. We extend the episodic adaptation scheme in [58] to our distributionally robust setting. Since the Bayesian distributionally robust solution serves as an approximation of the true SOC model, we apply 10 the policy ˆ π∗ 
+
+> N
+
+for the next single episode. At the end of the episode, a new realization ˆξN +1 is observed and aggregated into the dataset ⃗ ˆξN +1 = ( ⃗ ˆξN , ˆξN +1 ). This observation updates the posterior distribution to μN +1 , which in turn refines the ambiguity set parameters ˆPN +1 and ˆ rN +1 for the subsequent episode. The policy is then dynamically redetermined by solving the Bellman equation (2.13) with the updated parameters. Repeating this process produces an adaptive policy sequence ˆ π∗ = {ˆπ∗ 
+
+> 1
+
+(·), ˆπ∗ 
+
+> 2
+
+(·), . . . }. At the outset of the initial episode, we assume access to historical data ⃗ ˆξ0. In scenarios where no such data exist, the algorithm instead initializes purely from the noninformative prior distribution. This procedure is summarized in Algorithm 1. 
+
+Algorithm 1 Episodic Bayesian DROC  
+
+> 1:
+
+Input: initial state s0; initial prior distribution μ0(P ) computed using a historical batch of data ⃗ ˆξ0. 
+
+> 2:
+
+for Episode N = 0 , 1, 2, . . . do  
+
+> 3:
+
+Construct the Bayesian ambiguity set (2.5) corresponding to the current belief μN . 
+
+> 4:
+
+Solve the Bellman equation (2.13) to obtain value function ˆV ∗ 
+
+> N
+
+(·) and the corresponding optimal policy ˆ π∗ 
+
+> N
+
+. 
+
+> 5:
+
+Execute action aN := ˆ π∗ 
+
+> N
+
+(sN ) and transition sN +1 = g(sN , a N , ˆξN +1 ).  
+
+> 6:
+
+Observe the new realization ˆξN +1 and update the sample set ⃗ ˆξN +1 = ( ⃗ ˆξN , ˆξN +1 ) and the posterior distribution according to 
+
+μ(P |⃗ ˆξN +1 ) = B(τN +1 )−1
+
+> J
+
+Y
+
+> j=1
+
+pτj,N +1 −1 
+
+> j
+
+, (2.15) where 
+
+τj,N +1 =
+
+(
+
+τj,N if ˆξN +1 ̸ = ξj ,τj,N + 1 if ˆξN +1 = ξj . 
+
+> 7:
+
+Treat the updated posterior μ(P |⃗ ˆξN +1 ) as the new prior μN +1 for the next episode.  
+
+> 8:
+
+end for  
+
+> 9:
+
+return Optimal policy sequence ˆ π∗ = {ˆπ∗ 
+
+> 1
+
+(·), ˆπ∗ 
+
+> 2
+
+(·), . . . }.
+
+Remark 4. We implicitly assume unit-length episodes where each policy implementation corresponds to a single decision step, with each step yielding one observation. However, the framework can be readily extended to longer episodes: for any specified positive integer K, the selected policy remains fixed throughout a K-step episode. During such extended periods, K observations are aggregated to update the posterior distribution, followed by a subsequent resolution of the Bellman equation under the revised uncertainty quantification. 
+
+It is important to note that Algorithm 1 is only a conceptual framework: solving (2.13) exactly in Step 4 is generally intractable, and the procedure is written as an open-ended loop without an explicit stopping criterion. In Section 5, we will propose both a practical algorithm for approximately solving the Bellman equation (2.13) and an associated termination rule. 
+
+# 3 Convergence Analysis 
+
+In this section, we analyze how the sequence of value functions and optimal policies evolves episode by episode. We establish asymptotic convergence as the number of episodes grows and provide finite-sample results for the proposed episodic Bayesian DROC approach, which are essential in practice since real-world datasets are typically finite. 11 3.1 Weighted supremum norm setting for unbounded costs 
+
+The classical contraction analysis for discounted SOC/MDPs is often developed on the space of bounded value functions equipped with the sup-norm ∥ · ∥ ∞. However, when the state space is unbounded and the one-stage cost grows with the state, the optimal value function may fail to be bounded and ∥V ∥∞
+
+can be infinite. To accommodate such unbounded-cost settings, we work in a weighted supremum norm space defined as follows. Let w : S → [1 , ∞) be a continuous weight function and define 
+
+V (S) := 
+
+n
+
+V : S → R ∥V ∥w < ∞
+
+o
+
+, ∥V ∥w := sup 
+
+> s∈S
+
+|V (s)|
+
+w(s) .
+
+Then ( V (S), ∥ · ∥ w) is a Banach space (see, e.g., [5]). When w ≡ 1, ∥ · ∥ w reduces to the standard sup-norm ∥ · ∥ ∞, and the bounded-cost setting is recovered as a special case. We impose the following standard assumption. 
+
+Assumption 2. The action set A is compact. For each ξ ∈ Ξ, C(s, a, ξ ) and g(s, a, ξ ) are continuous in (s, a ). Moreover, there exist constants ¯Cw > 0 and κw ≥ 0 such that for all (s, a, ξ ) ∈ S × A × Ξ,
+
+|C (s, a, ξ )| ≤ ¯Cww(s), (3.1) 
+
+and 
+
+w g(s, a, ξ ) ≤ κww(s). (3.2) 
+
+Finally, the discount factor γ satisfies 
+
+γκ w < 1. (3.3) Assumption 2 is standard for discounted Markov decision processes with unbounded costs under a weighted supremum norm. Condition (3.1) controls the growth of the one-stage cost relative to the weight function w(·), while (3.2) is a (pointwise) drift condition ensuring that the weighted supremum norm remains stable under transitions. Together with (3.3), these conditions imply that the Bellman operators are contractions under ∥ · ∥ w. This weighted supremum norm approach is classical in dynamic programming and Markov control with unbounded rewards/costs; see, e.g., the early development in [67] and the monograph treatments in [26, 5]. 
+
+## 3.2 Asymptotic convergence of value function and optimal policy 
+
+Recall that (2.11) in Section 2.2 assumes the existence of a solution ˆV ∗ 
+
+> N
+
+to the Bellman equation (2.10). However, the underlying rationale has not yet been fully established. In the following, we first demonstrate the existence and uniqueness of ˆV ∗ 
+
+> N
+
+.We define the Bellman operators L, ˆLN , and Lπ : V (S) → V (S) respectively as 
+
+L(V )( s) := inf  
+
+> a∈A
+
+EP c [C(s, a, ξ ) + γV (g(s, a, ξ ))] , ∀V ∈ V (S), (3.4) ˆLN (V )( s) := inf  
+
+> a∈A
+
+ρN [C(s, a, ξ ) + γV (g(s, a, ξ ))] , ∀V ∈ V (S), (3.5) 
+
+Lπ (V )( s) := EP c [C(s, π (s), ξ ) + γV (g(s, π (s), ξ ))] , ∀V ∈ V (S). (3.6) We now show that the above Bellman operators are all contraction mappings in weighted supremum norm ∥ · ∥ w with factor γw := γκ w. For any function h : Ξ → R, define ∥h∥ξ, ∞ := max ξ∈Ξ |h(ξ)|.
+
+Lemma 3 (Contraction of Bellman operators under ∥ · ∥ w). The operators L, ˆLN , and Lπ are γw-contractions under the norm ∥ · ∥ w. That is, for any V, V ′ ∈ V (S),
+
+ˆLN V − ˆLN V ′
+
+> w
+
+≤ γw ∥V − V ′∥w , ∥L π V − L π V ′∥w ≤ γw ∥V − V ′∥w , ∥L V − L V ′∥w ≤ γw ∥V − V ′∥w .
+
+12 Proof. For any given V, V ′ ∈ V (S) and s ∈ S , by definition, 
+
+( ˆLN V )( s) − ( ˆLN V ′)( s) ≤ sup 
+
+> a∈A
+
+ρN
+
+ C(s, a, ξ ) + γV (g(s, a, ξ ))  − ρN
+
+ C(s, a, ξ ) + γV ′(g(s, a, ξ )) 
+
+≤ sup 
+
+> a∈A ,ξ ∈Ξ
+
+γ|V (g(s, a, ξ )) − V ′(g(s, a, ξ )) |.
+
+Here the last inequality comes from the 1-Lipschitz continuity of ρN (·). For each ξ ∈ Ξ, 
+
+|V (g(s, a, ξ )) − V ′(g(s, a, ξ )) | ≤ ∥ V − V ′∥ww(g(s, a, ξ )) ≤ κw∥V − V ′∥ww(s),
+
+where the last inequality follows from (3.2). Hence 
+
+( ˆLN V )( s) − ( ˆLN V ′)( s) ≤ γw∥V − V ′∥ww(s).
+
+Dividing by w(s) and taking supremum over s yields the contraction for ˆLN . The proofs for L and Lπ
+
+are similar with ρN replaced by EP c .Since L, ˆLN and Lπ are γw-contractions, they admit unique fixed points V ∗, ˆV ∗ 
+
+> N
+
+and V π , respectively. 
+
+Lemma 4. Under Assumption 2, for any V ∈ V (S),
+
+∥ ˆLN V ∥w ≤ ¯Cw + γκ w∥V ∥w, ∥L V ∥w ≤ ¯Cw + γκ w∥V ∥w, ∥L π V ∥w ≤ ¯Cw + γκ w∥V ∥w.
+
+In particular, the fixed points satisfy 
+
+∥ ˆV ∗ 
+
+> N
+
+∥w ≤ ¯Cw
+
+1 − γκ w
+
+, ∥V ∗∥w ≤ ¯Cw
+
+1 − γκ w
+
+, ∥V π ∥w ≤ ¯Cw
+
+1 − γκ w
+
+.
+
+Proof. Fix V ∈ V (S) and s ∈ S . By Assumption 2, |C (s, a, ξ )| ≤ ¯Cww(s) and |V (g(s, a, ξ )) | ≤ ∥V ∥ww(g(s, a, ξ )) ≤ κw∥V ∥ww(s). Hence for any a ∈ A ,
+
+|C (s, a, ξ ) + γV (g(s, a, ξ )) | ≤   ¯Cw + γκ w∥V ∥w
+
+w(s).
+
+Since ρN is monotone and positively homogeneous, we obtain 
+
+|( ˆLN V )( s)| ≤ sup 
+
+> a∈A
+
+ρN
+
+ C(s, a, ξ ) + γV (g(s, a, ξ ))  ≤   ¯Cw + γκ w∥V ∥w
+
+w(s),
+
+which implies ∥ ˆLN V ∥w ≤ ¯Cw + γκ w∥V ∥w. Finally, taking V = ˆV ∗ 
+
+> N
+
+and using ˆV ∗ 
+
+> N
+
+= ˆLN ˆV ∗ 
+
+> N
+
+yields 
+
+∥ ˆV ∗ 
+
+> N
+
+∥w ≤ ¯Cw/(1 − γκ w). The bounds for L and Lπ follow similarly with ρN replaced by EP c .Under Assumption 2, since A is compact and C and g are continuous in ( s, a ) for each ξ ∈ Ξ, the Bellman operators preserve continuity; see, e.g., [50, Chapter 6]. We are now ready to present the convergence results of the optimal value function ˆV ∗ 
+
+> N
+
+and policy ˆ π∗ 
+
+> N
+
+.
+
+Theorem 2. Suppose that Assumption 2 holds. Then the unique value function ˆV ∗ 
+
+> N
+
+of the episodic Bayesian DROC Bellman equation converges to the true optimal value function V ∗ in the weighted supremum norm: 
+
+lim   
+
+> N→∞
+
+∥ ˆV ∗ 
+
+> N
+
+− V ∗∥w = 0 , a.s. 
+
+Proof. Using the fixed point identities ˆV ∗ 
+
+> N
+
+= ˆLN ˆV ∗ 
+
+> N
+
+and V ∗ = LV ∗,
+
+∥ ˆV ∗ 
+
+> N
+
+− V ∗∥w = ∥ ˆLN ˆV ∗ 
+
+> N
+
+− L V ∗∥w ≤ ∥ ˆLN ˆV ∗ 
+
+> N
+
+− ˆLN V ∗∥w + ∥ ˆLN V ∗ − L V ∗∥w.
+
+By Lemma 3, 
+
+∥ ˆLN ˆV ∗ 
+
+> N
+
+− ˆLN V ∗∥w ≤ γw∥ ˆV ∗ 
+
+> N
+
+− V ∗∥w.
+
+13 Therefore, 
+
+∥ ˆV ∗ 
+
+> N
+
+− V ∗∥w ≤ 11 − γw
+
+∥ ˆLN V ∗ − L V ∗∥w. (3.7) It remains to show ∥ ˆLN V ∗ − L V ∗∥w → 0 a.s. Define Cs,a (ξ) := C(s, a, ξ ) + γV ∗(g(s, a, ξ )). By Lemma 4 and (3.2), 
+
+|V ∗(g(s, a, ξ )) | ≤ ∥ V ∗∥ww(g(s, a, ξ )) ≤ κw∥V ∗∥ww(s) ≤ κw ¯Cw
+
+1 − γw
+
+w(s),
+
+hence 
+
+|Cs,a (ξ)| ≤ ¯Cww(s) + γ κw ¯Cw
+
+1 − γw
+
+w(s) = ¯Cw
+
+1 − γw
+
+w(s). (3.8) Using the mean–CVaR representation ρN = λN EP lN + (1 − λN )CVaR υN 
+
+> Pu−lN
+
+,1
+
+w(s) sup 
+
+> a∈A
+
+ρN
+
+ Cs,a (ξ) − EP c
+
+Cs,a (ξ)
+
+≤ 1
+
+w(s) sup 
+
+> a∈A
+
+
+
+λN EP lN [Cs,a (ξ)] − EP c [Cs,a (ξ)] + (1 − λN ) CVaR υN 
+
+> Pu−lN
+
+[Cs,a (ξ)] 
+
+
+
+≤ 1
+
+w(s) sup 
+
+> a∈A
+
+
+
+∥Cs,a ∥ξ, ∞∥ ˆP lN − ˆPN ∥1 + ∥Cs,a ∥ξ, ∞∥ ˆPN − P c∥1 + (1 − λN )∥Cs,a ∥ξ, ∞
+
+
+
+.
+
+By (3.8), ∥Cs,a ∥ξ, ∞ ≤ ¯Cw 
+
+> 1−γw
+
+w(s). Moreover, from the definition of the box bounds we have 1 − λN ≤
+
+PJj=1 ˆrj,N . Thus 
+
+∥ ˆV ∗ 
+
+> N
+
+− V ∗∥w ≤ 11 − γw
+
+∥ ˆLN V ∗ − L V ∗∥w ≤ ¯Cw
+
+(1 − γw)2
+
+∥ ˆPN − P c∥1 + 2 
+
+> J
+
+X
+
+> j=1
+
+ˆrj,N 
+
+ .
+
+By Lemma 1 and Proposition 1, ˆPN → P c and PJj=1 ˆrj,N → 0 almost surely as N → ∞ . Thus we prove the claim. With Theorem 2, we can further show the convergence of ˆV ∗ 
+
+> N
+
+to V ∗ in the probability sense. 
+
+Proposition 2. Suppose Assumption 2 holds. For any fixed ε > 0 and δ ∈ (0 , 1) , there exists 
+
+N (J, ε, δ ) > 0 such that for all N ≥ N (J, ε, δ ),
+
+P
+
+ ˆV ∗ 
+
+> N
+
+− V ∗ 
+
+> w
+
+< ε 
+
+
+
+≥ 1 − δ. (3.9) 
+
+Proof. By (3.7) together with the bound on ∥ ˆLN V ∗ − L V ∗∥w derived in the proof of Theorem 2, and using Remark 1, we obtain 
+
+ˆV ∗ 
+
+> N
+
+− V ∗ 
+
+> w
+
+≤ ¯Cw
+
+(1 − γw)2
+
+ωN ∥ ˆP0 − P c∥1 + (1 − ωN )∥ ˆP E 
+
+> N
+
+− P c∥1 + 2 
+
+> J
+
+X
+
+> j=1
+
+ˆrj,N 
+
+ . (3.10) Let N1(J, ε ) := 
+
+ PJk=1 τk, 0 − J
+
+  3 ¯Cw  
+
+> (1 −γw)2ε
+
+∥ ˆP0 − P c∥1 − 1
+
+
+
+. Since ωN =   
+
+> PJk=1 τk, 0−J
+> PJk=1 τk, 0−J+N
+
+, then for all 
+
+N ≥ N1(J, ε ), we have ¯Cw
+
+(1 − γw)2 ωN ∥ ˆP0 − P c∥1 ≤ ε/ 3. (3.11) For any η ∈ (0 , 1), it is known from [62, Proposition 6.6] that 
+
+P ∥ ˆP E 
+
+> N
+
+− P c∥1 ≤
+
+r 2 log(2 J /η )
+
+N
+
+!
+
+≥ 1 − η. 
+
+14 Taking η = δ/ 2, with probability at least 1 − δ/ 2, 
+
+∥ ˆP E 
+
+> N
+
+− P c∥1 ≤
+
+r 2 log(2 J+1 /δ )
+
+N . (3.12) On the event in (3.12) which holds with probability at least 1 −δ/ 2, when N ≥ 18 ¯C2  
+
+> w
+> (1 −γw)4
+
+· (J+1) log 2+log(1 /δ ) 
+
+> ε2
+
+=: 
+
+N2(J, ε, δ ), we have 
+
+q 2 log(2 J+1 /δ ) 
+
+> N
+
+≤ ε(1 −γw )2 
+
+> 3 ¯Cw
+
+, which leads to ¯Cw
+
+(1 − γw)2 (1 − ωN )∥ ˆP E 
+
+> N
+
+− P c∥1 ≤ ε/ 3. (3.13) Proposition 1 implies 
+
+> J
+
+X
+
+> j=1
+
+ˆrj,N = z1−α′/2
+
+qPJk=1 τk, 0 − J + N
+
+> J
+
+X
+
+> j=1
+
+q
+
+ˆpj,N (1 − ˆpj,N ). (3.14) Since PJj=1 ˆpj,N = 1, by the Cauchy–Schwarz inequality, 
+
+> J
+
+X
+
+> j=1
+
+q
+
+ˆpj,N (1 − ˆpj,N ) ≤
+
+vuut JX
+
+> j=1
+
+ˆpj,N 
+
+ JX
+
+> j=1
+
+(1 − ˆpj,N )
+
+
+
+= √J − 1.
+
+Hence JX
+
+> j=1
+
+ˆrj,N ≤ z1−α′/2
+
+√J − 1
+
+qPJk=1 τk, 0 − J + N. (3.15) In particular, if 
+
+N ≥ N3(J, ε ) := 6 ¯Cwz1−α′/2
+
+√J − 1(1 − γw)2ε
+
+!2
+
+−
+
+ JX
+
+> k=1
+
+τk, 0 − J
+
+
+
+,
+
+then JX
+
+> j=1
+
+ˆrj,N ≤ ε(1 − γw)2
+
+6 ¯Cw
+
+,
+
+which leads to 2 ¯Cw
+
+(1 − γw)2
+
+> J
+
+X
+
+> j=1
+
+ˆrj,N ≤ ε/ 3. (3.16) With (3.11), (3.13) and (3.16), we conclude that if 
+
+N ≥ N (J, ε, δ ) := max {N1, N 2, N 3},
+
+then on the event in (3.12) we have ˆV ∗ 
+
+> N
+
+− V ∗ 
+
+> w
+
+< ε. 
+
+Since the event in (3.12) holds with probability at least 1 − δ/ 2, it follows a fortiori that 
+
+P
+
+ ˆV ∗ 
+
+> N
+
+− V ∗ 
+
+> w
+
+< ε 
+
+
+
+≥ 1 − δ. 
+
+This completes the proof. 
+
+Theorem 3 (Convergence of the optimal policies) . Suppose that Assumption 2 holds, then for any given ¯s ∈ S , the set of optimal actions ˆA∗ 
+
+> N
+
+(¯ s) of (2.10) is nonempty. Moreover, the distance from the optimal action ˆπ∗ 
+
+> N
+
+(¯ s) to the true optimal action set A∗(¯ s) of (1.2) converges to zero almost surely as 
+
+N → ∞ . In particular, if A∗(¯ s) = {π∗(¯ s)} is a singleton, then ˆπ∗ 
+
+> N
+
+(¯ s) converges to π∗(¯ s) almost surely. 
+
+15 Proof. Fix ¯ s ∈ S and write η := ( ˆP , ˆr) with P(η) := P( ˆP , ˆr). Define 
+
+F (a, η ) := sup  
+
+> P∈P(η)
+
+EP
+
+C(¯ s, a, ξ ) + γV ∗ g(¯ s, a, ξ ) , Ψ( η) := arg min  
+
+> a∈A
+
+F (a, η ).
+
+By Lemma 2, η 7 → P(η) has nonempty, compact values and is Hausdorff continuous. Since the integrand is continuous in ( a, P ), Berge’s maximum theorem [2] implies that F is continuous in ( a, η ) and Ψ is nonempty, compact-valued, and upper semicontinuous. Moreover, for η∗ := ( P c, 0) we have Ψ( η∗) = 
+
+A∗(¯ s). Let ηN := ( ˆPN , ˆrN ) and η∗ := ( P c, 0). By the risk-averse reformulation in Theorem 1, 
+
+F (a, η N ) = ρN
+
+ C(¯ s, a, ξ ) + γV ∗ g(¯ s, a, ξ ) .
+
+Since ρN is coherent risk measure, it is 1-Lipschitz. Together with Theorem 2, sup 
+
+> a∈A
+
+ρN
+
+ C(¯ s, a, ξ ) + γ ˆV ∗ 
+
+> N
+
+(g(¯ s, a, ξ ))  − F (a, η N ) ≤ γww(¯ s)∥ ˆV ∗ 
+
+> N
+
+− V ∗∥w → 0, a.s. (3.17) Now, fix an open neighborhood U of A∗(¯ s). By the upper semicontinuity of Ψ at η∗ and compactness of A, there exist a neighborhood B of η∗ and a constant δU > 0 such that for all η ∈ B,inf 
+
+> a∈A\ U
+
+ F (a, η ) − v(η) ≥ 2δU , where v(η) := min  
+
+> a∈A
+
+F (a, η ).
+
+By Proposition 1 and Lemma 2, ηN → η∗ almost surely, thus we have ηN ∈ B for all sufficiently large 
+
+N . Combining this with (3.17), for all N large enough, 
+
+εN := sup 
+
+> a∈A
+
+ρN
+
+C(¯ s, a, ξ ) + γ ˆV ∗ 
+
+> N
+
+(g(¯ s, a, ξ ))  − F (a, η N ) < δ U .
+
+Thus for any a ∈ A \ U ,
+
+ρN
+
+C(¯ s, a, ξ ) + γ ˆV ∗ 
+
+> N
+
+(g(¯ s, a, ξ ))  ≥ F (a, η N ) − εN
+
+≥ v(ηN ) + 2 δU − εN > v (ηN ) + εN
+
+≥ min  
+
+> a′∈A
+
+ρN
+
+C(¯ s, a ′, ξ ) + γ ˆV ∗ 
+
+> N
+
+(g(¯ s, a ′, ξ )) .
+
+Hence arg min a∈A ρN [C(¯ s, a, ξ ) + γ ˆV ∗ 
+
+> N
+
+(g(¯ s, a, ξ ))] ⊆ U for all sufficiently large N . Since U is arbitrary, it follows that, with dl E denoting the Euclidean metric on A,
+
+dl E
+
+ ˆπ∗ 
+
+> N
+
+(¯ s), A∗(¯ s) → 0, a.s. If A∗(¯ s) = {π∗(¯ s)} is a singleton, then taking U := {a : dl E (a, π ∗(¯ s)) < δ } yields ˆ π∗ 
+
+> N
+
+(¯ s) → π∗(¯ s) almost surely. Under mild conditions, the episodic Bayesian DROC value functions ˆV ∗ 
+
+> N
+
+and the associated policies ˆπ∗ 
+
+> N
+
+will converge to the true value function and optimal policy of the SOC model under P c. In practice, obtaining an infinite number of observations is infeasible. This raises the question of how the optimal policy derived from the episodic Bayesian DROC performs when applied in the true environment with a finite number of observations. To address this, we analyze the finite-sample performance of the episodic optimal policy ˆ π∗ 
+
+> N
+
+in the following subsection. 
+
+## 3.3 Finite-sample posterior credibility guarantee for the associated policy value 
+
+Recall that a potential drawback of the empirical SOC (1.3) is that its optimal policy may lack robustness when the actual problem instance deviates from that formulated with the historical observations. This sensitivity to distribution shifts underscores the importance of establishing finite-sample guarantees, 16 which provide statistical assurance that the obtained solution will maintain specified performance with high probability [71]. While existing research has primarily focused on finite-sample guarantees for DRO problems (e.g., [7, 17, 42]), it is important to extend such guarantees to SOC problems, particularly to DROC settings. In our Bayesian setting, the resulting finite-sample guarantee takes the form of a posterior credibility guarantee for the associated policy value. In the following, we establish a finite-sample posterior credibility guarantee for the value of the optimal policy ˆ π∗ 
+
+> N
+
+associated with the episodic Bayesian DROC (2.10). Specifically, we show that the robust value function ˆV ∗ 
+
+> N
+
+serves as a posterior-credible conservative upper bound on the true value of the associated policy. In particular, once the posterior ambiguity set is constructed to have credibility level (1 − α) for the one-step uncertainty model, the same credibility level is inherited by the infinite-horizon discounted problem, without any horizon-dependent adjustment. To this end, we first prove the monotonicity of the Bellman operator Lπ .
+
+Lemma 5. Let Lπ be defined as in (3.6) , then Lπ is monotone, i.e., V ≥ V ′ implies that Lπ V ≥ L π V ′.Proof. By definition (Lπ V ) ( s) = EP c [C(s, π (s), ξ ) + γV (g(s, π (s), ξ ))] .
+
+If two value functions V and V ′ satisfy V (g(s, π (s), ξ )) ≥ V ′ (g(s, π (s), ξ )) for all s ∈ S and ξ ∈ Ξ, then we can deduce ( Lπ V ) ( s) ≥ (Lπ V ′) ( s) by monotonicity of expectation. We are now ready to state the main posterior credibility result of this subsection. 
+
+Theorem 4 (Finite-sample posterior credibility guarantee) . With respect to any fixed finite sample set ⃗
+
+ˆξN , we have 
+
+PμN
+
+ ˆV ∗ 
+
+> N
+
+≥ V ˆπ∗
+
+> N
+
+
+
+≥ 1 − α + o(1) . (3.18) 
+
+Proof. Since ˆ π∗ 
+
+> N
+
+is the optimal policy corresponding to ˆV ∗ 
+
+> N
+
+, then ˆV ∗ 
+
+> N
+
+(s) = ˆLN ( ˆV ∗ 
+
+> N
+
+)( s) = sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP
+
+h
+
+C(s, ˆπ∗ 
+
+> N
+
+(s), ξ ) + γ ˆV ∗ 
+
+> N
+
+(g(s, ˆπ∗ 
+
+> N
+
+(s), ξ )) 
+
+i
+
+. (3.19) On the event EN := {P c ∈ P( ˆPN , ˆrN )}, which holds with posterior probability at least 1 − α + o(1) by Proposition 1, we can deduce that ˆV ∗ 
+
+> N
+
+(s) = ˆLN ( ˆV ∗ 
+
+> N
+
+)( s) ≥ EP c
+
+h
+
+C(s, ˆπ∗ 
+
+> N
+
+(s), ξ ) + γ ˆV ∗ 
+
+> N
+
+(g(s, ˆπ∗ 
+
+> N
+
+(s), ξ )) 
+
+i
+
+= Lˆπ∗ 
+
+> N
+
+( ˆV ∗ 
+
+> N
+
+)( s)for all s ∈ S . Thus, we have ˆV ∗ 
+
+> N
+
+(s) ≥ L ˆπ∗ 
+
+> N
+
+( ˆV ∗ 
+
+> N
+
+)( s). (3.20) By applying Lˆπ∗ 
+
+> N
+
+recursively to both sides of (3.20) and invoking the monotonicity property from Lemma 5, we deduce that ˆV ∗ 
+
+> N
+
+≥  Lˆπ∗
+
+> N
+
+K ˆV ∗ 
+
+> N
+
+for all K ∈ N+.Next we show that ( Lˆπ∗ 
+
+> N
+
+)K ˆV ∗ 
+
+> N
+
+converges to V ˆπ∗ 
+
+> N
+
+as K → ∞ . Under Assumption 2, the operator 
+
+Lˆπ∗ 
+
+> N
+
+is a γw-contraction in the weighted supremum norm ∥ · ∥ w, hence 
+
+∥(Lˆπ∗ 
+
+> N
+
+)K ˆV ∗ 
+
+> N
+
+− V ˆπ∗ 
+
+> N
+
+∥w ≤ γKw ∥ ˆV ∗ 
+
+> N
+
+− V ˆπ∗ 
+
+> N
+
+∥w → 0.
+
+In particular, for each fixed s ∈ S ,
+
+|(Lˆπ∗ 
+
+> N
+
+)K ˆV ∗ 
+
+> N
+
+(s) − V ˆπ∗ 
+
+> N
+
+(s)| ≤ w(s)∥(Lˆπ∗ 
+
+> N
+
+)K ˆV ∗ 
+
+> N
+
+− V ˆπ∗ 
+
+> N
+
+∥w → 0.
+
+Taking K → ∞ in ˆV ∗ 
+
+> N
+
+(s) ≥ (Lˆπ∗ 
+
+> N
+
+)K ˆV ∗ 
+
+> N
+
+(s) yields ˆV ∗ 
+
+> N
+
+(s) ≥ V ˆπ∗ 
+
+> N
+
+(s), ∀s ∈ S ,
+
+on the event EN . Therefore, 
+
+PμN
+
+ ˆV ∗ 
+
+> N
+
+≥ V ˆπ∗
+
+> N
+
+
+
+≥ PμN (EN ) = 
+
+Z   
+
+> P∈P( ˆPN,ˆrN)
+
+μ(P |⃗ ˆξN )dP ≥ 1 − α + o(1) ,
+
+where the last inequality follows from Proposition 1. 17 This finite-sample posterior credibility guarantee complements the asymptotic convergence results established above and provides a finite-data justification for the conservative nature of the proposed episodic Bayesian DROC formulation. 
+
+# 4 Stability Analysis 
+
+The existing research on SOC has largely focused on the case where the ambiguity sets are constructed from noise-free sample data. However, in practice, sample data may be perturbed due to measurement and/or recording errors and these errors may affect the quality of decisions, see e.g. [49, 70]. In this section, we investigate how data contamination may affect ambiguity-set construction and, in turn, the reliability of the resulting optimal values and policies for episodic Bayesian DROC. To the best of our knowledge, relatively few works [30, 72] have specifically investigated the sensitivity and stability of optimal values in Markov decision models. There remains a notable lack of literature in the DROC domain that quantitatively characterizes the performance of optimal values and policies in the presence of sample perturbations. Departing from the previous assumption, we now consider a contaminated-data setting in which the observed samples ⃗ ˜ξN := ( ˜ξ1, . . . , ˜ξN ) are generated from a perturbed distribution ˜P c, rather than from the true distribution P c. We regard ˜ξ1, . . . , ˜ξN as perturbed samples deviated from ˆξ1, . . . , ˆξN , and treat ˜P c as a deviation from P c. For simplicity, we continue to treat ˜ξ1, . . . , ˜ξN as i.i.d. samples, aligning with the methodology in [49, 70]. With respect to the Bayesian prior μ0, the nominal probability vectors corresponding to ⃗ ˆξN and ⃗ ˜ξN are denoted as ˆPN := (ˆ pj,N )Jj=1 and ˜PN := (˜ pj,N )Jj=1 , with ˆpj,N = τj, 0 − 1 + PNi=1 1{ ˆξi=ξj }
+
+PJk=1 τk, 0 − J + N and ˜ pj,N = τj, 0 − 1 + PNi=1 1{ ˜ξi=ξj }
+
+PJk=1 τk, 0 − J + N ,
+
+respectively. The tolerance (radius) vectors ˆ rN and ˜ rN are similarly defined as ˆrj,N := z1− α′
+
+> 2
+
+s
+
+ˆpj,N (1 − ˆpj,N )
+
+PJk=1 τk, 0 − J + N and ˜ rj,N := z1− α′
+
+> 2
+
+s
+
+˜pj,N (1 − ˜pj,N )
+
+PJk=1 τk, 0 − J + N .
+
+## 4.1 Quantitative stability with fixed samples 
+
+We begin with stability analysis of how perturbation of the ambiguity set may affect the optimal value and optimal solutions of the episodic Bayesian DROC model by deriving some explicit error bounds. In this part of the analysis, ⃗ ˆξN and ⃗ ˜ξN are fixed and so are ˆPN and ˜PN . Let ˜LN be the counterpart Bellman operator built from P( ˜PN , ˜rN ): ˜LN (V )( s) := inf  
+
+> a∈A
+
+sup    
+
+> P∈P( ˜PN,˜rN)
+
+EP [C(s, a, ξ ) + γV (g(s, a, ξ ))] , ∀V ∈ V (S). (4.1) Let ˜V ∗ 
+
+> N
+
+denote the optimal value function of Bellman equation (4.1) and ˜A∗ 
+
+> N
+
+(¯ s) denote the corresponding optimal action set at state ¯ s. We first consider the quantitative stability between problem (2.10) and its perturbed problem (4.1) when the Bayesian ambiguity set P( ˆPN , ˆrN ) is replaced by P( ˜PN , ˜rN ). To this end, we introduce the appropriate metric we adopt for discussion as follows. 
+
+Definition 1 (R¨ omisch [55]) . A metric with ζ-structure is defined as 
+
+dl G (P, Q ) := sup 
+
+> g∈G
+
+|EP [g(ξ)] − EQ[g(ξ)] | , (4.2) 
+
+where G denotes a set of real-valued measurable functions. 
+
+18 The pseudo-metric (4.2) encompasses a wide array of metrics within probability theory, including those outlined in [21]. For instance, if we choose G as 
+
+GT V := 
+
+(
+
+g : conv Ξ → R : sup 
+
+> ξ∈conv Ξ
+
+|g(ξ)| ≤ 1
+
+)
+
+, (4.3) the metric dl G (P, Q ) reduces to the total variation metric, denoted as dl T V (P, Q ). Moreover, when the set of functions G is the class of all 1-Lipschitz mappings on Ξ specified as 
+
+GLip := {g : conv Ξ → R : |g(ξ) − g(ξ′)| ≤ ∥ ξ − ξ′∥, ∀ξ, ξ ′ ∈ conv Ξ } , (4.4) the resulting metric dl G (P, Q ) recovers the classical Kantorovich metric, denoted by dl K (P, Q ). To establish the desired quantitative stability, we derive an intermediate technical result which may be viewed as a generalization of the well-known H¨ ormander formula. 
+
+Lemma 6 (Generalized H¨ ormander formula) . Let G be a class of measurable functions defined over conv Ξ. Consider 
+
+AN := sup 
+
+> g∈G
+
+sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP [g(ξ)] − sup    
+
+> P∈P( ˜PN,˜rN)
+
+EP [g(ξ)] .
+
+Then 
+
+AN ≤ H(P( ˆPN , ˆrN ), P( ˜PN , ˜rN ); dl G ). (4.5) 
+
+In the case when G = GT V ,
+
+AN ≤ sup 
+
+> g∈G
+
+∥g∥ξ, ∞H(P( ˆPN , ˆrN ), P( ˜PN , ˜rN ); dl T V ). (4.6) 
+
+Equality holds when G/ sup g∈G ∥g∥ξ, ∞ restricted to Ξ is a unit ball of RJ . In the case when G is a class of Lipschitz functions with modulus being bounded by L,
+
+AN ≤ LH(P( ˆPN , ˆrN ), P( ˜PN , ˜rN ); dl K ). (4.7) 
+
+Equality holds when G/L consists of all Lipschitz continuous functions defined over conv Ξ with modulus being bounded by 1.Proof. Observe that sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP [g(ξ)] − sup    
+
+> P′∈P( ˜PN,˜rN)
+
+EP ′ [g(ξ)] = sup    
+
+> P∈P( ˆPN,ˆrN)
+
+inf    
+
+> P′∈P( ˜PN,˜rN)
+
+ EP [g(ξ)] − EP ′ [g(ξ)] 
+
+≤ sup    
+
+> P∈P( ˆPN,ˆrN)
+
+inf    
+
+> P′∈P( ˜PN,˜rN)
+
+|EP [g(ξ)] − EP ′ [g(ξ)] |≤ sup    
+
+> P∈P( ˆPN,ˆrN)
+
+dl G (P, P( ˜PN , ˜rN )) = D(P( ˆPN , ˆrN ), P( ˜PN , ˜rN ); dl G ).
+
+By swapping the positions of the two ambiguity sets, and then taking supremum with respect to g over 
+
+G, we immediately obtain (4.5). The rest of the conclusions follow directly from the definition of the pseudo-metric and H¨ ormander formula (see e.g., Theorem II. 18 of [9]). We are now ready to state the first stability result on the optimal value. 19 Theorem 5 (Quantitative stability of the optimal value) . Let CNs,a (ξ) := C(s, a, ξ ) + γ ˆV ∗ 
+
+> N
+
+(g(s, a, ξ )) and 
+
+Hw := 
+
+( CNs,a (·)
+
+w(s) : ( s, a ) ∈ S × A 
+
+)
+
+.
+
+Under Assumption 2, 
+
+∥ ˆV ∗ 
+
+> N
+
+− ˜V ∗ 
+
+> N
+
+∥w ≤ 11 − γw
+
+H
+
+
+
+P( ˆPN , ˆrN ), P( ˜PN , ˜rN ); dl Hw
+
+
+
+. (4.8) 
+
+In particular, 
+
+∥ ˆV ∗ 
+
+> N
+
+− ˜V ∗ 
+
+> N
+
+∥w ≤ ¯Cw
+
+(1 − γw)2 H
+
+
+
+P( ˆPN , ˆrN ), P( ˜PN , ˜rN ); dl T V 
+
+
+
+≤ J ¯Cw
+
+(1 − γw)2
+
+ ∥ ˆPN − ˜PN ∥∞ + ∥ˆrN − ˜rN ∥∞
+
+.
+
+(4.9) 
+
+Proof. Since ˆLN and ˜LN are γw-contractions on ( V (S), ∥ · ∥ w), similar to (3.7), we have 
+
+∥ ˆV ∗ 
+
+> N
+
+− ˜V ∗ 
+
+> N
+
+∥w ≤ 11 − γw
+
+∥ ˆLN ˆV ∗ 
+
+> N
+
+− ˜LN ˆV ∗ 
+
+> N
+
+∥w. (4.10) For any s ∈ S , 1
+
+w(s) ( ˆLN ˆV ∗ 
+
+> N
+
+)( s) − ( ˜LN ˆV ∗ 
+
+> N
+
+)( s)
+
+≤ sup 
+
+> a∈A
+
+1
+
+w(s) sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP [CNs,a (ξ)] − sup    
+
+> P∈P( ˜PN,˜rN)
+
+EP [CNs,a (ξ)] 
+
+≤ sup 
+
+> h∈H w
+
+sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP [h(ξ)] − sup    
+
+> P∈P( ˜PN,˜rN)
+
+EP [h(ξ)] 
+
+≤ H
+
+
+
+P( ˆPN , ˆrN ), P( ˜PN , ˜rN ); dl Hw
+
+
+
+,
+
+where the last inequality follows from Lemma 6. Taking the supremum over s gives 
+
+∥ ˆLN ˆV ∗ 
+
+> N
+
+− ˜LN ˆV ∗ 
+
+> N
+
+∥w ≤ H
+
+
+
+P( ˆPN , ˆrN ), P( ˜PN , ˜rN ); dl Hw
+
+
+
+,
+
+and together with (4.10) proves (4.8). Next, we show sup h∈H w ∥h∥∞ ≤ ¯Cw/(1 − γw). By Assumption 2, |C (s, a, ξ )| ≤ ¯Cww(s) and 
+
+w(g(s, a, ξ )) ≤ κww(s). Moreover, since ˆV ∗ 
+
+> N
+
+is the unique fixed point of the γw-contraction ˆLN , it satisfies ∥ ˆV ∗ 
+
+> N
+
+∥w ≤ ¯Cw/(1 − γw). Therefore, 
+
+|CNs,a (ξ)|
+
+w(s) ≤ ¯Cw + γ∥ ˆV ∗ 
+
+> N
+
+∥wκw ≤ ¯Cw + γw
+
+¯Cw
+
+1 − γw
+
+= ¯Cw
+
+1 − γw
+
+,
+
+which implies sup h∈H w ∥h∥∞ ≤ ¯Cw/(1 − γw). We can renormalize Hw by multiplying each measurable 
+
+h ∈ H w by (1 − γw)/ ¯Cw, ensuring the entire class of functions is uniformly bounded by 1. Then (4.9) follows by applying Lemma 6 and Lemma 2. The proof is completed. When the stage cost is uniformly bounded, i.e., sup s∈S ,a ∈A ,ξ ∈Ξ |C (s, a, ξ )| ≤ ¯C < ∞, one may choose 
+
+w(·) ≡ 1, so that ∥ · ∥ w = ∥ · ∥ ∞, ¯Cw = ¯C and γw = γ. In this bounded-cost case, the stability bound reduces to the classical sup-norm estimate. Next, we discuss the stability of optimal policies. 
+
+Theorem 6. Under Assumption 2, the following assertions hold. 
+
+20 (i) For any ϵ > 0 and fixed ¯s, there exists δ > 0 (depending on ϵ and ¯s) such that 
+
+D( ˜A∗ 
+
+> N
+
+(¯ s), ˆA∗ 
+
+> N
+
+(¯ s); dl E ) < ϵ 
+
+when H(P( ˆPN , ˆrN ), P( ˜PN , ˜rN ); dl T V ) < δ. 
+
+(ii) If, in addition, sup P ∈P( ˆPN ,ˆrN ) EP [CNs,a (ξ)] satisfies the second-order growth condition at ˆA∗ 
+
+> N
+
+, that is, for any given ¯s, there exists a positive constant ν such that 
+
+sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP [CN
+
+> ¯s,a
+
+(ξ)] ≥ ˆV ∗ 
+
+> N
+
+(¯ s) + νdl E (a, ˆA∗ 
+
+> N
+
+(¯ s)) 2, ∀a ∈ A , (4.11) 
+
+then 
+
+D( ˜A∗ 
+
+> N
+
+(¯ s), ˆA∗ 
+
+> N
+
+(¯ s); dl E ) ≤
+
+s
+
+3 ¯Cww(¯ s)
+
+ν(1 − γw)2 H(P( ˆPN , ˆrN ), P( ˜PN , ˜rN ); dl T V ). (4.12) 
+
+Proof. The arguments follow the spirit of Lemma 3.8 in [38]. The key difference is that the nominal and perturbed problems are characterized by different Bellman operators, hence their minimax objectives are evaluated over different ambiguity sets and with different unique optimal functions ˆV ∗ 
+
+> N
+
+and ˜V ∗ 
+
+> N
+
+.Part (i). Let ϵ be a fixed small positive number and ˆV ∗ 
+
+> N
+
+be the optimal value function of (2.10). For any fixed ¯ s ∈ S , define 
+
+R¯s(ϵ) := inf 
+
+{a∈A ,dl E (a, ˆA∗ 
+
+> N(¯ s)
+
+)≥ϵ} sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP [CN
+
+> ¯s,a
+
+(ξ)] − ˆV ∗ 
+
+> N
+
+(¯ s). (4.13) Then R¯s(ϵ) > 0. Let δ := (1 −γw )2  
+
+> 3 ¯Cww(¯ s)
+
+R¯s(ϵ) and H(P( ˆPN , ˆrN ), P( ˜PN , ˜rN ); dl T V ) < δ . Define ˜CNs,a (ξ) := 
+
+C(s, a, ξ ) + γ ˜V ∗ 
+
+> N
+
+(g(s, a, ξ )). By Lemma 6 and Theorem 5, sup 
+
+> a∈A
+
+sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP [CN
+
+> ¯s,a
+
+(ξ)] − sup    
+
+> P∈P( ˜PN,˜rN)
+
+EP [ ˜CN
+
+> ¯s,a
+
+(ξ)] 
+
+≤ sup 
+
+> a∈A
+
+sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP [CN
+
+> ¯s,a
+
+(ξ)] − sup    
+
+> P∈P( ˜PN,˜rN)
+
+EP [CN
+
+> ¯s,a
+
+(ξ)] + sup    
+
+> P∈P( ˜PN,˜rN)
+
+EP [CN
+
+> ¯s,a
+
+(ξ)] − sup    
+
+> P∈P( ˜PN,˜rN)
+
+EP [ ˜CN
+
+> ¯s,a
+
+(ξ)] 
+
+≤ ¯Cww(¯ s)1 − γw
+
+H(P( ˆPN , ˆrN ), P( ˜PN , ˜rN ); dl T V ) + γw ¯Cww(¯ s)(1 − γw)2 H(P( ˆPN , ˆrN ), P( ˜PN , ˜rN ); dl T V ) < ¯Cww(¯ s)(1 − γw)2 δ. 
+
+Therefore, for any a ∈ A with dl E
+
+
+
+a, ˆA∗ 
+
+> N
+
+(¯ s)
+
+
+
+≥ ϵ and any fixed a∗ ∈ ˆA∗ 
+
+> N
+
+(¯ s), we have sup    
+
+> P∈P( ˜PN,˜rN)
+
+EP [ ˜CN
+
+> ¯s,a
+
+(ξ)] − sup    
+
+> P∈P( ˜PN,˜rN)
+
+EP [ ˜CN 
+
+> ¯s,a ∗
+
+(ξ)] 
+
+≥ sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP [CN
+
+> ¯s,a
+
+(ξ)] − sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP [CN 
+
+> ¯s,a ∗
+
+(ξ)] − 2 ¯Cww(¯ s)(1 − γw)2 δ ≥ R¯s(ϵ)/3 > 0,
+
+which implies that a is not an optimal solution to (4.1). This is equivalent to dl E
+
+
+
+a, ˆA∗ 
+
+> N
+
+(¯ s)
+
+
+
+< ϵ for all a ∈ ˜A∗ 
+
+> N
+
+(¯ s), that is, D
+
+ ˜A∗ 
+
+> N
+
+(¯ s), ˆA∗ 
+
+> N
+
+(¯ s); dl E
+
+
+
+≤ ϵ.Part (ii). Recall that the condition (4.11) leads to R¯s(ϵ) ≥ νϵ 2. Let 
+
+ϵ =
+
+s
+
+3 ¯Cww(¯ s)
+
+ν(1 − γw)2 H(P( ˆPN , ˆrN ), P( ˜PN , ˜rN ); dl T V ),
+
+we immediately arrive at the desired result. 21 It can be seen that the second-order growth condition (4.11) for sup P ∈P( ˆPN ,ˆrN ) EP [CNs,a (ξ)] is critical for quantifying the stability of our episodic Bayesian DROC formulation. To obtain concrete, verifiable criteria ensuring this second-order growth, we assume that for each fixed s and ξ, C(s, ·, ξ ) is strongly convex in a with modulus κs(ξ). Then, under some mild conditions [40], ˆV ∗ 
+
+> N
+
+(g(s, ·, ξ )) is convex, thus 
+
+CNs,a (ξ) remains strongly convex in a with modulus κs(ξ). Hence, there exist integrable functions ηs(ξ)and κs(ξ) such that for any fixed a ∈ A ,
+
+CNs,a ′ (ξ) ≥ CNs,a (ξ) + ηs(ξ)⊤ (a′ − a) + κs(ξ) ∥a′ − a∥2 , ∀a′ ∈ A , ξ ∈ Ξ,
+
+where κs(ξ) is a positive function satisfying inf P ∈P( ˆPN ,ˆrN ) EP [κs(ξ)] > 0. Define the auxiliary function: 
+
+ϕs,a (a′) := sup    
+
+> P∈P( ˆPN,ˆrN)
+
+ EP [CNs,a (ξ)] + EP [ηs(ξ)] ⊤ (a′ − a)
+
+and let vs := inf P ∈P( ˆPN ,ˆrN ) EP [κs(ξ)]. Then we obtain sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP
+
+CNs,a ′ (ξ) ≥ ϕs,a (a′) + vs ∥a′ − a∥2 , ∀a′ ∈ A .
+
+Moreover, ϕs,a (·) is convex and satisfies ϕs,a (a) = sup P ∈P( ˆPN ,ˆrN ) EP [CNs,a (ξ)]. Consequently, there exists some deterministic vector ˆ η (depending on a) such that sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP
+
+CNs,a ′ (ξ) ≥ sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP [CNs,a (ξ)] + ˆ η⊤ (a′ − a) + vs ∥a′ − a∥2 , ∀a′ ∈ A .
+
+This inequality holds uniformly for all a, demonstrating that sup P ∈P( ˆPN ,ˆrN ) EP
+
+CNs,a ′ (ξ) is strongly convex, which implies that the optimal action set ˆA∗ 
+
+> N
+
+(s) reduces to a singleton {ˆπ∗ 
+
+> N
+
+(s)} for each fixed 
+
+s ∈ S . Then, the second-order growth condition (4.11) follows immediately from the above inequality by noting that sup P ∈P( ˆPN ,ˆrN ) EP
+
+h
+
+CNs, ˆπ∗ 
+
+> N(s)
+
+(ξ)
+
+i
+
+= ˆV ∗ 
+
+> N
+
+(s) and selecting ˆ η = 0 at the optimal policy ˆ π∗ 
+
+> N
+
+(s). 
+
+## 4.2 Quantitative statistical robustness 
+
+We now examine the statistical robustness property of the episodic Bayesian DROC model (2.10). The foundational framework for statistical robustness was originally established in [23]. Over the past few decades, this concept has gained significant attention, particularly through influential monographs such as [28]. For a detailed discussion on how statistical robustness differs from traditional stability analysis, we refer readers to [21]. The notion of statistical robustness can be elucidated by defining (Ξ) ⊗N as the Cartesian product Ξ × . . . × Ξ
+
+| {z }
+
+> N
+
+and B(Ξ) ⊗N as its Borel σ-algebra. Let ( P c)⊗N denote the probability measure on the measurable space ((Ξ) ⊗N , B(Ξ) ⊗N ) with marginal P c on each (Ξ , B(Ξ)) and correspondingly ( ˜P c)⊗N
+
+with marginal ˜P c.For each fixed state s, we consider a statistical functional T s(·) that maps from a subset of M ⊆ 
+
+P(Ξ) × RJ 
+
+> +
+
+to R, where each input pair ( P, r ) specifies the ambiguity set P(P, r ). For each N ∈ N,
+
+T sN ( ˆξ1, . . . , ˆξN ) represents T s( ˆPN , ˆrN ), where ( ˆPN , ˆrN ) are constructed from the sample set ( ˆξ1, . . . , ˆξN ). Notice that T sN maps from (Ξ) ⊗N to R and provides a robust estimator for T s(P c, 0). Our interest is whether T s( ˜PN , ˜rN ) is close to T s( ˆPN , ˆrN ) under some appropriate metric in terms of empirical proba-bility distributions as the underlying samples vary. Here T s( ˆPN , ˆrN ) is interpreted as the corresponding statistical estimator in the absence of sample noise. If T s( ˜PN , ˜rN ) closely approximates T s( ˆPN , ˆrN ), it validates the use of T s( ˜PN , ˜rN ) as a robust estimate of T s(P c, 0), given the impracticality of obtaining 
+
+T s( ˆPN , ˆrN ) in real-world scenarios. With the above setting, the value functions ˆV ∗ 
+
+> N
+
+and ˜V ∗ 
+
+> N
+
+correspond-ing to state s can be seen as two statistical estimators, which respectively correspond to the statistical functional T sN (·) under two series ( ˆξ1, . . . , ˆξN ) and ( ˜ξ1, . . . , ˜ξN ), of the optimal value of episodic Bayesian DROC, i.e., T sN ( ˆξ1, . . . , ˆξN ) = ˆV ∗ 
+
+> N
+
+(s) and T sN ( ˜ξ1, . . . , ˜ξN ) = ˜V ∗ 
+
+> N
+
+(s). 22 Since our analysis is based on the setup of the weighted supremum norm (see Assumption 2), it is natural to normalize the statistical functionals by the weight: ¯T sN (·) := T sN (·)
+
+w(s)
+
+
+
+equivalently, ¯T sN ( ˆξ1, . . . , ˆξN ) = ˆV ∗ 
+
+> N
+
+(s)
+
+w(s)
+
+
+
+.
+
+This normalization allows us to derive Lipschitz properties with constants that do not scale with w(s). Under the framework, we are interested in the difference between laws of the two estimators , that is, the difference between ( P c)⊗N ◦ ( ¯T sN )−1 and ( ˜P c)⊗N ◦ ( ¯T sN )−1. This differs from the stability analysis where both the true and contaminated samples are fixed. 
+
+Lemma 7 (Quantitative statistical robustness [70]) . Suppose a statistical functional TN : (Ξ) ⊗N → R
+
+satisfies 
+
+TN ( ˆξ1, . . . , ˆξN ) − TN ( ˜ξ1, . . . , ˜ξN ) ≤ LN
+
+> N
+
+X
+
+> i=1
+
+ˆξi − ˜ξi , (4.14) 
+
+then for all P c, ˜P c ∈ P(Ξ) and N ∈ N,
+
+dl K
+
+
+
+(P c)⊗N ◦ (TN )−1, ( ˜P c)⊗N ◦ (TN )−1
+
+≤ Ldl K (P c, ˜P c). (4.15) Lemma 7 is a direct consequence of [70, Theorem 2.1]. In the forthcoming discussions, we will use Lemma 7 as a template to present the quantitative statistical robustness of the optimal value of the episodic Bayesian DROC problem. The basic idea is to derive Lipschitz continuity of the ambiguity sets with respect to the change of sample data and subsequently demonstrate the Lipschitz continuity of the optimal value function (with the change of sample data). 
+
+Lemma 8 ([40], Proposition 9) . Assume that C(s, a, ξ ) and g(s, a, ξ ) are Lipschitz continuous in s ∈ S 
+
+uniformly for all (a, ξ ) ∈ A × Ξ, with Lipschitz constants LC and Lg , respectively. If γL g < 1, then the value function ˆV ∗ 
+
+> N
+
+is Lipschitz continuous with a Lipschitz constant LV := LC 
+
+> 1−γL g
+
+.
+
+Theorem 7 (Quantitative statistical robustness under the weighted supremum norm) . Suppose As-sumption 2 holds and the conditions of Lemma 8 are satisfied. Assume further that there exist constants 
+
+L1, L 2 > 0 such that for any s ∈ S ,
+
+sup 
+
+> a∈A
+
+|C (s, a, ξ ) − C (s, a, ξ ′)| ≤ L1∥ξ − ξ′∥, ∀ξ, ξ ′ ∈ Ξ, (4.16) 
+
+and 
+
+sup 
+
+> a∈A
+
+∥g(s, a, ξ ) − g(s, a, ξ ′)∥ ≤ L2∥ξ − ξ′∥, ∀ξ, ξ ′ ∈ Ξ. (4.17) 
+
+Then, for all s ∈ S , there exists a constant L > 0 independent of N and s such that 
+
+dl K
+
+
+
+(P c)⊗N ◦ ( ¯T sN )−1, ( ˜P c)⊗N ◦ ( ¯T sN )−1
+
+≤ Ldl K (P c, ˜P c). (4.18) 
+
+Proof. To demonstrate the Lipschitz continuity of ¯T sN , we first show that there exists a positive constant 
+
+L0 such that sup 
+
+> a∈A
+
+|CNs,a (ξ) − CNs,a (ξ′)|
+
+w(s) ≤ L0∥ξ − ξ′∥. (4.19) By the definition of CNs,a (see Theorem 5), sup 
+
+> a∈A
+
+|CNs,a (ξ) − CNs,a (ξ′)|
+
+= sup 
+
+> a∈A
+
+|C (s, a, ξ ) + γ ˆV ∗ 
+
+> N
+
+(g(s, a, ξ )) − C (s, a, ξ ′) − γ ˆV ∗ 
+
+> N
+
+(g(s, a, ξ ′)) |≤ sup 
+
+> a∈A
+
+|C (s, a, ξ ) − C (s, a, ξ ′)| + γ sup 
+
+> a∈A
+
+| ˆV ∗ 
+
+> N
+
+(g(s, a, ξ )) − ˆV ∗ 
+
+> N
+
+(g(s, a, ξ ′)) |
+
+23 By (4.16), the first term at the right-hand side of the inequality is bounded by L1∥ξ − ξ′∥; and by Lemma 8, the second term is bounded by γL V sup a∈A ∥g(s, a, ξ ) − g(s, a, ξ ′)∥. Consequently we obtain sup 
+
+> a∈A
+
+|CNs,a (ξ) − CNs,a (ξ′)| ≤ (L1 + γL V L2)∥ξ − ξ′∥. (4.20) Since w(s) ≥ 1, we can deduce (4.19) by setting L0 = L1 + γL V L2. Recall that Hw := { CNs,a (·) 
+
+> w(s)
+
+: ( s, a ) ∈S × A} , we have Hw 
+
+> L0
+
+⊂ G Lip , which implies 
+
+dl Hw
+
+ ˆPN , ˜PN
+
+
+
+≤ L0 sup 
+
+> h∈G Lip
+
+E ˆPN [h(ξ)] − E ˜PN [h(ξ)] .
+
+Consequently, 
+
+∥ ˆV ∗ 
+
+> N
+
+− ˜V ∗ 
+
+> N
+
+∥w
+
+≤ 11 − γw
+
+∥ ˆLN ˆV ∗ 
+
+> N
+
+− ˜LN ˆV ∗ 
+
+> N
+
+∥w
+
+≤ 11 − γw
+
+inf  
+
+> a∈A
+
+sup    
+
+> P∈P( ˆPN,ˆrN)
+
+EP
+
+h
+
+C(s, a, ξ ) + γ ˆV ∗ 
+
+> N
+
+(g(s, a, ξ )) 
+
+i
+
+− inf  
+
+> a∈A
+
+sup    
+
+> P∈P( ˜PN,ˆrN)
+
+EP
+
+h
+
+C(s, a, ξ ) + γ ˆV ∗ 
+
+> N
+
+(g(s, a, ξ )) 
+
+i
+
+> w
+
+| {z }
+
+> †
+
++ 11 − γw
+
+inf  
+
+> a∈A
+
+sup    
+
+> P∈P( ˜PN,ˆrN)
+
+EP
+
+h
+
+C(s, a, ξ ) + γ ˆV ∗ 
+
+> N
+
+(g(s, a, ξ )) 
+
+i
+
+− inf  
+
+> a∈A
+
+sup    
+
+> P∈P( ˜PN,˜rN)
+
+EP
+
+h
+
+C(s, a, ξ ) + γ ˆV ∗ 
+
+> N
+
+(g(s, a, ξ )) 
+
+i
+
+> w
+
+| {z }
+
+> ††
+
+.
+
+For the first part, we obtain by Lemma 6 that 
+
+† ≤ H(P( ˆPN , ˆrN ), P( ˜PN , ˆrN ); dl Hw )
+
+≤dl Hw ( ˆPN , ˜PN )
+
+≤L0 sup 
+
+> h∈G Lip
+
+E ˆPN [h(ξ)] − E ˜PN [h(ξ)] 
+
+=L0 sup 
+
+> h∈G Lip
+
+1
+
+PJj=1 τj, 0 − J + N
+
+> N
+
+X
+
+> i=1
+
+h( ˆξi) − 1
+
+PJj=1 τj, 0 − J + N
+
+> N
+
+X
+
+> i=1
+
+h( ˜ξi)
+
+≤ L0
+
+(PJj=1 τj, 0 − J + N )
+
+> N
+
+X
+
+> i=1
+
+∥ ˆξi − ˜ξi∥
+
+(4.21) where the third inequality from the last is based on Theorem 1 in [49]. Likewise, by Lemma 6, we have that 
+
+†† ≤ H(P( ˜PN , ˜rN ), P( ˜PN , ˆrN ); dl Hw ) ≤ L0H(P( ˜PN , ˜rN ), P( ˜PN , ˆrN ); dl GLip ) ≤ L0DΞ
+
+> J
+
+X
+
+> j=1
+
+|˜rj,N − ˆrj,N |,
+
+where DΞ := max j̸ =j′ ∥ξj − ξj′
+
+∥. According to the constructions of the tolerances ˆ rj,N and ˜ rj,N , we have JX
+
+> j=1
+
+|ˆrj,N − ˜rj,N | = z1− α′
+
+> 2
+
+qPJk=1 τk, 0 − J + N
+
+> J
+
+X
+
+> j=1
+
+q
+
+ˆpj,N (1 − ˆpj,N ) −
+
+q
+
+˜pj,N (1 − ˜pj,N )
+
+≤ z1− α′
+
+> 2
+
+qPJk=1 τk, 0 − J + N
+
+> J
+
+X
+
+> j=1
+
+q
+
+|ˆpj,N (1 − ˆpj,N ) − ˜pj,N (1 − ˜pj,N )|≤ z1− α′
+
+> 2
+
+qPJk=1 τk, 0 − J + N
+
+> J
+
+X
+
+> j=1
+
+q
+
+|ˆpj,N − ˜pj,N |.
+
+24 Moreover, for each j = 1 , . . . , J , the quantity |ˆpj,N − ˜pj,N | is an integer multiple of 1PJk=1 τk, 0−J+N , and hence 1
+
+qPJk=1 τk, 0 − J + N
+
+q
+
+|ˆpj,N − ˜pj,N | ≤ | ˆpj,N − ˜pj,N |.
+
+Therefore, 
+
+> J
+
+X
+
+> j=1
+
+|ˆrj,N − ˜rj,N | ≤ z1− α′
+
+> 2
+> J
+
+X
+
+> j=1
+
+|ˆpj,N − ˜pj,N | ≤ z1− α′
+
+> 2
+
+dl T V ( ˆPN , ˜PN ) ≤ z1− α′
+
+> 2
+
+δΞ
+
+dl GLip ( ˆPN , ˜PN ),
+
+where δΞ := min j̸ =j′ ∥ξj − ξj′
+
+∥. Thus 
+
+†† ≤ DΞL0z1− α′
+
+> 2
+
+δΞ
+
+dl GLip ( ˆPN , ˜PN ) ≤ DΞL0z1− α′
+
+> 2
+
+δΞ(PJj=1 τj, 0 − J + N )
+
+> N
+
+X
+
+> i=1
+
+∥ ˆξi − ˜ξi∥. (4.22) Combining with (4.21) and (4.22), we can draw the conclusion that 
+
+ˆV ∗ 
+
+> N
+
+(s) − ˜V ∗ 
+
+> N
+
+(s)
+
+w(s) ≤ ∥ ˆV ∗ 
+
+> N
+
+− ˜V ∗ 
+
+> N
+
+∥w ≤ δΞL0 + DΞL0z1− α′
+
+> 2
+
+δΞ(1 − γw)( PJj=1 τj, 0 − J + N )
+
+> N
+
+X
+
+> i=1
+
+ˆξi − ˜ξi .
+
+Thus we have proved that ¯T sN satisfies the Lipschitz condition in Lemma 7. Applying Lemma 7 with 
+
+TN = ¯T sN yields the desired robustness bound. 
+
+Remark 5. Theorem 7 deals with the case when all sample data are potentially perturbed. In practice, sample data might come from mixed sources with varying levels of qualities. Our established theorem is also applicable to such settings. To model this situation, we adopt Huber’s ε-contamination model, where the observed data distribution is given by 
+
+˜P c = (1 − ε)P c + εQ, Q ∈ P(Ξ) ,
+
+meaning that each sample is drawn from the clean distribution P c with probability 1 − ε, and from an arbitrary contaminating distribution Q with probability ε. This models the case where high-quality (clean) data are mixed with corrupted or low-quality (bad) samples. Under this model, the distance between P c and ˜P c can be bounded in terms of the Kantorovich metric: 
+
+dl K (P c, ˜P c) = dl K (P c, (1 − ε)P c + εQ ) ≤ εdl K (P c, Q ).
+
+This inequality highlights that the deviation between the clean and contaminated distributions scales linearly with the contamination level ε, but it also reveals a potential challenge: even when ε is small, the product εdl K (P c, Q ) may still be large if Q is significantly different from P c. Consequently, ˜P c may not represent a small perturbation of P c under the Kantorovich metric. Therefore, while our theorem provides a quantitative statistical robustness guarantee under contamination, the practical utility of the bound depends on the nature of the contaminating distribution Q. When Q is adversarial or far from 
+
+P c, the bound may become loose, especially under coarse metrics such as total variation. Nonetheless, for many common function classes G, especially when Ξ is finite, dl G (P c, Q ) remains uniformly bounded, yielding an O(ε) guarantee even in adversarial settings. 
+
+With Theorems 5-7, we can conclude that under appropriate regularity conditions, both the op-timal value function and the corresponding policy obtained from the Bayesian distributionally robust Bellman equation maintain their reliability. This means the obtained solutions remain valid as long as the potential data contamination does not cause significant distribution shifts. Our theoretical analyses underscore the inherent robustness of the proposed method, affirming its reliability in real-world sce-narios. Consequently, the proposed episodic Bayesian DROC framework emerges as a robust approach for decision-making problems subject to distributional uncertainty and sample contamination. 25 5 Bellman-operator cutting-plane algorithm for episodic Bayesian DROC 
+
+As noted at the end of Section 2, it is necessary to solve the distributionally robust Bellman equation (2.13) at each episode in Algorithm 1, which is computationally challenging and raises tractability is-sues. To address this challenge, we develop a Bellman-operator cutting-plane (BOCP) method that constructs supporting cuts for the Bellman operator ˆLN . The method performs operator-level, mono-tone lower-envelope updates and yields an approximate value iteration with uniform convergence on 
+
+S under suitable assumptions. We use ∂ for Moreau–Rockafellar subdifferential [53] and ∂s, ∂a for block subdifferentials with respect to s and a, respectively. To ensure convexity of the value function associated with the Bellman equation (2.13), we impose the following structural assumption. 
+
+Assumption 3. (i) The state space S ⊂ Rm and action space A ⊂ Rn are convex and compact. (ii) For each ξ ∈ Ξ, the cost function C(s, a, ξ ) is convex and continuous in (s, a ) ∈ S × A . (iii) The state transition mapping g(s, a, ξ ) is affine, i.e., 
+
+g(s, a, ξ ) = A(ξ)s + B(ξ)a + b(ξ),
+
+where A : Ξ → Rm×m, B : Ξ → Rm×n and b : Ξ → Rm are measurable mappings. 
+
+In this section, for computational purposes we specialize to compact convex S and A, so that the stage cost is bounded, i.e., ¯C := sup s∈S , a ∈A , ξ ∈Ξ |C (s, a, ξ )| < ∞ and we work with the sup-norm (i.e., 
+
+w ≡ 1 and γw = γ). The affine transition structure is standard in the SOC literature; see, e.g., [1, 60]. Under Assumption 3, the Bellman operators associated with (1.2), (2.10), and (2.13) preserve convexity, and hence the corresponding value functions are convex [58]. Thus, the min-max formulation in DROC preserves the convex structure of the problem. Moreover, Theorem 1 ensures that the problem can be equivalently reformulated as a tractable mean-risk optimization problem. Specifically, to facilitate the numerical solution of the episodic Bayesian DROC problem, we reformulate (2.13) as follows: 
+
+VN (s) = inf  
+
+> a∈A
+
+ρN [C(s, a, ξ ) + γV N (g(s, a, ξ ))] = inf  
+
+> a∈A ,ζ
+
+λNJX
+
+> j=1
+
+plj,N 
+
+C(s, a, ξ j ) + γV N (g(s, a, ξ j ))  + (1 − λN )ζ
+
++ 1 − λN
+
+1 − υNJX
+
+> j=1
+
+pu−lj,N 
+
+C(s, a, ξ j ) + γV N (g(s, a, ξ j )) − ζ+ .
+
+The cutting-plane method iterates between a master problem step (solve the approximate problem under current cuts) and a separation step (add a new supporting cut at a trial point). We now present an explicit BOCP algorithm to approximate the optimal value function ˆV ∗ 
+
+> N
+
+. In our stationary infinite-horizon setting, we maintain a global cut pool for the value function. At each trial state ¯ s, we (i) solve the mean-risk master problem with the current cuts to obtain an approximate solution, and then (ii) generate an operator-level supporting cut at the current trial state ¯ s. Let V N denote the current piecewise-affine approximation of ˆV ∗ 
+
+> N
+
+, given by the maximum of the accumulated cuts. By construction, we have ˆV ∗ 
+
+> N
+
+≥ V N . Given a trial point ¯ s ∈ S , we determine the current approximate solution by solving the following master problem, which reformulates the mean-risk objective using auxiliary variables: (¯ a, ¯ζ, ¯y) ∈ arg min 
+
+> a∈A ,ζ,y ∈RJ
+> +
+
+λNJX
+
+> j=1
+
+plj,N 
+
+Cj (¯ s, a ) + γV N (Aj ¯s + Bj a + bj ) + (1 − λN )ζ + 1 − λN
+
+1 − υNJX
+
+> j=1
+
+pu−lj,N yj
+
+s.t. yj ≥ C j (¯ s, a ) + γV N (Aj ¯s + Bj a + bj ) − ζ, j = 1 , . . . , J. 
+
+For notational convenience, we denote Cj (s, a ) := C(s, a, ξ j ), Aj := A(ξj ), Bj := B(ξj ) and bj := b(ξj ). Utilizing the chain rule for subdifferentials, we derive a new cutting hyperplane at the trial point ¯ s in 26 the form ℓ(s) = v + q⊤(s − ¯s). Here 
+
+v =λNJX
+
+> j=1
+
+plj,N 
+
+Cj (¯ s, ¯a) + γV N (s′ 
+
+> j
+
+) + (1 − λN )¯ζ + 1 − λN
+
+1 − υNJX
+
+> j=1
+
+pu−lj,N 
+
+Cj (¯ s, ¯a) + γV N (s′ 
+
+> j
+
+) − ¯ζ+ ,q ∈λNJX
+
+> j=1
+
+plj,N 
+
+∂sCj (¯ s, ¯a) + γ(Aj )⊤∂sV N (s′ 
+
+> j
+
+) + 1 − λN
+
+1 − υNJX
+
+> j=1
+
+pu−lj,N ∂s
+
+Cj (¯ s, ¯a) + γV N (s′ 
+
+> j
+
+) − ¯ζ+ ,
+
+with s′ 
+
+> j
+
+= Aj ¯s+Bj ¯a+bj for simplicity. For each scenario j = 1 , . . . , J , the subdifferential of the positive part is: 
+
+∂s
+
+Cj (¯ s, ¯a) + γV N (s′ 
+
+> j
+
+) − ¯ζ+ = θj
+
+ ∂sCj (¯ s, ¯a) + γ(Aj )⊤∂sV N (s′ 
+
+> j
+
+) | θj ∈ Θj
+
+with Θj =
+
+
+
+{1}, if Cj (¯ s, ¯a) + γV N (s′ 
+
+> j
+
+) > ¯ζ
+
+[0 , 1] , if Cj (¯ s, ¯a) + γV N (s′ 
+
+> j
+
+) = ¯ζ
+
+{0}, if Cj (¯ s, ¯a) + γV N (s′ 
+
+> j
+
+) < ¯ζ. 
+
+(5.1) Here, we choose θj ∈ Θj , j = 1 , . . . , J such that PJj=1 pu−lj,N θj = 1 − υN . The justification for this construction will be given in Lemma 9. We maintain a global cut pool indexed by I. Each cut ℓη is an affine function generated at an anchor state ¯ sη , i.e., 
+
+ℓη (s) = vη + q⊤ 
+
+> η
+
+(s − ¯sη ), η ∈ I .
+
+Then, V N := max η∈I ℓη represents the current approximation to ˆV ∗ 
+
+> N
+
+by the global cut pool within episode N . For each scenario j, let ˆ η ∈ I be such that V N
+
+ s′
+
+> j
+
+ = ℓˆη
+
+ s′
+
+> j
+
+, i.e., ℓˆη is a supporting hyperplane of V N at s′ 
+
+> j
+
+. Then ∂sℓˆη
+
+ s′
+
+> j
+
+ ∈ ∂sV N
+
+ s′
+
+> j
+
+.With the above preparation, we can then develop the BOCP procedure for solving the mean-risk Bellman equation (2.13) at each specific episode N , stated as Algorithm 2. The BOCP algorithm can be regarded as an approximate value iteration procedure that iteratively refines a piecewise-linear lower approximation of the value function. At each step, it adds a supporting hyperplane to the epigraph of the Bellman operator’s value function approximation. 
+
+## 5.1 Convergence and sample complexity 
+
+Conceptually, BOCP connects distributionally robust optimization with approximate dynamic program-ming at the operator level. In each iteration k, the algorithm evaluates the Bellman operator ˆLN at ¯ sk
+
+by solving the mean-risk master problem (5.2). It then constructs a supporting cut, whose coefficients are determined by the optimal Karush-Kuhn-Tucker (KKT) multipliers a⋆, and incorporates this cut into the global lower envelope via (5.3)-(5.4); see Lemma 9. 
+
+Lemma 9. Suppose Assumption 3 holds. Let (¯ ak, ¯ζk, ¯y) be the optimal solution determined through 
+
+(5.2) and vk be the optimal value at ¯sk given in (5.3) . Then there exists a subgradient qk defined by 
+
+(5.4) such that for all s ∈ S , ˆLN (V kN )( s) ≥ vk + q⊤ 
+
+> k
+
+(s − ¯sk).
+
+Equivalently, the affine function ℓk+1 (s) := ˆLN (V kN )(¯ sk) + q⊤ 
+
+> k
+
+(s − ¯sk) is a supporting hyperplane of 
+
+ˆLN (V kN ) at ¯sk, i.e., ℓk+1 ≤ ˆLN (V kN ).Proof. For any fixed episode N and an iteration k, define 
+
+Fk(s) := ˆLN (V kN )( s) = inf  
+
+> a,ζ,y
+
+Φk(s, a, ζ, y ) := φk(s, a, ζ, y ) + δA(a) + δK(s, a, ζ, y ),
+
+where 
+
+φk(s, a, ζ, y ) := λNJX
+
+> j=1
+
+plj,N 
+
+Cj (s, a ) + γV kN (Aj s + Bj a + bj ) + (1 − λN )ζ + 1 − λN
+
+1 − υNJX
+
+> j=1
+
+pu−lj,N yj ,
+
+27 Algorithm 2 The BOCP algorithm for episodic Bayesian DROC  
+
+> 1:
+
+Input: current episode index N ; current state sN ; posterior μN ; maximum iteration number Kmax ,accuracy parameter ε. 
+
+> 2:
+
+Set ¯ s0 = sN , k = 0, ∆ 0 = + ∞ and initial lower approximation V 0 
+
+> N
+
+≡ − ¯C/(1 − γ).  
+
+> 3:
+
+while k < K max and ∆k > (1 − γ)ε do  
+
+> 4:
+
+Master problem at ¯sk: compute the control and auxiliary variables via the master problem (¯ ak, ¯ζk, ¯y) ∈ arg min 
+
+> a∈A ,ζ,y ∈RJ
+> +
+
+λNJX
+
+> j=1
+
+plj,N 
+
+h
+
+Cj (¯ sk, a ) + γV kN (Aj ¯sk + Bj a + bj )
+
+i
+
++ (1 − λN )ζ
+
++ 1 − λN
+
+1 − υNJX
+
+> j=1
+
+pu−lj,N yj ,
+
+s.t. yj ≥ C j (¯ sk, a ) + γV kN (Aj ¯sk + Bj a + bj ) − ζ, j = 1 , . . . , J. 
+
+(5.2)  
+
+> 5:
+
+Let a⋆j and b⋆j be the optimal dual multipliers for the constraints in (5.2), and define θj :=   
+
+> (1 −υN)a⋆j
+> (1 −λN)pu−lj,N
+
+. 
+
+> 6:
+
+Operator-level cut at ¯sk: compute the intercept and an operator-level subgradient 
+
+vk =λNJX
+
+> j=1
+
+plj,N 
+
+h
+
+Cj (¯ sk, ¯ak) + γV kN (Aj ¯sk + Bj ¯ak + bj )
+
+i
+
++ (1 − λN )¯ζk
+
++ 1 − λN
+
+1 − υNJX
+
+> j=1
+
+pu−lj,N 
+
+h
+
+Cj (¯ sk, ¯ak) + γV kN (Aj ¯sk + Bj ¯ak + bj ) − ¯ζk
+
+i+
+
+,
+
+(5.3) 
+
+qk ∈λNJX
+
+> j=1
+
+plj,N 
+
+h
+
+∂sCj (¯ sk, ¯ak) + γ(Aj )⊤∂sV kN (Aj ¯sk + Bj ¯ak + bj )
+
+i
+
++ 1 − λN
+
+1 − υNJX
+
+> j=1
+
+pu−lj,N θj
+
+h
+
+∂sCj (¯ sk, ¯ak) + γ(Aj )⊤∂sV kN (Aj ¯sk + Bj ¯ak + bj )
+
+i
+
+.
+
+(5.4) 
+
+Update: add the supporting cut ℓk+1 (s) = vk + q⊤ 
+
+> k
+
+(s − ¯sk) to approximate the value function and update the global underestimator by V k+1  
+
+> N
+
+:= max {V kN , ℓ k+1 }. 
+
+> 7:
+
+Bellman operator residual: ∆k+1 = ˆLN (V k+1  
+
+> N
+
+) − V k+1  
+
+> N∞
+
+. 
+
+> 8:
+
+Next trial state: randomly draw a sample ξj and set ¯ sk+1 = Aj ¯sk + Bj ¯ak + bj . 
+
+> 9:
+
+k ← k + 1.  
+
+> 10:
+
+end while  
+
+> 11:
+
+return Approximate optimal value function V N := V kN for the current episode N .28 and K := 
+
+n
+
+(s, a, ζ, y ) : yj ≥ G j (s, a, ζ ) := Cj (s, a ) + γV kN (Aj s + Bj a + bj ) − ζ, y j ≥ 0, ∀j
+
+o
+
+. Here δA
+
+and δK are indicator functions. Specifically, δA(x) := 0 if x ∈ A and + ∞ otherwise; δK is defined analogously. Let (¯ ak, ¯ζk, ¯y) be an optimal solution of the master (5.2) at ¯ sk and let ( a⋆, b⋆) ∈ RJ 
+
+> +
+
+× RJ
+
+> +
+
+be the associated optimal multipliers such that the following KKT conditions hold: 
+
+(stationarity in a)
+
+0 ∈ ∂a
+
+h
+
+λNJX
+
+> j=1
+
+plj,N 
+
+ Cj (¯ sk, a ) + γV kN (Aj ¯sk + Bj a + bj )
+
++
+
+> J
+
+X
+
+> j=1
+
+a⋆j
+
+ Cj (¯ sk, a ) + γV kN (Aj ¯sk + Bj a + bj )i
+
+> a=¯ ak
+
++ NA(¯ ak)(5.5) 
+
+(stationarity in ζ) 0 = (1 − λN ) −
+
+> J
+
+X
+
+> j=1
+
+a⋆j (5.6) 
+
+(stationarity in y) 0 = 1 − λN
+
+1 − υN
+
+pu−lj,N − a⋆j − b⋆j , j = 1 , . . . , J (5.7) 
+
+(complementary slackness) a⋆j
+
+ ¯yj − G j (¯ sk, ¯ak, ¯ζk) = 0 , b⋆j ¯yj = 0 , j = 1 , . . . , J. (5.8) Here NA denotes the normal cone of A. Define 
+
+hj (s, a, ζ, y ) := Gj (s, a, ζ ) − yj , lj (s, a, ζ, y ) := −yj .
+
+Then the normal cone admits the subgradient representation 
+
+NK(¯ sk, ¯ak, ¯ζk, ¯y) = 
+
+n JX
+
+> j=1
+
+aj νj +
+
+> J
+
+X
+
+> j=1
+
+bj ηj : a, b ∈ RJ
+
+> +
+
+, ν j ∈ ∂h j (¯ sk, ¯ak, ¯ζk, ¯y), η j ∈ ∂l j (¯ sk, ¯ak, ¯ζk, ¯y),
+
+aj hj (¯ sk, ¯ak, ¯ζk, ¯y) = 0 , bj lj (¯ sk, ¯ak, ¯ζk, ¯y) = 0 
+
+o
+
+.
+
+For each j and any dj ∈ ∂V kN (Aj ¯sk + Bj ¯ak + bj ), the affine chain rule in [53, Thm. 23.9] yields 
+
+∂s
+
+V kN (Aj s + Bj a + bj )   
+
+> (s,a )=(¯ sk,¯ak)
+
+= ( Aj )⊤dj , ∂a
+
+V kN (Aj s + Bj a + bj )   
+
+> (s,a )=(¯ sk,¯ak)
+
+= ( Bj )⊤dj .
+
+Therefore, selecting νj =  ∂sCj (¯ sk, ¯ak)+ γ(Aj )⊤dj , ∂ aCj (¯ sk, ¯ak)+ γ(Bj )⊤dj , −1, −ej
+
+ ∈ ∂h j (¯ sk, ¯ak, ¯ζk, ¯y),
+
+and ηj = (0 , 0, 0, −ej ) ∈ ∂l j (¯ sk, ¯ak, ¯ζk, ¯y), where ej is the j-th unit vector in RJ , we can deduce that 
+
+w⋆ := PJj=1 a⋆j νj + PJj=1 b⋆j ηj ∈ N K(¯ sk, ¯ak, ¯ζk, ¯y). Since φk is continuous at (¯ sk, ¯ak, ¯ζk, ¯y), the Moreau–Rockafellar subdifferential sum rule (see [53, Thm. 23.8]) gives 
+
+∂φ k(¯ sk, ¯ak, ¯ζk, ¯y) + ∂δ A(¯ ak) + ∂δ K(¯ sk, ¯ak, ¯ζk, ¯y) ⊂ ∂Φk(¯ sk, ¯ak, ¯ζk, ¯y).
+
+Recall that individual blocks for x := ( xs, x a, x ζ , x y ) ∈ ∂φ k(¯ sk, ¯ak, ¯ζk, ¯y) are 
+
+xs = λNJX
+
+> j=1
+
+plj,N 
+
+∂sCj (¯ sk, ¯ak) + γ(Aj )⊤dj
+
+,xa = λNJX
+
+> j=1
+
+plj,N 
+
+∂aCj (¯ sk, ¯ak) + γ(Bj )⊤dj
+
+,xζ = (1 − λN ), xy = 1 − λN
+
+1 − υN
+
+(pu−l 
+
+> 1,N
+
+, . . . , p u−lJ,N ).
+
+We now show that there exist x⋆ := ( x⋆s , x ⋆a, x ⋆ζ , x ⋆y ) ∈ ∂φ k(¯ sk, ¯ak, ¯ζk, ¯y) and u⋆a ∈ N A(¯ ak) such that 
+
+x⋆ + (0 , u ⋆a, 0, 0) + w⋆ = ( qk, 0, 0, 0) ∈ ∂Φk(¯ sk, ¯ak, ¯ζk, ¯y).
+
+29 (i) y-block: For each j, by (5.7) we have that  x⋆y + w⋆y
+
+ 
+
+> j
+
+= 1−λN 
+
+> 1−υN
+
+pu−lj,N − (a⋆j + b⋆j ) = 0 .
+
+(ii) ζ-block: By (5.6), x⋆ζ + w⋆ζ = (1 − λN ) − PJj=1 a⋆j = 0. (iii) a-block: Define ¯φ(a) := λNJX
+
+> j=1
+
+plj,N 
+
+h
+
+Cj (¯ sk, a )+ γV kN (Aj ¯sk +Bj a+bj )
+
+i
+
++
+
+> J
+
+X
+
+> j=1
+
+a⋆j
+
+h
+
+Cj (¯ sk, a )+ γV kN (Aj ¯sk +Bj a+bj )
+
+i
+
+.
+
+By (5.5), 0 ∈ ∂a ¯φ(¯ ak)+ NA(¯ ak). Hence there exist r⋆a ∈ ∂a ¯φ(¯ ak) and u⋆a ∈ N A(¯ ak) with r⋆a +u⋆a = 0. This means that there exists d⋆j ∈ ∂V kN (Aj ¯sk + Bj ¯ak + bj ) such that 
+
+r⋆a =
+
+> J
+
+X
+
+> j=1
+
+ λN plj,N + a⋆j
+
+ ∂aCj (¯ sk, ¯ak) + γ(Bj )⊤d⋆j
+
+.
+
+Thus, we have x⋆a + w⋆a = r⋆a and then x⋆a + w⋆a + u⋆a = 0. (iv) s-block: With the consistent choice of d⋆ in (iii), x⋆s + w⋆s = λN
+
+PJj=1 plj,N 
+
+∂sCj (¯ sk, ¯ak) + 
+
+γ(Aj )⊤d⋆j
+
+ + PJj=1 a⋆j
+
+∂sCj (¯ sk, ¯ak) + γ(Aj )⊤d⋆j
+
+. Define θj := (1 −υN )a⋆j 
+
+> (1 −λN)pu−lj,N
+
+∈ [0 , 1], then we have 
+
+PJj=1 pu−lj,N θj = 1 − υN by (5.6). Thus 
+
+x⋆s +w⋆s = λNJX
+
+> j=1
+
+plj,N 
+
+∂sCj (¯ sk, ¯ak)+ γ(Aj )⊤d⋆j
+
++ 1 − λN
+
+1 − υNJX
+
+> j=1
+
+pu−lj,N θj
+
+∂sCj (¯ sk, ¯ak)+ γ(Aj )⊤d⋆j
+
+ =: qk.
+
+Combining (i)-(iv) gives ( qk, 0, 0, 0) ∈ ∂Φk(¯ sk, ¯ak, ¯ζk, ¯y). Therefore, for all ( s, a, ζ, y ), we have Φ k(s, a, ζ, y ) ≥
+
+Φk(¯ sk, ¯ak, ¯ζk, ¯y) + q⊤ 
+
+> k
+
+(s − ¯sk). Taking the infimum over ( a, ζ, y ) yields 
+
+Fk(s) = inf  
+
+> a,ζ,y
+
+Φk(s, a, ζ, y ) ≥ Φk(¯ sk, ¯ak, ¯ζk, ¯y) + q⊤ 
+
+> k
+
+(s − ¯sk) = Fk(¯ sk) + q⊤ 
+
+> k
+
+(s − ¯sk).
+
+Therefore, qk ∈ ∂sFk(¯ sk) = ∂s ˆLN (V kN )(¯ sk). Since vk := Fk(¯ sk), we obtain ˆLN (V kN )( s) ≥ vk + q⊤ 
+
+> k
+
+(s − ¯sk), ∀s ∈ S .
+
+This completes the proof. By Lemma 9, the new cut satisfies ℓk+1 ≤ ˆLN (V kN ). Since ˆLN is monotone and V kN ≤ ˆV ∗ 
+
+> N
+
+(by induction), we have 
+
+V k+1  
+
+> N
+
+= max {V kN , ℓ k+1 } ≤ max { ˆV ∗ 
+
+> N
+
+, ˆLN (V kN )} ≤ ˆV ∗ 
+
+> N
+
+,
+
+so the envelope remains a global underestimator. 
+
+Lemma 10 (Monotone lower bounds) . Suppose Assumption 3 holds. Then the BOCP update produces a sequence {V kN }k≥0 such that, for all k,
+
+V kN ≤ V k+1  
+
+> N
+
+≤ ˆV ∗ 
+
+> N
+
+.
+
+In particular, the pointwise limit V ∞ 
+
+> N
+
+(s) := lim k→∞ V kN (s) exists and satisfies V ∞ 
+
+> N
+
+≤ ˆV ∗ 
+
+> N
+
+.Proof. We prove the monotonicity by induction from k = 0. Since V 0 
+
+> N
+
+≤ ˆV ∗ 
+
+> N
+
+, by monotonicity of ˆLN ,we have 
+
+ℓ1 ≤ ˆLN (V 0 
+
+> N
+
+) ≤ ˆLN ( ˆV ∗ 
+
+> N
+
+) = ˆV ∗ 
+
+> N
+
+.
+
+where the first inequality follows from Lemma 9. Hence V 1 
+
+> N
+
+= max {V 0 
+
+> N
+
+, ℓ 1} ≤ ˆV ∗ 
+
+> N
+
+and V 1 
+
+> N
+
+≥ V 0
+
+> N
+
+pointwise. Analogous to the above proof for k = 0, we can derive the result for all k. Since V kN is nondecreasing in k and bounded above by ˆV ∗ 
+
+> N
+
+for each s, the pointwise limit V ∞ 
+
+> N
+
+(s) := lim k→∞ V kN (s)exists. 30 To show the convergence of the BOCP algorithm, we need the following assumption. 
+
+Assumption 4. For any fixed episode N , assume that the sequence {¯sk} generated in Algorithm 2 satisfies that for every s ∈ S , ε > 0 and K ∈ N, there exists an index k ≥ K such that ∥¯sk − s∥ < ε a.s. 
+
+Assumption 4 ensures that cuts are generated throughout the state space, guaranteeing uniform convergence. When S is finite, Assumption 4 reduces to the standard requirement that each trial state is visited infinitely many times a.s., which is commonly used in [16, 48]. 
+
+Theorem 8 (Convergence of the BOCP algorithm) . Suppose that Assumptions 3-4 hold. For any fixed episode N , if V ∞ 
+
+> N
+
+is continuous on S, then {V kN } generated by Algorithm 2 converges to ˆV ∗ 
+
+> N
+
+, that is, as k → ∞ ,
+
+V kN (s) ↑ ˆV ∗ 
+
+> N
+
+(s) for all s ∈ S , and ∥V kN − ˆV ∗ 
+
+> N
+
+∥∞ → 0.
+
+Proof. Let C∞ be the collection of all generated cuts, i.e., C∞ = {ℓk+1 }k≥0. By construction, 
+
+V kN = max V 0 
+
+> N
+
+, ℓ 1, . . . , ℓ k , V ∞ 
+
+> N
+
+= sup V 0 
+
+> N
+
+, ℓ : ℓ ∈ C∞ .
+
+For each ℓk+1 ∈ C∞, we have ℓk+1 ≤ ˆLN (V kN ) by Lemma 9. Moreover, by monotonicity of ˆLN and 
+
+V kN ≤ V ∞ 
+
+> N
+
+, it follows that 
+
+ℓk+1 ≤ ˆLN (V kN ) ≤ ˆLN (V ∞ 
+
+> N
+
+).
+
+Taking the supremum over all cuts with V 0 
+
+> N
+
+≤ ˆLN (V ∞ 
+
+> N
+
+) yields 
+
+V ∞ 
+
+> N
+
+≤ ˆLN (V ∞ 
+
+> N
+
+). (5.9) At each iteration k, by the definition of ℓk+1 , we have ℓk+1 (¯ sk) = ˆLN (V kN )(¯ sk), hence 
+
+V k+1  
+
+> N
+
+(¯ sk) = max {V kN (¯ sk), ℓ k+1 (¯ sk)} ≥ ˆLN (V kN )(¯ sk). (5.10) For any fixed s ∈ S , Assumption 4 ensures that there exists a subsequence {¯skj } such that ¯ skj → s as 
+
+j → ∞ . Taking k = kj in (5.10) and using V kj +1  
+
+> N
+
+≤ V ∞ 
+
+> N
+
+yields 
+
+V ∞ 
+
+> N
+
+(¯ skj ) ≥ V kj +1  
+
+> N
+
+(¯ skj ) ≥ ˆLN (V kj 
+
+> N
+
+)(¯ skj ). (5.11) Next we justify that ˆLN (V kj 
+
+> N
+
+)(¯ skj ) → ˆLN (V ∞ 
+
+> N
+
+)(¯ skj ). Since each V kN is continuous and V kN ↑ V ∞
+
+> N
+
+pointwise on the compact set S, with V ∞ 
+
+> N
+
+continuous by assumption, Dini’s theorem implies 
+
+∥V kN − V ∞ 
+
+> N
+
+∥∞ → 0.
+
+Moreover, ˆLN is a γ-contraction under ∥ · ∥ ∞, hence 
+
+∥ ˆLN (V kN ) − ˆLN (V ∞ 
+
+> N
+
+)∥∞ ≤ γ∥V kN − V ∞ 
+
+> N
+
+∥∞ → 0. (5.12) Combining (5.11) and (5.12) with the continuity of both V ∞ 
+
+> N
+
+and ˆLN (V ∞ 
+
+> N
+
+) on S, letting j → ∞ gives 
+
+V ∞ 
+
+> N
+
+(s) ≥ ˆLN (V ∞ 
+
+> N
+
+)( s). Since s is arbitrary, this yields 
+
+V ∞ 
+
+> N
+
+≥ ˆLN (V ∞ 
+
+> N
+
+). (5.13) From (5.9) and (5.13), we have V ∞ 
+
+> N
+
+= ˆLN (V ∞ 
+
+> N
+
+), i.e., V ∞ 
+
+> N
+
+is a fixed point of ˆLN . By Lemma 3, ˆLN admits a unique fixed point ˆV ∗ 
+
+> N
+
+. Therefore V ∞ 
+
+> N
+
+= ˆV ∗ 
+
+> N
+
+. Recalling that we have already shown ∥V kN −V ∞ 
+
+> N
+
+∥∞ → 0by Dini’s theorem, we conclude that ∥V kN − ˆV ∗ 
+
+> N
+
+∥∞ → 0.
+
+Remark 6. A sufficient condition for the continuity of V ∞ 
+
+> N
+
+is a uniform bound on cut slopes: assume there exists L < ∞ such that ∥qη ∥ ≤ L for all cuts ℓη (s) = vη +q⊤ 
+
+> η
+
+(s−¯sη ). Then each V kN = max η≤k ℓη is 
+
+L-Lipschitz on S, hence the pointwise limit V ∞ 
+
+> N
+
+= sup k V kN is also L-Lipschitz and therefore continuous. Such a bound is standard under Lipschitz regularity: if Cj (·, a ) is LC -Lipschitz in s uniformly in a and 
+
+∥Aj ∥ ≤ Lg with γL g < 1, then the fixed point ˆV ∗ 
+
+> N
+
+is Lipschitz with constant LC 
+
+> 1−γL g
+
+(see Lemma 8), and the BOCP subgradients qk remain uniformly bounded. 
+
+31 As shown in Lemma 9, the BOCP algorithm builds operator-level cuts for the Bellman operator ˆLN
+
+and maintains a single global cut pool for the stationary value function. Theorem 8 demonstrates that BOCP realizes a fixed-point computation of the Bayesian DROC Bellman equation since the global lower envelope increases monotonically and converges uniformly on S to the unique fixed point ˆV ∗ 
+
+> N
+
+. Thus BOCP provides a convergent and computationally tractable method for solving the infinite-horizon Bayesian DROC Bellman equation. Recall that Algorithm 2 provides the solution of (2.13) for fixed episode N , we now consider the sample complexity of Algorithm 1 by determining a stopping episode Nmax , which is based on Propo-sition 2. 
+
+Proposition 3 (Sample complexity) . Suppose Assumption 3 holds. For any fixed ε > 0 and δ ∈ (0 , 1) ,when Nmax := O
+
+ J log J+log(1 /δ )
+
+> ε2
+
+
+
+, we have 
+
+P
+
+ ˆV ∗ 
+
+> Nmax
+
+− V ∗ 
+
+> ∞
+
+< ε 
+
+
+
+≥ 1 − δ. 
+
+Proof. By Proposition 2, for any fixed ε > 0 and δ ∈ (0 , 1), there exist c1, . . . , c 3 > 0 independent of 
+
+J, ε, δ such that 
+
+N (J, ε, δ ) := max 
+
+n
+
+c1 Jε
+
+|{z} 
+
+> N1(J,ε )
+
+, c 2 J+log(1 /δ )
+
+> ε2
+
+| {z }
+
+> N2(J,ε,δ )
+
+, c 3 J log Jε2
+
+| {z }
+
+> N3(J,ε )
+
+o
+
+ensures P
+
+ ˆV ∗ 
+
+> N
+
+− V ∗ 
+
+> ∞
+
+< ε 
+
+
+
+≥ 1−δ for all N ≥ N (J, ε, δ ). Therefore, picking Nmax = O
+
+ J log J+log(1 /δ )
+
+> ε2
+
+
+
+yields the claim. 
+
+Remark 7. The stopping criterion ∆k := ˆLN (V kN ) − V kN ∞ ≤ (1 − γ)ε ensures ∥V kN − ˆV ∗ 
+
+> N
+
+∥∞ ≤∥ ˆLN (V kN ) − V kN ∥∞/(1 − γ) ≤ ε. Combining this with Proposition 3 gives 
+
+P
+
+
+
+V kNmax − V ∗ 
+
+> ∞
+
+< 2ε
+
+
+
+≥ 1 − δ. 
+
+This stopping test is an ideal (function-space) criterion on continuous state spaces. In practice, one typically evaluates the Bellman residual on a discrete subset of S. The quantitative stability results for this kind of discretization can be found in [40]. 
+
+To evaluate the performance of the corresponding policy induced by V N (s), we compute state-control pairs sequentially in forward time starting with initial state ˆ s1. At stage t = 1 , . . . , given the current state ˆ st, the corresponding control ˆ at is determined by (ˆ at, ˆζt) ∈ arg min 
+
+> a∈A ,ζ
+
+λNJX
+
+> j=1
+
+plj,N 
+
+Cj (ˆ st, a ) + γV N (Aj ˆst + Bj a + bj ) + (1 − λN )ζ
+
++ 1 − λN
+
+1 − υNJX
+
+> j=1
+
+pu−lj,N 
+
+Cj (ˆ st, a ) + γV N (Aj ˆst + Bj a + bj ) − ζ+ .
+
+By drawing an i.i.d. sample path { ˆξt, t = 1 , . . . }, we can determine the next state ˆ st+1 = A
+
+ ˆξt
+
+
+
+ˆst +
+
+B
+
+ ˆξt
+
+
+
+ˆat + b
+
+ ˆξt
+
+
+
+. With this sample path, an unbiased estimator of the policy value is: 
+
+> ∞
+
+X
+
+> t=1
+
+γt−1C
+
+
+
+ˆst, ˆat, ˆξt
+
+
+
+. (5.14) In practice, we can use the truncation at a finite horizon T to approximate the infinite sum in (5.14), where the truncation error satisfies: 
+
+> ∞
+
+X
+
+> t=1
+
+γt−1C
+
+
+
+ˆst, ˆat, ˆξt
+
+
+
+−
+
+> T
+
+X
+
+> t=1
+
+γt−1C
+
+
+
+ˆst, ˆat, ˆξt
+
+
+
+≤ (1 − γ)−1γT ¯C.
+
+32 Equivalently, it suffices to choose T ≥ log( ϵ(1 −γ)/ ¯C)log γ , which guarantees that the truncation error does not exceed the prescribed tolerance ϵ.
+
+## 5.2 Episodic warm start 
+
+Algorithm 2 solves the Bayesian DROC Bellman equation for a fixed episode N , where the posterior-induced risk functional ρN and hence the Bellman operator ˆLN are fixed. In the multi-episode setting, instead of restarting BOCP from scratch at each episode, it is natural to warm-start episode N +1 using the cut pool obtained at episode N .The key difficulty is that the Bellman operator changes across episodes: ˆLN̸ = ˆLN +1 because (λN , υ N , P lN , P u−lN ) depend on the updated posterior. Therefore, a lower approximation V N that un-derestimates ˆV ∗ 
+
+> N
+
+does not automatically remain a valid lower bound for ˆV ∗ 
+
+> N+1
+
+. To safely reuse cuts, we first provide the following standard result for the episodic Bellman operator ˆLN +1 .
+
+Lemma 11 (Theorem 1, [40]) . If a bounded function V satisfies V ≤ ˆLN +1 (V ), then V ≤ ˆV ∗ 
+
+> N+1
+
+.Similarly, if V ≥ ˆLN +1 (V ), then V ≥ ˆV ∗ 
+
+> N+1
+
+.
+
+Let ℓ(s) = q⊤s + v be an affine cut generated in episode N . We call ℓ (N +1)-valid if it is a sub-solution of episode N +1: 
+
+ℓ(s) ≤ ˆLN +1 (ℓ)( s), ∀s ∈ S .
+
+Equivalently, it suffices to check the nonnegativity of the worst violation: ∆N →N +1 (ℓ) := min 
+
+> s∈S
+
+  ˆLN +1 (ℓ)( s) − ℓ(s) ≥ 0. (5.15) Under the mean-risk reformulation (2.13), the minimization in (5.15) admits an explicit convex-program form: ∆N →N +1 (ℓ) = min 
+
+> s∈S , a ∈A , ζ, y ∈RJ
+> +
+
+λN +1 
+
+> J
+
+X
+
+> j=1
+
+plj,N +1 
+
+
+
+Cj (s, a ) + γℓ (Aj s + Bj a + bj )
+
+
+
++ (1 − λN +1 )ζ
+
++ 1 − λN +1 
+
+1 − υN +1 
+
+> J
+
+X
+
+> j=1
+
+pu−lj,N +1 yj − ℓ(s)s.t. yj ≥ C j (s, a ) + γℓ (Aj s + Bj a + bj ) − ζ, j = 1 , . . . , J. 
+
+(5.16) Under Assumption 3, (5.16) is a convex optimization problem. Furthermore, if S, A are polyhedral and 
+
+Cj is piecewise-linear convex, then (5.16) reduces to a linear program. Let CN be the cut pool obtained at episode N , and define the subset of ( N +1)-valid cuts by 
+
+Cvalid  
+
+> N
+
+:= {ℓ ∈ CN : ∆ N →N +1 (ℓ) ≥ 0}.
+
+Then the maximum of valid cuts forms a valid warm-start lower bound from the following proposition. 
+
+Proposition 4. Let V 0 
+
+> N+1
+
+(s) := max  − ¯C/(1 − γ), max ℓ∈Cvalid  
+
+> N
+
+ℓ(s) . Then V 0  
+
+> N+1
+
+satisfies V 0  
+
+> N+1
+
+≤
+
+ˆLN +1 (V 0 
+
+> N+1
+
+), and hence V 0  
+
+> N+1
+
+≤ ˆV ∗ 
+
+> N+1
+
+.Proof. For each ℓ ∈ Cvalid  
+
+> N
+
+we have ℓ ≤ ˆLN +1 (ℓ) by definition. Let V (s) := max ℓ∈Cvalid  
+
+> N
+
+ℓ(s). Then for any ℓ we have ℓ ≤ V , so by monotonicity ℓ ≤ ˆLN +1 (ℓ) ≤ ˆLN +1 (V ). Taking the maximum over ℓ yields 
+
+V ≤ ˆLN +1 (V ). The baseline constant − ¯C/(1 − γ) is also a valid global lower bound, and the same monotonicity argument shows that V 0  
+
+> N+1
+
+= max {− ¯C/(1 − γ), V } remains a sub-solution. The claim follows from Lemma 11. In summary, this section develops the BOCP algorithm as a computationally tractable method for solving episodic Bayesian DROC problems. Its convergence guarantees, together with the proposed warm-start mechanism across posterior updates, provide a practical framework for infinite-horizon dis-tributionally robust control under episodic Bayesian learning. 33 6 Numerical results 
+
+In this section, we illustrate the theoretical results and evaluate Algorithms 1 and 2 on a single-product inventory control problem under the episodic Bayesian DROC formulation. All experiments were con-ducted on a 64-bit PC with 12 GB RAM and a 3.20 GHz processor. We consider an infinite-horizon stationary inventory problem discussed in [58]: min π∈Π EπP c
+
+P ∞ 
+
+> t=1
+
+γt−1 (ca t + ψ (st + at, ξ t)) 
+
+s.t. st+1 = st + at − ξt, a t ≥ 0where ψ(y, d ) := b[d − y]+ + h[y − d]+, c, b, h are the per-unit ordering cost, backorder penalty cost, holding cost, respectively, satisfying b > c > 0. Here, st represents the inventory level at time t, at
+
+denotes the order quantity, and the demand ξt ≥ 0 is an i.i.d. random variable. The inventory problem admits an optimal base-stock policy π∗(s) = [ s∗ − s]+, where the optimal threshold s∗ = F −1(κ) is determined by 
+
+F (ν) := P c(ξ ≤ ν) = EP c
+
+1{ξ∈(−∞ ,ν ]}
+
+ , κ = b − (1 − γ)cb + h
+
+as in [57, Section 1.2]. According to [58], for s ≤ s∗, we have 
+
+V ∗(s) = −cs + (1 − γ)−1EP c [γcξ + (1 − γ)cs ∗ + ψ (s∗, ξ )] . (6.1) We adopt the following parameter configuration: c = 1, h = 2, b = 10, and ξ follows an exponential distribution Exp(10), which is assumed to be the clean environment. To match the finite-support assumption, we truncate the demand at U = 50 (close to F −1(0 .99)) and split [0 , U ] into J = 50 equal-width intervals with edges uj := jU/J = j and grid points ξj = j − 12 . The normalized bin probabilities are pj =  F (uj ) − F (uj−1)/F (U ). Using the closed-form solution (6.1), we approximate the benchmark value function V ∗ with 10 5 samples. In episode N , we update the Bayesian posterior by (2.3) using the observed data and construct the ambiguity set (2.5) corresponding to the posterior distribution. We then compute the episode-wise optimal value function ˆV ∗ 
+
+> N
+
+from the following Bellman equation: 
+
+VN (s) = inf  
+
+> a∈A
+
+sup  
+
+> P∈P μN
+
+EP [ca + ψ (s + a, ξ ) + γV N (s + a − ξ)] . (6.2) Here, we choose the credible level α = 0 .2 to construct PμN and the discount factor γ = 0 .95. We first plot the integrated gap between ˆV ∗ 
+
+> N
+
+and V ∗, computed as R 
+
+> S
+
+ˆV ∗ 
+
+> N
+
+(s) − V ∗(s) dϖ ∗(s), where ϖ∗
+
+is the stationary distribution under true optimal policy π∗ of the original problem. The procedure is replicated 100 times to reduce sampling variability. 
+
+Figure 1: Convergence of the integrated gap of the optimal value function across episodes. As shown in Figure 1, the episodic Bayesian DROC approach yields an optimal value function that converges to V ∗ as the episode index increases. Next, we empirically validate the quantitative statistical 34 robustness result under a Huber-type perturbation of the clean environment P c = Exp(10). In this experiment, T s0 
+
+> N
+
+denotes the optimal value at the reference state s0 = 0 obtained from the Bayesian DROC model constructed using N = 500 observed samples. For each shift level ε ∈ [0 , 0.3], we define a perturbed distribution ˜P cε := (1 − ε)Exp(10) + εExp(40). Note that ˜P cε is a mixture distribution rather than a single exponential distribution. Hence, the perturbed environment is no longer within the nominal exponential family, and the experiment reflects a genuine distribution shift away from the clean environment. We quantify the input perturbation by the one-dimensional Kantorovich distance 
+
+dl K (P c, ˜P cε ), which increases approximately linearly with the shift level ε under this perturbation family. We generate R = 1000 independent datasets ⃗ ˆξ(r) 
+
+> N
+
+∼ (P c)⊗N and ⃗ ˜ξ(r) 
+
+> N
+
+∼ ( ˜P cε )⊗N . This produces two empirical samples T s0 
+
+> N
+
+(⃗ ˆξ(r) 
+
+> N
+
+) and T s0 
+
+> N
+
+(⃗ ˜ξ(r) 
+
+> N
+
+). We then estimate the empirical Kantorovich distance on R
+
+as 
+
+dl K
+
+
+
+(P c)⊗N ◦ (T s0 
+
+> N
+
+)−1, ( ˜P cε )⊗N ◦ (T s0 
+
+> N
+
+)−1
+
+≈ 1
+
+R
+
+> R
+
+X
+
+> r=1
+
+T(r) − ˜T(r) ,
+
+where {T(r)} and { ˜T(r)} are the sorted samples of {T s0 
+
+> N
+
+(⃗ ˆξ(r) 
+
+> N
+
+)}Rr=1 and {T s0 
+
+> N
+
+(⃗ ˜ξ(r) 
+
+> N
+
+)}Rr=1 . The left panel of Figure 2 depicts a linear relationship between dl K (P c, ˜P cε ) and ε as theoretically guaranteed. Based on the approximate linear relationship, we plot the right panel with ε as horizontal axis. The figure shows a sublinear relationship between dl K
+
+ (P c)⊗N ◦(T s0 
+
+> N
+
+)−1, ( ˜P cε )⊗N ◦(T s0 
+
+> N
+
+)−1 and ε. The latter relationship is consistent with Theorem 7, which predicts a controlled growth of the estimator-law deviation as the underlying distribution shift increases. 
+
+Figure 2: Quantitative statistical robustness experiment at s0 = 0. We then demonstrate the computational performance of Algorithm 2 on this problem. We consider two variants of Algorithm 2. Both variants solve the episodic Bayesian DROC Bellman equation via the BOCP scheme, but they differ in whether the lower approximation is warm-started by reusing cuts from the previous episode. The concrete results are plotted in Figure 3. The left panel in Figure 3 plots the integrated gap between the episode-wise optimal value function ˆV ∗ 
+
+> N
+
+and the BOCP lower approximation V kN under the stationary distribution ϖN induced by the episodic optimal policy ˆ π∗ 
+
+> N
+
+,i.e., R
+
+> S
+
+  ˆV ∗ 
+
+> N
+
+(s) − V kN (s)dϖ N (s). We drop the absolute value since V kN is a lower bound of ˆV ∗ 
+
+> N
+
+by construction. The vertical dashed lines indicate the switches between successive episodes. The right panel in Figure 3 reports the within-episode convergence of BOCP in the episode N = 100 by plotting the Bellman residual Rk = ∥ ˆLN (V kN ) − V kN ∥∞ against the BOCP iteration index k (log scale). Overall, Figure 3 demonstrates that warm-start yields a much smaller initial gap at the beginning of each episode and accelerates convergence, illustrating the benefit of safely reusing valid cuts across posterior updates. In the following, we compare the proposed episodic Bayesian DROC approach with episodic Bayesian SOC in [58] and an extension of distributionally robust stochastic control (denoted by DRSC) proposed in [56]. Notably, DRSC only considers a single episode, meaning that the ambiguity set PDRSC is only 35 (a) Integrated gap across episodes N = 1 , . . . , 5. (b) Bellman residual at episode N = 100. 
+
+Figure 3: BOCP warm-start vs. cold-start for the episodic Bayesian DROC. constructed once with some pre-collected historical data set. Following the setting in [58], we implement an episodic extension: at the beginning of each episode, we reconstruct the ambiguity set using all data collected so far and shrink its size at the standard rate O(t−1/2), where t denotes the cumulative number of observations up to the current episode. Specifically, we set the DRSC ambiguity set as a L∞ ball centered at the nominal distribution ˆP E 
+
+> N
+
+, i.e., PDRSC  
+
+> t
+
+= {Q ∈ P(Ξ) : ∥Q − ˆP E 
+
+> t
+
+∥∞ ≤ 110 √t } and the robust policy is obtained by solving the corresponding distributionally robust Bellman equation under 
+
+PDRSC  
+
+> t
+
+.Figure 4 compares the out-of-sample performance of the learned policies under three different risk measures (mean, CVaR 0.95 , and downside semi-deviation) across episodes under a clean environment Exp(10). For each episode index N , we evaluate the episode-wise optimal policy ˆ π∗ 
+
+> N
+
+under the true demand distribution P c using 2000 independent rollouts. Each rollout produces a discounted cost sample PTt=1 γt−1 ca t + ψ(st + at, ξ t), where at = ˆ π∗ 
+
+> N
+
+(st) with truncation T = 250. We then compute the CVaR 0.95 and the downside semi-deviation of the discounted total cost from the resulting cost samples. To account for randomness in the training data and posterior updates, we repeat the entire procedure over 100 independent replications. The curves report the replication mean, and the shaded bands show 95% confidence intervals based on the standard error across replications. Figure 5 further compares the expected out-of-sample discounted cost of the learned policies across episodes under contaminated test environments. Specifically, in each episode N , the training data are generated from the clean environment P c and the learned policy is then evaluated under the shifted test environment ˜P cε with ε = 0 .3, considering two shift mechanisms: (i) Huber mixture ˜P cε = (1 −
+
+ε)Exp(10)+ εExp(30); (ii) scale shift ˜P cε = Exp(10(1+ ε)). The left panels show the average performance of all methods when deployed in the contaminated test environment ˜P cε . In contrast, the right panels focus on the two Bayesian methods and disentangle the effect of distribution shift by evaluating the learned policies under both the clean environment P c and the contaminated environment ˜P cε within the same plot. This visualization highlights robustness under contamination or distribution shift when the learned Bayesian policies are deployed in shifted environments. It should be noted that this experiment is different from the quantitative statistical robustness experiment in Figure 2: there the episode index 
+
+N is fixed and the perturbation level ε varies, whereas here ε is fixed and the episode index N increases. Nevertheless, the two experiments are consistent: for a fixed distribution shift, the induced estimation error remains uniformly controlled with respect to N . This helps explain why the gap between the clean-test and shifted-test performance curves remains contained as the episode index increases. Overall, Figures 4–5 report the out-of-sample discounted costs of the learned policies as the episode 
+
+N increases. In the clean environment (Figure 4), the episodic Bayesian SOC method tends to achieve a lower expected cost. A possible explanation is that it optimizes a risk-neutral posterior-averaged objective under the epistemic uncertainty. In contrast, the episodic Bayesian DROC method exhibits a 36 (a) Expected cost. 
+
+(b) CVaR 0.95 .
+
+(c) Downside semi-deviation. 
+
+Figure 4: Out-of-sample discounted cost under the true environment versus episode index N .37 (a) Huber mixture case. 
+
+> (b) Scale shift case.
+
+Figure 5: Out-of-sample discounted cost under the contaminated environment versus episode index N .consistently stronger control of tail and downside risks, reflected by smaller CVaR 0.95 and downside semi-deviation across episodes. This observation is consistent with Theorem 1, which shows that the Bayesian DROC Bellman equation admits an equivalent mean–CVaR reformulation and therefore embeds an explicit risk-averse preference for adverse demand realizations. Hence, Bayesian DROC may trade a small amount of mean performance for a more stable out-of-sample behavior, especially in the upper-tail events that dominate service-level and backorder risks in inventory systems. More importantly, under contaminated environments (Figure 5), where the true demand distribu-tion deviates from the nominal exponential family used for posterior learning, Bayesian DROC shows stronger robustness to distribution shift. Specifically, in the left panels, Bayesian DROC attains lower expected out-of-sample discounted cost than the competing methods under the shifted test environment. Moreover, in the right panels, the gap between the clean-test and contaminated-test performance curves is generally smaller for Bayesian DROC than for episodic Bayesian SOC, indicating that its performance deteriorates less severely when deployed under model mismatch. Together, these observations suggest that the ambiguity set PμN provides a principled uncertainty envelope and that the robust Bellman equation (6.2) produces policies that generalize more reliably under distribution shift. As noted in [58], there is currently limited methodological guidance on how to adaptively shrink ambiguity sets for distributionally robust approaches in dynamic settings, and DRSC-type methods typically rely on a pre-specified radius schedule, which can be overly conservative in finite samples. In contrast, our episodic Bayesian DROC constructs PμN directly from posterior credible regions and updates it episode by episode using all data collected so far, so the effective ambiguity size contracts 38 automatically as the posterior concentrates. This posterior-driven update mitigates the conservatism caused by hand-crafted shrinkage rules and explains why Bayesian DROC outperforms the DRSC baseline in Figures 4–5. 
+
+# 7 Concluding remarks 
+
+In this paper, we combine distributionally robust optimization with Bayesian adaptive learning to pro-pose an episodic distributionally robust optimal control (DROC) framework with posterior-induced ambiguity sets. The new model systematically integrates the decision-maker’s belief with sequentially revealed observations across episodes. Our analysis reveals that the proposed framework possesses sev-eral distinctive advantages: (i) an explicit mean-risk (expectation–CVaR) reformulation of the robust Bellman operator, which facilitates both computation and interpretation, (ii) asymptotic convergence of the episodic value functions and policies, together with a finite-sample guarantee, and (iii) quantitative stability and statistical robustness guarantees under suitable regularity conditions and data perturba-tions. We further develop an operator-level cutting-plane (BOCP) algorithm for the episodic Bayesian DROC Bellman equation. Numerical results show improved out-of-sample tail-risk performance and stronger robustness under distribution shift. A simplifying assumption in our analysis is that the episodic Bayesian DROC problem is solved exactly in each episode, which may be impractical in some applications. This suggests several directions for future research. One is to investigate the trade-off between estimation error, arising from Bayesian learning with finite data, and optimization error, arising from approximate solutions of episodic Bayesian DROC. Another is to study the more general adaptive Bayesian SOC model with an augmented state space that explicitly includes posterior beliefs, together with more efficient solution algorithms. 
+
+# Acknowledgments 
+
+The first and second authors are supported by the National Key R&D Program of China (2022YFA1004000, 2022YFA1004001). 
+
+# reference 
+
+[1] M. Abeille and A. Lazaric. Improved regret bounds for thompson sampling in linear quadratic control problems. In International Conference on Machine Learning , pages 1–9. PMLR, 2018. [2] C. D. Aliprantis and K. C. Border. Infinite Dimensional Analysis: A Hitchhiker’s Guide . Springer, 2006. [3] J. O. Berger. Statistical Decision Theory and Bayesian Analysis . Springer Science & Business Media, 2013. [4] D. Bertsekas. Dynamic Programming and Optimal Control: Volume I , volume 4. Athena Scientific, 2012. [5] D. Bertsekas. Abstract Dynamic Programming . Athena Scientific, 2022. [6] D. Bertsekas and S. E. Shreve. Stochastic Optimal Control: The Discrete-time Case , volume 5. Athena Scientific, 1996. [7] D. Bertsimas, V. Gupta, and N. Kallus. Robust sample average approximation. Mathematical Programming , 171:217–282, 2018. [8] P. Carpentier, J.-P. Chancelier, G. Cohen, M. De Lara, and P. Girardeau. Dynamic consistency for stochastic optimal control problems. Annals of Operations Research , 200:247–263, 2012. 39 [9] C. Castaing and M. Valadier. Convex Analysis and Measurable Multifunctions . Springer, 1977. [10] Z. Chen and W. Ma. A Bayesian approach to data-driven multi-stage stochastic optimization. 
+
+Journal of Global Optimization , pages 1–28, 2024. [11] Z. Chen, W. Ma, and B. Ji. Data-driven approximation of distributionally robust chance constraints using Bayesian credible intervals. OR Spectrum , 47(3):969–1009, 2025. [12] W. L. Cooper and B. Rangarajan. Performance guarantees for empirical Markov decision processes with applications to multiperiod inventory models. Operations Research , 60(5):1267–1281, 2012. [13] E. Delage and Y. Ye. Distributionally robust optimization under moment uncertainty with appli-cation to data-driven problems. Operations research , 58(3):595–612, 2010. [14] A. Dibiasi and D. Iselin. Measuring Knightian uncertainty. Empirical Economics , 61(4):2113–2141, 2021. [15] B. Efron and T. Hastie. Computer Age Statistical Inference, Student Edition: Algorithms, Evidence, and Data Science , volume 6. Cambridge University Press, 2021. [16] C. F¨ ullner and S. Rebennack. Stochastic dual dynamic programming and its variants: A review. 
+
+SIAM Review , 67(3):415–539, 2025. [17] R. Gao. Finite-sample guarantees for Wasserstein distributionally robust optimization: Breaking the curse of dimensionality. Operations Research , 71(6):2291–2306, 2023. [18] A. Gelman, J. B. Carlin, H. S. Stern, and D. B. Rubin. Bayesian Data Analysis . Chapman and Hall/CRC, 1995. [19] V. Guigues, A. Shapiro, and Y. Cheng. Risk-averse stochastic optimal control: an efficiently computable statistical upper bound. Operations Research Letters , 51(4):393–400, 2023. [20] S. Guo and H. Xu. Distributionally robust shortfall risk optimization model and its approximation. 
+
+Mathematical Programming , 174(1):473–498, 2019. [21] S. Guo and H. Xu. Statistical robustness in utility preference robust optimization models. Mathe-matical Programming , 190(1):679–720, 2021. [22] V. Gupta. Near-optimal Bayesian ambiguity sets for distributionally robust optimization. Man-agement Science , 65(9):4242–4260, 2019. [23] F. R. Hampel. A general qualitative definition of robustness. The Annals of Mathematical Statistics ,42(6):1887–1896, 1971. [24] G. A. Hanasusanto, V. Roitch, D. Kuhn, and W. Wiesemann. A distributionally robust perspective on uncertainty quantification and chance constrained programming. Mathematical Programming ,151(1):35–62, 2015. [25] W. B. Haskell, R. Jain, and D. Kalathil. Empirical dynamic programming. Mathematics of Oper-ations Research , 41(2):402–429, 2016. [26] O. Hern´ andez-Lerma and J. B. Lasserre. Further Topics on Discrete-time Markov Control Pro-cesses , volume 42. Springer Science & Business Media, 2012. [27] J. Huang, K. Zhou, and Y. Guan. A study of distributionally robust multistage stochastic opti-mization. arXiv preprint arXiv:1708.07930 , 2017. [28] P. J. Huber and E. M. Ronchetti. Robust Statistics . John Wiley & Sons, 2011. 40 [29] R. Jiang and Y. Guan. Risk-averse two-stage stochastic program with distributional ambiguity. 
+
+Operations Research , 66(5):1390–1405, 2018. [30] P. Kern, A. Simroth, and H. Z¨ ahle. First-order sensitivity of the optimal value in a Markov decision model with respect to deviations in the transition probability function. Mathematical Methods of Operations Research , 92(1):165–197, 2020. [31] K. Kim and I. Yang. Distributional robustness in minimax linear quadratic control with Wasserstein distance. SIAM Journal on Control and Optimization , 61(2):458–483, 2023. [32] H. Lam. Recovering best statistical guarantees via the empirical divergence-based distributionally robust optimization. Operations Research , 67(4):1090–1105, 2019. [33] M. Li, X. Tong, and H. Sun. Discretization and quantification for distributionally robust opti-mization with decision-dependent ambiguity sets. Optimization Methods and Software , pages 1–30, 2024. [34] P. Li, M. Yang, and Q. Wu. Confidence interval based distributionally robust real-time economic dispatch approach considering wind power accommodation risk. IEEE Transactions on Sustainable Energy , 12(1):58–69, 2020. [35] Y. Li, Y. Lin, E. Zhou, and F. Zhang. Risk-aware model predictive control enabled by Bayesian learning. In 2022 American Control Conference (ACC) , pages 108–113. IEEE, 2022. [36] Y. Li, Y. Lin, E. Zhou, and F. Zhang. Bayesian risk-averse model predictive control with consistency and stability guarantees. arXiv preprint arXiv:2511.21871 , 2025. [37] Y. Lin, Y. Ren, and E. Zhou. Bayesian risk Markov decision processes. Advances in Neural Information Processing Systems , 35:17430–17442, 2022. [38] Y. Liu and H. Xu. Stability analysis of stochastic programs with second order dominance con-straints. Mathematical Programming , 142:435–460, 2013. [39] W. Ma, Z. Chen, and X. Chen. Bayesian distributionally robust variational inequalities: regular-ization and quantification. arXiv preprint arXiv:2509.16537 , 2025. [40] W. Ma, Z. Chen, and H. Xu. A Bayesian composite risk approach for stochastic optimal control and Markov decision processes. arXiv preprint arXiv:2412.16488 , 2024. [41] S. Mehrotra and H. Zhang. Models and algorithms for distributionally robust least squares prob-lems. Mathematical Programming , 146(1):123–141, 2014. [42] P. Mohajerin Esfahani and D. Kuhn. Data-driven distributionally robust optimization using the Wasserstein metric: Performance guarantees and tractable reformulations. Mathematical Program-ming , 171(1):115–166, 2018. [43] A. Nilim and L. El Ghaoui. Robust markov decision processes with uncertain transition matrices .PhD thesis, University of California, Berkeley, 2004. [44] I. Osband, D. Russo, and B. Van Roy. (More) efficient reinforcement learning via posterior sam-pling. Advances in Neural Information Processing Systems , 26, 2013. [45] L. Pfeiffer. Two approaches to stochastic optimal control problems with a final-time expectation constraint. Applied Mathematics & Optimization , 77:377–404, 2018. [46] G. C. Pflug and A. Pichler. Multistage Stochastic Optimization , volume 1104. Springer, 2014. [47] A. B. Philpott, V. L. de Matos, and L. Kapelevich. Distributionally robust SDDP. Computational Management Science , 15:431–454, 2018. 41 [48] A. B. Philpott and Z. Guan. On the convergence of stochastic dual dynamic programming and related methods. Operations Research Letters , 36(4):450–455, 2008. [49] A. Pichler and H. Xu. Quantitative stability analysis for minimax distributionally robust risk optimization. Mathematical Programming , 191(1):47–77, 2022. [50] M. L. Puterman. Markov Decision Processes: Discrete Stochastic Dynamic Programming . John Wiley & Sons, 2014. [51] H. Rahimian, G. Bayraksan, and T. H. De-Mello. Effective scenarios in multistage distributionally robust optimization with a focus on total variation distance. SIAM Journal on Optimization ,32(3):1698–1727, 2022. [52] U. Rieder. Bayesian dynamic programming. Advances in Applied Probability , 7(2):330–348, 1975. [53] R. T. Rockafellar. Convex Analysis . Princeton university press, 2015. [54] R. T. Rockafellar, S. Uryasev, et al. Optimization of conditional value-at-risk. Journal of risk ,2:21–42, 2000. [55] W. R¨ omisch. Stability of stochastic programming problems. In Handbooks in Operations Research and Management Science , volume 10, pages 483–554. Elsevier, 2003. [56] A. Shapiro. Minimax and risk averse multistage stochastic programming. European Journal of Operational Research , 219(3):719–726, 2012. [57] A. Shapiro, D. Dentcheva, and A. Ruszczynski. Lectures on Stochastic Programming: Modeling and Theory . SIAM, 2021. [58] A. Shapiro, E. Zhou, Y. Lin, and Y. Wang. Episodic Bayesian optimal control with unknown randomness distributions. Operations Research , 2025. [59] M. Strens. A Bayesian framework for reinforcement learning. In International Conference on Machine Learning , volume 2000, pages 943–950, 2000. [60] B. Taskesen, D. Iancu, C ¸ . Ko¸ cyi˘ git, and D. Kuhn. Distributionally robust linear quadratic control. 
+
+Advances in Neural Information Processing Systems , 36:18613–18632, 2023. [61] I. Tzortzis, C. D. Charalambous, and T. Charalambous. Infinite horizon average cost dynamic programming subject to total variation distance ambiguity. SIAM Journal on Control and Opti-mization , 57(4):2843–2872, 2019. [62] A. W. Van Der Vaart and J. A. Wellner. Weak convergence. In Weak convergence and empirical processes: with applications to statistics , pages 16–28. Springer, 1996. [63] B. P. Van Parys, D. Kuhn, P. J. Goulart, and M. Morari. Distributionally robust control of constrained stochastic systems. IEEE Transactions on Automatic Control , 61(2):430–442, 2015. [64] H. Wang, L. He, R. Gao, and F. Calmon. Aleatoric and epistemic discrimination: Fundamental limits of fairness interventions. Advances in Neural Information Processing Systems , 36, 2024. [65] Y. Wang and E. Zhou. Bayesian risk-averse Q-learning with streaming observations. Advances in Neural Information Processing Systems , 36:75967–75992, 2023. [66] Z. Wang, P. W. Glynn, and Y. Ye. Likelihood robust optimization for data-driven problems. 
+
+Computational Management Science , 13:241–261, 2016. [67] J. Wessels. Markov programming by successive approximations with respect to weighted supremum norms. Journal of mathematical analysis and applications , 58(2):326–335, 1977. 42 [68] W. Xie, C. Li, Y. Wu, and P. Zhang. A nonparametric Bayesian framework for uncertainty quan-tification in stochastic simulation. SIAM/ASA Journal on Uncertainty Quantification , 9(4):1527– 1552, 2021. [69] H. Xu and S. Mannor. Distributionally robust markov decision processes. Advances in Neural Information Processing Systems , 23, 2010. [70] H. Xu and S. Zhang. Quantitative statistical robustness in distributionally robust optimization models. Pacific Journal of Optimization Special Issue , 2021. [71] I. Yang. Wasserstein distributionally robust stochastic control: A data-driven approach. IEEE Transactions on Automatic Control , 66(8):3863–3870, 2020. [72] Z. Yang, Z. Chen, and H. Xu. Stability analysis of an integrated multistage stochastic programming and Markov decision process problem. arXiv preprint arXiv:2509.22194 , 2025. 43

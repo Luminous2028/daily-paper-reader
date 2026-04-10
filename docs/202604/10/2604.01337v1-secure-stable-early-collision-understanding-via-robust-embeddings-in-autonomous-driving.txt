@@ -1,0 +1,316 @@
+Title: SECURE: Stable Early Collision Understanding via Robust Embeddings in Autonomous Driving
+
+URL Source: https://arxiv.org/pdf/2604.01337v1
+
+Published Time: Fri, 03 Apr 2026 00:05:26 GMT
+
+Number of Pages: 13
+
+Markdown Content:
+# SECURE: Stable Early Collision Understanding via Robust Embeddings in Autonomous Driving 
+
+Wenjing Wang 1(B), Wenxuan Wang 2, and Songning Lai 3 
+
+> 1
+
+Xiamen University Malaysia  
+
+> 2
+
+Xinjiang University  
+
+> 3
+
+HKUST(GZ) 
+
+DMT2309240@xmu.edu.my 
+
+Abstract. While deep learning has significantly advanced accident an-ticipation, the robustness of these safety-critical systems against real-world perturbations remains a major challenge. We reveal that state-of-the-art models like CRASH, despite their high performance, exhibit sig-nificant instability in predictions and latent representations when faced with minor input perturbations, posing serious reliability risks. To ad-dress this, we introduce SECURE – Stable Early Collision Understanding 
+
+Robust Embeddings, a framework that formally defines and enforces model robustness. SECURE is founded on four key attributes: consis-tency and stability in both prediction space and latent feature space. We propose a principled training methodology that fine-tunes a baseline model using a multi-objective loss, which minimizes divergence from a reference model and penalizes sensitivity to adversarial perturbations. Experiments on DAD and CCD datasets demonstrate that our approach not only significantly enhances robustness against various perturbations but also improves performance on clean data, achieving new state-of-the-art results. 
+
+Keywords: Accident Anticipation, Adversarial Robustness, Autonomous Driving, Robust Embeddings, Spatio-temporal Learning 
+
+## 1 Introduction 
+
+The rapid advancement of deep learning has profoundly reshaped modern intelli-gent transportation systems (ITS) [4,14], enabling vehicles and infrastructure to perceive complex environments, anticipate risks, and execute timely decisions. As ITS progresses toward higher levels of automation, robustness and safety become foundational requirements rather than optional enhancements [13,8]. Among the diverse modules supporting intelligent transportation, accident an-ticipation stands as one of the most safety-critical tasks: predicting the evolution of risk seconds before a hazardous event occurs requires not only accuracy but also robustness under real-world disturbances [3,18,10,21]. However, achieving reliable accident anticipation remains far from solved [1,2,11]. Beyond tradi-tional prediction accuracy, modern ITS must ensure stable and robust output   
+
+> arXiv:2604.01337v1 [cs.LG] 1 Apr 2026 2Wenjing Wang (B), Wenxuan Wang, and Songning Lai
+> Fig. 1. The CRASH model exhibits significant output differences between clean and perturbed inputs.
+
+behaviors under a wide range of environmental changes. In high-stakes scenar-ios, even small perturbations—such as illumination shifts, sensor noise, temporal jitter, or sampling irregularities—can lead to significant fluctuations in model predictions [17,8]. Such instability directly threatens system reliability, compli-cates safety verification, and undermines dependable operation in unconstrained environments [13]. In recent years, Crash Recognition and Anticipation System Harnessing (CRASH), which integrates context-aware and temporal focus mechanisms, has become a powerful representative model within ITS-related video-based risk forecasting [15]. CRASH achieves SOTA performance on benchmark datasets and can effec-tively recognize hazardous patterns early in temporal sequences [15]. Although CRASH demonstrates robust predictive performance under stan-dard benchmark settings, our research reveals a limitation that has not received sufficient attention: CRASH exhibits significant instability in both its predictive outputs and its underlying latent representations. Even minor perturbations to Title Suppressed Due to Excessive Length 3
+
+the input—such as sensor noise or small frame-level corruptions—can distort the model’s representation space, leading to substantial shifts in its predicted probability trajectories (see Figure 1). This instability may result in delayed or unreliable time-to-accident estimates, posing critical safety concerns for intelli-gent transportation applications. To address these challenges, we introduce the concept of SECURE – Stable 
+
+Early Collision Understanding Robust Embeddings and propose a robustness analysis framework for accident anticipation scenarios. This framework aims to systematically evaluate and improve the reliability of CRASH models under noise perturbations. It defines four key properties to construct the model’s robustness. Furthermore, it introduces multi-dimensional robustness attributes to define the consistency and stability of model predictions. Based on this, we conducted a comprehensive robustness analysis experiment on CRASH and SECURE. The experiment revealed the strong robustness of our proposed framework, providing a scientific basis for subsequent model optimization. Our contributions are as follows: (1) Comprehensive Robustness Assessment: We performed an in-depth robustness analysis of the CRASH model, discovering reliability flaws in the CRASH framework that make the prediction results highly unstable to input and parameter perturbations. (2) Rigorous Definition of SECURE: We propose a rigorous definition of SECURE, which systematically defines what constitutes a reliable and robust accident anticipation framework. This definition can serve as a principle for evaluating and improving the robustness of accident anticipation models. (3) A Robust Framework for Constructing SECURE: We propose a ro-bustness framework that improves model robustness while maintaining excellent output by fine-tuning the parameters of the original model during training. We validate the effectiveness of this framework through experiments. 
+
+## 2 Related Work 
+
+The key to predicting traffic accidents lies in whether the model can extract spatio-temporal features from complex and dynamic traffic scenarios [13]. Early approaches primarily relied on convolutional neural networks (CNNs) to extract visual features from dashcam footage [3,5,16], typically combined with sequen-tial networks such as recurrent neural networks (RNNs) and long short-term memory (LSTM) networks to preserve temporal coherence [6,19,24]. To capture interactions between traffic entities, recent research has introduced graph neural networks (GNNs) [11,21,22] and Transformer-based architectures [4,7,12], which effectively model the spatial dynamics of road users. Recognising that not all visual regions contribute equally to accident risk, attention mechanisms have become standard practice. Chan et al. [3] introduced dynamic soft attention to fuse object-level and frame-level features, while Karim et al. [10,11] developed spatio-temporal attention networks to prioritise haz-ardous regions; Zeng et al. [25] used attention RNNs to localise potential danger 4 Wenjing Wang (B), Wenxuan Wang, and Songning Lai 
+
+zones. Researchers have also studied interpretability: Monjuru et al. [9] embed-ded Grad-CAM into a GRU to generate semantic feature maps, and Bao et al. [2,23] explored generative models and visualisations to enhance model trans-parency. Despite the remarkable accuracy achieved on benchmark datasets, robustness within open-world intelligent transport systems (ITS) remains a critical yet un-derstudied challenge. The random nature of traffic environments requires models to handle not only standard dynamic variations but also extreme outliers, sen-sor noise, and adversarial interference. Ma et al. [16] highlight the difficulty of autonomous-driving perception when encountering unknown categories or rare events. The vast variability in traffic scenes [13] gives rise to long-tail distribution issues, where models trained on normal data fail to generalise to rare anoma-lies [20]. Whilst some research models uncertainty—for example, Bao et al. [1] proposed a perceptual uncertainty graph—most methods still assume relatively clean data distributions and lack rigorous stress testing against environmental perturbations. Furthermore, the safety-critical nature of accident prediction demands robust interference resistance. Han et al. [8] demonstrated physical backdoor attacks on lane detection systems, showing that subtle physical perturbations can mislead deep perception models. However, most accident prediction frameworks focus on interactions between dynamic objects [10,14] or optimising loss functions for early detection [18], often neglecting robustness against visual noise, adversar-ial attacks, and domain shifts. Consequently, there is still no comprehensive framework that systematically benchmarks robustness and guides mitigation for accident prediction models under noise, attacks, and domain shifts. To address these limitations, our work aims to provide a unified framework for evaluating and enhancing robustness in ITS accident prediction. By integrating insights from prior work and leveraging advanced techniques, the framework improves prediction stability and fidelity under perturbations. 
+
+## 3 Method 
+
+3.1 Preliminaries-CRASH 
+
+CRASH is an accident anticipation model that predicts accident probabilities from dashboard videos. Given an input video V = {V1, . . . , V T }, it outputs a frame-wise probability sequence P = {p1, . . . , p T }, where pt ∈ [0 , 1] denotes the accident probability at frame t.
+
+Object and Context Features. A Cascade R-CNN is used to detect the top-n dynamic traffic agents (e.g., vehicles, pedestrians, cyclists). Their cropped regions are embedded by a VGG-16 backbone into object features Fo ∈ Rn×d. In parallel, a feature extractor encodes the full frame into global context features 
+
+Fc ∈ Rd, capturing lane markings, road layout, traffic signs, and other scene-level cues outside bounding boxes. 
+
+Object-aware and Context-aware Modules. The object-aware module en-hances the detected object features Fo through an Object Focus Attention (OFA) Title Suppressed Due to Excessive Length 5
+
+mechanism, producing refined object-aware features ˜Fo. In parallel, the context-aware module transforms the frame-level context features Fc into enhanced context-aware features ˜Fc through a lightweight feature refinement network. 
+
+Temporal Fusion and Prediction. Temporal features are obtained by con-catenating the outputs of the previous modules and encoding them with a dual-layer GRU, producing the temporal hidden state ht. An MLP then maps ht to the accident probability pt.
+
+Training. The loss function combines an anticipation loss La and an enhance-ment loss Le. The anticipation loss encourages early prediction by applying a time-dependent penalty e− 12 max ( τ −tf , 0) to positive frames. It is defined as: 
+
+La = 1
+
+B
+
+> B
+
+X
+
+> v=1
+
+h
+
+− lvTX
+
+> t=1
+
+e− 12 max 
+
+  τ −tf ,0
+
+
+
+log( pt) − (1 − lv )
+
+> T
+
+X
+
+> t=1
+
+log(1 − pt)
+
+i
+
+. (1) where, B is the batch size, lv ∈ { 0, 1} represents the binary label of accident occurrence within each video ( 1 for an accident, 0 for none), T is the total number of frames per video, τ is the ground-truth accident time, f is the frames per second (fps) of the video, and pt is the predicted accident probability at frame t.To stabilize temporal representations, the enhancement loss Le supervises an auxiliary prediction pe.
+
+pe = ϕMLP 
+
+ ϕMHA 
+
+ ϕPE (h21, h 22, . . . , h 2 
+
+> T
+
+) (2) where ϕPE denotes the position encoding mechanism, ϕMHA denotes the multi-head self-attention mechanism, and h2 
+
+> t
+
+is the hidden state of the second-layer GRU at frame t.It is derived from position-encoded second-layer GRU hidden states via a multi-head self-attention block and an MLP. The enhancement loss is given by: 
+
+Le = 1
+
+B
+
+> B
+
+X
+
+> v=1
+
+[− lv log( pe) − (1 − lv ) log(1 − pe)] . (3) Finally, the overall loss function is the sum of La and Le and incorporates homoscedastic uncertainty weighting: 
+
+LT ask = μ1
+
+2ρ21
+
+La + μ2
+
+2ρ22
+
+Le + log( ρ1ρ2), (4) where μ1, μ 2 are hyperparameters and ρ1, ρ 2 are learnable uncertainty coeffi-cients initialized to 1. This formulation allows the model to jointly optimize early accident anticipation and auxiliary temporal representation quality while adaptively balancing the two loss terms. 6 Wenjing Wang (B), Wenxuan Wang, and Songning Lai 
+
+3.2 Robustness Issues 
+
+The CRASH model demonstrates state-of-the-art performance on video-based accident anticipation tasks. While CRASH exhibits strong predictive power and competitive accident prediction performance, its high sensitivity to input per-turbations and parameter variations exposes significant reliability deficiencies. These issues manifest as unstable probability outputs, inconsistent attention to key subjects, and fluctuations in accuracy and estimates, even with slight changes in the input sequence. This sensitivity undermines CRASH’s reliability in real-world autonomous driving scenarios, where sensor noise, camera jitter, and environmental changes are unavoidable. Consequently, the model’s decisions may deviate from under-lying visual evidence, reducing interpretability and credibility in safety-critical applications. Through our research on CRASH, we propose a general solution to improve its reliability and ultimately provide general insights for enhancing the reliability and robustness of accident prediction models across the entire video understanding domain. 
+
+3.3 The Concept of "SECURE" 
+
+In the context of high-stakes accident anticipation, a SECURE Framework refers to the capability of a model to consistently adhere to an optimal decision mani-fold while maintaining intrinsic invariance under perturbations. This notion em-phasizes not only the precision of risk assessment but also the model’s resilience to sensory noise and the semantic alignment of its latent representations. By ensuring robustness, we aim to stabilize the anticipation process, making the risk evolution robust regardless of environmental fluctuations. To rigorously address the robustness issues in the accident anticipation, we propose that a SECURE Framework must encompass four fundamental at-tributes, structured across the Output Space and the Latent Space: (i) Consistency in Prediction Space (Cps). This attribute pertains to the alignment between the model’s risk estimation and the theoretical optimal refer-ence. Let f (x; θ) denote the trainable model’s prediction for input x, and f ∗(x)
+
+denote the frozen model prediction. To satisfy this attribute, the divergence denoted as Dout (f (x; θ), f ∗(x)) must be bounded by a constant γ1. This en-sures that SECURE preserves the high-fidelity decision capability of the CRASH model. (ii) Stability in Prediction Dynamics (Spd). This attribute addresses the robustness of the prediction against input perturbations without relying on ex-ternal anchors. It requires SECURE to exhibit intrinsic self-consistency. Specif-ically, for an input x and its perturbed counterpart x + δ, the forecasts must converge. The difference, measured by a metric Dout , must be bounded by γ2.(iii) Consistency in Latent Manifold (Clm). Robustness must permeate the deep representation level. This attribute requires that the high-dimensional features extracted by SECURE, h(x; θ), semantically align with the CRASH’s feature manifold h∗(x). The divergence Df eat (h(x; θ), h ∗(x)) must not exceed a Title Suppressed Due to Excessive Length 7
+
+> LSld
+> ˜Fo
+> ˜Fc
+> LClm
+> LCps
+> LSpd
+
+Fig. 2. Overall framework of SECURE. 
+
+threshold β1. This ensures that the model captures the correct semantic cues (e.g., motion patterns) rather than fitting noise. (iv) Stability in Latent Dynamics (Sld). This attribute ensures that the internal feature extraction remains invariant to noise. The latent representation 
+
+h(x; θ) and the perturbed representation h(x + δ; θ) must remain within a com-pact neighborhood in the latent space. This prevents the "butterfly effect" where minor input noise amplifies into divergent semantic features. 
+
+3.4 Definition of SECURE 
+
+Based on the attributes above, we provide a formal definition. A CRASH model is considered (γ1, γ 2, β 1, β 2, ϵ )-SECURE if it satisfies the following four criteria for any input features sequence x = {x1, . . . , x T } ∈ X , where θ denotes the parameters of SECURE: (i) Consistency in Prediction Space ( Cps ): 
+
+Dout (f (x; θ), f ∗(x)) ≤ γ1 (5) (ii) Stability in Prediction Dynamics ( Spd ): 
+
+Dout (f (x; θ), f (x + δ; θ)) ≤ γ2, ∀∥ δ∥ ≤ ϵ (6) (iii) Consistency in Latent Manifold ( Clm ): 
+
+Df eat (h(x; θ), h ∗(x)) ≤ β1 (7) (iv) Stability in Latent Dynamics ( Sld ): 
+
+Df eat (h(x; θ), h (x + δ; θ)) ≤ β2, ∀∥ δ∥ ≤ ϵ (8) where Dout and Df eat represent distance metrics (Mean Squared Error), ∥ · ∥ 
+
+denotes a norm constraint on the perturbation δ, and ϵ ≥ 0 defines the robustness radius. 8 Wenjing Wang (B), Wenxuan Wang, and Songning Lai 
+
+3.5 Constructing a SECURE framework 
+
+In order to construct a (γ1, γ 2, β 1, β 2, ϵ )-robust accident anticipation model from CRASH to SECURE, we formulate a multi-objective optimization problem that aligns with the attributes defined in Section 3.4 and shown in Figure 2. This formulation leads to a comprehensive objective function that balances the four critical aspects of the model: Consistency in Prediction Space ( Cps ), Stability in Prediction Dynamics ( Spd ), Consistency in Latent Manifold ( Clm ), and Stability in Latent Dynamics ( Sld ). Given the definitions of Cps , Spd , Clm , and Sld , we aim to find the optimal model parameters θ that satisfy the following optimization problem. Formally,           
+
+> min
+> θ
+> LCps (f(·)) + LSpd (f(·)) + LClm (h(·)) + LSld (h(·)) .(9)
+
+Each loss term corresponds to one of the four attributes of the SECURE framework: 
+
+LCps (f (·)) = Ex[Dout (f (x; θ), f ∗(x))] , (10) 
+
+LSpd (f (·)) = Ex,δ [Dout (f (x; θ), f (x + δ; θ))] , (11) 
+
+LClm (h(·)) = Ex[Dfeat (h(x; θ), h ∗(x))] , (12) 
+
+LSld (h(·)) = Ex,δ [Dfeat (h(x; θ), h (x + δ; θ))] . (13) where, Dout and Df eat are measures of divergence in the output and feature spaces, respectively. The perturbation δ is constrained by ∥δ∥ ≤ ϵ, and Ex,δ 
+
+denotes the expectation over both the input space and the perturbation space. 
+
+f ∗(x) and h∗(x) represent the mappings of the frozen CRASH model, while 
+
+f (x; θ) and h(x; θ) denote the predicted output and hidden state representations of SECURE. To achieve this, we incorporate the following loss terms into the optimization process: 
+
+LTotal = LTask + λout c LCps + λout s LSpd + λf eat c LClm + λf eat s LSld . (14) where, LTask is the base loss function of CRASH, and the λ terms are regular-ization coefficients that control the influence of each auxiliary robustness term. Inspired by the Projected Gradient Descent (PGD) method described by Madry et al. [17], we iteratively update the perturbation δ and the model pa-rameters θ such that the model remains robust against adversarial perturbations while maintaining consistency in both prediction and latent spaces. The iterative process for the p-th update is defined as follows. 
+
+δp = δ∗ 
+
+> p−1
+
++ αp
+
+|B p−1|
+
+X
+
+> x∈B p−1
+
+∇δ∗
+
+> p−1
+
+ LCps + LSpd + LClm + LSld 
+
+ , (15) where 
+
+δ∗ 
+
+> p
+
+= arg min  
+
+> ∥δ∥≤ ϵ
+
+∥δ − δp∥ (16) Title Suppressed Due to Excessive Length 9
+
+projects the perturbation back into the ϵ-ball to satisfy the norm constraint. Here, Bp−1 denotes the batch of samples at iteration p − 1, and αp is the PGD step size. After obtaining the worst-case perturbation δ∗ after P iterations, the model parameters are updated from θt−1 to θt using batched gradients derived from the total objective LTotal . This ensures that the model adheres to the principles of consistency of prediction space, stability of prediction dynamics, consistency of latent manifold, and stability of latent dynamics, thereby yielding dependable accident anticipation across varying conditions. 
+
+## 4 Experiment 
+
+4.1 Experimental Setup Datasets and Baselines. We evaluate our framework on two benchmark datasets: the Dashcam Accident Dataset (DAD) [3] and the Car Crash Dataset (CCD) [1], following their standard training/testing splits. We compare our proposed SE-CURE against the state-of-the-art accident anticipation baseline CRASH to val-idate the effectiveness of our consistency and stability constraints. 
+
+Implementation Details. We employ Projected Gradient Descent (PGD) at-tacks. The attack hyperparameters are configured as follows: perturbation bud-get ϵ = 0 .01 , step size α = 0 .002 , and P = 20 attack iterations. All experiments are conducted on an NVIDIA GeForce RTX 4090 GPU. We train the model using the Adam optimizer with an initial learning rate of 1 × 10 −4 and a batch size of 10. The hyperparameters for the robustness loss terms are set to: out-put stability λout  
+
+> s
+
+= 50 .0, output consistency λout  
+
+> c
+
+= 50 .0, and feature-level 
+
+λf eat s = λf eat c = 0 .01 .
+
+4.2 Performance Results 
+
+Table 1 presents the test results of our proposed SECURE framework and the baseline method CRASH under conditions without added noise perturbations. Following the evaluation protocol in CRASH, we adopt Average Precision (AP) and Mean Time-to-Accident (mTTA) as the performance metrics. Specifically, AP serves as a comprehensive measure of model accuracy, reflecting prediction consistency across varying decision thresholds by computing the area under the precision–recall curve. Meanwhile, mTTA evaluates the timeliness of the model’s predictions by measuring the average time interval between the model’s first risk prediction (exceeding a predefined threshold) and the actual time of an accident. A higher mTTA value indicates that the model can anticipate accidents earlier, providing drivers with more reaction time. As shown in Table 1, our framework SECURE outperforms CRASH and achieves SOTA performance on clean data without any added perturbations. We infer that this improvement stems from the inherent noise contained in real-world driving data. By mitigating the influence of such noise during training, 10 Wenjing Wang (B), Wenxuan Wang, and Songning Lai 
+
+Table 1. Comparison of model performance on the complete datasets. Bold and un-derlined values represent the best and second-best performance in each category. 
+
+Model DAD [3] CCD [1] AP(%) ↑ mTTA(s) ↑ AP(%) ↑ mTTA(s) ↑
+
+DSA [3] 48.1 1.34 99.6 4.53 L-RAI [25] 51.4 3.01 98.9 3.32 AdaLEA [18] 62.3 2.94 99.2 3.45 DSTA [10] 59.2 2.60 98.8 4.53 UString [1] 58.0 2.85 99.5 4.52 GSC [22] 60.4 2.55 99.3 3.58 CRASH [15] 67.2 3.02 99.5 4.55 
+
+SECURE 68.7 3.13 99.7 4.58 Table 2. Comparison of CRASH and SECURE on DAD and CCD datasets under different perturbations. The number in the parentheses is the standard deviation of Gaussian noise.                                                       
+
+> Model / Dataset Clean IP (0.1) IP (0.2) LP (0.1) LP (0.2) AP(%) ↑mTTA(s) ↑AP(%) ↑mTTA(s) ↑AP(%) ↑mTTA(s) ↑AP(%) ↑mTTA(s) ↑AP(%) ↑mTTA(s) ↑
+> CRASH (DAD) 67.21 3.020 65.83 3.053 63.37 2.964 64.41 2.984 44.73 3.119
+> SECURE (DAD) 68.67 3.127 68.42 3.120 68.32 3.062 68.19 3.083 57.61 3.207
+> CRASH (CCD) 99.53 4.554 99.29 4.540 99.17 3.965 98.88 3.074 69.26 3.413
+> SECURE (CCD) 99.73 4.583 99.67 4.483 99.48 4.481 99.29 3.191 81.45 3.430
+
+our framework enhances model prediction quality. Importantly, SECURE does not sacrifice original performance in exchange for robustness; instead, it achieves even better results while maintaining stronger stability. 
+
+4.3 Robustness Results 
+
+To evaluate robustness, we introduce two types of perturbations during testing: 
+
+(1) Input Perturbation. Gaussian noise is added to each input frame-level feature, expressed as x′ 
+
+> t
+
+= xt + N (0 , σ ).
+
+(2) Latent Perturbation. Since the second-layer GRU produces the model’s key temporal latent representation, we inject Gaussian noise into its parameters 
+
+θ′ 
+
+> GRU2
+
+= θGRU2 + N (0 , σ ).These perturbations are applied during evaluation to assess model stability under external input noise and internal temporal-module disturbance, as shown in Table 2. This table reports the performance of the baseline model and our framework under both input perturbation and intermediate-layer perturbation conditions. Under input perturbation (IP) conditions, the CRASH model’s performance decreased significantly, indicating that input perturbations do indeed affect the precision of the CRASH model. In the DAD dataset, the model’s output AP decreased from 67.21 to 63.37, while in the CCD dataset, the CRASH model’s Title Suppressed Due to Excessive Length 11                                       
+
+> Table 3. Ablation Results of SECURE on the DAD Dataset under IP (0.2)
+> LTask LCps LSpd LClm LSld AP(%) ↑mTTA(s) ↑
+> ✓××××63.37 2.964
+> ✓✓×××63.47 3.036
+> ✓✓✓××64.80 3.015
+> ✓✓✓✓×65.29 3.001
+> ✓✓✓✓✓68.32 3.062
+
+mTTA decreased from 4.554 to 3.965. Under latent perturbation (LP) condi-tions, the impact of perturbations on CRASH was more significant, especially in terms of the AP metric. In the DAD and CCD datasets, the model’s output AP decreased from 67.21 to 44.73 and from 99.53 to 69.26, respectively. Notably, compared with the larger performance fluctuations of CRASH un-der perturbations, SECURE exhibits more stable behavior. In terms of average precision, SECURE shows smaller degradation across both input perturbation and latent perturbation settings, while achieving generally higher mTTA than CRASH. These results suggest that the PGD-based adversarial optimization used in SECURE improves robustness to both external feature noise and inter-nal parameter disturbances, rather than trading accuracy for robustness. 
+
+4.4 Ablation Study 
+
+In our ablation study, we comprehensively evaluated each component detailed in Equation (14), aiming to assess the importance and effectiveness of each compo-nent in improving model performance. To this end, we designated the first term, 
+
+LT ask , as our principal loss function. We then systematically evaluated vari-ous configurations of LCps , LSpd , LClm , and LSld by selectively omitting these regularization terms. Our results (as shown in Table 3) clearly demonstrate that each regularization term in the objective function is crucial and effective. Each component makes a unique contribution to improving model performance. 
+
+## 5 Conclusion 
+
+In this paper, we address the critical yet under-explored issue of robustness in accident anticipation models. We introduce SECURE, a principled frame-work that formalizes model reliability through four key attributes: consistency and stability in both the prediction and latent spaces. To construct a SECURE model, we propose a multi-objective adversarial optimizing scheme that mini-mizes sensitivity to perturbations while maintaining high fidelity. Experiments on the DAD and CCD datasets demonstrate that our approach not only signifi-cantly enhances stability against perturbations but also achieves SOTA on clean 12 Wenjing Wang (B), Wenxuan Wang, and Songning Lai 
+
+data. This work lays a crucial foundation for developing trustworthy accident prediction systems and offers a new standard for evaluating the robustness of safety-critical AI modules in autonomous driving. 
+
+## References 
+
+1. Bao, W., Yu, Q., Kong, Y.: Uncertainty-based traffic accident anticipation with spatio-temporal relational learning. In: Proceedings of the 28th ACM International Conference on Multimedia (MM ’20) (2020) 2. Bao, W., Yu, Q., Kong, Y.: Drive: Deep reinforced accident anticipation with vi-sual explanation. In: Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV). pp. 7619–7628 (2021) 3. Chan, F., Chen, Y., Xiang, Y., Sun, M.: Anticipating accidents in dashcam videos. In: Computer Vision – ACCV 2016. pp. 136–153. Springer (2017) 4. Fan, H., Xiong, B., Mangalam, K., Li, Y., Yan, Z., Malik, J., Feichtenhofer, C.: Multiscale vision transformers. In: Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV). pp. 6824–6835 (2021) 5. Fang, J., Qiao, J., Bai, J., Yu, H., Xue, J.: Traffic accident detection via self-supervised consistency learning in driving scenarios. IEEE Transactions on Intel-ligent Transportation Systems 23 (7), 9601–9614 (2022) 6. Fatima, M., Khan, M.U.K., Kyung, C.: Global feature aggregation for accident an-ticipation. In: 2020 25th International Conference on Pattern Recognition (ICPR). pp. 2809–2816. IEEE (2021) 7. Feng, J., Hong, F., Zheng, W.: Mist: Multiple instance self-training framework for video anomaly detection. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR). pp. 14009–14018 (2021) 8. Han, X., Xu, G., Zhou, Y., Yang, X., Li, J., Zhang, T.: Physical backdoor attacks to lane detection systems in autonomous driving. In: Proceedings of the 30th ACM International Conference on Multimedia. pp. 2957–2968 (2022) 9. Karim, M.M., Li, Y., Qin, R.: Towards explainable artificial intelligence (xai) for early anticipation of traffic accidents. arXiv e-prints (2021), arXiv:2108. 10. Karim, M.M., Li, Y., Qin, R., Yin, Z.: A dynamic spatial-temporal attention net-work for early anticipation of traffic accidents. IEEE Transactions on Intelligent Transportation Systems 23 (7), 9590–9600 (2022) 11. Karim, M.M., Yin, Z., Qin, R.: An attention-guided multistream feature fusion network for early localization of risky traffic agents in driving videos. IEEE Trans-actions on Intelligent Vehicles (2023) 12. Li, K., Wang, Y., He, Y., Li, Y., Wang, Y., Wang, L., Qiao, Y.: Uniformerv2: Spa-tiotemporal learning by arming image ViTs with video uniformer. arXiv preprint arXiv:2211.09552 (2022) 13. Li, Z., Liao, H., Tang, R., Li, G., Li, Y., Xu, C.: Mitigating the impact of outliers in traffic crash analysis: A robust bayesian regression approach with application to tunnel crash data. Accident Analysis & Prevention 185 , 107019 (2023) 14. Liao, H., Shen, H., Li, Z., Wang, C., Li, G., Bie, Y., Xu, C.: Gpt-4 enhanced multimodal grounding for autonomous driving: Leveraging cross-modal attention with large language models. Communications in Transportation Research 4, 100116 (2024) 15. Liao, H., Sun, H., Shen, H., Wang, C., Tian, C., Tam, K.L., Li, Z., et al.: Crash: Crash recognition and anticipation system harnessing context-aware and temporal Title Suppressed Due to Excessive Length 13 focus attentions. In: Proceedings of the 32nd ACM International Conference on Multimedia. pp. 11041–11050 (Oct 2024) 16. Ma, Z., Yang, Y., Wang, G., Xu, X., Shen, H.T., Zhang, M.: Rethinking open-world object detection in autonomous driving scenarios. In: Proceedings of the 30th ACM International Conference on Multimedia. pp. 1279–1288 (2022) 17. Madry, A., Makelov, A., Schmidt, L., Tsipras, D., Vladu, A.: Towards deep learning models resistant to adversarial attacks. In: International Conference on Learning Representations (2018) 18. Suzuki, T., Kataoka, H., Aoki, Y., Satoh, Y.: Anticipating traffic accidents with adaptive loss and large-scale incident DB. In: Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR). pp. 3521–3529 (2018) 19. Takimoto, Y., Tanaka, Y., Kurashima, T., Yamamoto, S., Okawa, M., Toda, H.: Predicting traffic accidents with event recorder data. In: Proceedings of the 3rd ACM SIGSPATIAL International Workshop on Prediction of Human Mobility. pp. 11–14 (2019) 20. Thakare, K.V., Dogra, D.P., Choi, H., Kim, H., Kim, I.: Rareanom: A benchmark video dataset for rare type anomalies. Pattern Recognition 140 , 109567 (2023) 21. Thakur, N., Gouripeddi, P., Li, B.: Graph(graph): A nested graph-based frame-work for early accident anticipation. In: Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV). pp. 7533–7541 (2024) 22. Wang, T., Chen, K., Chen, G., Li, B., Li, Z., Liu, Z., Jiang, C.: Gsc: A graph and spatio-temporal continuity based framework for accident anticipation. IEEE Transactions on Intelligent Vehicles (2023) 23. Yao, Y., Wang, X., Xu, M., Pu, Z., Wang, Y., Atkins, E., Crandall, D.: Dota: Unsupervised detection of traffic anomaly in driving videos. IEEE Transactions on Pattern Analysis and Machine Intelligence (2022) 24. Ye, M., Peng, X., Gan, W., Wu, W., Qiao, Y.: Anopcn: Video anomaly detection via deep predictive coding network. In: Proceedings of the 27th ACM International Conference on Multimedia. pp. 1805–1813 (2019) 25. Zeng, K., Chou, S., Chan, F., Niebles, J.C., Sun, M.: Agent-centric risk assessment: Accident anticipation and risky region localization. In: Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR) (2017)

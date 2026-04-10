@@ -1,0 +1,441 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-10T19:38:31.353298+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 11,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2604.07378v1",
+      "title": "Evaluation as Evolution: Transforming Adversarial Diffusion into Closed-Loop Curricula for Autonomous Vehicles",
+      "abstract": "Autonomous vehicles in interactive traffic environments are often limited by the scarcity of safety-critical tail events in static datasets, which biases learned policies toward average-case behaviors and reduces robustness. Existing evaluation methods attempt to address this through adversarial stress testing, but are predominantly open-loop and post-hoc, making it difficult to incorporate discovered failures back into the training process. We introduce Evaluation as Evolution ($E^2$), a closed-loop framework that transforms adversarial generation from a static validation step into an adaptive evolutionary curriculum. Specifically, $E^2$ formulates adversarial scenario synthesis as transport-regularized sparse control over a learned reverse-time SDE prior. To make this high-dimensional generation tractable, we utilize topology-driven support selection to identify critical interacting agents, and introduce Topological Anchoring to stabilize the process. This approach enables the targeted discovery of failure cases while strictly constraining deviations from realistic data distributions. Empirically, $E^2$ improves collision failure discovery by 9.01% on the nuScenes dataset and up to 21.43% on the nuPlan dataset over the strongest baselines, while maintaining low invalidity and high realism. It further yields substantial robustness gains when the resulting boundary cases are recycled for closed-loop policy fine-tuning.",
+      "authors": [
+        "Yicheng Guo",
+        "Jiaqi Liu",
+        "Chengkai Xu",
+        "Peng Hang",
+        "Jian Sun"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-08T01:34:05+00:00",
+      "link": "https://arxiv.org/pdf/2604.07378v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "adversarial diffusion for scenario synthesis in autonomous vehicles",
+      "llm_evidence_cn": "用于自动驾驶场景合成的对抗性扩散模型",
+      "llm_evidence": "用于自动驾驶场景合成的对抗性扩散模型",
+      "canonical_evidence": "用于自动驾驶场景合成的对抗性扩散模型",
+      "llm_tldr_en": "Transforms adversarial diffusion into a closed-loop curriculum to improve autonomous vehicle policy robustness.",
+      "llm_tldr_cn": "将对抗性扩散转化为闭环课程，通过合成安全关键场景提升自动驾驶策略的鲁棒性。",
+      "llm_tldr": "将对抗性扩散转化为闭环课程，通过合成安全关键场景提升自动驾驶策略的鲁棒性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty:composite"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty:composite",
+      "matched_query_text": "Papers central to 自动驾驶轨迹生成中利用扩散模型进行不确定性解耦、量化、追溯的论文检索, especially work that connects or combines: c; trajectory generation and path planning; autonomous driving motion planning and prediction; diffusion models for trajectory generation in autonomous driving; modeling aleatoric uncertainty in autonomous driving scenarios; estimating epistemic uncertainty in neural motion planners; diffusion models for uncertainty decoupling in autonomous driving trajectory generation; quantifying and tracing uncertainty in diffusion based motion planning; aleatoric and epistemic uncertainty decomposition in diffusion trajectory models; diffusion models for uncertainty estimation in autonomous driving trajectory generation.",
+      "matched_requirement_id": "req-composite-diffusion-conf-uncertainty",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.01337v1",
+      "title": "SECURE: Stable Early Collision Understanding via Robust Embeddings in Autonomous Driving",
+      "abstract": "While deep learning has significantly advanced accident anticipation, the robustness of these safety-critical systems against real-world perturbations remains a major challenge. We reveal that state-of-the-art models like CRASH, despite their high performance, exhibit significant instability in predictions and latent representations when faced with minor input perturbations, posing serious reliability risks. To address this, we introduce SECURE - Stable Early Collision Understanding Robust Embeddings, a framework that formally defines and enforces model robustness. SECURE is founded on four key attributes: consistency and stability in both prediction space and latent feature space. We propose a principled training methodology that fine-tunes a baseline model using a multi-objective loss, which minimizes divergence from a reference model and penalizes sensitivity to adversarial perturbations. Experiments on DAD and CCD datasets demonstrate that our approach not only significantly enhances robustness against various perturbations but also improves performance on clean data, achieving new state-of-the-art results.",
+      "authors": [
+        "Wenjing Wang",
+        "Wenxuan Wang",
+        "Songning Lai"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CV"
+      ],
+      "published": "2026-04-01T19:42:32+00:00",
+      "link": "https://arxiv.org/pdf/2604.01337v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "stability and robustness in autonomous driving collision understanding",
+      "llm_evidence_cn": "自动驾驶碰撞理解中的稳定性和鲁棒性",
+      "llm_evidence": "自动驾驶碰撞理解中的稳定性和鲁棒性",
+      "canonical_evidence": "自动驾驶碰撞理解中的稳定性和鲁棒性",
+      "llm_tldr_en": "Enforces model robustness and stability in latent representations for reliable accident anticipation.",
+      "llm_tldr_cn": "在潜在表示中强化模型的鲁棒性和稳定性，以实现可靠的事故预判。",
+      "llm_tldr": "在潜在表示中强化模型的鲁棒性和稳定性，以实现可靠的事故预判。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.03540v2",
+      "title": "Drift-Based Policy Optimization: Native One-Step Policy Learning for Online Robot Control",
+      "abstract": "Although multi-step generative policies achieve strong performance in robotic manipulation by modeling multimodal action distributions, they require multi-step iterative denoising at inference time. Each action therefore needs tens to hundreds of network function evaluations (NFEs), making them costly for high-frequency closed-loop control and online reinforcement learning (RL). To address this limitation, we propose a two-stage framework for native one-step generative policies that shifts refinement from inference to training. First, we introduce the Drift-Based Policy (DBP), which leverages fixed-point drifting objectives to internalize iterative refinement into the model parameters, yielding a one-step generative backbone by design while preserving multimodal action modeling capacity. Second, we develop Drift-Based Policy Optimization (DBPO), an online RL framework that equips the pretrained backbone with a compatible stochastic interface, enabling stable on-policy updates without sacrificing the one-step deployment property. Extensive experiments demonstrate the effectiveness of the proposed framework across offline imitation learning, online fine-tuning, and real-world control scenarios. DBP matches or exceeds the performance of multi-step diffusion policies while achieving up to $100\\times$ faster inference. It also consistently outperforms existing one-step baselines on challenging manipulation benchmarks. Moreover, DBPO enables effective and stable policy improvement in online settings. Experiments on a real-world dual-arm robot demonstrate reliable high-frequency control at 105.2 Hz.",
+      "authors": [
+        "Yuxuan Gao",
+        "Yedong Shen",
+        "Shiqi Zhang",
+        "Wenhao Yu",
+        "Yifan Duan",
+        "Jia pan",
+        "Jiajia Wu",
+        "Jiajun Deng",
+        "Yanyong Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-04T01:32:01+00:00",
+      "link": "https://arxiv.org/pdf/2604.03540v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "generative policies for multimodal action distributions in robot control",
+      "llm_evidence_cn": "机器人控制中多模态动作分布的生成策略",
+      "llm_evidence": "机器人控制中多模态动作分布的生成策略",
+      "canonical_evidence": "机器人控制中多模态动作分布的生成策略",
+      "llm_tldr_en": "Introduces Drift-Based Policy to enable one-step generative action sampling for efficient robot control.",
+      "llm_tldr_cn": "引入漂移策略，实现高效机器人控制中的单步生成式动作采样。",
+      "llm_tldr": "引入漂移策略，实现高效机器人控制中的单步生成式动作采样。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.03911v1",
+      "title": "Align Your Structures: Generating Trajectories with Structure Pretraining for Molecular Dynamics",
+      "abstract": "Generating molecular dynamics (MD) trajectories using deep generative models has attracted increasing attention, yet remains inherently challenging due to the limited availability of MD data and the complexities involved in modeling high-dimensional MD distributions. To overcome these challenges, we propose a novel framework that leverages structure pretraining for MD trajectory generation. Specifically, we first train a diffusion-based structure generation model on a large-scale conformer dataset, on top of which we introduce an interpolator module trained on MD trajectory data, designed to enforce temporal consistency among generated structures. Our approach effectively harnesses abundant structural data to mitigate the scarcity of MD trajectory data and effectively decomposes the intricate MD modeling task into two manageable subproblems: structural generation and temporal alignment. We comprehensively evaluate our method on the QM9 and DRUGS small-molecule datasets across unconditional generation, forward simulation, and interpolation tasks, and further extend our framework and analysis to tetrapeptide and protein monomer systems. Experimental results confirm that our approach excels in generating chemically realistic MD trajectories, as evidenced by remarkable improvements of accuracy in geometric, dynamical, and energetic measurements.",
+      "authors": [
+        "Aniketh Iyengar",
+        "Jiaqi Han",
+        "Pengwei Sun",
+        "Mingjian Jiang",
+        "Jianwen Xie",
+        "Stefano Ermon"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.QM"
+      ],
+      "published": "2026-04-05T00:37:28+00:00",
+      "link": "https://arxiv.org/pdf/2604.03911v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion-based structure generation for trajectory generation",
+      "llm_evidence_cn": "基于扩散模型的结构生成用于轨迹生成",
+      "llm_evidence": "基于扩散模型的结构生成用于轨迹生成",
+      "canonical_evidence": "基于扩散模型的结构生成用于轨迹生成",
+      "llm_tldr_en": "Uses diffusion models for molecular dynamics trajectory generation, focusing on temporal consistency and data scarcity.",
+      "llm_tldr_cn": "利用扩散模型进行分子动力学轨迹生成，重点解决时间一致性和数据稀缺问题。",
+      "llm_tldr": "利用扩散模型进行分子动力学轨迹生成，重点解决时间一致性和数据稀缺问题。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.06936v2",
+      "title": "Adaptive Distributionally Robust Optimal Control with Bayesian Ambiguity Sets",
+      "abstract": "In stochastic optimal control (SOC), uncertainty may arise from incomplete knowledge of the true probability distribution of the underlying environment, which is known as Knightian or epistemic uncertainty. Distributionally robust optimal control (DROC) models are subsequently proposed to tackle this source of uncertainty. While such models are effective in some practical applications, most existing DROC models are offline and can be overly conservative when data are scarce. Moreover, they cannot be applied to the case when samples are generated episodically. Motivated by the Bayesian SOC framework recently proposed by Shapiro et al.~\\cite{shapiro2025episodic}, we propose an adaptive DROC model in which the ambiguity set is updated via Bayesian learning from new data. Under some moderate conditions, we derive a tractable risk-averse reformulation, establish consistency of the optimal value function and optimal policy for an infinite-horizon SOC and establish a finite-sample posterior credibility guarantee for the policy value induced by the proposed episodic Bayesian DROC model. We also study the stability and statistical robustness of the proposed model with respect to sample perturbations that often arise in data-driven environments. To solve the episodic Bayesian DROC model, we propose a Bellman-operator cutting-plane (BOCP) algorithm that is computationally efficient and provably convergent. Numerical results on an inventory control problem demonstrate the effectiveness, adaptivity, and robust performance of the proposed model and algorithm.",
+      "authors": [
+        "Wentao Ma",
+        "Zhiping Chen",
+        "Huifu Xu",
+        "Enlu Zhou"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-04-08T10:58:49+00:00",
+      "link": "https://arxiv.org/pdf/2604.06936v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "epistemic uncertainty in stochastic optimal control",
+      "llm_evidence_cn": "随机最优控制中的认知不确定性",
+      "llm_evidence": "随机最优控制中的认知不确定性",
+      "canonical_evidence": "随机最优控制中的认知不确定性",
+      "llm_tldr_en": "Develops an adaptive distributionally robust optimal control model to handle epistemic uncertainty.",
+      "llm_tldr_cn": "开发了一种自适应分布鲁棒最优控制模型，用于处理认知不确定性。",
+      "llm_tldr": "开发了一种自适应分布鲁棒最优控制模型，用于处理认知不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "estimating epistemic uncertainty in neural motion planners",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.06972v1",
+      "title": "Differentiable Environment-Trajectory Co-Optimization for Safe Multi-Agent Navigation",
+      "abstract": "The environment plays a critical role in multi-agent navigation by imposing spatial constraints, rules, and limitations that agents must navigate around. Traditional approaches treat the environment as fixed, without exploring its impact on agents' performance. This work considers environment configurations as decision variables, alongside agent actions, to jointly achieve safe navigation. We formulate a bi-level problem, where the lower-level sub-problem optimizes agent trajectories that minimize navigation cost and the upper-level sub-problem optimizes environment configurations that maximize navigation safety. We develop a differentiable optimization method that iteratively solves the lower-level sub-problem with interior point methods and the upper-level sub-problem with gradient ascent. A key challenge lies in analytically coupling these two levels. We address this by leveraging KKT conditions and the Implicit Function Theorem to compute gradients of agent trajectories w.r.t. environment parameters, enabling differentiation throughout the bi-level structure. Moreover, we propose a novel metric that quantifies navigation safety as a criterion for the upper-level environment optimization, and prove its validity through measure theory. Our experiments validate the effectiveness of the proposed framework in a variety of safety-critical navigation scenarios, inspired from warehouse logistics to urban transportation. The results demonstrate that optimized environments provide navigation guidance, improving both agents' safety and efficiency.",
+      "authors": [
+        "Zhan Gao",
+        "Gabriele Fadini",
+        "Stelian Coros",
+        "Amanda Prorok"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.MA"
+      ],
+      "published": "2026-04-08T11:43:38+00:00",
+      "link": "https://arxiv.org/pdf/2604.06972v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "trajectory co-optimization for multi-agent navigation",
+      "llm_evidence_cn": "多智能体导航的轨迹协同优化",
+      "llm_evidence": "多智能体导航的轨迹协同优化",
+      "canonical_evidence": "多智能体导航的轨迹协同优化",
+      "llm_tldr_en": "Optimizes environment configurations and agent trajectories jointly for safe multi-agent navigation.",
+      "llm_tldr_cn": "联合优化环境配置和智能体轨迹，以实现安全的多智能体导航。",
+      "llm_tldr": "联合优化环境配置和智能体轨迹，以实现安全的多智能体导航。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.07599v1",
+      "title": "SANDO: Safe Autonomous Trajectory Planning for Dynamic Unknown Environments",
+      "abstract": "SANDO is a safe trajectory planner for 3D dynamic unknown environments, where obstacle locations and motions are unknown a priori and a collision-free plan can become unsafe at any moment, requiring fast replanning. Existing soft-constraint planners are fast but cannot guarantee collision-free paths, while hard-constraint methods ensure safety at the cost of longer computation. SANDO addresses this trade-off through three contributions. First, a heat map-based A* global planner steers paths away from high-risk regions using soft costs, and a spatiotemporal safe flight corridor (STSFC) generator produces time-layered polytopes that inflate obstacles only by their worst-case reachable set at each time layer, rather than by the worst case over the entire horizon. Second, trajectory optimization is formulated as a Mixed-Integer Quadratic Program (MIQP) with hard collision-avoidance constraints, and a variable elimination technique reduces the number of decision variables, enabling fast computation. Third, a formal safety analysis establishes collision-free guarantees under explicit velocity-bound and estimation-error assumptions. Ablation studies show that variable elimination yields up to 7.4x speedup in optimization time, and that STSFCs are critical for feasibility in dense dynamic environments. Benchmark simulations against state-of-the-art methods across standardized static benchmarks, obstacle-rich static forests, and dynamic environments show that SANDO consistently achieves the highest success rate with no constraint violations across all difficulty levels; perception-only experiments without ground truth obstacle information confirm robust performance under realistic sensing. Hardware experiments on a UAV with fully onboard planning, perception, and localization demonstrate six safe flights in static environments and ten safe flights among dynamic obstacles.",
+      "authors": [
+        "Kota Kondo",
+        "Jesús Tordesillas",
+        "Jonathan P. How"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-08T21:15:28+00:00",
+      "link": "https://arxiv.org/pdf/2604.07599v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "trajectory planning in dynamic unknown environments",
+      "llm_evidence_cn": "动态未知环境中的轨迹规划",
+      "llm_evidence": "动态未知环境中的轨迹规划",
+      "canonical_evidence": "动态未知环境中的轨迹规划",
+      "llm_tldr_en": "A safe trajectory planner for dynamic environments using spatiotemporal safe flight corridors.",
+      "llm_tldr_cn": "一种利用时空安全飞行走廊在动态环境中进行安全轨迹规划的方法。",
+      "llm_tldr": "一种利用时空安全飞行走廊在动态环境中进行安全轨迹规划的方法。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.07687v1",
+      "title": "Joint Task Offloading, Inference Optimization and UAV Trajectory Planning for Generative AI Empowered Intelligent Transportation Digital Twin",
+      "abstract": "To implement the intelligent transportation digital twin (ITDT), unmanned aerial vehicles (UAVs) are scheduled to process the sensing data from the roadside sensors. At this time, generative artificial intelligence (GAI) technologies such as diffusion models are deployed on the UAVs to transform the raw sensing data into the high-quality and valuable. Therefore, we propose the GAI-empowered ITDT. The dynamic processing of a set of diffusion model inference (DMI) tasks on the UAVs with dynamic mobility simultaneously influences the DT updating fidelity and delay. In this paper, we investigate a joint optimization problem of DMI task offloading, inference optimization and UAV trajectory planning as the system utility maximization (SUM) problem to address the fidelity-delay tradeoff for the GAI-empowered ITDT. To seek a solution to the problem under the network dynamics, we model the SUM problem as the heterogeneous-agent Markov decision process, and propose the sequential update-based heterogeneous-agent twin delayed deep deterministic policy gradient (SU-HATD3) algorithm, which can quickly learn a near-optimal solution. Numerical results demonstrate that compared with several baseline algorithms, the proposed algorithm has great advantages in improving the system utility and convergence rate.",
+      "authors": [
+        "Xiaohuan Li",
+        "Junchuan Fan",
+        "Bingqi Zhang",
+        "Rong Yu",
+        "Xumin Huang",
+        "Qian Chen"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-09T01:19:10+00:00",
+      "link": "https://arxiv.org/pdf/2604.07687v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion models for UAV trajectory planning in intelligent transportation",
+      "llm_evidence_cn": "智能交通中用于无人机轨迹规划的扩散模型",
+      "llm_evidence": "智能交通中用于无人机轨迹规划的扩散模型",
+      "canonical_evidence": "智能交通中用于无人机轨迹规划的扩散模型",
+      "llm_tldr_en": "Optimizes UAV trajectory planning using diffusion models for generative AI tasks in transportation.",
+      "llm_tldr_cn": "利用扩散模型优化智能交通任务中的无人机轨迹规划。",
+      "llm_tldr": "利用扩散模型优化智能交通任务中的无人机轨迹规划。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.07944v1",
+      "title": "On-Policy Distillation of Language Models for Autonomous Vehicle Motion Planning",
+      "abstract": "Large language models (LLMs) have recently demonstrated strong potential for autonomous vehicle motion planning by reformulating trajectory prediction as a language generation problem. However, deploying capable LLMs in resource-constrained onboard systems remains a fundamental challenge. In this paper, we study how to effectively transfer motion planning knowledge from a large teacher LLM to a smaller, more deployable student model. We build on the GPT-Driver framework, which represents driving scenes as language prompts and generates waypoint trajectories with chain-of-thought reasoning, and investigate two student training paradigms: (i) on-policy generalized knowledge distillation (GKD), which trains the student on its own self-generated outputs using dense token-level feedback from the teacher, and (ii) a dense-feedback reinforcement learning (RL) baseline that uses the teacher's log-probabilities as per-token reward signals in a policy gradient framework. Experiments on the nuScenes benchmark show that GKD substantially outperforms the RL baseline and closely approaches teacher-level performance despite a 5$\\times$ reduction in model size. These results highlight the practical value of on-policy distillation as a principled and effective approach to deploying LLM-based planners in autonomous driving systems.",
+      "authors": [
+        "Amirhossein Afsharrad",
+        "Amirhesam Abedsoltan",
+        "Ahmadreza Moradipari",
+        "Sanjay Lall"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "eess.SY"
+      ],
+      "published": "2026-04-09T08:06:19+00:00",
+      "link": "https://arxiv.org/pdf/2604.07944v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "motion planning for autonomous vehicles using language models",
+      "llm_evidence_cn": "使用语言模型的自动驾驶汽车运动规划",
+      "llm_evidence": "使用语言模型的自动驾驶汽车运动规划",
+      "canonical_evidence": "使用语言模型的自动驾驶汽车运动规划",
+      "llm_tldr_en": "Explores knowledge distillation for deploying LLM-based motion planners in autonomous vehicles.",
+      "llm_tldr_cn": "探索知识蒸馏技术，以便在自动驾驶汽车中部署基于大语言模型的运动规划器。",
+      "llm_tldr": "探索知识蒸馏技术，以便在自动驾驶汽车中部署基于大语言模型的运动规划器。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.07957v1",
+      "title": "WorldMAP: Bootstrapping Vision-Language Navigation Trajectory Prediction with Generative World Models",
+      "abstract": "Vision-language models (VLMs) and generative world models are opening new opportunities for embodied navigation. VLMs are increasingly used as direct planners or trajectory predictors, while world models support look-ahead reasoning by imagining future views. Yet predicting a reliable trajectory from a single egocentric observation remains challenging. Current VLMs often generate unstable trajectories, and world models, though able to synthesize plausible futures, do not directly provide the grounded signals needed for navigation learning. This raises a central question: how can generated futures be turned into supervision for grounded trajectory prediction? We present WorldMAP, a teacher--student framework that converts world-model-generated futures into persistent semantic-spatial structure and planning-derived supervision. Its world-model-driven teacher builds semantic-spatial memory from generated videos, grounds task-relevant targets and obstacles, and produces trajectory pseudo-labels through explicit planning. A lightweight student with a multi-hypothesis trajectory head is then trained to predict navigation trajectories directly from vision-language inputs. On Target-Bench, WorldMAP achieves the best ADE and FDE among compared methods, reducing ADE by 18.0% and FDE by 42.1% relative to the best competing baseline, while lifting a small open-source VLM to DTW performance competitive with proprietary models. More broadly, the results suggest that, in embodied navigation, the value of world models may lie less in supplying action-ready imagined evidence than in synthesizing structured supervision for navigation learning.",
+      "authors": [
+        "Hongjin Chen",
+        "Shangyun Jiang",
+        "Tonghua Su",
+        "Chen Gao",
+        "Xinlei Chen",
+        "Yong Li",
+        "Zhibo Chen"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-04-09T08:21:58+00:00",
+      "link": "https://arxiv.org/pdf/2604.07957v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "trajectory prediction with generative world models for navigation",
+      "llm_evidence_cn": "利用生成式世界模型进行导航轨迹预测",
+      "llm_evidence": "利用生成式世界模型进行导航轨迹预测",
+      "canonical_evidence": "利用生成式世界模型进行导航轨迹预测",
+      "llm_tldr_en": "Uses generative world models to bootstrap and supervise trajectory prediction in vision-language navigation.",
+      "llm_tldr_cn": "利用生成式世界模型引导并监督视觉语言导航中的轨迹预测。",
+      "llm_tldr": "利用生成式世界模型引导并监督视觉语言导航中的轨迹预测。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.08222v1",
+      "title": "Free-Energy Minimizing Policies Under Generative Model Ambiguity",
+      "abstract": "We present a variational free-energy formulation for distributionally robust decision-making with ambiguity in the generative model. The formulation, related to a broad range of learning and control frameworks, yields a minimax optimal control problem where maximization is over an uncertainty set that represents ambiguities. We prove that computing the optimal policy requires solving a non-convex minimization problem and propose an algorithm with convergence guarantees to find the solution. The effectiveness of our results is illustrated via simulations on a pendulum swing-up problem.",
+      "authors": [
+        "Arash Shafiei",
+        "Caio César Graciani Rodrigues",
+        "Giovanni Russo"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-04-09T13:18:07+00:00",
+      "link": "https://arxiv.org/pdf/2604.08222v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "decision-making under generative model ambiguity and uncertainty",
+      "llm_evidence_cn": "生成模型歧义与不确定性下的决策",
+      "llm_evidence": "生成模型歧义与不确定性下的决策",
+      "canonical_evidence": "生成模型歧义与不确定性下的决策",
+      "llm_tldr_en": "Presents a variational free-energy formulation for robust decision-making under model uncertainty.",
+      "llm_tldr_cn": "提出了一种变分自由能公式，用于在模型不确定性下进行鲁棒决策。",
+      "llm_tldr": "提出了一种变分自由能公式，用于在模型不确定性下进行鲁棒决策。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "estimating epistemic uncertainty in neural motion planners",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

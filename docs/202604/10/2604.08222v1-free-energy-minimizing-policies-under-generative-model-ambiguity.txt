@@ -1,0 +1,1386 @@
+Title: Free-Energy Minimizing Policies Under Generative Model Ambiguity
+
+URL Source: https://arxiv.org/pdf/2604.08222v1
+
+Published Time: Fri, 10 Apr 2026 01:05:27 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# Free-Energy Minimizing Policies Under Generative Model Ambiguity 
+
+Arash Shafiei 1,∗, Caio C´ esar Graciani Rodrigues 2,∗ and Giovanni Russo 3
+
+Abstract — We present a variational free-energy formulation for distributionally robust decision-making with ambiguity in the generative model. The formulation, related to a broad range of learning and control frameworks, yields a minimax optimal control problem where maximization is over an uncertainty set that represents ambiguities. We prove that computing the optimal policy requires solving a non-convex minimization problem and propose an algorithm with convergence guarantees to find the solution. The effectiveness of our results is illustrated via simulations on a pendulum swing-up problem. 
+
+I. I NTRODUCTION 
+
+The minimization of the variational free energy is central to a broad range of decision-making frameworks across learning, control and neuroscience [17], [13]. These functionals consist of an expected cost and a term that quantifies the discrepancy from a generative model. Despite the success of these frameworks, free energy minimizing policies can be brittle to ambiguities in the generative model, arising from, e.g., mis-specifications. In this context, a key challenge is guaranteeing robustness of free energy minimizing policies against possibly adversarial uncertainties in the generative model. Motivated by this, we present a distributionally robust variational free-energy formulation for policy computation under generative model ambiguity. The formulation yields an optimal control problem involving a non-convex distributionally robust optimization (DRO) problem and we introduce an algorithm to compute its optimal solution. 
+
+Related Works And Contributions. Since Scarf’s pioneer-ing work, DRO has emerged as a central topic in optimiza-tion, gaining attention across machine learning and control, see, e.g., [24], [37], [38]. As also surveyed in [27], [39], [9], these problems often feature a cost that is linear in at least one of the decision variables with extensions to non-linear, convex, settings rapidly emerging [33]. Popular frameworks such as distributionally robust versions of imitation learning based on maximum entropy [2], Q-learning [28] and path in-tegral control [31], [16] tackle policy computation problems framed via DRO where the cost is linear in the decision variables for the inner optimization problem. In the context of control, contributions include, e.g., the development of distributionally robust linear quadratic controllers [35] and    
+
+> 1A. Shafiei
+
+(shafie.allahkaram@gmail.com) is with Czech Technical University 2 C. C. Graciani Rodrigues 
+
+(c.graciani@ssmeridonale.it) is with Scuola Superiore Meridionale, Italy, Modelling and Engineering Risk and Complexity Department, 3 G. Russo (giovarusso@unisa.it) is with University of Salerno, Italy, Department of Information and Electrical Engineering and Applied Mathematics. ∗ Joint first authors 
+
+model predictive control algorithms [29] with results ben-efiting from this linearity assumption. The minimization of free energy functionals arises across, e.g., MaxEnt, MaxD-iff learning [11], [3], KL Control [36], [17], Shr¨ odinger bridges [6], [18], optimal [34] and inverse optimal control schemes based on maximum likelihood [10], [15]. Related functionals also appear in the context of fully probabilistic design [26], [14]. We are, however, not aware of frameworks that tackle the problem of robustly minimizing this functional against possibly adversarial uncertainties in the generative model. In [32], the problem of computing distributionally ro-bust free energy minimizing policies has been considered and the resulting distributionally robust free energy principle has been integrated with learning frameworks in [20]. However, in [32], [20] robustness is guaranteed against ambiguities in the environment. In this work, it is the generative model to be ambiguous and this, as we shall see, leads to a non-convex problem that cannot be studied with the tools in [32], [20]. Our key technical contributions are as follows. We: 1) introduce a distributionally robust free energy formu-lation for policy computation. This yields a bi-level optimization approach to solve the problem. The inner optimization step involves solving a non-convex, con-strained and infinite-dimensional program. We obtain a difference-of-convex (DC) functions reformulation of the problem and characterize its main properties; 2) adapt a Frank-Wolfe algorithm from [30] to address the optimization. The algorithm, which was originally introduced for vector spaces, is extended to infinite-dimensional spaces to tackle the settings required by our formulation. Although the Frank-Wolfe algorithms in [22], [23] also address infinite-dimensional prob-lems, they apply to unconstrained settings, whereas our formulation is constrained; 3) characterize convergence of the algorithm. Although convergence of the Frank-Wolfe algorithm has been characterized for unconstrained problems in the prob-ability space [22], [23], to tackle our formulation we need to guarantee algorithm convergence in the space of measurable functions with nonlinear constraints. To the best of our knowledge, this broad setting has not been tackled in the literature; 4) illustrate the effectiveness of our results via a numeri-cal example. II. M ATHEMATICAL BACKGROUND 
+
+Sets and operators are in calligraphic characters and vectors in bold . The symbol ∶= denotes a definition and we let K be either R or Z. A random variable is denoted 
+
+> arXiv:2604.08222v1 [math.OC] 9 Apr 2026
+
+by W and its realization is w. We denote by p(w) the 
+
+probability mass function (pmf) when W is a discrete random variable, and the probability density function (pdf) when W is continuous. The convex subset of pdfs (pmfs) is denoted by D. The expectation of a function h(⋅) with respect to a continuous random variable W with density 
+
+p(w) is denoted by Ep[h(w)] ∶= ∫supp p h(w) p(w) dw,where supp p denotes the (compact) support of p(w). In the case where W is a discrete random variable, the in-tegral is replaced by a summation, yielding Ep[h(w)] ∶=
+
+∑w h(w) p(w). Whenever the context is clear, we omit the subscript in the expectation. The joint pmf of w1 and w2 is denoted by p(w1, w2) and the conditional pmf of w1 with respect to (w.r.t.) w2 is p (w1 S w2). Given two pdfs, p(w)
+
+and q(w), we say that p(w) is absolutely continuous with respect to (w.r.t.) q(w) if supp p ⊆ supp q. We denote this by writing p ≪ q. Also, let Ω ⊆ Kn, then L1(Ω) stands for the space of measurable functions f ∶ Ω → R, such that: (i) Yf YL1 = ∫Ω Sf S dμ < ∞, with Lebesgue measure μ if 
+
+Kn is Rn; (ii) Yf YL1 = ∑x∈Ω Sf (x)S < ∞ if Kn is Zn.We use the shorthand notation a.s. for almost surely . The Kullback–Leibler divergence between distributions p(w) and 
+
+q(w) is DKL (pYq) ∶= ∫supp p p(w) log  p(w) 
+
+> q(w)
+
+ dw, if W is continuous. The integral is replaced by a summation when 
+
+p(w) is a pmf. The divergence – measuring the discrepancy of the pair p(w), q(w) – is non-negative and DKL (pYq) = 0
+
+if and only if p = q almost everywhere [25]. Finally, we recall the chain rule for the KL divergence [8] 
+
+Lemma 2.1: let W1 and W2 random variables, 
+
+f (w1, w2), g(w1, w2) joint pdfs/pmfs and f (w2 S
+
+w1), g(w2 S w1) conditional pdfs/pmfs. Then: 
+
+DKL (f (w1, w2) SS g(w1, w2)) = DKL (f (w1) SS g(w1)) +
+
+Ef (w1) [DKL (f (w2 S w1) SS g(w2 S w1))] .
+
+A. Variational Free Energy 
+
+The variational free energy, see, e.g., [21], is defined as 
+
+F(p(w), q (w)) ∶= DKL (p(w) SS q(w)) + Ep [l(W)] , (1) where p(w) and q(w) – termed as generative (time-series) model – are pdfs/pmfs and l(⋅) is a loss function. The following result can be found under a wide range of different technical conditions in, e.g., [17], [5], [36]. 
+
+Lemma 2.2: given q(w), consider 
+
+min 
+
+> p(w)∈D
+
+F(p(w), q (w)) ,
+
+with F(⋅, ⋅) defined in (1). Then:  
+
+> ●
+
+the problem is convex;  
+
+> ●
+
+the optimal solution is p∗(w) = q(w) exp (− l(w))    
+
+> ∫q(w)exp (− l(w)) dw
+
+; 
+
+> ●
+
+the optimal value is − log ∫ q(w) exp (−l(w)) dw.
+
+Remark 2.1: for discrete variables, the integral in the optimal solution of Lemma 2.2 is replaced with a sum. The optimal value arises in the context of, e.g., statistical physics [7, Chapter 20]. III. P ROBLEM STATEMENT 
+
+Let Xk ∈ X ⊆ Kn be the state and Uk ∈ U ⊆ Km
+
+the control input at time-step k. The possibly nonlinear and stochastic dynamics for the system is pk (xk S xk−1 , uk)
+
+and we use the shorthand notation p(x) 
+
+> kSk−1
+
+to denote this probability. We also let pkSk−1 ∶= pk (xk, uk S xk−1 ) =
+
+pk (xk S xk−1 , uk) pk (uk S xk−1 ), where pk (uk S xk−1 ) is a randomized policy. We use p(u) 
+
+> kSk−1
+
+to denote this policy. 
+
+Remark 3.1: pk (xk S xk−1, uk) describes the behavior of the system at time-step k given xk−1 and uk ∼
+
+pk (uk S xk−1 ). The joint pk (xk, uk S xk−1) captures in prob-abilistic terms the closed loop interactions. With the control problem, formalized next, we aim to design the agent policy. The policy is computed by minimizing, in the space of policies, the worst case variational free energy across a set capturing ambiguity on a given ¯q(x) 
+
+> kSk−1
+
+∶= ¯qk (xk S xk−1 , uk) ∈D serving as nominal generative model in our formulation. To formally state the problem, we first give the following: 
+
+Definition 3.1: let q(x) 
+
+> kSk−1
+
+∶= qk (xk S xk−1, uk ) ∈ D and 
+
+ηk (xk−1 , uk) be a positive and bounded function. The ambiguity set associated with ¯q(x) 
+
+> kSk−1
+
+∈ D is 
+
+Bη ¯q(x) 
+
+> kSk−1
+
+ ∶= q(x) 
+
+> kSk−1
+
+∈ D ∶ DKL q(x) 
+
+> kSk−1
+
+SS ¯q(x) 
+
+> kSk−1
+
+≤ ηk (xk−1 , uk) , supp p(x) 
+
+> kSk−1
+
+⊆ supp q(x) 
+
+> kSk−1
+
+ . (2) 
+
+Remark 3.2: Bη ¯q(x) 
+
+> kSk−1
+
+ is the set of qk (xk S xk−1 , uk) ∈ 
+
+D that: (i) have statistical complexity, i.e., KL-divergence, of at most ηk (xk−1 , uk) from ¯qk (xk S xk−1, uk); (ii) have a support that covers the support of pk (xk S xk−1 , uk).We are now ready to state our control problem: 
+
+Problem 3.1: let: 1) p(x) 
+
+> kSk−1
+
+∶= pk (xk S xk−1, uk );2) qkSk−1 ∶= qk (xk, uk S xk−1 ) = q(x) 
+
+> kSk−1
+
+q(u) 
+
+> kSk−1
+
+,with q(x) 
+
+> kSk−1
+
+∶= qk (xk S xk−1 , uk) and q(u) 
+
+> kSk−1
+
+∶=
+
+qk (uk S xk−1 );find p(u),⋆ 
+
+> kSk−1
+
+∶= p⋆ 
+
+> k
+
+(uk S xk−1) such that 
+
+p(u),⋆ 
+
+> kSk−1
+
+∈ arg min 
+
+> p(u)
+> kSk−1∈D
+
+max   
+
+> q(x)
+> kSk−1∈B η¯q(x)
+> kSk−1
+
+F pkSk−1 , q kSk−1  ,
+
+(3) where: (i) F(⋅, ⋅) is defined as in (1) with l(xk, uk) =
+
+c(x) 
+
+> k
+
+(xk) + c(u) 
+
+> k
+
+(uk); (ii) Bη ¯q(x) 
+
+> kSk−1
+
+ is in Definition 3.1. 
+
+Remark 3.3: in Problem 3.1, the loss function in the free energy is a cost, which is possibly non-convex in states/actions. Minimizing the KL divergence term amounts at minimizing the discrepancy between pk (xk, uk S xk−1)
+
+and the generative model. This model does not need to be a time-series model and can simply capture a desired configuration. In this case, by minimizing the KL divergence, the policy minimizes the error from the desired configuration. 
+
+Remark 3.4: in Problem 3.1, the constraint of the inner maximization problem captures the ambiguity around the generative model qk (xk S xk−1, uk ), which is not available. Following [32], before introducing the results we briefly re-late our Problem 3.1 with other decision-making frameworks. A. Problem 3.1 And Other Decision-Making Frameworks 
+
+The objective of the problem in (3) can be written as 
+
+DKL pkSk−1 SS ˜qkSk−1  − log Z(qkSk−1 ) , (4) where 
+
+˜qkSk−1 ∶= ˜qk (xk, uk S xk−1)
+
+= qk (xk , uk S xk−1 ) exp −c(x) 
+
+> k
+
+(xk) − c(u) 
+
+> k
+
+(uk) 
+
+Z(qkSk−1 ) (5) with 
+
+Z(qkSk−1 )
+
+∶= SU SX
+
+qkSk−1 exp −c(x) 
+
+> k
+
+(xk) − c(u) 
+
+> k
+
+(uk) dxkduk (6) being the normalizer. Differently from [32] the normalizer depends on the decision variables of the optimization prob-lem and therefore it cannot be dropped from the optimization. However, when there is no ambiguity, the ambiguity con-straint is relaxed and the second term in (4) can be dropped from the resulting minimization problem in the policy space. Next, we highlight some of the connections drawn in [32] between the relaxed minimization problem in the policy space and other frameworks; see [32] for details. In the spe-cial case where qk (xk S xk−1 , uk) is a maximally diffusive probability and qk (uk S xk−1) is uniform, as shown in [32], the relaxed problem formulation yields a cost functional that aligns with the maximum diffusion objective in the MaxDiff framework [3]. Therefore, in this special case, solv-ing Problem 3.1 yields a distributionally robust maximum diffusion policy. This connects our problem statement to the MaxDiff framework and, through it, to MaxEnt. In fact, MaxDiff is known to generalize MaxEnt policies and inherit its desirable robustness properties [11]. Yet, to compute policies that robustly maximize a reward, MaxEnt must be used with a different/pessimistic objective. Moreover, the ambiguity set over which the policy is robust is not explicit but emerges from the entropy of the optimal policy; explicit bounds for the ambiguity set are only available for discrete variables. In Problem 3.1, the ambiguity set is instead explicitly defined in the problem formulation, as a control requirement. Finally, when c(x) 
+
+> k
+
+(xk) is a cost-to-go, the objective in Problem 3.1 yields the expected free energy minimized to determine actions in the context of active inference from computational neuroscience [13] and this relates the formulation to other popular frameworks, such as risk-sensitive control, KL control, linear quadratic Gaussian regulator and control-as-inference. In this sense, Problem 3.1 offers a generalization of active inference [13] accounting for ambiguity in the generative model. IV. M AIN RESULTS 
+
+First, we obtain a reformulation of Problem 3.1 and characterize its key properties. This yields a resolution strategy where, first the free energy is maximized across the ambiguity set and then minimized in the policy space. Solving the maximization problem requires solving an infi-nite dimensional non-convex problem and tailoring a Frank-Wolfe algorithm to solve this problem. For brevity, results are stated for continuous variables and we give a sketch of the proofs. Complete proofs will be presented elsewhere. 
+
+A. Reformulating Problem 3.1 
+
+The chain rule for the KL divergence (Lemma 2.1) implies that the KL divergence term in the cost functional of (3) can be written as DKL (pk (uk S xk−1 ) SS qk (uk S xk−1)) +
+
+Epk (uk Sxk−1 ) [DKL (pk (xk S xk−1, uk ) SS qk (xk S xk−1 , uk))] .Thus, Problem 3.1 can be reformulated as 
+
+min 
+
+> p(u)
+> kSk−1∈D
+
+DKL p(u) 
+
+> kSk−1
+
+SS q(u) 
+
+> kSk−1
+
+ + EpkSk−1 [l(xk, uk)] 
+
++ max   
+
+> q(x)
+> kSk−1∈B η¯q(x)
+> kSk−1
+
+Ep(u)
+
+> kSk−1
+
+DKL p(x) 
+
+> kSk−1
+
+SS q(x) 
+
+> kSk−1
+
+ ⎫⎪⎪⎬⎪⎪⎭
+
+. (7) The outer minimization is over policies p(u) 
+
+> kSk−1
+
+, while the in-ner maximization is over generative models q(x) 
+
+> kSk−1
+
+. The next result shows that the feasibility set of the inner maximization is compact. 
+
+Lemma 4.1: pick any ¯q(x) 
+
+> kSk−1
+
+∈ D. The ambiguity set 
+
+Bη(¯q(x) 
+
+> kSk−1
+
+) is compact in L1(Ω).
+
+Sketch of the Proof: assume that ¯q(x) 
+
+> kSk−1
+
+∈ L∞(Ω). By defini-tion of the ambiguity set, for any C > 1, ∫{q(x)  
+
+> kSk−1>C}
+
+q(x) 
+
+> kSk−1
+
+≤    
+
+> ηk(xk−1,u k)+ Y¯q(x)
+> kSk−1Y∞
+> ln C
+
+, so the family of densities in Bη(¯q(x) 
+
+> kSk−1
+
+)
+
+is uniformly integrable. By [4, Theorem 4.7.20], any uni-formly integrable subset of L1(Ω) whose defining constraints are closed is relatively compact in the L1(Ω) weak topol-ogy. Since the KL-divergence constraint and non-negativity constraint are closed, the ambiguity set is also weakly closed and therefore compact. 
+
+Building on this result, we next show that the inner maximization problem admits an optimal solution and that the maximization and expectation in (7) can be swapped. 
+
+Theorem 4.1: pick any p(u) 
+
+> kSk−1
+
+∈ D. The inner maximiza-tion problem in (7) admits an optimal solution q(x),∗ 
+
+> kSk−1
+
+, and 
+
+max  
+
+> q(x)
+> kSk−1∈B η¯q(x)
+> kSk−1
+
+Ep(u)
+
+> kSk−1
+
+DKL p(x) 
+
+> kSk−1
+
+SS q(x) 
+
+> kSk−1
+
+ 
+
+= Ep(u)
+
+> kSk−1
+
+⎡⎢⎢⎢⎢⎣
+
+max   
+
+> q(x)
+> kSk−1∈B η¯q(x)
+> kSk−1
+
+DKL p(x) 
+
+> kSk−1
+
+SS q(x) 
+
+> kSk−1
+
+⎤⎥⎥⎥⎥⎦
+
+.
+
+(8) 
+
+Sketch of the Proof: fix p(u) 
+
+> kSk−1
+
+and let Z ∶= (Xk−1, Uk).By Lemma 4.1, for each realization z, the set Γ(z) ∶=
+
+Bη¯q(x) 
+
+> kSk−1
+
+(⋅ S z) is compact in L1(Ω). Define the con-tinuous function f (z, q (x) 
+
+> kSk−1
+
+) = DKL p(x) 
+
+> kSk−1
+
+(⋅ S z) Y q(x) 
+
+> kSk−1
+
+.Since f (z, ⋅) is continuous on Γ(z), following Weier-strass Theorem [1, Corollary 2.35], a maximizer for the problem on the right-hand side of (8) exists. We de-note the optimizer by q(x),∗ 
+
+> kSk−1
+
+∶= q(x),∗ 
+
+> k
+
+(xk S xk−1 , uk) ∈
+
+Γ(z). Moreover, it can be shown that Γ(⋅) has measurable graph and f is Carath´ eodory. Thus, a measurable selector 
+
+q∗(Z) exists [1, Theorem 18.19]. This implies that (details omitted for brevity) max q(x) 
+
+> kSk−1∈Γ(Z)
+
+Ep(u)
+
+> kSk−1
+
+f (Z, q (x) 
+
+> kSk−1
+
+) =
+
+Ep(u)
+
+> kSk−1
+
+max q(x) 
+
+> kSk−1∈Γ(Z)
+
+f (Z, q (x) 
+
+> kSk−1
+
+) , yielding the desired conclusion. 
+
+The above results imply that Problem 3.1 can be solved by first finding q(x),∗ 
+
+> kSk−1
+
+, i.e., the optimal solution of the problem in the right hand side of (8) and then by minimizing in the policy space the functional 
+
+DKL p(u) 
+
+> kSk−1
+
+SS q(u) 
+
+> kSk−1
+
+ + EpkSk−1 c(x) 
+
+> k
+
+(xk) + c(u) 
+
+> k
+
+(uk) 
+
++ Ep(u)
+
+> kSk−1
+
+DKL p(x) 
+
+> kSk−1
+
+SS q(x),∗ 
+
+> kSk−1
+
+ . (9) The next result gives the optimal solution to this last problem. 
+
+Lemma 4.2: consider the problem 
+
+min   
+
+> pk(ukSxk−1)∈D
+
+J (pk (uk S xk−1)) , with J (⋅) given in (9). The optimal solution p⋆ 
+
+> k
+
+(uk S xk−1) is 
+
+q(u) 
+
+> kSk−1
+
+exp −T (Xk, uk) − DKL p(x) 
+
+> kSk−1
+
+SS q(x),∗ 
+
+> kSk−1
+
+ 
+
+Z , (10) where T (Xk, uk) ∶= Ep(x)
+
+> kSk−1
+
+c(x) 
+
+> k
+
+(Xk) + c(u) 
+
+> k
+
+(uk), and Z
+
+is the normalizer. 
+
+Sketch of the Proof: follows from Lemma 2.2 and is omitted here for brevity. 
+
+B. Tackling The Maximization Problem 
+
+Lemma 4.2 implies that, to compute the optimal policy, we need to find the optimal value for the problem 
+
+max  
+
+> q(x)
+> kSk−1∈B η¯q(x)
+> kSk−1
+
+DKL p(x) 
+
+> kSk−1
+
+SS q(x) 
+
+> kSk−1
+
+ . (11) Inspired by [32], [19], to tackle this problem we introduce a change of variables, using the likelihood ratio (or Radon-Nikodym derivative). This is formalized with the following 
+
+Definition 4.1: the likelihood ratio generated by ¯q(x)
+
+> kSk−1
+
+is rkSk−1 ∶= q(x)
+
+> kSk−1
+> ¯q(x)
+> kSk−1
+
+. The set of ratios is R ∶= {rkSk−1 ∶
+
+E¯q(x)
+
+> kSk−1
+
+rkSk−1  = 1, r kSk−1 ≥ 0, a.s. }.
+
+Assumption 4.1: given xk−1 and uk, R ⊂ L1(Ω) and there exist constants δ0, δ 1 ∈ R+ independent of rkSk−1 ∈ R such that 0 < δ0 ≤ rkSk−1 ≤ δ1 < ∞.
+
+Remark 4.1: Assumption 4.1 is used to prove convergence of the algorithm we propose to tackle the maximization problem (11). This assumption is satisfied whenever, e.g., 
+
+q(x) 
+
+> kSk−1
+
+and ¯q(x) 
+
+> kSk−1
+
+are Gaussians. With Definition 4.1, the problem in (11) becomes 
+
+E¯q(x)
+
+> kSk−1
+
+⎡⎢⎢⎢⎢⎣
+
+p(x)
+
+> kSk−1
+
+¯q(x)
+
+> kSk−1
+
+ln p(x)
+
+> kSk−1
+
+¯q(x)
+
+> kSk−1
+
+⎤⎥⎥⎥⎥⎦
+
+− min 
+
+> rkSk−1
+
+E¯q(x)
+
+> kSk−1
+
+⎡⎢⎢⎢⎢⎣
+
+p(x)
+
+> kSk−1
+
+¯q(x)
+
+> kSk−1
+
+ln rkSk−1
+
+⎤⎥⎥⎥⎥⎦
+
+,
+
+s.t. E¯q(x)
+
+> kSk−1
+
+[rkSk−1 ln rkSk−1 ] ≤ ηk (xk−1 , uk) . (12) The first term in (12) does not depend on rkSk−1 and therefore the optimal ratio r∗ 
+
+> kSk−1
+
+can be found by solving the minimization in (12). This is a minimization of a concave function, which we tackle by proposing a reformulation within the DC programming framework. In fact, we have: 
+
+ln rkSk−1 = rkSk−1 ln rkSk−1 − (rkSk−1 ln rkSk−1 − ln rkSk−1 ).
+
+(13) In (13) we expressed the logarithm in the cost in (12) as the difference of two convex functions. This leads to the following DC reformulation of the problem in (12) 
+
+Problem 4.1: find r∗ 
+
+> kSk−1
+
+∈ R that minimizes 
+
+φk (rkSk−1 ) ∶= gk(rkSk−1 ) − hk(rkSk−1 ), (14) with 
+
+gk(rkSk−1 ) ∶= E¯q(x)
+
+> kSk−1
+
+⎡
+
+⎢⎢⎢⎢⎣
+
+p(x)
+
+> kSk−1
+
+¯q(x)
+
+> kSk−1
+
+rkSk−1 ln rkSk−1
+
+⎤⎥⎥⎥⎥⎦
+
+, and (15) 
+
+hk(rkSk−1 ) ∶ = E¯q(x)
+
+> kSk−1
+
+⎡⎢⎢⎢⎢⎣
+
+p(x)
+
+> kSk−1
+
+¯q(x)
+
+> kSk−1
+
+κ(rkSk−1 )⎤⎥⎥⎥⎥⎦
+
+, (16) where κ(rkSk−1 ) ∶= rkSk−1 ln rkSk−1 − ln rkSk−1 , subject to 
+
+rkSk−1 ∈ C, with C ⊆ R given by 
+
+C ∶= E¯q(x)
+
+> kSk−1
+
+[rkSk−1 ln rkSk−1 ] ≤ ηk (xk−1, uk) . (17) Next, we propose an algorithm to solve the DC Problem 4.1. Properties of the algorithm are characterized in Section IV-D. 
+
+Remark 4.2: the definition of ambiguity set ensures that the optimal value of the maximization problem is bounded. 
+
+Lemma 4.3: assume that Assumption 4.1 holds. Then C in Problem 4.1 is compact (and convex and closed) in L1(Ω).
+
+Sketch of the Proof: from Assumption 4.1, the bounds 
+
+δ0 ≤ rkSk−1 ≤ δ1 imply that R is bounded in L1(Ω), and convexity follows from the bounds being preserved under convex combinations. Since R is bounded and closed in 
+
+L1(Ω), it is compact, which proves the claim. Assumption 4.1 also implies that the feasible set C is obtained as the intersection of closed sets. This yields the result. 
+
+C. Tackling Problem 4.1 
+
+The algorithm we propose to tackle Problem 4.1 is a Frank-Wolfe algorithm [12] for DC programs adapted from [30] to a constrained infinite dimensional setting. Before describing the key steps of the algorithm – given in Algorithm 1 – we first show that the functions gk(⋅) and 
+
+hk(⋅) in (14) are Lipschitz continuous over the feasibility set. Lipschitz continuity of these function implies that the objective in (14) is also Lipschitz. These properties are crucial to characterize convergence of the algorithm. 
+
+Theorem 4.2: let ρ(x) 
+
+> kSk−1
+
+∶= p(x)
+
+> kSk−1
+> ¯q(x)
+> kSk−1
+
+and assume that: (i) 
+
+ρ ∈ L∞(Ω), with YρY∞ ≤ M ; (ii) Assumption 4.1 holds. Then: (i) gk(rkSk−1 ) and hk(rkSk−1 ) in (15) and (16) are Lipschitz continuous on R with Lipschitz constants being 
+
+Lgk ≤ M (S ln δ0S + 1) and Lhk ≤ M max {S ln δ0S, S ln δ1S} ,respectively; (ii) φk(rkSk−1 ) ∶= gk(rkSk−1 ) − hk(rkSk−1 ) is Lipschitz continuous on R, with constant Lφk ≤ Lgk + Lhk .
+
+Sketch of the Proof: by Assumption 4.1, the likelihood ratio satisfies rkSk−1 ∈ [ δ0, δ 1]. On this interval, the scalar functions ψ1(r) = r ln r and ψ2(r) = r ln r − ln r have bounded derivatives and hence Lipschitz. This also implies that their difference is Lipschitz. The specific constants in the statement are obtained by leveraging the definition of the functions and the fact that Yρ(x) 
+
+> kSk−1
+
+Y∞ ≤ M .
+
+Algorithm 1 Frank-Wolfe algorithm for Problem 4.1  
+
+> 1:
+
+Inputs: gk(⋅), hk(⋅), p(x)
+
+> kSk−1
+
+, ¯q(x) 
+
+> kSk−1
+
+and ηk (xk−1 , uk). 
+
+> 2:
+
+Initialize: n ← 0; L0 ← Lgk + Lhk (Theorem 4.2); select 
+
+rnkSk−1 ∈ C . 
+
+> 3:
+
+Compute vnk ← ∇hk(rnkSk−1 ), and pnkSk−1 solving 
+
+pnkSk−1 = argmin 
+
+> pkSk−1∈C
+
+a∇gk(rnkSk−1 ) − vnk , p kSk−1 − rnkSk−1 f .
+
+(18)  
+
+> 4:
+
+Compute ωk(rnkSk−1 ) as 
+
+ωk(rnkSk−1 ) ← a∇gk(rnkSk−1 ) − vnk , p nkSk−1 − rnkSk−1 f .
+
+(19)  
+
+> 5:
+
+while ωk(rnkSk−1 ) ≠ 0 do  
+
+> 6:
+
+Compute j as 
+
+j ← min {l ∈ N ∶ 2lLn ≥ 2L0}, (20) and the step size λjk ∈ (0, 1], given by 
+
+λjk = min 
+
+⎧⎪⎪⎨⎪⎪⎩
+
+1, Sωk(rnkSk−1 )S 
+
+2j LnYpnkSk−1 − rnkSk−1 Y2
+
+> L1
+
+⎫⎪⎪⎬⎪⎪⎭
+
+. (21)  
+
+> 7:
+
+if Inequality (24) holds then  
+
+> 8:
+
+jn ← j 
+
+> 9:
+
+λnk ← λjn 
+
+> k
+> 10:
+
+Compute rn+1 
+
+> kSk−1
+
+and Ln+1 as 
+
+rn+1 
+
+> kSk−1
+
+= rnkSk−1 + λnk (pnkSk−1 − rnkSk−1 ), (22) 
+
+Ln+1 = 2jn −1Ln. (23)  
+
+> 11:
+
+Compute vn+1 
+
+> k
+
+(line 3) and pn+1 
+
+> kSk−1
+
+using (18) with 
+
+rn+1 
+
+> kSk−1
+
+and vn+1 
+
+> k
+
+. 
+
+> 12:
+
+Compute ωk(rn+1 
+
+> kSk−1
+
+) using (19) with rn+1 
+
+> kSk−1
+
+, vn+1 
+
+> k
+> 13:
+
+n ← n + 1 
+
+> 14:
+
+else  
+
+> 15:
+
+while Inequality (24) does not hold do  
+
+> 16:
+
+j ← j + 1 
+
+> 17:
+
+Compute the step size λjk as in (21).  
+
+> 18:
+
+end while  
+
+> 19:
+
+Repeat steps from lines 8 to 13 . 
+
+> 20:
+
+end if  
+
+> 21:
+
+end while  
+
+> 22:
+
+return r∗ 
+
+> kSk−1
+
+← rnkSk−1 .
+
+Now, we describe Algorithm 1. In Section IV-D we show that the algorithm returns a sequence of ratios, say rnkSk−1 ,with n indexing the algorithm iterations, converging to the optimal solution of Problem 4.1. Sequence elements are obtained by evaluating a linear oracle – returning the optimal solution of a linear problem – and subsequently updating the step size through a backtracking rule. The algorithm takes as input gk(⋅) and hk(⋅), together with 
+
+p(x) 
+
+> kSk−1
+
+, ¯q(x) 
+
+> kSk−1
+
+and ηk (xk−1, uk). The procedure is initialized by selecting the initial iterate r0 
+
+> kSk−1
+
+∈ C and the constant 
+
+L0 = Lgk + Lhk given by Theorem 4.2. Also, j denotes the backtracking index used to adaptively adjust the estimate Lipschitz constant Ln, λjk is the candidate step size, and 
+
+λnk is the accepted step size. In the spirit of the standard Frank-Wolfe, Algorithm 1: (i) solves the linear subproblem to obtain the search direction (line 3); (ii) computes a candidate step–size (line 6), the descent condition (line 7), and the final update of the iterate (line 10). In particular, the algorithm first (line 3) computes the Frank–Wolfe search direction by solving a linear minimization problem yielding pnkSk−1 .Essentially, this step picks the feasible point that minimizes the linear model around the current iterate. Then, ωk(rnkSk−1 )
+
+is computed (defined in line 4) and the algorithm checks if 
+
+rnkSk−1 satisfies the first-order optimality condition (line 5). If this condition is not met, an index j and a candidate step size λjk are computed (line 6). Then, the following inequality is evaluated (line 7) 
+
+φkrnkSk−1 + λjk(pnkSk−1 − rnkSk−1 ) ≤ φk(rnkSk−1 )
+
+− Sωk(rnkSk−1 )S λjk + 2j Ln
+
+2 YpnkSk−1 − rnkSk−1 Y2 
+
+> L1
+
+(λjk)2. (24) If the above quadratic majorization holds, the algorithm updates its internal variables for the next iteration (lines 10 – 13). Otherwise (lines 15–19), the step size is rejected and new candidates are generated until (24) is met; once this de-scent condition holds, the internal variables are subsequently updated. The algorithm outputs its final iterate rnkSk−1 .
+
+Remark 4.3: the backtracking index j is used to adap-tively adjust the estimate of the curvature of the objective function. By increasing j, the algorithm ensures that the quadratic upper bound in (24) is satisfied. As will be for-malized in Section IV-D, this mechanism guarantees that the backtracking procedure terminates and that each accepted step yields a decrease in the objective function. 
+
+D. Properties of Algorithm 1 
+
+To begin with, the next lemma guarantees that the gradi-ents used in the linearization steps (lines 3 and 4) are Lips-chitz on the feasible domain C. Therefore, the linear oracle always has a solution, and the quadratic majorization (24) used in the backtracking step is valid. 
+
+Lemma 4.4: let ρ(x) 
+
+> kSk−1
+
+∶= p(x)
+
+> kSk−1
+> ¯q(x)
+> kSk−1
+
+, R as in Definition 4.1 and C given by (17) and assume that: (i) ρ ∈ L∞(Ω) with 
+
+YρY∞ < ∞; (ii) Assumption 4.1 holds. Then, ∇gk(rkSk−1 ),
+
+∇hk(rkSk−1 ) and ∇φk (rkSk−1 ) are Lipschitz on R (hence also on C ⊆ R ). 
+
+Sketch of the Proof: the functions involved are 
+
+gk(⋅) and hk(⋅) as in (15) and (16), respectively, with gradients ∇gk(rkSk−1 ) = ρ(x) 
+
+> kSk−1
+
+(ln rkSk−1 + 1) and 
+
+∇hk(rkSk−1 ) = ρ(x) 
+
+> kSk−1
+
+ln rkSk−1 + 1 + 1
+
+> rkSk−1
+
+. Define the functions ψ1(rkSk−1 ) = rkSk−1 ln rkSk−1 and ψ2(rkSk−1 ) =rkSk−1 ln rkSk−1 − ln rkSk−1 . Both are C2 on (0, ∞), and their second derivatives are ψ′′  
+
+> 1
+
+(rkSk−1 ) = 1
+
+> rkSk−1
+
+and ψ′′  
+
+> 2
+
+(rkSk−1 ) =
+
+> 1
+> rkSk−1
+
++ 1
+
+> r2
+> kSk−1
+
+. By Assumption 4.1 every rkSk−1 ∈ R satisfies 
+
+δ0 ≤ rkSk−1 ≤ δ1, a.s. Hence both second derivatives ψ′′ 
+
+> 1
+
+and ψ′′  
+
+> 2
+
+are uniformly bounded on the interval [δ0, δ 1].Therefore, ψ′′  
+
+> 1
+
+and ψ′′  
+
+> 2
+
+are Lipschitz on [δ0, δ 1]. Since ρ ∈
+
+L∞(Ω), multiplying a Lipschitz function by a bounded function preserves Lipschitz continuity. Thus ∇gk(rkSk−1 ) =
+
+ρψ ′
+
+> 1
+
+(rkSk−1 ) and ∇hk(rkSk−1 ) = ρψ ′
+
+> 2
+
+(rkSk−1 ) are Lipschitz on R. In addition, ∇φ(rkSk−1 ) = ∇gk(rkSk−1 ) − ∇ hk(rkSk−1 ),so Lipschitz continuity of ∇φ(rkSk−1 ) follows. Since C ⊆ R 
+
+the same Lipschitz property holds automatically on C.
+
+Next, we show that if a given functional ψ(⋅) has an L-Lipschitz gradient over the feasible region, then an update of the form f (⋅) + tg (⋅) yields an explicit upper bound in terms of the directional derivative and a quadratic curvature term. This inequality plays a central role in establishing the convergence of Algorithm 1 in Theorem 4.5. 
+
+Theorem 4.3: let ψ ∶ L1(Ω) → R be continuously differ-entiable with L-Lipschitz gradient on Ω. Assume that f ∈ Ω,
+
+g ∈ L1, t ∈ [0, 1] and f + tg ∈ Ω. Then, ψ(f + tg ) ≤ 
+
+ψ(f ) + t ⟨∇ψ(f ), g ⟩ + L 
+
+> 2
+
+YgY2 
+
+> L1
+
+t2.
+
+Sketch of the Proof: set h(t) ∶= ψ(f + tg ), t ∈ [0, 1]. By chain rule, h′(t) = ⟨∇ψ(f +tg ), g ⟩. Then ψ(f +tg )−ψ(f ) =
+
+∫ t 
+
+> 0
+
+⟨∇ψ(f + sg ), g ⟩ ds = t⟨∇ψ(f ), g ⟩ + ∫ t 
+
+> 0
+
+⟨∇ψ(f + sg ) −∇ψ(f ), g ⟩ ds . Using Cauchy–Schwarz and the L-Lipschitz property of ∇ψ, Y∇ψ(f + sg ) − ∇ ψ(f )Y L1 ≤ Ls YgYL1 , so 
+
+ψ(f + tg ) ≤ ψ(f ) + t⟨∇ψ(f ), g ⟩ + L 
+
+> 2
+
+YgY2 
+
+> L1
+
+t2, and the proof is complete. 
+
+Inequality (24) ensures that the objective value decreases by at least a quadratic amount in the step size. Therefore, combined with the convex combination update (22) and (23), the sequence {φk(rnkSk−1 )} is strictly monotone and upper bounded, which implies convergence. This property is formalized with the next result. 
+
+Remark 4.4: from Theorem 4.2 and Lemma 4.4, both 
+
+gk(⋅) and ∇gk(⋅) are Lipschitz on C, with gk(⋅) as in (15). Hence, Theorem 4.3 holds for gk(⋅) giving us 
+
+gk(rnkSk−1 + λjk (pnkSk−1 − rnkSk−1 )) ≤ gk(rnkSk−1 ) + a∇gk(rnkSk−1 ), p nkSk−1 − rnkSk−1 f λjk
+
++ Lgk
+
+2 YpnkSk−1 − rnkSk−1 Y2 
+
+> L1
+
+λjk, (25) with j ∶= min {l ∈ N ∶ 2lLn ≥ 2L0} and 
+
+λjk ∶= argmin 
+
+> λ∈(0,1]
+
+−Sωk(rnkSk−1 )S λ + 2j Ln
+
+2 YpnkSk−1 − rnkSk−1 Y2 
+
+> L1
+
+λ2¡
+
+= min 
+
+⎧⎪⎪⎨⎪⎪⎩
+
+1, Sωk(rnkSk−1 )S 
+
+2j LnYpnkSk−1 − rnkSk−1 Y2
+
+> L1
+
+⎫⎪⎪⎬⎪⎪⎭
+
+.
+
+As discussed in [30], the index j defined as above auto-matically adjusts the curvature estimate via backtracking, while λjk provides a safe step that guarantees descent of the objective in the Frank–Wolfe method for DC problems. Inequality (25) will be essential in the proof of Theorem 4.4. 
+
+Theorem 4.4: the following assertions are true: 1) If 2j Ln ≥ 2L0, with Ln (line 10) standing for an estimate of the Lipschitz constant of φ(⋅), for some 
+
+j ∈ N, then inequality (24) holds; 2) Let jn be the smallest non-negative integer satisfying 
+
+2jn Ln ≥ 2L0. Then, (24) also holds for j = jn and 
+
+λnk = λjn 
+
+> k
+
+(21). Furthermore, 
+
+φk (rn+1 
+
+> kSk−1
+
+) ≤ φk(rnkSk−1 ) − 1
+
+2 ωk(rnkSk−1 )λnk . (26) 
+
+Sketch of the Proof: 1) from (18) the search direction satisfies ωk(rnkSk−1 ) ≤ ⟨ ∇φk(rnkSk−1 ), p nkSk−1 − rnkSk−1 ⟩ ≤ 0.Using the Lipschitz model implied by 2j Ln ≥ 2L0, the convex combination update Lgk = 2j Ln, in (25), and the convexity of function of hk(⋅), (24) holds. 2) with j = jn and 
+
+λnk = λjn 
+
+> k
+
+, then (24) is satisfied directly from 1). In addition, from (24) together with the updates of rn+1 
+
+> kSk−1
+
+and Ln+1
+
+described in line 10 of Algorithm 1, we get φk(rn+1 
+
+> kSk−1
+
+) ≤ 
+
+φk(rnkSk−1 ) − 1 
+
+> 2
+
+ωk(rnkSk−1 ) λ nk , showing that each accepted step decreases φk and that the backtracking terminates. 
+
+Algorithm 1 relies on getting pnkSk−1 ∈ C by solving the lin-ear problem in (18). Since the feasibility domain is compact (Lemma 4.3), the problem in (18) always admits a solution, and every iterate rn+1 
+
+> kSk−1
+
+= rnkSk−1 + λnk (pnkSk−1 − rnkSk−1 ), with 
+
+λnk ∈ (0, 1], generated by the algorithm remains feasible. This follows from the fact that pnkSk−1 is obtained by solving the linear problem on line 3 of the algorithm and C is convex. We note that Algorithm 1 guarantees non–degenerate progress at each iteration. In particular, the adaptive Lipschitz estimate remains uniformly bounded and the step size never vanishes until optimality conditions are met. These properties follow from the structure of the backtracking rule and the compactness of the feasible set. Since their detailed proof is not essential for the development of the main results, we omit it and will present the full derivation elsewhere. Next, we establish the convergence of Algorithm 1. With-out this result, we would only be guaranteed that the algo-rithm decreases the objective (Theorem 4.4), but not that it converges to a stationary point. 
+
+Theorem 4.5: let {rnkSk−1 } denote the sequence generated by Algorithm 1. Then, the sequence {φk(rnkSk−1 )} is mono-tone decreasing, and every limit point of {rnkSk−1 } is a solution to the problem min  
+
+> rkSk−1∈C
+
+φk(rkSk−1 ).
+
+Sketch of the Proof: from Theorem 4.4, the se-quence {φk(rnkSk−1 )} is monotonically decreasing and up-per bounded, hence convergent. This property implies that 
+
+ωk(rnkSk−1 ) converges to zero. Since R is compact (Lemma 4.3), the sequence {rnkSk−1 } has limit points, and any such limit point satisfies ωk(rkSk−1 ) = 0, which is the first-order optimality condition of Problem (4.1). Thus, every accumulation point of the sequence is a stationary solution of the problem. 
+
+In what follows, we show that at each iteration of Algo-rithm 1, the step–size λnk remains strictly positive whenever ωk(rnkSk−1 ) is non-zero. This prevents stagnation of the algo-rithm and ensures that it progresses towards the fulfillment of the first–order optimality condition. 
+
+Lemma 4.5: consider the setting of Lemma 4.4. Let φk
+
+be continuously differentiable with Lipschitz gradient and Lipschitz constant L∇φk > 0 over a compact set C. Let 
+
+{rkSk−1 } denote the sequence generated by Algorithm 1. Then: 
+
+φk(rnkSk−1 ) − φk (rn+1 
+
+> kSk−1
+
+)
+
+≥ ω2
+
+> k
+
+(rnkSk−1 )
+
+2YrnkSk−1 − pnkSk−1 Y2
+
+> L1
+
+min 
+
+⎧⎪⎪⎨⎪⎪⎩
+
+1
+
+L∇φk
+
+, YrnkSk−1 − pnkSk−1YL1
+
+Y∇φk (rnkSk−1 )Y L1
+
+⎫⎪⎪⎬⎪⎪⎭
+
+(27) 
+
+Sketch of the Proof: using the Lipschitz continuity of ∇φk (rkSk−1 ), we have that φk (rnkSk−1 + λ(pnkSk−1 −
+
+rnkSk−1 )) ≤ φk (rnkSk−1 ) + λ b∇ φk(rnkSk−1 ), p nkSk−1 − rnkSk−1 g + 
+
+2−1L∇φk λ2YpnkSk−1 − rnkSk−1 Y2. Since the linear minimization oracle ensures ωk(rnkSk−1 ) = b∇ φk(rnkSk−1 ), p nkSk−1 − rnkSk−1 g,substituting this direction into the inequality above yields a quadratic expression in λ. Minimizing it over λ ∈ (0, 1]
+
+produces an explicit positive decrease in φk (⋅) .
+
+V. N UMERICAL EXAMPLE 
+
+As a representative example, to illustrate the effectiveness of our results, we consider the problem of stabilizing the unstable equilibrium [0, 0]⊺ of a pendulum, modeled by 
+
+θk = θk−1 + ωk−1dt + Wθ,ωk = ωk−1 +  g
+
+l sin (θk−1) + uk
+
+ml 2 dt + Wω , (28) where θk is the angular position, ωk is the angular velocity, and uk is the applied torque. Also, Wθ ∼ N ( 0, 0.05 ), Wω ∼N ( 0, 0.1) so that p(x) 
+
+> kSk−1
+
+is a Gaussian centered in (28) with covariance matrix Σ1 = 0.05 00 0.1 . In our experiments, the state is Xk = θk ωk⊺ and X ∶= [−π, π ] × [−5, 5] is discretized in a 20 × 20 grid. Also, U ∶= [−3, 3] and this is discretized in a 50 × 1 grid. The parameters of the pendulum are: g = 9.81 m ~s2, l = 0.50 m , m = 0.50 kg , dt = 0.05 s .Here, ambiguity arises in the generative model: we optimize over all q(x) 
+
+> kSk−1
+
+inside Bη ¯q(x) 
+
+> kSk−1
+
+, with radius ηk(xk−1 , u k).The nominal generative model simply captures the desired configuration for the pendulum so that ¯q(x) 
+
+> kSk−1
+
+= N (0, Σ2),with Σ2 = 0.1 00 0.01 so that minimizing the KL divergence term in (9) amounts at reducing the error from the target. The generative model is however ambiguous and this is captured via the ambiguity set Bη ¯q(x) 
+
+> kSk−1
+
+ with ηk(Xk−1 , u k) =
+
+0.3 + 0.02 ω2 
+
+> k−1
+
++ 0.01 u2
+
+> k
+
+. Intuitively, the constant term is a baseline and the other terms capture the fact that ambiguity is higher when the pendulum exhibits faster motion or requires larger torques. Finally, in the experiments we set c(x) 
+
+> k
+
+(xk) =
+
+θ2 
+
+> k
+
++ 0.5 ω2
+
+> k
+
+, and c(u) 
+
+> k
+
+(uk) = 0.1u2
+
+> k
+
+. Given this set-up, the optimal policy is computed by solving Problem 3.1. This means, in accordance with Lemma 4.2 that the optimal policy is the softmax (10). Optimal actions, u∗ 
+
+> k
+
+are obtained by sampling from this policy and, in order to do so, q(x),∗ 
+
+> kSk−1
+
+needs to be computed. This is the generative model solving the inner maximization problem in (11). To obtain q(x),∗ 
+
+> kSk−1
+
+, we leverage Algorithm 1. In particular, using this algorithm, we first compute r∗ 
+
+> kSk−1
+
+and then, by means of Definition 4.1, we set q(x),∗ 
+
+> kSk−1
+
+= ¯q(x) 
+
+> kSk−1
+
+r∗
+
+> kSk−1
+> 1
+
+. The results are illustrated in Figure 1, which clearly shows that the actions sampled from the optimal policy in (10) stabilize the unstable equilibrium of the pendulum despite ambiguity.          
+
+> Fig. 1. Simulation results. Panels show time evolution of θk,ωk, and u∗
+> k
+> sampled from p(u),⋆
+> kSk−1. Solid lines represent the mean, and the shaded region represents the standard deviation obtained from 10 2simulations.
+
+VI. C ONCLUSION 
+
+We considered the problem of computing optimal policies under a free energy minimization framework that accounts for ambiguity in the generative model. This leads to a distributionally robust minimax formulation of the control problem. We showed that the optimal policy can be com-puted via a bi-level optimization approach, where the free energy is first maximized within the ambiguity set and then minimized in the policy space. We then showed that the inner maximization can be recast as a DC program, and we adapted a Frank–Wolfe algorithm, providing convergence guarantees, to tackle the optimization. The effectiveness of the results was illustrated on a pendulum stabilization task. Based on these early results, future work includes: (i) embedding learning in policy computation; (ii) extending our results to include ambiguity on qk (uk S xk−1).
+
+Acknowledgments. We acknowledge the use of ChatGPT for assistance in improving wording and grammar of this document. REFERENCES [1] C. D. Aliprantis and K. C. Border. Infinite Dimensional Analysis: A Hitchhiker’s Guide . Springer, 2006. 
+
+> 1Our Matlab implementation is available upon request
+
+[2] M. A. Bashiri, B. Ziebart, and X. Zhang. Distributionally robust imitation learning. In M. Ranzato, A. Beygelzimer, Y. Dauphin, P. Liang, and J. W. Vaughan, editors, Advances in Neural Information Processing Systems , volume 34, pages 24404–24417. Curran Asso-ciates, Inc., 2021. [3] T. A. Berrueta, A. Pinosky, and T. D. Murphey. Maximum diffusion reinforcement learning. Nature Machine Intelligence , 6(5):504–514, May 2024. [4] V. I. Bogachev and M. A. S. Ruas. Measure Theory , volume 1. Springer, 2007. [5] T. Cammardella, A. Buˇ si´ c, and S. P. Meyn. Kullback–Leibler-Quadratic optimal control. SIAM Journal on Control and Optimization ,61(5):3234–3258, Oct. 2023. [6] Y. Chen, T. T. Georgiou, and M. Pavon. On the relation between opti-mal transport and Schr¨ odinger bridges: A stochastic control viewpoint. 
+
+Journal of Optimization Theory and Applications , 169(2):671–691, Sept. 2015. [7] A. C. C. Coolen, R. K¨ uhn, and P. Sollich. Theory of Neural Information Processing Systems . Oxford University PressOxford, July 2005. [8] T. M. Cover and J. A. Thomas. Elements of Information Theory (Wiley Series in Telecommunications and Signal Processing) . Wiley-Interscience, USA, 2006. [9] C. Dirren, M. Bianchi, P. D. Grontas, J. Lygeros, and F. D¨ orfler. Con-tractivity and linear convergence in bilinear saddle-point problems: An operator-theoretic approach. In Proceedings of The 28th International Conference on Artificial Intelligence and Statistics , volume 258 of 
+
+Proceedings of Machine Learning Research , pages 1954–1962. PMLR, 2025. [10] K. Dvijotham and E. Todorov. Inverse optimal control with Linearly-Solvable MDPs. In 27th International Conference on Machine Learning , page 335–342, 2010. [11] B. Eysenbach and S. Levine. Maximum entropy RL (provably) solves some robust RL problems. In International Conference on Learning Representations , 2022. [12] M. Frank and P. Wolfe. An algorithm for quadratic programming. 
+
+Naval Research Logistics Quarterly , 3(1-2):95–110, 1956. [13] K. Friston. The free-energy principle: a rough guide to the brain? 
+
+Trends in Cognitive Sciences , 13(7):293–301, 2009. [14] D. Gagliardi and G. Russo. On a probabilistic approach to synthesize control policies from example datasets. Automatica , 137:110121, Mar. 2022. [15] E. Garrabe, H. Jesawada, C. D. Vecchio, and G. Russo. On convex data-driven inverse optimal control for nonlinear, non-stationary and stochastic systems. Automatica , 173:112015, Mar. 2025. [16] S. Grammatico. Dynamic control of agents playing aggregative games with coupling constraints. IEEE Transactions on Automatic Control ,62(9):4537–4548, 2017. [17] P. Guan, M. Raginsky, and R. M. Willett. Online Markov Decision Processes with Kullback–Leibler control cost. IEEE Transactions on Automatic Control , 59(6):1423–1438, 2014. [18] I. Haasler, A. Ringh, Y. Chen, and J. Karlsson. Multimarginal optimal transport with a tree-structured cost and the Schr¨ odinger bridge problem. SIAM Journal on Control and Optimization , 59(4):2428– 2453, 2021. [19] Z. Hu and L. J. Hong. Kullback-Leibler divergence constrained distributionally robust optimization. Available at Optimization Online ,1(2):9, 2013. [20] H. Jesawada, G. Russo, A. Swikir, and F. Abu-Dakka. Learning-based robust control: Unifying exploration and distributional robustness for reliable robotics via free energy, Proceedings of the 2026 IEEE International Conference on Robotics & Automation (ICRA 2026), 2026 ( https://arxiv.org/abs/2603.06831 ). [21] S. T. Jose and O. Simeone. Free energy minimization: A unified framework for modeling, inference, learning, and optimization [lecture notes]. IEEE Signal Processing Magazine , 38(2):120–125, 2021. [22] C. Kent, J. Blanchet, and P. Glynn. Frank-Wolfe methods in proba-bility space. arXiv preprint arXiv:2105.05352 , 2021. [23] C. Kent, J. Li, J. Blanchet, and P. W. Glynn. Modified Frank-Wolfe in probability space. Advances in Neural Information Processing Systems , 34:14448–14462, 2021. [24] J. Kirschner, I. Bogunovic, S. Jegelka, and A. Krause. Distributionally robust bayesian optimization. In S. Chiappa and R. Calandra, editors, 
+
+Proceedings of the Twenty Third International Conference on Artificial Intelligence and Statistics , volume 108 of Proceedings of Machine Learning Research , pages 2174–2184. PMLR, 26–28 Aug 2020. [25] S. Kullback and R. Leibler. On information and sufficiency. Annals of Mathematical Statistics , 22:79–87, 1951. [26] M. K´ arn´ y. Towards fully probabilistic control design. Automatica ,32(12):1719–1722, Dec. 1996. [27] F. Lin, X. Fang, and Z. Gao. Distributionally robust optimization: A review on theory and applications. Numerical Algebra, Control & amp; Optimization , 12(1):159, 2022. [28] Z. Liu, Q. Bai, J. Blanchet, P. Dong, W. Xu, Z. Zhou, and Z. Zhou. Distributionally robust Q–learning. In K. Chaudhuri, S. Jegelka, L. Song, C. Szepesvari, G. Niu, and S. Sabato, editors, Proceedings of the 39th International Conference on Machine Learning , volume 162 of Proceedings of Machine Learning Research , pages 13623–13643. PMLR, 17–23 Jul 2022. [29] R. D. McAllister and P. M. Esfahani. Distributionally robust model predictive control: Closed-loop guarantees and scalable algorithms. 
+
+IEEE Transactions on Automatic Control , 70(5):2963–2978, 2025. [30] R. D. Mill´ an, O. P. Ferreira, and J. Ugon. Frank-Wolfe algorithm for DC optimization problem. arXiv preprint arXiv:2308.16444 , 2023. [31] H. Park, D. Zhou, G. A. Hanasusanto, and T. Tanaka. Distributionally robust path integral control. In 2024 American Control Conference (ACC) , pages 1164–1171, 2024. [32] A. Shafiei, H. Jesawada, K. Friston, and G. Russo. Distributionally robust free energy principle for decision-making. Nature Communi-cations , 17(1):707, 2025. [33] M. R. Sheriff and P. Mohajerin Esfahani. Nonlinear distributionally robust optimization. Mathematical Programming , 213(1–2):639–698, Dec. 2024. [34] A. Srivastava and S. M. Salapaka. Dynamic parameters in sequential decision making. Automatica , 148:110795, Feb. 2023. [35] B. Taskesen, D. A. Iancu, c. Koc ¸yi˘ git, and D. Kuhn. Distributionally robust linear quadratic control. In Proceedings of the 37th Interna-tional Conference on Neural Information Processing Systems , NIPS ’23, Red Hook, NY, USA, 2023. Curran Associates Inc. [36] E. Todorov. Efficient computation of optimal actions. Proceedings of the National Academy of Sciences , 106(28):11478–11483, 2009. [37] B. Van Parys, D. Kuhn, P. Goulart, and M. Morari. Distributionally robust control of constrained stochastic systems. IEEE Transactions on Automatic Control , page 1–1, 2015. [38] B. P. G. Van Parys, P. M. Esfahani, and D. Kuhn. From data to de-cisions: Distributionally robust optimization is optimal. Management Science , 67(6):3387–3402, June 2021. [39] H. Xu and S. Mannor. Distributionally robust Markov Decision Processes. Mathematics of Operations Research , 37(2):288–300, May 2012.
