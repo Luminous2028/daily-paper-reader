@@ -1,0 +1,93 @@
+{
+  "label": "2026-04-11",
+  "date": "2026-04-11",
+  "generated_at": "2026-04-11T19:57:19",
+  "count": 6,
+  "papers": [
+    {
+      "paper_id": "202604/11/2604.06133v1-learning-guided-force-feedback-model-predictive-control-with-obstacle-avoidance-for-robotic-deburring",
+      "section": "quick",
+      "title_en": "Learning-Guided Force-Feedback Model Predictive Control with Obstacle Avoidance for Robotic Deburring",
+      "authors": "Krzysztof Wojciechowski, Ege Gursoy, Arthur Haffemayer, Sebastien Kleff, Vincent Bonnet, Florent Lamiraux, Nicolas Mansard",
+      "date": "2026-04-07",
+      "pdf": "https://arxiv.org/pdf/2604.06133v1",
+      "score": "7.0",
+      "evidence": "基于扩散模型的运动先验用于规划",
+      "tldr": "针对工业去毛刺任务中力控精度要求高且避障复杂的难题，本文提出一种结合扩散运动先验与力反馈模型预测控制（MPC）的框架。该方法利用扩散模型学习运动策略以提供鲁棒初始化，并结合MPC实现精确的力跟踪、扭矩可行性及避障。实验证明，该框架在受限环境下能稳定完成工具插入和圆形去毛刺任务，是首个将扩散先验与力反馈MPC结合用于接触密集型工业任务的研究。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "Model Predictive Control (MPC) is widely used for torque-controlled robots, but classical formulations often neglect real-time force feedback and struggle with contact-rich industrial tasks under collision constraints. Deburring in particular requires precise tool insertion, stable force regulation, and collision-free circular motions in challenging configurations, which exceeds the capability of standard MPC pipelines. We propose a framework that integrates force-feedback MPC with diffusion-based motion priors to address these challenges. The diffusion model serves as a memory of motion strategies, providing robust initialization and adaptation across multiple task instances, while MPC ensures safe execution with explicit force tracking, torque feasibility, and collision avoidance. We validate our approach on a torque-controlled manipulator performing industrial deburring tasks. Experiments demonstrate reliable tool insertion, accurate normal force tracking, and circular deburring motions even in hard-to-reach configurations and under obstacle constraints. To our knowledge, this is the first integration of diffusion motion priors with force-feedback MPC for collision-aware, contact-rich industrial tasks.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/11/2604.08031v1-open-ended-instruction-realization-with-llm-enabled-multi-planner-scheduling-in-autonomous-vehicles",
+      "section": "quick",
+      "title_en": "Open-Ended Instruction Realization with LLM-Enabled Multi-Planner Scheduling in Autonomous Vehicles",
+      "authors": "Jiawei Liu, Xun Gong, Fen Fang, Muli Yang, Bohao Qu, Yunfeng Hu, Hong Chen, Xulei Yang, Qing Guo",
+      "date": "2026-04-09",
+      "pdf": "https://arxiv.org/pdf/2604.08031v1",
+      "score": "7.0",
+      "evidence": "自动驾驶运动规划与轨迹生成",
+      "tldr": "本研究针对自动驾驶中乘客开放式指令难以转化为精确控制信号的问题，提出了一种基于大语言模型（LLM）的多规划器调度框架。该框架利用LLM解析指令并生成可执行脚本，通过调度多个基于模型预测控制（MPC）的运动规划器来实现车辆控制，实现了语义推理与底层控制的解耦。实验表明，该方法在提高任务完成率的同时，确保了决策链的透明性与安全性，并有效降低了计算成本。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "Most Human-Machine Interaction (HMI) research overlooks the maneuvering needs of passengers in autonomous driving (AD). Natural language offers an intuitive interface, yet translating passenger open-ended instructions into control signals, without sacrificing interpretability and traceability, remains a challenge. This study proposes an instruction-realization framework that leverages a large language model (LLM) to interpret instructions, generates executable scripts that schedule multiple model predictive control (MPC)-based motion planners based on real-time feedback, and converts planned trajectories into control signals. This scheduling-centric design decouples semantic reasoning from vehicle control at different timescales, establishing a transparent, traceable decision-making chain from high-level instructions to low-level actions. Due to the absence of high-fidelity evaluation tools, this study introduces a benchmark for open-ended instruction realization in a closed-loop setting. Comprehensive experiments reveal that the framework significantly improves task-completion rates over instruction-realization baselines, reduces LLM query costs, achieves safety and compliance on par with specialized AD approaches, and exhibits considerable tolerance to LLM inference latency. For more qualitative illustrations and a clearer understanding.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/11/2604.04245v1-smooth-and-exact-parameterization-of-continuous-time-signal-temporal-logic-specifications-for-trajectory-optimization",
+      "section": "quick",
+      "title_en": "Smooth and Exact Parameterization of Continuous-time Signal Temporal Logic Specifications for Trajectory Optimization",
+      "authors": "Samet Uzun, Behçet Açıkmeşe",
+      "date": "2026-04-05",
+      "pdf": "https://arxiv.org/pdf/2604.04245v1",
+      "score": "6.0",
+      "evidence": "基于连续时间信号时序逻辑的轨迹优化",
+      "tldr": "本文提出了一种用于非凸轨迹优化的连续时间信号时序逻辑（CT-STL）平滑参数化方法。该方法通过在稠密时间内评估规范，确保了“始终”谓词的连续满足并消除了“最终”谓词的离散保守性，同时解决了梯度掩盖问题。实验表明，该方法允许使用更粗略的时间网格，在保证安全性和逻辑保真度的同时降低了计算维度，显著提升了无人机敏捷飞行等复杂任务的求解效率。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "This paper presents a smooth parameterization of continuous-time Signal Temporal Logic (CT-STL) specifications for nonconvex trajectory optimization that is sound and complete up to the accuracy of the underlying numerical integration scheme. CT-STL provides a natural framework for encoding rich temporal and logical task requirements, but existing trajectory-optimization formulations typically enforce such specifications only at discrete sampling nodes. In contrast, the proposed method evaluates specifications in dense time, thereby guaranteeing continuous-time satisfaction of always predicates, which is critical for path constraints such as obstacle avoidance, while eliminating the node-induced conservatism of eventually predicates by allowing satisfaction at any time within the prescribed interval. These two dense-time constructions also serve as the main building blocks for handling more general CT-STL formulas, including complex until specifications. Furthermore, the proposed parameterization resolves the locality and gradient-masking issues inherent in standard quantitative semantics, yielding a more favorable landscape for gradient-based solvers. Although dense-time evaluation introduces additional function evaluations during discretization, it also permits substantially coarser temporal grids without sacrificing safety or logical fidelity. This, in turn, reduces the dimension of the resulting nonconvex program, which is often the dominant factor in trajectory-generation cost. The numerical effectiveness and semantic exactness of the proposed framework are demonstrated on an agile quadrotor flight problem subject to a complex continuous-time until specification. The implementation is available at https:// github.com/UW-ACL/TrajOpt_CT-STL",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/11/2604.04304v1-analytic-non-gaussian-confidence-boundary-method-for-chance-constrained-trajectory-control",
+      "section": "quick",
+      "title_en": "Analytic Non-Gaussian Confidence Boundary Method for Chance-Constrained Trajectory Control",
+      "authors": "Ethan Burnett, Spencer Boone",
+      "date": "2026-04-05",
+      "pdf": "https://arxiv.org/pdf/2604.04304v1",
+      "score": "6.0",
+      "evidence": "机会约束轨迹控制的非高斯置信边界",
+      "tldr": "针对非线性系统导致的不确定性非高斯分布问题，本文提出了一种解析非高斯置信边界参数化方法。该方法将真实置信边界视为协方差预测边界的扰动，利用高阶统计矩（偏度和峰度）推导扰动几何，特别适用于轨道力学中常见的“香蕉形分布”。通过航天器脉冲机动目标搜索问题的验证，证明了该算法在满足概率边界方面优于传统线性协方差方法，提升了轨迹控制的可靠性。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "Standard chance constrained control algorithms typically rely on the assumption that uncertainties in vehicle states obey Gaussian statistics. Highly nonlinear systems tend to disrupt Gaussianity, challenging standard chance-constrained control methods. This paper develops a non-Gaussian confidence boundary parameterization technique for such cases where the problem departs appreciably from the Gaussian assumption. The approach is to consider the true confidence boundary as a perturbation of the one predicted from covariance, deriving perturbed boundary geometry from computed higher-order statistical moments. Applying this technique to so-called \"banana-shaped distributions\" (found e.g. in orbital mechanics problems) enables a simple parameterization of the confidence boundary using the skew and kurtosis tensors. The method is then applied to an impulsive stochastic spacecraft maneuver targeting problem in two-body dynamics. An algorithmic implementation outperforms a standard linear covariance-based approach in computing control parameters satisfying certain probabilistic bounds on the non-Gaussian distribution.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/11/2604.07644v1-safe-large-scale-robust-nonlinear-mpc-in-milliseconds-via-reachability-constrained-system-level-synthesis-on-the-gpu",
+      "section": "quick",
+      "title_en": "Safe Large-Scale Robust Nonlinear MPC in Milliseconds via Reachability-Constrained System Level Synthesis on the GPU",
+      "authors": "Jeffrey Fang, Glen Chou",
+      "date": "2026-04-08",
+      "pdf": "https://arxiv.org/pdf/2604.07644v1",
+      "score": "6.0",
+      "evidence": "优化扰动下的名义轨迹和闭环可达集",
+      "tldr": "该研究提出了GPU-SLS框架，旨在解决高维不确定机器人系统的实时鲁棒非线性模型预测控制（MPC）问题。通过在GPU上并行化顺序二次规划（SQP）和系统级合成（SLS），该方法能同时优化名义轨迹、跟踪控制器及闭环可达集。实验表明，该框架在处理四足机器人（61维）和类人机器人（75维）等复杂系统时，能以毫秒级速度生成安全策略，显著提升了计算效率并保证了100%的经验安全性。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "We present GPU-SLS, a GPU-parallelized framework for safe, robust nonlinear model predictive control (MPC) that scales to high-dimensional uncertain robotic systems and long planning horizons. Our method jointly optimizes an inequality-constrained, dynamically-feasible nominal trajectory, a tracking controller, and a closed-loop reachable set under disturbance, all in real-time. To efficiently compute nominal trajectories, we develop a sequential quadratic programming procedure with a novel GPU-accelerated quadratic program (QP) solver that uses parallel associative scans and adaptive caching within an alternating direction method of multipliers (ADMM) framework. The same GPU QP backend is used to optimize robust tracking controllers and closed-loop reachable sets via system level synthesis (SLS), enabling reachability-constrained control in both fixed- and receding-horizon settings. We achieve substantial performance gains, reducing nominal trajectory solve times by 97.7% relative to state-of-the-art CPU solvers and 71.8% compared to GPU solvers, while accelerating SLS-based control and reachability by 237x. Despite large problem scales, our method achieves 100% empirical safety, unlike high-dimensional learning-based reachability baselines. We validate our approach on complex nonlinear systems, including whole-body quadrupeds (61D) and humanoids (75D), synthesizing robust control policies online on the GPU in 20 milliseconds on average and scaling to problems with 2 x 10^5 decision variables and 8 x 10^4 constraints. The implementation of our method is available at https://github.com/Jeff300fang/gpu_sls.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/11/2604.08174v1-value-guidance-meanflow-for-offline-multi-agent-reinforcement-learning",
+      "section": "quick",
+      "title_en": "Value-Guidance MeanFlow for Offline Multi-Agent Reinforcement Learning",
+      "authors": "Teng Pang, Zhiqiang Dong, Yan Zhang, Rongjian Xu, Guoqiang Wu, Yilong Yin",
+      "date": "2026-04-09",
+      "pdf": "https://arxiv.org/pdf/2604.08174v1",
+      "score": "6.0",
+      "evidence": "利用流生成模型捕捉复杂的联合策略行为",
+      "tldr": "针对离线多智能体强化学习中生成式策略采样效率低且对正则化系数敏感的问题，本文提出VGM$^2$P框架。该方法利用全局优势值引导智能体协作，将最优策略学习转化为条件行为克隆，并结合MeanFlow模型与无分类器引导技术，在提升策略表达能力的同时实现了高效的一步动作生成。实验证明，该方法在多种任务中均达到了SOTA性能，且具有极高的推理效率。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "Offline multi-agent reinforcement learning (MARL) aims to learn the optimal joint policy from pre-collected datasets, requiring a trade-off between maximizing global returns and mitigating distribution shift from offline data. Recent studies use diffusion or flow generative models to capture complex joint policy behaviors among agents; however, they typically rely on multi-step iterative sampling, thereby reducing training and inference efficiency. Although further research improves sampling efficiency through methods like distillation, it remains sensitive to the behavior regularization coefficient. To address the above-mentioned issues, we propose Value Guidance Multi-agent MeanFlow Policy (VGM$^2$P), a simple yet effective flow-based policy learning framework that enables efficient action generation with coefficient-insensitive conditional behavior cloning. Specifically, VGM$^2$P uses global advantage values to guide agent collaboration, treating optimal policy learning as conditional behavior cloning. Additionally, to improve policy expressiveness and inference efficiency in multi-agent scenarios, it leverages classifier-free guidance MeanFlow for both policy training and execution. Experiments on tasks with both discrete and continuous action spaces demonstrate that, even when trained solely via conditional behavior cloning, VGM$^2$P efficiently achieves performance comparable to state-of-the-art methods.",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
