@@ -1,0 +1,93 @@
+{
+  "label": "2026-04-12",
+  "date": "2026-04-12",
+  "generated_at": "2026-04-12T19:42:43",
+  "count": 6,
+  "papers": [
+    {
+      "paper_id": "202604/12/2604.04499v1-distributed-covariance-steering-via-non-convex-admm-for-large-scale-multi-agent-systems",
+      "section": "quick",
+      "title_en": "Distributed Covariance Steering via Non-Convex ADMM for Large-Scale Multi-Agent Systems",
+      "authors": "Augustinos D. Saravanos, Isin M. Balci, Arshiya Taj Abdul, Efstathios Bakolas, Evangelos A. Theodorou",
+      "date": "2026-04-06",
+      "pdf": "https://arxiv.org/pdf/2604.04499v1",
+      "score": "7.0",
+      "evidence": "在概率碰撞约束下引导多智能体系统",
+      "tldr": "本文研究大规模多智能体随机线性系统在概率碰撞规避约束下的协方差控制问题。提出了一系列基于ADMM的分布式协方差控制（DCS）方法，包括全协方差共识（FCC）、部分协方差共识（PCC）和均值共识（MC），在保守性和计算效率之间提供不同权衡。研究还为具有迭代线性化非凸约束的分布式ADMM提供了新的收敛性保证，并通过数千个智能体的仿真验证了算法的安全性和卓越的可扩展性。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "This paper studies the problem of steering large-scale multi-agent stochastic linear systems between Gaussian distributions under probabilistic collision avoidance constraints. We introduce a family of \\textit{distributed covariance steering (DCS)} methods based on the Alternating Direction Method of Multipliers (ADMM), each offering different trade-offs between conservatism and computational efficiency. The first method, Full-Covariance-Consensus (FCC)-DCS, enforces consensus over both the means and covariances of neighboring agents, yielding the least conservative safe solutions. The second approach, Partial-Covariance-Consensus (PCC)-DCS, leverages the insight that safety can be maintained by exchanging only partial covariance information, reducing computational demands. The third method, Mean-Consensus (MC)-DCS, provides the most scalable alternative by requiring consensus only on mean states. Furthermore, we establish novel convergence guarantees for distributed ADMM with iteratively linearized non-convex constraints, covering a broad class of consensus optimization problems. This analysis proves convergence to stationary points for PCC-DCS and MC-DCS, while the convergence of FCC-DCS follows from standard ADMM theory. Simulations in 2D and 3D multi-agent environments verify safety, illustrate the trade-offs between methods, and demonstrate scalability to thousands of agents.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/12/2604.03868v1-risk-constrained-belief-space-optimization-for-safe-control-under-latent-uncertainty",
+      "section": "quick",
+      "title_en": "Risk-Constrained Belief-Space Optimization for Safe Control under Latent Uncertainty",
+      "authors": "Clinton Enwerem, John S. Baras, Calin Belta",
+      "date": "2026-04-04",
+      "pdf": "https://arxiv.org/pdf/2604.03868v1",
+      "score": "6.0",
+      "evidence": "利用信念空间优化在潜在不确定性下进行安全控制",
+      "tldr": "针对传感器无法直接观测的潜在不确定性，本文提出了一种风险受限的信念空间模型预测路径积分（MPPI）控制框架。该方法在信念分布下进行规划，通过对轨迹安全边际施加条件风险价值（CVaR）约束，实现了在优化性能的同时显式控制安全违规的尾部风险。研究证明了该控制器具有概率安全保证，并在高不确定性的灵巧操作任务中显著提升了成功率并消除了碰撞风险。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "Many safety-critical control systems must operate under latent uncertainty that sensors cannot directly resolve at decision time. Such uncertainty, arising from unknown physical properties, exogenous disturbances, or unobserved environment geometry, influences dynamics, task feasibility, and safety margins. Standard methods optimize expected performance and offer limited protection against rare but severe outcomes, while robust formulations treat uncertainty conservatively without exploiting its probabilistic structure. We consider partially observed dynamical systems whose dynamics, costs, and safety constraints depend on a latent parameter maintained as a belief distribution, and propose a risk-sensitive belief-space Model Predictive Path Integral (MPPI) control framework that plans under this belief while enforcing a Conditional Value-at-Risk (CVaR) constraint on a trajectory safety margin over the receding horizon. The resulting controller optimizes a risk-regularized performance objective while explicitly constraining the tail risk of safety violations induced by latent parameter variability. We establish three properties of the resulting risk-constrained controller: (1) the CVaR constraint implies a probabilistic safety guarantee, (2) the controller recovers the risk-neutral optimum as the risk weight in the objective tends to zero, and (3) a union-bound argument extends the per-horizon guarantee to cumulative safety over repeated solves. In physics-based simulations of a vision-guided dexterous stowing task in which a grasped object must be inserted into an occupied slot with pose uncertainty exceeding prescribed lateral clearance requirements, our method achieves 82% success with zero contact violations at high risk aversion, compared to 55% and 50% for a risk-neutral configuration and a chance-constrained baseline, both of which incur nonzero exterior contact forces.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/12/2604.05285v1-robust-learning-of-heterogeneous-dynamic-systems",
+      "section": "quick",
+      "title_en": "Robust Learning of Heterogeneous Dynamic Systems",
+      "authors": "Shuoxun Xu, Zijian Guo, Brooke R. Staveland, Robert T. Knight, Lexin Li",
+      "date": "2026-04-07",
+      "pdf": "https://arxiv.org/pdf/2604.05285v1",
+      "score": "6.0",
+      "evidence": "为鲁棒学习对轨迹导数中的不确定性建模",
+      "tldr": "本文针对多源异构动态系统学习中共享模式提取难的问题，提出了一种分布鲁棒学习方法。该方法通过在轨迹导数的凸组合构成的不确定性集合中最大化最差情况奖励，构建鲁棒动态系统。研究引入了双层稳定化程序以增强估计稳定性，并提供了严谨的理论保证。实验证明，该方法在模拟数据和颅内脑电图数据分析中均显著提升了泛化性能。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "Ordinary differential equations (ODEs) provide a powerful framework for modeling dynamic systems arising in a wide range of scientific domains. However, most existing ODE methods focus on a single system, and do not adequately address the problem of learning shared patterns from multiple heterogeneous dynamic systems. In this article, we propose a novel distributionally robust learning approach for modeling heterogeneous ODE systems. Specifically, we construct a robust dynamic system by maximizing a worst-case reward over an uncertainty class formed by convex combinations of the derivatives of trajectories. We show the resulting estimator admits an explicit weighted average representation, where the weights are obtained from a quadratic optimization that balances information across multiple data sources. We further develop a bi-level stabilization procedure to address potential instability in estimation. We establish rigorous theoretical guarantees for the proposed method, including consistency of the stabilized weights, error bound for robust trajectory estimation, and asymptotical validity of pointwise confidence interval. We demonstrate that the proposed method considerably improves the generalization performance compared to the alternative solutions through both extensive simulations and the analysis of an intracranial electroencephalogram data.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/12/2604.06260v1-s3-stratified-scaling-search-for-test-time-in-diffusion-language-models",
+      "section": "quick",
+      "title_en": "$S^3$: Stratified Scaling Search for Test-Time in Diffusion Language Models",
+      "authors": "Ahsan Bilal, Muhammad Ahmed Mohsin, Muhammad Umer, Asad Aali, Muhammad Usman Khanzada, Muhammad Usman Rafique, Zihao He, Emily Fox, Dean F. Hougen",
+      "date": "2026-04-07",
+      "pdf": "https://arxiv.org/pdf/2604.06260v1",
+      "score": "6.0",
+      "evidence": "验证器引导的搜索以改进扩散轨迹",
+      "tldr": "本研究针对扩散语言模型（DLM）的推理侧扩展展开，指出传统的Best-of-K采样受限于基础分布与高质量输出的偏差。为此提出了S³（分层缩放搜索）方法，通过在去噪过程中引入轻量级验证器进行引导，动态分配计算资源并保留搜索多样性。实验表明，S³在LLaDA-8B模型上显著提升了数学推理等任务的性能，证明了在去噪轨迹上进行经典搜索是DLM推理扩展的有效途径。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "Test-time scaling investigates whether a fixed diffusion language model (DLM) can generate better outputs when given more inference compute, without additional training. However, naive best-of-$K$ sampling is fundamentally limited because it repeatedly draws from the same base diffusion distribution, whose high-probability regions are often misaligned with high-quality outputs. We propose $S^3$ (Stratified Scaling Search), a classical verifier-guided search method that improves generation by reallocating compute during the denoising process rather than only at the final output stage. At each denoising step, $S^3$ expands multiple candidate trajectories, evaluates them with a lightweight reference-free verifier, and selectively resamples promising candidates while preserving diversity within the search frontier. This procedure effectively approximates a reward-tilted sampling distribution that favors higher-quality outputs while remaining anchored to the model prior. Experiments with LLaDA-8B-Instruct on MATH-500, GSM8K, ARC-Challenge, and TruthfulQA demonstrate that $S^3$ consistently improves performance across benchmarks, achieving the largest gains on mathematical reasoning tasks while leaving the underlying model and decoding schedule unchanged. These results show that classical search over denoising trajectories provides a practical mechanism for test-time scaling in DLMs.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/12/2604.06463v1-a-control-barrier-function-constrained-model-predictive-control-framework-for-safe-reinforcement-learning",
+      "section": "quick",
+      "title_en": "A Control Barrier Function-Constrained Model Predictive Control Framework for Safe Reinforcement Learning",
+      "authors": "Ali Umut Kaypak, Prashanth Krishnamurthy, Farshad Khorrami",
+      "date": "2026-04-07",
+      "pdf": "https://arxiv.org/pdf/2604.06463v1",
+      "score": "6.0",
+      "evidence": "用于轨迹采样和模型不确定性的概率集成",
+      "tldr": "针对未知和随机动力学环境下的强化学习安全问题，本文提出了一种名为 PECTS 的安全强化学习框架。该框架结合了模型预测控制（MPC）与控制屏障函数（CBF），利用概率神经网络学习系统动力学，并采用 Lipschitz 边界神经网络学习 CBF。通过在 MPC 中引入 CBF 约束并结合安全轨迹采样方法，该方法能够在模型不确定性下实现概率安全保障，在多项仿真实验中表现优于基准方法。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "Ensuring safety under unknown and stochastic dynamics remains a significant challenge in reinforcement learning (RL). In this paper, we propose a model predictive control (MPC)-based safe RL framework, called Probabilistic Ensembles with CBF-constrained Trajectory Sampling (PECTS), to address this challenge. PECTS jointly learns stochastic system dynamics with probabilistic neural networks (PNNs) and control barrier functions (CBFs) with Lipschitz-bounded neural networks. Safety is enforced by incorporating learned CBF constraints into the MPC formulation while accounting for the model stochasticity. This enables probabilistic safety under model uncertainty. To solve the resulting MPC problem, we utilize a sampling-based optimizer together with a safe trajectory sampling method that discards unsafe trajectories based on the learned system model and CBF. We validate PECTS in various simulation studies, where it outperforms baseline methods.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/12/2604.08357v1-bias-constrained-diffusion-schedules-for-pde-emulations-reconstruction-error-minimization-and-efficient-unrolled-training",
+      "section": "quick",
+      "title_en": "Bias-Constrained Diffusion Schedules for PDE Emulations: Reconstruction Error Minimization and Efficient Unrolled Training",
+      "authors": "Constantin Le Cleï, Nils Thürey, Xiaoxiang Zhu",
+      "date": "2026-04-09",
+      "pdf": "https://arxiv.org/pdf/2604.08357v1",
+      "score": "6.0",
+      "evidence": "时空动力学中条件扩散模型的自适应噪声调度",
+      "tldr": "本研究针对条件扩散模型在偏微分方程（PDE）模拟中精度不足及自回归训练成本高的问题，提出了一种偏差约束的扩散调度方案。通过揭示噪声调度、重构误差与曝光偏差之间的内在联系，设计了自适应噪声调度框架以最小化推理误差。同时，引入代理展开训练方法，在无需完整马尔可夫链采样的情况下显著提升了长期模拟的稳定性。实验证明该方法在纳维-斯托克斯等多个复杂流体基准测试中优于现有扩散和确定性模型。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "Conditional Diffusion Models are powerful surrogates for emulating complex spatiotemporal dynamics, yet they often fail to match the accuracy of deterministic neural emulators for high-precision tasks. In this work, we address two critical limitations of autoregressive PDE diffusion models: their sub-optimal single-step accuracy and the prohibitive computational cost of unrolled training. First, we characterize the relationship between the noise schedule, the reconstruction error reduction rate and the diffusion exposure bias, demonstrating that standard schedules lead to suboptimal reconstruction error. Leveraging this insight, we propose an \\textit{Adaptive Noise Schedule} framework that minimizes inference reconstruction error by dynamically constraining the model's exposure bias. We further show that this optimized schedule enables a fast \\textit{Proxy Unrolled Training} method to stabilize long-term rollouts without the cost of full Markov Chain sampling. Both proposed methods enable significant improvements in short-term accuracy and long-term stability over diffusion and deterministic baselines on diverse benchmarks, including forced Navier-Stokes, Kuramoto-Sivashinsky and Transonic Flow.",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

@@ -6,41 +6,40 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-11
-- 运行时间：2026-04-11 19:57:09 UTC
+- 最新运行日期：2026-04-12
+- 运行时间：2026-04-12 19:42:34 UTC
 - 运行状态：成功
 - 本次总论文数：6
 - 精读区：0
 - 速读区：6
 
 ### 今日简报（AI）
-今日速读 6 篇论文，聚焦机器人精密去毛刺、自动驾驶 LLM 调度及轨迹优化等前沿控制技术。
-重点推荐 LLM 赋能的自动驾驶多规划器调度系统，以及结合学习引导的力反馈 MPC 机器人加工方案。
-建议关注大模型如何从语义理解跨越到物理世界的复杂任务规划，提升自动化系统的交互灵活性与作业精度。
-- 详情：[/202604/11/README](/202604/11/README)
+今日速览 6 篇前沿论文，聚焦大规模多智能体协同与不确定环境下的鲁棒控制。
+核心突破
+- 详情：[/202604/12/README](/202604/12/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Learning-Guided Force-Feedback Model Predictive Control with Obstacle Avoidance for Robotic Deburring](/202604/11/2604.06133v1-learning-guided-force-feedback-model-predictive-control-with-obstacle-avoidance-for-robotic-deburring)  
+1. [Distributed Covariance Steering via Non-Convex ADMM for Large-Scale Multi-Agent Systems](/202604/12/2604.04499v1-distributed-covariance-steering-via-non-convex-admm-for-large-scale-multi-agent-systems)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：基于扩散模型的运动先验用于规划
-2. [Open-Ended Instruction Realization with LLM-Enabled Multi-Planner Scheduling in Autonomous Vehicles](/202604/11/2604.08031v1-open-ended-instruction-realization-with-llm-enabled-multi-planner-scheduling-in-autonomous-vehicles)  
-   标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶运动规划与轨迹生成
-3. [Smooth and Exact Parameterization of Continuous-time Signal Temporal Logic Specifications for Trajectory Optimization](/202604/11/2604.04245v1-smooth-and-exact-parameterization-of-continuous-time-signal-temporal-logic-specifications-for-trajectory-optimization)  
+   evidence：在概率碰撞约束下引导多智能体系统
+2. [Risk-Constrained Belief-Space Optimization for Safe Control under Latent Uncertainty](/202604/12/2604.03868v1-risk-constrained-belief-space-optimization-for-safe-control-under-latent-uncertainty)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：基于连续时间信号时序逻辑的轨迹优化
-4. [Analytic Non-Gaussian Confidence Boundary Method for Chance-Constrained Trajectory Control](/202604/11/2604.04304v1-analytic-non-gaussian-confidence-boundary-method-for-chance-constrained-trajectory-control)  
+   evidence：利用信念空间优化在潜在不确定性下进行安全控制
+3. [Robust Learning of Heterogeneous Dynamic Systems](/202604/12/2604.05285v1-robust-learning-of-heterogeneous-dynamic-systems)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：机会约束轨迹控制的非高斯置信边界
-5. [Safe Large-Scale Robust Nonlinear MPC in Milliseconds via Reachability-Constrained System Level Synthesis on the GPU](/202604/11/2604.07644v1-safe-large-scale-robust-nonlinear-mpc-in-milliseconds-via-reachability-constrained-system-level-synthesis-on-the-gpu)  
+   evidence：为鲁棒学习对轨迹导数中的不确定性建模
+4. [$S^3$: Stratified Scaling Search for Test-Time in Diffusion Language Models](/202604/12/2604.06260v1-s3-stratified-scaling-search-for-test-time-in-diffusion-language-models)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：优化扰动下的名义轨迹和闭环可达集
-6. [Value-Guidance MeanFlow for Offline Multi-Agent Reinforcement Learning](/202604/11/2604.08174v1-value-guidance-meanflow-for-offline-multi-agent-reinforcement-learning)  
+   evidence：验证器引导的搜索以改进扩散轨迹
+5. [A Control Barrier Function-Constrained Model Predictive Control Framework for Safe Reinforcement Learning](/202604/12/2604.06463v1-a-control-barrier-function-constrained-model-predictive-control-framework-for-safe-reinforcement-learning)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：利用流生成模型捕捉复杂的联合策略行为
+   evidence：用于轨迹采样和模型不确定性的概率集成
+6. [Bias-Constrained Diffusion Schedules for PDE Emulations: Reconstruction Error Minimization and Efficient Unrolled Training](/202604/12/2604.08357v1-bias-constrained-diffusion-schedules-for-pde-emulations-reconstruction-error-minimization-and-efficient-unrolled-training)  
+   标签：评分：6.0/10、query:diffusion-conf-uncertainty
+   evidence：时空动力学中条件扩散模型的自适应噪声调度
 
 
 <div class="dpr-home-promo-card">
