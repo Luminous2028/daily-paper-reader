@@ -6,55 +6,43 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-13
-- 运行时间：2026-04-13 20:15:49 UTC
+- 最新运行日期：2026-04-14
+- 运行时间：2026-04-14 20:12:01 UTC
 - 运行状态：成功
-- 本次总论文数：11
-- 精读区：3
-- 速读区：8
+- 本次总论文数：7
+- 精读区：1
+- 速读区：6
 
 ### 今日简报（AI）
-今日聚焦世界模型与扩散模型在强化学习中的深度融合，探索更具鲁棒性与效率的决策方案。
-重点关注 WOMBET 实现的高效经验迁移，以及利用 PDE 正则化提升长时动力学预测稳定性的扩散技术。
-建议普通读者关注扩散模型如何从单纯的图像生成转向自动驾驶等复杂物理世界的动力学建模。
-- 详情：[/202604/13/README](/202604/13/README)
+今日聚焦扩散模型在多智能体协作驾驶中的深度进化，重点攻克在线强化微调的稳定性难题。
+核心推荐 Multi-ORFT 框架，它通过在线微调显著提升了协作规划的稳定性，并同步探讨了扩散模型在物体放置与语言生成中的轨迹优化。
+建议关注扩散模型与强化学习结合的实战应用，特别是自动驾驶及精准操作领域的最新突破。
+- 详情：[/202604/14/README](/202604/14/README)
 
 ### 精读区论文标签
-1. [WOMBET: World Model-based Experience Transfer for Robust and Sample-efficient Reinforcement Learning](/202604/13/2604.08958v1-wombet-world-model-based-experience-transfer-for-robust-and-sample-efficient-reinforcement-learning)  
-   标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：在规划中过滤具有低认知不确定性的轨迹
-2. [PDE-regularized Dynamics-informed Diffusion with Uncertainty-aware Filtering for Long-Horizon Dynamics](/202604/13/2604.09058v1-pde-regularized-dynamics-informed-diffusion-with-uncertainty-aware-filtering-for-long-horizon-dynamics)  
-   标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：具有不确定性感知滤波的扩散框架
-3. [Envisioning the Future, One Step at a Time](/202604/13/2604.09527v1-envisioning-the-future-one-step-at-a-time)  
-   标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：用于场景中稀疏点轨迹的自回归扩散模型
+1. [Multi-ORFT: Stable Online Reinforcement Fine-Tuning for Multi-Agent Diffusion Planning in Cooperative Driving](/202604/14/2604.11734v1-multi-orft-stable-online-reinforcement-fine-tuning-for-multi-agent-diffusion-planning-in-cooperative-driving)  
+   标签：评分：9.0/10、query:diffusion-conf-uncertainty
+   evidence：协作驾驶中的多智能体扩散规划与多模态轨迹
 
 ### 速读区论文标签
-1. [Fast-dVLM: Efficient Block-Diffusion VLM via Direct Conversion from Autoregressive VLM](/202604/13/2604.06832v1-fast-dvlm-efficient-block-diffusion-vlm-via-direct-conversion-from-autoregressive-vlm)  
+1. [Disentangled Point Diffusion for Precise Object Placement](/202604/14/2604.11793v1-disentangled-point-diffusion-for-precise-object-placement)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：用于自动驾驶和机器人的块扩散模型
-2. [LMGenDrive: Bridging Multimodal Understanding and Generative World Modeling for End-to-End Driving](/202604/13/2604.08719v1-lmgendrive-bridging-multimodal-understanding-and-generative-world-modeling-for-end-to-end-driving)  
-   标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶生成式世界模型与未来预测
-3. [Advantage-Guided Diffusion for Model-Based Reinforcement Learning](/202604/13/2604.09035v1-advantage-guided-diffusion-for-model-based-reinforcement-learning)  
-   标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：利用扩散世界模型共同生成轨迹段
-4. [SafeMind: A Risk-Aware Differentiable Control Framework for Adaptive and Safe Quadruped Locomotion](/202604/13/2604.09474v1-safemind-a-risk-aware-differentiable-control-framework-for-adaptive-and-safe-quadruped-locomotion)  
-   标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：在控制中显式建模认知和偶然不确定性
-5. [Fast-dVLM: Efficient Block-Diffusion VLM via Direct Conversion from Autoregressive VLM](/202604/13/2604.06832v2-fast-dvlm-efficient-block-diffusion-vlm-via-direct-conversion-from-autoregressive-vlm)  
+   evidence：用于目标预测的解耦点扩散框架
+2. [Early Decisions Matter: Proximity Bias and Initial Trajectory Shaping in Non-Autoregressive Diffusion Language Models](/202604/14/2604.10567v1-early-decisions-matter-proximity-bias-and-initial-trajectory-shaping-in-non-autoregressive-diffusion-language-models)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于自动驾驶和机器人的扩散视觉语言模型
-6. [Bias-Constrained Diffusion Schedules for PDE Emulations: Reconstruction Error Minimization and Efficient Unrolled Training](/202604/13/2604.08357v2-bias-constrained-diffusion-schedules-for-pde-emulations-reconstruction-error-minimization-and-efficient-unrolled-training)  
+   evidence：扩散模型中基于置信度的非自回归生成
+3. [ScoRe-Flow: Complete Distributional Control via Score-Based Reinforcement Learning for Flow Matching](/202604/14/2604.10962v1-score-flow-complete-distributional-control-via-score-based-reinforcement-learning-for-flow-matching)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：时空动力学中的扩散调度和重建误差
-7. [Learning Vision-Language-Action World Models for Autonomous Driving](/202604/13/2604.09059v1-learning-vision-language-action-world-models-for-autonomous-driving)  
+   evidence：机器人控制中基于得分的流匹配策略强化学习
+4. [EagleVision: A Multi-Task Benchmark for Cross-Domain Perception in High-Speed Autonomous Racing](/202604/14/2604.11400v1-eaglevision-a-multi-task-benchmark-for-cross-domain-perception-in-high-speed-autonomous-racing)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：利用动作衍生的可行轨迹引导下一帧图像生成
-8. [Rays as Pixels: Learning A Joint Distribution of Videos and Camera Trajectories](/202604/13/2604.09429v1-rays-as-pixels-learning-a-joint-distribution-of-videos-and-camera-trajectories)  
+   evidence：高速自动驾驶赛车轨迹预测基准
+5. [Representations Before Pixels: Semantics-Guided Hierarchical Video Prediction](/202604/14/2604.11707v1-representations-before-pixels-semantics-guided-hierarchical-video-prediction)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于视频和相机轨迹联合分布的扩散模型
+   evidence：用于自动驾驶视频预测的潜在扩散模型
+6. [Learning Long-term Motion Embeddings for Efficient Kinematics Generation](/202604/14/2604.11737v1-learning-long-term-motion-embeddings-for-efficient-kinematics-generation)  
+   标签：评分：6.0/10、query:diffusion-conf-uncertainty
+   evidence：用于高效运动学和轨迹生成的流匹配模型
 
 
 <div class="dpr-home-promo-card">

@@ -1,0 +1,292 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-14T20:10:49.542381+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 6,
+    "quick_skim_target": 11,
+    "quick_selected": 6
+  },
+  "deep_dive": [
+    {
+      "id": "2604.11734v1",
+      "title": "Multi-ORFT: Stable Online Reinforcement Fine-Tuning for Multi-Agent Diffusion Planning in Cooperative Driving",
+      "abstract": "Closed-loop cooperative driving requires planners that generate realistic multimodal multi-agent trajectories while improving safety and traffic efficiency. Existing diffusion planners can model multimodal behaviors from demonstrations, but they often exhibit weak scene consistency and remain poorly aligned with closed-loop objectives; meanwhile, stable online post-training in reactive multi-agent environments remains difficult. We present Multi-ORFT, which couples scene-conditioned diffusion pre-training with stable online reinforcement post-training. In pre-training, the planner uses inter-agent self-attention, cross-attention, and AdaLN-Zero-based scene conditioning to improve scene consistency and road adherence of joint trajectories. In post-training, we formulate a two-level MDP that exposes step-wise reverse-kernel likelihoods for online optimization, and combine dense trajectory-level rewards with variance-gated group-relative policy optimization (VG-GRPO) to stabilize training. On the WOMD closed-loop benchmark, Multi-ORFT reduces collision rate from 2.04% to 1.89% and off-road rate from 1.68% to 1.36%, while increasing average speed from 8.36 to 8.61 m/s relative to the pre-trained planner, and it outperforms strong open-source baselines including SMART-large, SMART-tiny-CLSFT, and VBD on the primary safety and efficiency metrics. These results show that coupling scene-consistent denoising with stable online diffusion-policy optimization improves the reliability of closed-loop cooperative driving.",
+      "authors": [
+        "Haojie Bai",
+        "Aimin Li",
+        "Ruoyu Yao",
+        "Xiongwei Zhao",
+        "Tingting Zhang",
+        "Xing Zhang",
+        "Lin Gao",
+        "and Jun Ma"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-04-13T17:13:46+00:00",
+      "link": "https://arxiv.org/pdf/2604.11734v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "multi-agent diffusion planning for cooperative driving with multimodal trajectories",
+      "llm_evidence_cn": "协作驾驶中的多智能体扩散规划与多模态轨迹",
+      "llm_evidence": "协作驾驶中的多智能体扩散规划与多模态轨迹",
+      "canonical_evidence": "协作驾驶中的多智能体扩散规划与多模态轨迹",
+      "llm_tldr_en": "Couples diffusion pre-training with reinforcement fine-tuning for multi-agent trajectory planning.",
+      "llm_tldr_cn": "将扩散预训练与强化微调相结合，用于多智能体轨迹规划。",
+      "llm_tldr": "将扩散预训练与强化微调相结合，用于多智能体轨迹规划。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty:composite"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty:composite",
+      "matched_query_text": "Papers central to 自动驾驶轨迹生成中利用扩散模型进行不确定性解耦、量化、追溯的论文检索, especially work that connects or combines: c; trajectory generation and path planning; autonomous driving motion planning and prediction; diffusion models for trajectory generation in autonomous driving; modeling aleatoric uncertainty in autonomous driving scenarios; estimating epistemic uncertainty in neural motion planners; diffusion models for uncertainty decoupling in autonomous driving trajectory generation; quantifying and tracing uncertainty in diffusion based motion planning; aleatoric and epistemic uncertainty decomposition in diffusion trajectory models; diffusion models for uncertainty estimation in autonomous driving trajectory generation.",
+      "matched_requirement_id": "req-composite-diffusion-conf-uncertainty",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.11793v1",
+      "title": "Disentangled Point Diffusion for Precise Object Placement",
+      "abstract": "Recent advances in robotic manipulation have highlighted the effectiveness of learning from demonstration. However, while end-to-end policies excel in expressivity and flexibility, they struggle both in generalizing to novel object geometries and in attaining a high degree of precision. An alternative, object-centric approach frames the task as predicting the placement pose of the target object, providing a modular decomposition of the problem. Building on this goal-prediction paradigm, we propose TAX-DPD, a hierarchical, disentangled point diffusion framework that achieves state-of-the-art performance in placement precision, multi-modal coverage, and generalization to variations in object geometries and scene configurations. We model global scene-level placements through a novel feed-forward Dense Gaussian Mixture Model (GMM) that yields a spatially dense prior over global placements; we then model the local object-level configuration through a novel disentangled point cloud diffusion module that separately diffuses the object geometry and the placement frame, enabling precise local geometric reasoning. Interestingly, we demonstrate that our point cloud diffusion achieves substantially higher accuracy than a prior approach based on SE(3)-diffusion, even in the context of rigid object placement. We validate our approach across a suite of challenging tasks in simulation and in the real-world on high-precision industrial insertion tasks. Furthermore, we present results on a cloth-hanging task in simulation, indicating that our framework can further relax assumptions on object rigidity.",
+      "authors": [
+        "Lyuxing He",
+        "Eric Cai",
+        "Shobhit Aggarwal",
+        "Jianjun Wang",
+        "David Held"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-13T17:55:47+00:00",
+      "link": "https://arxiv.org/pdf/2604.11793v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "disentangled point diffusion framework for goal-prediction",
+      "llm_evidence_cn": "用于目标预测的解耦点扩散框架",
+      "llm_evidence": "用于目标预测的解耦点扩散框架",
+      "canonical_evidence": "用于目标预测的解耦点扩散框架",
+      "llm_tldr_en": "Proposes a disentangled point diffusion framework for precise object placement and multi-modal coverage.",
+      "llm_tldr_cn": "提出了一种用于精确物体放置和多模态覆盖的解耦点扩散框架。",
+      "llm_tldr": "提出了一种用于精确物体放置和多模态覆盖的解耦点扩散框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty decoupling in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.10567v1",
+      "title": "Early Decisions Matter: Proximity Bias and Initial Trajectory Shaping in Non-Autoregressive Diffusion Language Models",
+      "abstract": "Diffusion-based language models (dLLMs) have emerged as a promising alternative to autoregressive language models, offering the potential for parallel token generation and bidirectional context modeling. However, harnessing this flexibility for fully non-autoregressive decoding remains an open question, particularly for reasoning and planning tasks. In this work, we investigate non-autoregressive decoding in dLLMs by systematically analyzing its inference dynamics along the temporal axis. Specifically, we uncover an inherent failure mode in confidence-based non-autoregressive generation stemming from a strong proximity bias-the tendency for the denoising order to concentrate on spatially adjacent tokens. This local dependency leads to spatial error propagation, rendering the entire trajectory critically contingent on the initial unmasking position. Leveraging this insight, we present a minimal-intervention approach that guides early token selection, employing a lightweight planner and end-of-sequence temperature annealing. We thoroughly evaluate our method on various reasoning and planning tasks and observe substantial overall improvement over existing heuristic baselines without significant computational overhead.",
+      "authors": [
+        "Jiyeon Kim",
+        "Sungik Choi",
+        "Yongrae Jo",
+        "Moontae Lee",
+        "Minjoon Seo"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-04-12T10:26:41+00:00",
+      "link": "https://arxiv.org/pdf/2604.10567v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "confidence-based non-autoregressive generation in diffusion models",
+      "llm_evidence_cn": "扩散模型中基于置信度的非自回归生成",
+      "llm_evidence": "扩散模型中基于置信度的非自回归生成",
+      "canonical_evidence": "扩散模型中基于置信度的非自回归生成",
+      "llm_tldr_en": "Analyzes inference dynamics and confidence-based generation in diffusion models for planning tasks.",
+      "llm_tldr_cn": "分析了扩散模型在规划任务中基于置信度的生成机制和推理动力学。",
+      "llm_tldr": "分析了扩散模型在规划任务中基于置信度的生成机制和推理动力学。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.10962v1",
+      "title": "ScoRe-Flow: Complete Distributional Control via Score-Based Reinforcement Learning for Flow Matching",
+      "abstract": "Flow Matching (FM) policies have emerged as an efficient backbone for robotic control, offering fast and expressive action generation that underpins recent large-scale embodied AI systems. However, FM policies trained via imitation learning inherit the limitations of demonstration data; surpassing suboptimal behaviors requires reinforcement learning (RL) fine-tuning. Recent methods convert deterministic flows into stochastic differential equations (SDEs) with learnable noise injection, enabling exploration and tractable likelihoods, but such noise-only control can compromise training efficiency when demonstrations already provide strong priors. We observe that modulating the drift via the score function, i.e., the gradient of log-density, steers exploration toward high-probability regions, improving stability. The score admits a closed-form expression from the velocity field, requiring no auxiliary networks. Based on this, we propose ScoRe-Flow, a score-based RL fine-tuning method that combines drift modulation with learned variance prediction to achieve decoupled control over the mean and variance of stochastic transitions. Experiments demonstrate that ScoRe-Flow achieves 2.4x faster convergence than flow-based SOTA on D4RL locomotion tasks and up to 5.4% higher success rates on Robomimic and Franka Kitchen manipulation tasks.",
+      "authors": [
+        "Xiaotian Qiu",
+        "Lukai Chen",
+        "Jinhao Li",
+        "Qi Sun",
+        "Cheng Zhuo",
+        "Guohao Dai"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-13T03:56:37+00:00",
+      "link": "https://arxiv.org/pdf/2604.10962v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "score-based reinforcement learning for flow matching policies in robotic control",
+      "llm_evidence_cn": "机器人控制中基于得分的流匹配策略强化学习",
+      "llm_evidence": "机器人控制中基于得分的流匹配策略强化学习",
+      "canonical_evidence": "机器人控制中基于得分的流匹配策略强化学习",
+      "llm_tldr_en": "Enhances flow matching policies for robotic control using score-based RL to improve distributional control.",
+      "llm_tldr_cn": "利用基于得分的强化学习增强机器人控制中的流匹配策略，改善分布控制。",
+      "llm_tldr": "利用基于得分的强化学习增强机器人控制中的流匹配策略，改善分布控制。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.11400v1",
+      "title": "EagleVision: A Multi-Task Benchmark for Cross-Domain Perception in High-Speed Autonomous Racing",
+      "abstract": "High-speed autonomous racing presents extreme perception challenges, including large relative velocities and substantial domain shifts from conventional urban-driving datasets. Existing benchmarks do not adequately capture these high-dynamic conditions. We introduce EagleVision, a unified LiDAR-based multi-task benchmark for 3D detection and trajectory prediction in high-speed racing, providing newly annotated 3D bounding boxes for the Indy Autonomous Challenge dataset (14,893 frames) and the A2RL Real competition dataset (1,163 frames), together with 12,000 simulator-generated annotated frames, all standardized under a common evaluation protocol. Using a dataset-centric transfer framework, we quantify cross-domain generalization across urban, simulator, and real racing domains. Urban pretraining improves detection over scratch training (NDS 0.72 vs. 0.69), while intermediate pretraining on real racing data achieves the best transfer to A2RL (NDS 0.726), outperforming simulator-only adaptation. For trajectory prediction, Indy-trained models surpass in-domain A2RL training on A2RL test sequences (FDE 0.947 vs. 1.250), highlighting the role of motion-distribution coverage in cross-domain forecasting. EagleVision enables systematic study of perception generalization under extreme high-speed dynamics. The dataset and benchmark are publicly available at https://avlab.io/EagleVision",
+      "authors": [
+        "Zakhar Yagudin",
+        "Murad Mebrahtu",
+        "Ren Jin",
+        "Jiaqi Huang",
+        "Yujia Yue",
+        "Dzmitry Tsetserukou",
+        "Jorge Dias",
+        "Majid Khonji"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-04-13T12:42:18+00:00",
+      "link": "https://arxiv.org/pdf/2604.11400v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "benchmark for trajectory prediction in high-speed autonomous racing",
+      "llm_evidence_cn": "高速自动驾驶赛车轨迹预测基准",
+      "llm_evidence": "高速自动驾驶赛车轨迹预测基准",
+      "canonical_evidence": "高速自动驾驶赛车轨迹预测基准",
+      "llm_tldr_en": "Introduces EagleVision, a multi-task benchmark for perception and trajectory prediction in high-speed racing.",
+      "llm_tldr_cn": "推出EagleVision，一个针对高速赛车场景的感知与轨迹预测多任务基准测试集。",
+      "llm_tldr": "推出EagleVision，一个针对高速赛车场景的感知与轨迹预测多任务基准测试集。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.11707v1",
+      "title": "Representations Before Pixels: Semantics-Guided Hierarchical Video Prediction",
+      "abstract": "Accurate future video prediction requires both high visual fidelity and consistent scene semantics, particularly in complex dynamic environments such as autonomous driving. We present Re2Pix, a hierarchical video prediction framework that decomposes forecasting into two stages: semantic representation prediction and representation-guided visual synthesis. Instead of directly predicting future RGB frames, our approach first forecasts future scene structure in the feature space of a frozen vision foundation model, and then conditions a latent diffusion model on these predicted representations to render photorealistic frames. This decomposition enables the model to focus first on scene dynamics and then on appearance generation. A key challenge arises from the train-test mismatch between ground-truth representations available during training and predicted ones used at inference. To address this, we introduce two conditioning strategies, nested dropout and mixed supervision, that improve robustness to imperfect autoregressive predictions. Experiments on challenging driving benchmarks demonstrate that the proposed semantics-first design significantly improves temporal semantic consistency, perceptual quality, and training efficiency compared to strong diffusion baselines. We provide the implementation code at https://github.com/Sta8is/Re2Pix",
+      "authors": [
+        "Efstathios Karypidis",
+        "Spyros Gidaris",
+        "Nikos Komodakis"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-13T16:42:46+00:00",
+      "link": "https://arxiv.org/pdf/2604.11707v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "latent diffusion model for video prediction in autonomous driving",
+      "llm_evidence_cn": "用于自动驾驶视频预测的潜在扩散模型",
+      "llm_evidence": "用于自动驾驶视频预测的潜在扩散模型",
+      "canonical_evidence": "用于自动驾驶视频预测的潜在扩散模型",
+      "llm_tldr_en": "Uses hierarchical diffusion to predict future scene dynamics and appearance in autonomous driving.",
+      "llm_tldr_cn": "采用分层扩散模型预测自动驾驶场景中的未来动态与外观。",
+      "llm_tldr": "采用分层扩散模型预测自动驾驶场景中的未来动态与外观。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.11737v1",
+      "title": "Learning Long-term Motion Embeddings for Efficient Kinematics Generation",
+      "abstract": "Understanding and predicting motion is a fundamental component of visual intelligence. Although modern video models exhibit strong comprehension of scene dynamics, exploring multiple possible futures through full video synthesis remains prohibitively inefficient. We model scene dynamics orders of magnitude more efficiently by directly operating on a long-term motion embedding that is learned from large-scale trajectories obtained from tracker models. This enables efficient generation of long, realistic motions that fulfill goals specified via text prompts or spatial pokes. To achieve this, we first learn a highly compressed motion embedding with a temporal compression factor of 64x. In this space, we train a conditional flow-matching model to generate motion latents conditioned on task descriptions. The resulting motion distributions outperform those of both state-of-the-art video models and specialized task-specific approaches.",
+      "authors": [
+        "Nick Stracke",
+        "Kolja Bauer",
+        "Stefan Andreas Baumann",
+        "Miguel Angel Bautista",
+        "Josh Susskind",
+        "Björn Ommer"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-13T17:14:47+00:00",
+      "link": "https://arxiv.org/pdf/2604.11737v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "flow-matching model for efficient kinematics and trajectory generation",
+      "llm_evidence_cn": "用于高效运动学和轨迹生成的流匹配模型",
+      "llm_evidence": "用于高效运动学和轨迹生成的流匹配模型",
+      "canonical_evidence": "用于高效运动学和轨迹生成的流匹配模型",
+      "llm_tldr_en": "Uses flow-matching on motion embeddings to generate long-term trajectories efficiently.",
+      "llm_tldr_cn": "在运动嵌入上使用流匹配模型，高效生成长期轨迹。",
+      "llm_tldr": "在运动嵌入上使用流匹配模型，高效生成长期轨迹。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
