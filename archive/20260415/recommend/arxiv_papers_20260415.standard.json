@@ -1,0 +1,356 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-15T20:19:28.639990+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 7,
+    "quick_skim_target": 11,
+    "quick_selected": 7
+  },
+  "deep_dive": [
+    {
+      "id": "2604.11734v2",
+      "title": "Multi-ORFT: Stable Online Reinforcement Fine-Tuning for Multi-Agent Diffusion Planning in Cooperative Driving",
+      "abstract": "Closed-loop cooperative driving requires planners that generate realistic multimodal multi-agent trajectories while improving safety and traffic efficiency. Existing diffusion planners can model multimodal behaviors from demonstrations, but they often exhibit weak scene consistency and remain poorly aligned with closed-loop objectives; meanwhile, stable online post-training in reactive multi-agent environments remains difficult. We present Multi-ORFT, which couples scene-conditioned diffusion pre-training with stable online reinforcement post-training. In pre-training, the planner uses inter-agent self-attention, cross-attention, and AdaLN-Zero-based scene conditioning to improve scene consistency and road adherence of joint trajectories. In post-training, we formulate a two-level MDP that exposes step-wise reverse-kernel likelihoods for online optimization, and combine dense trajectory-level rewards with variance-gated group-relative policy optimization (VG-GRPO) to stabilize training. On the WOMD closed-loop benchmark, Multi-ORFT reduces collision rate from 2.04% to 1.89% and off-road rate from 1.68% to 1.36%, while increasing average speed from 8.36 to 8.61 m/s relative to the pre-trained planner, and it outperforms strong open-source baselines including SMART-large, SMART-tiny-CLSFT, and VBD on the primary safety and efficiency metrics. These results show that coupling scene-consistent denoising with stable online diffusion-policy optimization improves the reliability of closed-loop cooperative driving.",
+      "authors": [
+        "Haojie Bai",
+        "Aimin Li",
+        "Ruoyu Yao",
+        "Xiongwei Zhao",
+        "Tingting Zhang",
+        "Xing Zhang",
+        "Lin Gao",
+        "and Jun Ma"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-04-13T17:13:46+00:00",
+      "link": "https://arxiv.org/pdf/2604.11734v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Multi-agent diffusion planning for cooperative driving with reinforcement fine-tuning",
+      "llm_evidence_cn": "结合强化微调的协作驾驶多智能体扩散规划",
+      "llm_evidence": "结合强化微调的协作驾驶多智能体扩散规划",
+      "canonical_evidence": "结合强化微调的协作驾驶多智能体扩散规划",
+      "llm_tldr_en": "Combines diffusion pre-training with RL to generate realistic multi-agent trajectories in driving.",
+      "llm_tldr_cn": "结合扩散预训练与强化学习，生成驾驶场景中真实的多智能体轨迹。",
+      "llm_tldr": "结合扩散预训练与强化学习，生成驾驶场景中真实的多智能体轨迹。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty:composite"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty:composite",
+      "matched_query_text": "Papers central to 自动驾驶轨迹生成中利用扩散模型进行不确定性解耦、量化、追溯的论文检索, especially work that connects or combines: c; trajectory generation and path planning; autonomous driving motion planning and prediction; diffusion models for trajectory generation in autonomous driving; modeling aleatoric uncertainty in autonomous driving scenarios; estimating epistemic uncertainty in neural motion planners; diffusion models for uncertainty decoupling in autonomous driving trajectory generation; quantifying and tracing uncertainty in diffusion based motion planning; aleatoric and epistemic uncertainty decomposition in diffusion trajectory models; diffusion models for uncertainty estimation in autonomous driving trajectory generation.",
+      "matched_requirement_id": "req-composite-diffusion-conf-uncertainty",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.12656v1",
+      "title": "FeaXDrive: Feasibility-aware Trajectory-Centric Diffusion Planning for End-to-End Autonomous Driving",
+      "abstract": "End-to-end diffusion planning has shown strong potential for autonomous driving, but the physical feasibility of generated trajectories remains insufficiently addressed. In particular, generated trajectories may exhibit local geometric irregularities, violate trajectory-level kinematic constraints, or deviate from the drivable area, indicating that the commonly used noise-centric formulation in diffusion planning is not yet well aligned with the trajectory space where feasibility is more naturally characterized. To address this issue, we propose FeaXDrive, a feasibility-aware trajectory-centric diffusion planning method for end-to-end autonomous driving. The core idea is to treat the clean trajectory as the unified object for feasibility-aware modeling throughout the diffusion process. Built on this trajectory-centric formulation, FeaXDrive integrates adaptive curvature-constrained training to improve intrinsic geometric and kinematic feasibility, drivable-area guidance within reverse diffusion sampling to enhance consistency with the drivable area, and feasibility-aware GRPO post-training to further improve planning performance while balancing trajectory-space feasibility. Experiments on the NAVSIM benchmark show that FeaXDrive achieves strong closed-loop planning performance while substantially improving trajectory-space feasibility. These findings highlight the importance of explicitly modeling trajectory-space feasibility in end-to-end diffusion planning and provide a step toward more reliable and physically grounded autonomous driving planners.",
+      "authors": [
+        "Baoyun Wang",
+        "Zhuoren Li",
+        "Ming Liu",
+        "Xinrui Zhang",
+        "Bo Leng",
+        "Lu Xiong"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-04-14T12:24:54+00:00",
+      "link": "https://arxiv.org/pdf/2604.12656v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "diffusion planning for end-to-end autonomous driving",
+      "llm_evidence_cn": "端到端自动驾驶的扩散规划",
+      "llm_evidence": "端到端自动驾驶的扩散规划",
+      "canonical_evidence": "端到端自动驾驶的扩散规划",
+      "llm_tldr_en": "Proposes a feasibility-aware trajectory-centric diffusion planning method for autonomous driving.",
+      "llm_tldr_cn": "提出了一种面向端到端自动驾驶的可行性感知轨迹中心扩散规划方法。",
+      "llm_tldr": "提出了一种面向端到端自动驾驶的可行性感知轨迹中心扩散规划方法。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.10169v1",
+      "title": "MAVEN-T: Multi-Agent enVironment-aware Enhanced Neural Trajectory predictor with Reinforcement Learning",
+      "abstract": "Trajectory prediction remains a critical yet challenging component in autonomous driving systems, requiring sophisticated reasoning capabilities while meeting strict real-time deployment constraints. While knowledge distillation has demonstrated effectiveness in model compression, existing approaches often fail to preserve complex decision-making capabilities, particularly in dynamic multi-agent scenarios. This paper introduces MAVEN-T, a teacher-student framework that achieves state-of-the-art trajectory prediction through complementary architectural co-design and progressive distillation. The teacher employs hybrid attention mechanisms for maximum representational capacity, while the student uses efficient architectures optimized for deployment. Knowledge transfer is performed via multi-granular distillation with adaptive curriculum learning that dynamically adjusts complexity based on performance. Importantly, the framework incorporates reinforcement learning to overcome the imitation ceiling of traditional distillation, enabling the student to verify, refine, and optimize teacher knowledge through dynamic environmental interaction, potentially achieving more robust decision-making than the teacher itself. Extensive experiments on NGSIM and highD datasets demonstrate 6.2x parameter compression and 3.7x inference speedup while maintaining state-of-the-art accuracy, establishing a new paradigm for deploying sophisticated reasoning models under resource constraints.",
+      "authors": [
+        "Wenchang Duan"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-04-11T11:34:13+00:00",
+      "link": "https://arxiv.org/pdf/2604.10169v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "trajectory prediction in autonomous driving systems",
+      "llm_evidence_cn": "自动驾驶系统中的轨迹预测",
+      "llm_evidence": "自动驾驶系统中的轨迹预测",
+      "canonical_evidence": "自动驾驶系统中的轨迹预测",
+      "llm_tldr_en": "Introduces a teacher-student framework for efficient multi-agent trajectory prediction in autonomous driving.",
+      "llm_tldr_cn": "引入一种教师-学生框架，用于自动驾驶中高效的多智能体轨迹预测。",
+      "llm_tldr": "引入一种教师-学生框架，用于自动驾驶中高效的多智能体轨迹预测。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.06966v1",
+      "title": "MAR-GRPO: Stabilized GRPO for AR-diffusion Hybrid Image Generation",
+      "abstract": "Reinforcement learning (RL) has been successfully applied to autoregressive (AR) and diffusion models. However, extending RL to hybrid AR-diffusion frameworks remains challenging due to interleaved inference and noisy log-probability estimation. In this work, we study masked autoregressive models (MAR) and show that the diffusion head plays a critical role in training dynamics, often introducing noisy gradients that lead to instability and early performance saturation. To address this issue, we propose a stabilized RL framework for MAR. We introduce multi-trajectory expectation (MTE), which estimates the optimization direction by averaging over multiple diffusion trajectories, thereby reducing diffusion-induced gradient noise. To avoid over-smoothing, we further estimate token-wise uncertainty from multiple trajectories and apply multi-trajectory optimization only to the top-k% uncertain tokens. In addition, we introduce a consistency-aware token selection strategy that filters out AR tokens that are less aligned with the final generated content. Extensive experiments across multiple benchmarks demonstrate that our method consistently improves visual quality, training stability, and spatial structure understanding over baseline GRPO and pre-RL models. Code is available at: https://github.com/AMAP-ML/mar-grpo.",
+      "authors": [
+        "Xiaoxiao Ma",
+        "Jiachen Lei",
+        "Tianfei Ren",
+        "Jie Huang",
+        "Siming Fu",
+        "Aiming Hao",
+        "Jiahong Wu",
+        "Xiangxiang Chu",
+        "Feng Zhao"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-08T11:30:35+00:00",
+      "link": "https://arxiv.org/pdf/2604.06966v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "averaging over multiple diffusion trajectories to reduce noise",
+      "llm_evidence_cn": "通过平均多个扩散轨迹来减少噪声",
+      "llm_evidence": "通过平均多个扩散轨迹来减少噪声",
+      "canonical_evidence": "通过平均多个扩散轨迹来减少噪声",
+      "llm_tldr_en": "Stabilizes RL for hybrid AR-diffusion models by averaging multiple trajectories to reduce gradient noise.",
+      "llm_tldr_cn": "通过平均多条轨迹减少梯度噪声，稳定混合自回归扩散模型的强化学习。",
+      "llm_tldr": "通过平均多条轨迹减少梯度噪声，稳定混合自回归扩散模型的强化学习。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.12149v1",
+      "title": "Uncertainty Guided Exploratory Trajectory Optimization for Sampling-Based Model Predictive Control",
+      "abstract": "Trajectory optimization depends heavily on initialization. In particular, sampling-based approaches are highly sensitive to initial solutions, and limited exploration frequently leads them to converge to local minima in complex environments. We present Uncertainty Guided Exploratory Trajectory Optimization (UGE-TO), a trajectory optimization algorithm that generates well-separated samples to achieve a better coverage of the configuration space. UGE-TO represents trajectories as probability distributions induced by uncertainty ellipsoids. Unlike sampling-based approaches that explore only in the action space, this representation captures the effects of both system dynamics and action selection. By incorporating the impact of dynamics, in addition to the action space, into our distributions, our method enhances trajectory diversity by enforcing distributional separation via the Hellinger distance between them. It enables a systematic exploration of the configuration space and improves robustness against local minima. Further, we present UGE-MPC, which integrates UGE-TO into sampling-based model predictive controller methods. Experiments demonstrate that UGE-MPC achieves higher exploration and faster convergence in trajectory optimization compared to baselines under the same sampling budget, achieving 72.1% faster convergence in obstacle-free environments and 66% faster convergence with a 6.7% higher success rate in the cluttered environment compared to the best-performing baseline. Additionally, we validate the approach through a range of simulation scenarios and real-world experiments. Our results indicate that UGE-MPC has higher success rates and faster convergence, especially in environments that demand significant deviations from nominal trajectories to avoid failures. The project and code are available at https://ogpoyrazoglu.github.io/cuniform_sampling/.",
+      "authors": [
+        "O. Goktug Poyrazoglu",
+        "Yukang Cao",
+        "Rahul Moorthy",
+        "Volkan Isler"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-13T23:55:41+00:00",
+      "link": "https://arxiv.org/pdf/2604.12149v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Uncertainty guided trajectory optimization representing trajectories as probability distributions",
+      "llm_evidence_cn": "将轨迹表示为概率分布的不确定性引导轨迹优化",
+      "llm_evidence": "将轨迹表示为概率分布的不确定性引导轨迹优化",
+      "canonical_evidence": "将轨迹表示为概率分布的不确定性引导轨迹优化",
+      "llm_tldr_en": "Proposes UGE-TO, using uncertainty ellipsoids to guide trajectory sampling and exploration.",
+      "llm_tldr_cn": "提出 UGE-TO，利用不确定性椭圆引导轨迹采样和探索。",
+      "llm_tldr": "提出 UGE-TO，利用不确定性椭圆引导轨迹采样和探索。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.09529v1",
+      "title": "VL-Calibration: Decoupled Confidence Calibration for Large Vision-Language Models Reasoning",
+      "abstract": "Large Vision Language Models (LVLMs) achieve strong multimodal reasoning but frequently exhibit hallucinations and incorrect responses with high certainty, which hinders their usage in high-stakes domains. Existing verbalized confidence calibration methods, largely developed for text-only LLMs, typically optimize a single holistic confidence score using binary answer-level correctness. This design is mismatched to LVLMs: an incorrect prediction may arise from perceptual failures or from reasoning errors given correct perception, and a single confidence conflates these sources while visual uncertainty is often dominated by language priors. To address these issues, we propose VL-Calibration, a reinforcement learning framework that explicitly decouples confidence into visual and reasoning confidence. To supervise visual confidence without ground-truth perception labels, we introduce an intrinsic visual certainty estimation that combines (i) visual grounding measured by KL-divergence under image perturbations and (ii) internal certainty measured by token entropy. We further propose token-level advantage reweighting to focus optimization on tokens based on visual certainty, suppressing ungrounded hallucinations while preserving valid perception. Experiments on thirteen benchmarks show that VL-Calibration effectively improves calibration while boosting visual reasoning accuracy, and it generalizes to out-of-distribution benchmarks across model scales and architectures.",
+      "authors": [
+        "Wenyi Xiao",
+        "Xinchi Xu",
+        "Leilei Gan"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-04-10T17:47:19+00:00",
+      "link": "https://arxiv.org/pdf/2604.09529v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "decoupled confidence calibration for multimodal reasoning",
+      "llm_evidence_cn": "多模态推理中的解耦置信度校准",
+      "llm_evidence": "多模态推理中的解耦置信度校准",
+      "canonical_evidence": "多模态推理中的解耦置信度校准",
+      "llm_tldr_en": "Decouples perceptual and reasoning uncertainty in vision-language models using a reinforcement learning framework.",
+      "llm_tldr_cn": "通过强化学习框架解耦视觉语言模型中的感知与推理不确定性，提升置信度校准效果。",
+      "llm_tldr": "通过强化学习框架解耦视觉语言模型中的感知与推理不确定性，提升置信度校准效果。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty decoupling in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.12425v1",
+      "title": "Forecasting the Past: Gradient-Based Distribution Shift Detection in Trajectory Prediction",
+      "abstract": "Trajectory prediction models often fail in real-world automated driving due to distributional shifts between training and test conditions. Such distributional shifts, whether behavioural or environmental, pose a critical risk by causing the model to make incorrect forecasts in unfamiliar situations. We propose a self-supervised method that trains a decoder in a post-hoc fashion on the self-supervised task of forecasting the second half of observed trajectories from the first half. The L2 norm of the gradient of this forecasting loss with respect to the decoder's final layer defines a score to identify distribution shifts. Our approach, first, does not affect the trajectory prediction model, ensuring no interference with original prediction performance and second, demonstrates substantial improvements on distribution shift detection for trajectory prediction on the Shifts and Argoverse datasets. Moreover, we show that this method can also be used to early detect collisions of a deep Q-Network motion planner in the Highway simulator. Source code is available at https://github.com/Michedev/forecasting-the-past.",
+      "authors": [
+        "Michele De Vita",
+        "Julian Wiederer",
+        "Vasileios Belagiannis"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-14T08:15:45+00:00",
+      "link": "https://arxiv.org/pdf/2604.12425v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "detecting distribution shifts in trajectory prediction for automated driving",
+      "llm_evidence_cn": "自动驾驶轨迹预测中的分布偏移检测",
+      "llm_evidence": "自动驾驶轨迹预测中的分布偏移检测",
+      "canonical_evidence": "自动驾驶轨迹预测中的分布偏移检测",
+      "llm_tldr_en": "Uses a self-supervised forecasting task to identify epistemic risks from distribution shifts in driving.",
+      "llm_tldr_cn": "通过自监督预测任务识别自动驾驶中的分布偏移，从而量化模型在陌生场景下的风险。",
+      "llm_tldr": "通过自监督预测任务识别自动驾驶中的分布偏移，从而量化模型在陌生场景下的风险。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "estimating epistemic uncertainty in neural motion planners",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.09838v1",
+      "title": "Vector Field Synthesis with Sparse Streamlines Using Diffusion Model",
+      "abstract": "We present a novel diffusion-based framework for synthesizing 2D vector fields from sparse, coherent inputs (i.e., streamlines) while maintaining physical plausibility. Our method employs a conditional denoising diffusion probabilistic model with classifier-free guidance, enabling progressive reconstruction that preserves both geometric and physical constraints. Experimental results demonstrate our method's ability to synthesize plausible vector fields that adhere to physical laws while maintaining fidelity to sparse input observations, outperforming traditional optimization-based approaches in terms of flexibility and physical consistency.",
+      "authors": [
+        "Nguyen K. Phan",
+        "Ricardo Morales",
+        "Sebastian D. Espriella",
+        "Guoning Chen"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-10T19:10:24+00:00",
+      "link": "https://arxiv.org/pdf/2604.09838v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Diffusion-based framework for synthesizing 2D vector fields from sparse streamlines",
+      "llm_evidence_cn": "基于扩散模型的稀疏流线2D向量场合成框架",
+      "llm_evidence": "基于扩散模型的稀疏流线2D向量场合成框架",
+      "canonical_evidence": "基于扩散模型的稀疏流线2D向量场合成框架",
+      "llm_tldr_en": "Uses diffusion models to synthesize physically plausible vector fields from sparse inputs.",
+      "llm_tldr_cn": "利用扩散模型从稀疏输入中合成符合物理规律的向量场。",
+      "llm_tldr": "利用扩散模型从稀疏输入中合成符合物理规律的向量场。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.10980v1",
+      "title": "Tracking High-order Evolutions via Cascading Low-rank Fitting",
+      "abstract": "Diffusion models have become the de facto standard for modern visual generation, including well-established frameworks such as latent diffusion and flow matching. Recently, modeling high-order dynamics has emerged as a promising frontier in generative modeling. Rather than only learning the first-order velocity field that transports random noise to a target data distribution, these approaches simultaneously learn higher-order derivatives, such as acceleration and jerk, yielding a diverse family of higher-order diffusion variants. To represent higher-order derivatives, naive approaches instantiate separate neural networks for each order, which scales the parameter space linearly with the derivative order. To overcome this computational bottleneck, we introduce cascading low-rank fitting, an ordinary differential equation inspired method that approximates successive derivatives by applying a shared base function augmented with sequentially accumulated low-rank components.   Theoretically, we analyze the rank dynamics of these successive matrix differences. We prove that if the initial difference is linearly decomposable, the generic ranks of high-order derivatives are guaranteed to be monotonically non-increasing. Conversely, we demonstrate that without this structural assumption, the General Leibniz Rule allows ranks to strictly increase. Furthermore, we establish that under specific conditions, the sequence of derivative ranks can be designed to form any arbitrary permutation. Finally, we present a straightforward algorithm to efficiently compute the proposed cascading low-rank fitting.",
+      "authors": [
+        "Zhao Song"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-13T04:39:49+00:00",
+      "link": "https://arxiv.org/pdf/2604.10980v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "high-order dynamics in diffusion models for evolution tracking",
+      "llm_evidence_cn": "扩散模型中的高阶动力学用于演化追踪",
+      "llm_evidence": "扩散模型中的高阶动力学用于演化追踪",
+      "canonical_evidence": "扩散模型中的高阶动力学用于演化追踪",
+      "llm_tldr_en": "Introduces cascading low-rank fitting to model high-order derivatives in diffusion generative frameworks.",
+      "llm_tldr_cn": "引入级联低秩拟合来建模扩散生成框架中的高阶导数。",
+      "llm_tldr": "引入级联低秩拟合来建模扩散生成框架中的高阶导数。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty:composite"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty:composite",
+      "matched_query_text": "Papers central to 自动驾驶轨迹生成中利用扩散模型进行不确定性解耦、量化、追溯的论文检索, especially work that connects or combines: c; trajectory generation and path planning; autonomous driving motion planning and prediction; diffusion models for trajectory generation in autonomous driving; modeling aleatoric uncertainty in autonomous driving scenarios; estimating epistemic uncertainty in neural motion planners; diffusion models for uncertainty decoupling in autonomous driving trajectory generation; quantifying and tracing uncertainty in diffusion based motion planning; aleatoric and epistemic uncertainty decomposition in diffusion trajectory models; diffusion models for uncertainty estimation in autonomous driving trajectory generation.",
+      "matched_requirement_id": "req-composite-diffusion-conf-uncertainty",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
