@@ -6,49 +6,50 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-15
-- 运行时间：2026-04-15 20:20:33 UTC
+- 最新运行日期：2026-04-16
+- 运行时间：2026-04-16 20:44:29 UTC
 - 运行状态：成功
 - 本次总论文数：9
-- 精读区：2
-- 速读区：7
+- 精读区：0
+- 速读区：9
 
 ### 今日简报（AI）
-今日聚焦扩散模型在自动驾驶规划中的前沿突破，涵盖多车协同微调与端到端可行性轨迹生成。
-重点推荐 Multi-ORFT 的稳定在线强化学习框架，以及 FeaXDrive 提升扩散规划物理可行性的新方案。
-建议深入了解扩散模型如何通过强化学习实现复杂博弈场景下的决策优化。
-- 详情：[/202604/15/README](/202604/15/README)
+今日速览 9 篇前沿论文，深度复盘了强化学习与最优控制在路径规划中的性能博弈。
+重点推荐多智能体交互中的概率责任分配，以及结合稀疏路线图的弱监督物理感知运动规划。
+建议开发者关注如何通过物理信息神经网络优化复杂环境下的动态避障与路径搜索效率。
+- 详情：[/202604/16/README](/202604/16/README)
 
 ### 精读区论文标签
-1. [Multi-ORFT: Stable Online Reinforcement Fine-Tuning for Multi-Agent Diffusion Planning in Cooperative Driving](/202604/15/2604.11734v2-multi-orft-stable-online-reinforcement-fine-tuning-for-multi-agent-diffusion-planning-in-cooperative-driving)  
-   标签：评分：9.0/10、query:diffusion-conf-uncertainty
-   evidence：结合强化微调的协作驾驶多智能体扩散规划
-2. [FeaXDrive: Feasibility-aware Trajectory-Centric Diffusion Planning for End-to-End Autonomous Driving](/202604/15/2604.12656v1-feaxdrive-feasibility-aware-trajectory-centric-diffusion-planning-for-end-to-end-autonomous-driving)  
-   标签：评分：9.0/10、query:diffusion-conf-uncertainty
-   evidence：端到端自动驾驶的扩散规划
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [MAVEN-T: Multi-Agent enVironment-aware Enhanced Neural Trajectory predictor with Reinforcement Learning](/202604/15/2604.10169v1-maven-t-multi-agent-environment-aware-enhanced-neural-trajectory-predictor-with-reinforcement-learning)  
+1. [A Comparison of Reinforcement Learning and Optimal Control Methods for Path Planning](/202604/16/2604.12628v1-a-comparison-of-reinforcement-learning-and-optimal-control-methods-for-path-planning)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶系统中的轨迹预测
-2. [Uncertainty Guided Exploratory Trajectory Optimization for Sampling-Based Model Predictive Control](/202604/15/2604.12149v1-uncertainty-guided-exploratory-trajectory-optimization-for-sampling-based-model-predictive-control)  
+   evidence：使用强化学习进行自动驾驶车辆路径规划
+2. [Learning Probabilistic Responsibility Allocations for Multi-Agent Interactions](/202604/16/2604.13128v1-learning-probabilistic-responsibility-allocations-for-multi-agent-interactions)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：将轨迹表示为概率分布的不确定性引导轨迹优化
-3. [Forecasting the Past: Gradient-Based Distribution Shift Detection in Trajectory Prediction](/202604/15/2604.12425v1-forecasting-the-past-gradient-based-distribution-shift-detection-in-trajectory-prediction)  
+   evidence：多智能体轨迹预测中的多模态不确定性
+3. [Weakly-supervised Learning for Physics-informed Neural Motion Planning via Sparse Roadmap](/202604/16/2604.13204v1-weakly-supervised-learning-for-physics-informed-neural-motion-planning-via-sparse-roadmap)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶轨迹预测中的分布偏移检测
-4. [MAR-GRPO: Stabilized GRPO for AR-diffusion Hybrid Image Generation](/202604/15/2604.06966v1-mar-grpo-stabilized-grpo-for-ar-diffusion-hybrid-image-generation)  
+   evidence：高维空间中无碰撞路径的神经运动规划
+4. [Diffusion Sequence Models for Generative In-Context Meta-Learning of Robot Dynamics](/202604/16/2604.13366v1-diffusion-sequence-models-for-generative-in-context-meta-learning-of-robot-dynamics)  
+   标签：评分：7.0/10、query:diffusion-conf-uncertainty
+   evidence：基于扩散方法的机器人动力学和前向预测
+5. [Mosaic: An Extensible Framework for Composing Rule-Based and Learned Motion Planners](/202604/16/2604.13853v1-mosaic-an-extensible-framework-for-composing-rule-based-and-learned-motion-planners)  
+   标签：评分：7.0/10、query:diffusion-conf-uncertainty
+   evidence：解耦轨迹验证与评分，实现透明且可追溯的运动规划
+6. [MapATM: Enhancing HD Map Construction through Actor Trajectory Modeling](/202604/16/2604.11081v1-mapatm-enhancing-hd-map-construction-through-actor-trajectory-modeling)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：通过平均多个扩散轨迹来减少噪声
-5. [VL-Calibration: Decoupled Confidence Calibration for Large Vision-Language Models Reasoning](/202604/15/2604.09529v1-vl-calibration-decoupled-confidence-calibration-for-large-vision-language-models-reasoning)  
+   evidence：自动驾驶高精地图构建中的参与者轨迹建模
+7. [Optimal Kinodynamic Motion Planning Through Anytime Bidirectional Heuristic Search with Tight Termination Condition](/202604/16/2604.11587v1-optimal-kinodynamic-motion-planning-through-anytime-bidirectional-heuristic-search-with-tight-termination-condition)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：多模态推理中的解耦置信度校准
-6. [Vector Field Synthesis with Sparse Streamlines Using Diffusion Model](/202604/15/2604.09838v1-vector-field-synthesis-with-sparse-streamlines-using-diffusion-model)  
+   evidence：基于采样的动力学约束运动规划算法
+8. [Closed-Form Characterization of Constrained Double-Integrator Optimal Control](/202604/16/2604.13007v1-closed-form-characterization-of-constrained-double-integrator-optimal-control)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：基于扩散模型的稀疏流线2D向量场合成框架
-7. [Tracking High-order Evolutions via Cascading Low-rank Fitting](/202604/15/2604.10980v1-tracking-high-order-evolutions-via-cascading-low-rank-fitting)  
+   evidence：预测人类驾驶行为与轨迹规划
+9. [HiVLA: A Visual-Grounded-Centric Hierarchical Embodied Manipulation System](/202604/16/2604.14125v1-hivla-a-visual-grounded-centric-hierarchical-embodied-manipulation-system)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：扩散模型中的高阶动力学用于演化追踪
+   evidence：用于电机控制的扩散Transformer动作专家
 
 
 <div class="dpr-home-promo-card">

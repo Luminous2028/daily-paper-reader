@@ -1,0 +1,367 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-16T20:43:43.808124+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 9,
+    "quick_skim_target": 11,
+    "quick_selected": 9
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2604.12628v1",
+      "title": "A Comparison of Reinforcement Learning and Optimal Control Methods for Path Planning",
+      "abstract": "Path-planning for autonomous vehicles in threat-laden environments is a fundamental challenge. While traditional optimal control methods can find ideal paths, the computational time is often too slow for real-time decision-making. To solve this challenge, we propose a method based on Deep Deterministic Policy Gradient (DDPG) and model the threat as a simple, circular `no-go' zone. A mission failure is claimed if the vehicle enters this `no-go' zone at any time or does not reach a neighborhood of the destination. The DDPG agent is trained to learn a direct mapping from its current state (position and velocity) to a series of feasible actions that guide the agent to safely reach its goal. A reward function and two neural networks, critic and actor, are used to describe the environment and guide the control efforts. The DDPG trains the agent to find the largest possible set of starting points (``feasible set'') wherein a safe path to the goal is guaranteed. This provides critical information for mission planning, showing beforehand whether a task is achievable from a given starting point, assisting pre-mission planning activities. The approach is validated in simulation. A comparison between the DDPG method and a traditional optimal control (pseudo-spectral) method is carried out. The results show that the learning-based agent may produce effective paths while being significantly faster, making it a better fit for real-time applications. However, there are areas (``infeasible set'') where the DDPG agent cannot find paths to the destination, and the paths in the feasible set may not be optimal. These preliminary results guide our future research: (1) improve the reward function to enlarge the DDPG feasible set, (2) examine the feasible set obtained by the pseudo-spectral method, and (3) investigate the arc-search IPM method for the path planning problem.",
+      "authors": [
+        "Qiang Le",
+        "Yaguang Yang",
+        "Isaac E. Weintraub"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC",
+        "cs.RO"
+      ],
+      "published": "2026-04-14T11:55:15+00:00",
+      "link": "https://arxiv.org/pdf/2604.12628v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "path planning for autonomous vehicles using RL",
+      "llm_evidence_cn": "使用强化学习进行自动驾驶车辆路径规划",
+      "llm_evidence": "使用强化学习进行自动驾驶车辆路径规划",
+      "canonical_evidence": "使用强化学习进行自动驾驶车辆路径规划",
+      "llm_tldr_en": "Compares RL and optimal control for real-time path planning in autonomous vehicles with safety constraints.",
+      "llm_tldr_cn": "比较了强化学习和最优控制在带安全约束的自动驾驶实时路径规划中的应用。",
+      "llm_tldr": "比较了强化学习和最优控制在带安全约束的自动驾驶实时路径规划中的应用。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.11081v1",
+      "title": "MapATM: Enhancing HD Map Construction through Actor Trajectory Modeling",
+      "abstract": "High-definition (HD) mapping tasks, which perform lane detections and predictions, are extremely challenging due to non-ideal conditions such as view occlusions, distant lane visibility, and adverse weather conditions. Those conditions often result in compromised lane detection accuracy and reduced reliability within autonomous driving systems. To address these challenges, we introduce MapATM, a novel deep neural network that effectively leverages historical actor trajectory information to improve lane detection accuracy, where actors refer to moving vehicles. By utilizing actor trajectories as structural priors for road geometry, MapATM achieves substantial performance enhancements, notably increasing AP by 4.6 for lane dividers and mAP by 2.6 on the challenging NuScenes dataset, representing relative improvements of 10.1% and 6.1%, respectively, compared to strong baseline methods. Extensive qualitative evaluations further demonstrate MapATM's capability to consistently maintain stable and robust map reconstruction across diverse and complex driving scenarios, underscoring its practical value for autonomous driving applications.",
+      "authors": [
+        "Mingyang Li",
+        "Brian Lee",
+        "Rui Zuo",
+        "Brent Bacchus",
+        "Priyantha Mudalige",
+        "Qinru Qiu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-13T07:02:45+00:00",
+      "link": "https://arxiv.org/pdf/2604.11081v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "actor trajectory modeling for autonomous driving HD map construction",
+      "llm_evidence_cn": "自动驾驶高精地图构建中的参与者轨迹建模",
+      "llm_evidence": "自动驾驶高精地图构建中的参与者轨迹建模",
+      "canonical_evidence": "自动驾驶高精地图构建中的参与者轨迹建模",
+      "llm_tldr_en": "Uses actor trajectories as structural priors to enhance HD map construction in autonomous driving.",
+      "llm_tldr_cn": "利用参与者轨迹作为结构先验，增强自动驾驶中的高精地图构建。",
+      "llm_tldr": "利用参与者轨迹作为结构先验，增强自动驾驶中的高精地图构建。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.13128v1",
+      "title": "Learning Probabilistic Responsibility Allocations for Multi-Agent Interactions",
+      "abstract": "Human behavior in interactive settings is shaped not only by individual objectives but also by shared constraints with others, such as safety. Understanding how people allocate responsibility, i.e., how much one deviates from their desired policy to accommodate others, can inform the design of socially compliant and trustworthy autonomous systems. In this work, we introduce a method for learning a probabilistic responsibility allocation model that captures the multimodal uncertainty inherent in multi-agent interactions. Specifically, our approach leverages the latent space of a conditional variational autoencoder, combined with techniques from multi-agent trajectory forecasting, to learn a distribution over responsibility allocations conditioned on scene and agent context. Although ground-truth responsibility labels are unavailable, the model remains tractable by incorporating a differentiable optimization layer that maps responsibility allocations to induced controls, which are available. We evaluate our method on the INTERACTION driving dataset and demonstrate that it not only achieves strong predictive performance but also provides interpretable insights, through the lens of responsibility, into patterns of multi-agent interaction.",
+      "authors": [
+        "Isaac Remy",
+        "Caleb Chang",
+        "Karen Leung"
+      ],
+      "primary_category": "cs.MA",
+      "categories": [
+        "cs.MA",
+        "cs.LG",
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-04-13T21:49:41+00:00",
+      "link": "https://arxiv.org/pdf/2604.13128v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "multimodal uncertainty in multi-agent trajectory forecasting",
+      "llm_evidence_cn": "多智能体轨迹预测中的多模态不确定性",
+      "llm_evidence": "多智能体轨迹预测中的多模态不确定性",
+      "canonical_evidence": "多智能体轨迹预测中的多模态不确定性",
+      "llm_tldr_en": "Learns probabilistic responsibility allocations to capture uncertainty in multi-agent interactive driving.",
+      "llm_tldr_cn": "学习概率责任分配，以捕捉多智能体交互驾驶中的不确定性。",
+      "llm_tldr": "学习概率责任分配，以捕捉多智能体交互驾驶中的不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.11587v1",
+      "title": "Optimal Kinodynamic Motion Planning Through Anytime Bidirectional Heuristic Search with Tight Termination Condition",
+      "abstract": "This paper introduces Bidirectional Tight Informed Trees (BTIT*), an asymptotically optimal kinodynamic sampling-based motion planning algorithm that integrates an anytime bidirectional heuristic search (Bi-HS) and ensures the \\emph{meet-in-the-middle} property (MMP) and optimality (MM-optimality). BTIT* is the first anytime MEET-style algorithm to utilize termination conditions that are efficient to evaluate and enable early termination \\emph{on-the-fly} in batch-wise sampling-based motion planning. Experiments show that BTIT* achieves strongly faster time-to-first-solution and improved convergence than representative \\emph{non-lazy} informed batch planners on two kinodynamic benchmarks: a 4D double-integrator model and a 10D linearized Quadrotor. The source code is available here.",
+      "authors": [
+        "Yi Wang",
+        "Bingxian Mu",
+        "Shahab Shokouhi",
+        "May-Win Thein"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-13T15:03:00+00:00",
+      "link": "https://arxiv.org/pdf/2604.11587v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "kinodynamic sampling-based motion planning algorithm",
+      "llm_evidence_cn": "基于采样的动力学约束运动规划算法",
+      "llm_evidence": "基于采样的动力学约束运动规划算法",
+      "canonical_evidence": "基于采样的动力学约束运动规划算法",
+      "llm_tldr_en": "Introduces an optimal kinodynamic motion planning algorithm using bidirectional heuristic search.",
+      "llm_tldr_cn": "介绍了一种利用双向启发式搜索的最优动力学约束运动规划算法。",
+      "llm_tldr": "介绍了一种利用双向启发式搜索的最优动力学约束运动规划算法。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.13204v1",
+      "title": "Weakly-supervised Learning for Physics-informed Neural Motion Planning via Sparse Roadmap",
+      "abstract": "The motion planning problem requires finding a collision-free path between start and goal configurations in high-dimensional, cluttered spaces. Recent learning-based methods offer promising solutions, with self-supervised physics-informed approaches such as Neural Time Fields (NTFields) solving the Eikonal equation to learn value functions without expert demonstrations. However, existing physics-informed methods struggle to scale in complex, multi-room environments, where simply increasing the number of samples cannot resolve local minima or guarantee global consistency. We propose Hierarchical Neural Time Fields (H-NTFields), a weakly-supervised framework that combines weak supervision from sparse roadmaps with physics-informed PDE regularization. The roadmap provides global topological anchors through upper and lower bounds on travel times, while PDE losses enforce local geometric fidelity and obstacle-aware propagation. Experiments on 18 Gibson environments and real robotic platforms show that H-NTFields substantially improves robustness over prior physics-informed methods, while enabling fast amortized inference through a continuous value representation.",
+      "authors": [
+        "Ruiqi Ni",
+        "Yuchen Liu",
+        "Ahmed H. Qureshi"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-14T18:26:22+00:00",
+      "link": "https://arxiv.org/pdf/2604.13204v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Neural motion planning for collision-free paths in high-dimensional spaces",
+      "llm_evidence_cn": "高维空间中无碰撞路径的神经运动规划",
+      "llm_evidence": "高维空间中无碰撞路径的神经运动规划",
+      "canonical_evidence": "高维空间中无碰撞路径的神经运动规划",
+      "llm_tldr_en": "Introduces H-NTFields for scalable physics-informed neural motion planning using sparse roadmaps.",
+      "llm_tldr_cn": "引入H-NTFields，利用稀疏路线图实现可扩展的物理信息神经运动规划。",
+      "llm_tldr": "引入H-NTFields，利用稀疏路线图实现可扩展的物理信息神经运动规划。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.13007v1",
+      "title": "Closed-Form Characterization of Constrained Double-Integrator Optimal Control",
+      "abstract": "We present a framework for predicting human driving behavior in mixed traffic where connected and automated vehicles (CAVs) coexist with human-driven vehicles (HDVs), and validate it using an open-source virtual reality (VR) testbed. We estimate the time-shift parameter of Newell's car-following model for individual drivers using Bayesian linear regression and derive analytical expressions for the mean and variance of predicted trajectories. These predictions are integrated into an optimal control framework for CAV trajectory planning. To address the scarcity of mixed-traffic data, we develop a VR platform supporting realistic, multi-user driving scenarios and provide a reproducible experimental framework with a dedicated tutorial website requiring only MATLAB and Unreal Engine. Results show our approach enables efficient HDV predictions, while the VR platform offers an accessible environment for studying human behavior in mixed traffic.",
+      "authors": [
+        "Filippos N. Tzortzoglou",
+        "Logan E. Beaver",
+        "Andreas A. Malikopoulos"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-04-14T17:40:02+00:00",
+      "link": "https://arxiv.org/pdf/2604.13007v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "predicting human driving behavior and trajectory planning",
+      "llm_evidence_cn": "预测人类驾驶行为与轨迹规划",
+      "llm_evidence": "预测人类驾驶行为与轨迹规划",
+      "canonical_evidence": "预测人类驾驶行为与轨迹规划",
+      "llm_tldr_en": "Predicts human driving trajectories using Bayesian regression for autonomous vehicle planning.",
+      "llm_tldr_cn": "利用贝叶斯回归预测人类驾驶轨迹，并将其整合到自动驾驶车辆的规划框架中。",
+      "llm_tldr": "利用贝叶斯回归预测人类驾驶轨迹，并将其整合到自动驾驶车辆的规划框架中。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.13366v1",
+      "title": "Diffusion Sequence Models for Generative In-Context Meta-Learning of Robot Dynamics",
+      "abstract": "Accurate modeling of robot dynamics is essential for model-based control, yet remains challenging under distributional shifts and real-time constraints. In this work, we formulate system identification as an in-context meta-learning problem and compare deterministic and generative sequence models for forward dynamics prediction. We take a Transformer-based meta-model, as a strong deterministic baseline, and introduce to this setting two complementary diffusion-based approaches: (i) inpainting diffusion (Diffuser), which learns the joint input-observation distribution, and (ii) conditioned diffusion models (CNN and Transformer), which generate future observations conditioned on control inputs. Through large-scale randomized simulations, we analyze performance across in-distribution and out-of-distribution regimes, as well as computational trade-offs relevant for control. We show that diffusion models significantly improve robustness under distribution shift, with inpainting diffusion achieving the best performance in our experiments. Finally, we demonstrate that warm-started sampling enables diffusion models to operate within real-time constraints, making them viable for control applications. These results highlight generative meta-models as a promising direction for robust system identification in robotics.",
+      "authors": [
+        "Angelo Moroncelli",
+        "Matteo Rufolo",
+        "Gunes Cagin Aydin",
+        "Asad Ali Shahid",
+        "Loris Roveda"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-04-15T00:21:49+00:00",
+      "link": "https://arxiv.org/pdf/2604.13366v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "diffusion-based approaches for robot dynamics and forward prediction",
+      "llm_evidence_cn": "基于扩散方法的机器人动力学和前向预测",
+      "llm_evidence": "基于扩散方法的机器人动力学和前向预测",
+      "canonical_evidence": "基于扩散方法的机器人动力学和前向预测",
+      "llm_tldr_en": "Introduces diffusion-based sequence models for generative in-context meta-learning of robot dynamics.",
+      "llm_tldr_cn": "引入基于扩散的序列模型，用于机器人动力学的生成式上下文元学习。",
+      "llm_tldr": "引入基于扩散的序列模型，用于机器人动力学的生成式上下文元学习。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.14125v1",
+      "title": "HiVLA: A Visual-Grounded-Centric Hierarchical Embodied Manipulation System",
+      "abstract": "While end-to-end Vision-Language-Action (VLA) models offer a promising paradigm for robotic manipulation, fine-tuning them on narrow control data often compromises the profound reasoning capabilities inherited from their base Vision-Language Models (VLMs). To resolve this fundamental trade-off, we propose HiVLA, a visual-grounded-centric hierarchical framework that explicitly decouples high-level semantic planning from low-level motor control. In high-level part, a VLM planner first performs task decomposition and visual grounding to generate structured plans, comprising a subtask instruction and a precise target bounding box. Then, to translate this plan into physical actions, we introduce a flow-matching Diffusion Transformer (DiT) action expert in low-level part equipped with a novel cascaded cross-attention mechanism. This design sequentially fuses global context, high-resolution object-centric crops and skill semantics, enabling the DiT to focus purely on robust execution. Our decoupled architecture preserves the VLM's zero-shot reasoning while allowing independent improvement of both components. Extensive experiments in simulation and the real world demonstrate that HiVLA significantly outperforms state-of-the-art end-to-end baselines, particularly excelling in long-horizon skill composition and the fine-grained manipulation of small objects in cluttered scenes.",
+      "authors": [
+        "Tianshuo Yang",
+        "Guanyu Chen",
+        "Yutian Chen",
+        "Zhixuan Liang",
+        "Yitian Liu",
+        "Zanxin Chen",
+        "Chunpu Xu",
+        "Haotian Liang",
+        "Jiangmiao Pang",
+        "Yao Mu",
+        "Ping Luo"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.RO"
+      ],
+      "published": "2026-04-15T17:50:07+00:00",
+      "link": "https://arxiv.org/pdf/2604.14125v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion transformer action expert for motor control",
+      "llm_evidence_cn": "用于电机控制的扩散Transformer动作专家",
+      "llm_evidence": "用于电机控制的扩散Transformer动作专家",
+      "canonical_evidence": "用于电机控制的扩散Transformer动作专家",
+      "llm_tldr_en": "Uses a diffusion-based transformer for low-level action generation in a hierarchical robotic system.",
+      "llm_tldr_cn": "在分层机器人系统中采用基于扩散的Transformer进行底层动作生成。",
+      "llm_tldr": "在分层机器人系统中采用基于扩散的Transformer进行底层动作生成。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.13853v1",
+      "title": "Mosaic: An Extensible Framework for Composing Rule-Based and Learned Motion Planners",
+      "abstract": "Safe and explainable motion planning remains a central challenge in autonomous driving. While rule-based planners offer predictable and explainable behavior, they often fail to grasp the complexity and uncertainty of real-world traffic. Conversely, learned planners exhibit strong adaptability but suffer from reduced transparency and occasional safety violations. We introduce Mosaic, an extensible framework for structured decision-making that integrates both paradigms through arbitration graphs. By decoupling trajectory verification and scoring from the generation of trajectories by individual planners, every decision becomes transparent and traceable. Trajectory verification at a higher level introduces redundancy between the planners, limiting emergency braking to the rare case where all planners fail to produce a valid trajectory. Through unified scoring and optimal trajectory selection, rule-based and learned planners with complementary strengths and weaknesses can be combined to yield the best of both worlds. In experimental evaluation on nuPlan, Mosaic achieves 95.48 CLS-NR and 93.98 CLS-R on the Val14 closed-loop benchmark, setting a new state of the art, while reducing at-fault collisions by 30% compared to either planner in isolation. On the interPlan benchmark, focused on highly interactive and difficult scenarios, Mosaic scores 54.30 CLS-R, outperforming its best constituent planner by 23.3% - all without retraining or requiring additional data. The code is available at github.com/KIT-MRT/mosaic.",
+      "authors": [
+        "Nick Le Large",
+        "Marlon Steiner",
+        "Lingguang Wang",
+        "Willi Poh",
+        "Jan-Hendrik Pauls",
+        "Ömer Şahin Taş",
+        "Christoph Stiller"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-15T13:23:47+00:00",
+      "link": "https://arxiv.org/pdf/2604.13853v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Decoupling trajectory verification and scoring for transparent and traceable motion planning",
+      "llm_evidence_cn": "解耦轨迹验证与评分，实现透明且可追溯的运动规划",
+      "llm_evidence": "解耦轨迹验证与评分，实现透明且可追溯的运动规划",
+      "canonical_evidence": "解耦轨迹验证与评分，实现透明且可追溯的运动规划",
+      "llm_tldr_en": "Mosaic framework integrates rule-based and learned planners for traceable autonomous driving motion planning.",
+      "llm_tldr_cn": "Mosaic框架集成了规则和学习型规划器，实现了可追溯的自动驾驶运动规划。",
+      "llm_tldr": "Mosaic框架集成了规则和学习型规划器，实现了可追溯的自动驾驶运动规划。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
