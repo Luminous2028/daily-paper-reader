@@ -1,0 +1,212 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-17T20:20:54.110076+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2604.15308v1",
+      "title": "RAD-2: Scaling Reinforcement Learning in a Generator-Discriminator Framework",
+      "abstract": "High-level autonomous driving requires motion planners capable of modeling multimodal future uncertainties while remaining robust in closed-loop interactions. Although diffusion-based planners are effective at modeling complex trajectory distributions, they often suffer from stochastic instabilities and the lack of corrective negative feedback when trained purely with imitation learning. To address these issues, we propose RAD-2, a unified generator-discriminator framework for closed-loop planning. Specifically, a diffusion-based generator is used to produce diverse trajectory candidates, while an RL-optimized discriminator reranks these candidates according to their long-term driving quality. This decoupled design avoids directly applying sparse scalar rewards to the full high-dimensional trajectory space, thereby improving optimization stability. To further enhance reinforcement learning, we introduce Temporally Consistent Group Relative Policy Optimization, which exploits temporal coherence to alleviate the credit assignment problem. In addition, we propose On-policy Generator Optimization, which converts closed-loop feedback into structured longitudinal optimization signals and progressively shifts the generator toward high-reward trajectory manifolds. To support efficient large-scale training, we introduce BEV-Warp, a high-throughput simulation environment that performs closed-loop evaluation directly in Bird's-Eye View feature space via spatial warping. RAD-2 reduces the collision rate by 56% compared with strong diffusion-based planners. Real-world deployment further demonstrates improved perceived safety and driving smoothness in complex urban traffic.",
+      "authors": [
+        "Hao Gao",
+        "Shaoyu Chen",
+        "Yifan Zhu",
+        "Yuehao Song",
+        "Wenyu Liu",
+        "Qian Zhang",
+        "Xinggang Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-16T17:59:44+00:00",
+      "link": "https://arxiv.org/pdf/2604.15308v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "diffusion-based planners modeling multimodal future uncertainties with decoupled generator-discriminator design",
+      "llm_evidence_cn": "基于扩散模型的规划器，通过解耦的生成器-判别器设计对多模态未来不确定性建模",
+      "llm_evidence": "基于扩散模型的规划器，通过解耦的生成器-判别器设计对多模态未来不确定性建模",
+      "canonical_evidence": "基于扩散模型的规划器，通过解耦的生成器-判别器设计对多模态未来不确定性建模",
+      "llm_tldr_en": "Combines diffusion generators with RL discriminators to model uncertainty and improve closed-loop motion planning.",
+      "llm_tldr_cn": "结合扩散生成器与强化学习判别器，对不确定性建模并改进闭环运动规划。",
+      "llm_tldr": "结合扩散生成器与强化学习判别器，对不确定性建模并改进闭环运动规划。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty:composite"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty:composite",
+      "matched_query_text": "Papers central to 自动驾驶轨迹生成中利用扩散模型进行不确定性解耦、量化、追溯的论文检索, especially work that connects or combines: c; trajectory generation and path planning; autonomous driving motion planning and prediction; diffusion models for trajectory generation in autonomous driving; modeling aleatoric uncertainty in autonomous driving scenarios; estimating epistemic uncertainty in neural motion planners; diffusion models for uncertainty decoupling in autonomous driving trajectory generation; quantifying and tracing uncertainty in diffusion based motion planning; aleatoric and epistemic uncertainty decomposition in diffusion trajectory models; diffusion models for uncertainty estimation in autonomous driving trajectory generation.",
+      "matched_requirement_id": "req-composite-diffusion-conf-uncertainty",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.15221v1",
+      "title": "Vision-Based Safe Human-Robot Collaboration with Uncertainty Guarantees",
+      "abstract": "We propose a framework for vision-based human pose estimation and motion prediction that gives conformal prediction guarantees for certifiably safe human-robot collaboration. Our framework combines aleatoric uncertainty estimation with OOD detection for high probabilistic confidence. To integrate our pipeline in certifiable safety frameworks, we propose conformal prediction sets for human motion predictions with high, valid confidence. We evaluate our pipeline on recorded human motion data and a real-world human-robot collaboration setting.",
+      "authors": [
+        "Jakob Thumm",
+        "Marian Frei",
+        "Tianle Ni",
+        "Matthias Althoff",
+        "Marco Pavone"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-04-16T16:53:26+00:00",
+      "link": "https://arxiv.org/pdf/2604.15221v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "aleatoric uncertainty estimation for motion prediction",
+      "llm_evidence_cn": "运动预测中的偶然不确定性估计",
+      "llm_evidence": "运动预测中的偶然不确定性估计",
+      "canonical_evidence": "运动预测中的偶然不确定性估计",
+      "llm_tldr_en": "Combines aleatoric uncertainty and conformal prediction for safe human-robot collaboration.",
+      "llm_tldr_cn": "结合偶然不确定性和符合预测，实现安全的机器人协作。",
+      "llm_tldr": "结合偶然不确定性和符合预测，实现安全的机器人协作。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "modeling aleatoric uncertainty in autonomous driving scenarios",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.09462v1",
+      "title": "Adaptor: Advancing Assistive Teleoperation with Few-Shot Learning and Cross-Operator Generalization",
+      "abstract": "Assistive teleoperation enhances efficiency via shared control, yet inter-operator variability, stemming from diverse habits and expertise, induces highly heterogeneous trajectory distributions that undermine intent recognition stability. We present Adaptor, a few-shot framework for robust cross-operator intent recognition. The Adaptor bridges the domain gap through two stages: (i) preprocessing, which models intent uncertainty by synthesizing trajectory perturbations via noise injection and performs geometry-aware keyframe extraction; and (ii) policy learning, which encodes the processed trajectories with an Intention Expert and fuses them with the pre-trained vision-language model context to condition an Action Expert for action generation. Experiments on real-world and simulated benchmarks demonstrate that Adaptor achieves state-of-the-art performance, improving success rates and efficiency over baselines. Moreover, the method exhibits low variance across operators with varying expertise, demonstrating robust cross-operator generalization.",
+      "authors": [
+        "Yu Liu",
+        "Yihang Yin",
+        "Tianlv Huang",
+        "Fei Yan",
+        "Yuan Xu",
+        "Weinan Hong",
+        "Wei Han",
+        "Yue Cao",
+        "Xiangyu Chen",
+        "Zipei Fan",
+        "Xuan Song"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-10T16:19:43+00:00",
+      "link": "https://arxiv.org/pdf/2604.09462v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "modeling intent uncertainty by synthesizing trajectory perturbations",
+      "llm_evidence_cn": "通过合成轨迹扰动来建模意图不确定性",
+      "llm_evidence": "通过合成轨迹扰动来建模意图不确定性",
+      "canonical_evidence": "通过合成轨迹扰动来建模意图不确定性",
+      "llm_tldr_en": "A few-shot framework for intent recognition that models trajectory uncertainty via noise injection.",
+      "llm_tldr_cn": "一种少样本意图识别框架，通过注入噪声来建模轨迹的不确定性。",
+      "llm_tldr": "一种少样本意图识别框架，通过注入噪声来建模轨迹的不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "modeling aleatoric uncertainty in autonomous driving scenarios",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.14698v1",
+      "title": "Mean Flow Policy Optimization",
+      "abstract": "Diffusion models have recently emerged as expressive policy representations for online reinforcement learning (RL). However, their iterative generative processes introduce substantial training and inference overhead. To overcome this limitation, we propose to represent policies using MeanFlow models, a class of few-step flow-based generative models, to improve training and inference efficiency over diffusion-based RL approaches. To promote exploration, we optimize MeanFlow policies under the maximum entropy RL framework via soft policy iteration, and address two key challenges specific to MeanFlow policies: action likelihood evaluation and soft policy improvement. Experiments on MuJoCo and DeepMind Control Suite benchmarks demonstrate that our method, Mean Flow Policy Optimization (MFPO), achieves performance comparable to or exceeding current diffusion-based baselines while considerably reducing training and inference time. Our code is available at https://github.com/MFPolicy/MFPO.",
+      "authors": [
+        "Xiaoyi Dong",
+        "Xi Sheryl Zhang",
+        "Jian Cheng"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-16T06:59:52+00:00",
+      "link": "https://arxiv.org/pdf/2604.14698v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "flow-based generative models for policy representation and action generation",
+      "llm_evidence_cn": "用于策略表示和动作生成的流式生成模型",
+      "llm_evidence": "用于策略表示和动作生成的流式生成模型",
+      "canonical_evidence": "用于策略表示和动作生成的流式生成模型",
+      "llm_tldr_en": "Proposes MeanFlow policies to improve efficiency over diffusion-based RL for robotic control tasks.",
+      "llm_tldr_cn": "提出MeanFlow策略，旨在提高机器人控制任务中相比扩散强化学习的训练与推理效率。",
+      "llm_tldr": "提出MeanFlow策略，旨在提高机器人控制任务中相比扩散强化学习的训练与推理效率。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.14818v1",
+      "title": "CBF-based Probabilistic Safe Navigation under Unknown Nonlinear Obstacle Dynamics",
+      "abstract": "Safe navigation for an ego vehicle in uncertain environments characterized by dynamic obstacles with unknown nonlinear dynamics is a challenging problem of significant practical interest. Existing approaches in the literature either lack formal safety guarantees, require full model knowledge, or fail to account for the risk associated with the vehicle's exact body geometry and the temporal evolution of uncertainty between sampling instants. In this paper, we propose a data-driven observer for the unknown obstacle dynamics that generates an alpha-confidence set flow, which is exactly transformed into a Control Barrier Function (CBF) to enforce (1-alpha)-probability safety. The proposed framework accommodates nonlinear ego vehicle dynamics of arbitrary relative degree, as demonstrated through case studies involving first- and second-order dynamics of an unmanned surface vehicle.",
+      "authors": [
+        "Jiwon Lee",
+        "Hugo Matias",
+        "Daniel Silvestre",
+        "Thinh T. Doan"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-04-16T09:38:16+00:00",
+      "link": "https://arxiv.org/pdf/2604.14818v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Probabilistic safe navigation under uncertainty and unknown dynamics",
+      "llm_evidence_cn": "不确定性和未知动力学下的概率安全导航",
+      "llm_evidence": "不确定性和未知动力学下的概率安全导航",
+      "canonical_evidence": "不确定性和未知动力学下的概率安全导航",
+      "llm_tldr_en": "Proposes a CBF-based framework for probabilistic safe navigation under unknown obstacle dynamics.",
+      "llm_tldr_cn": "提出一种基于控制障碍函数的框架，用于未知障碍物动力学下的概率安全导航。",
+      "llm_tldr": "提出一种基于控制障碍函数的框架，用于未知障碍物动力学下的概率安全导航。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "modeling aleatoric uncertainty in autonomous driving scenarios",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

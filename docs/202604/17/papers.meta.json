@@ -1,0 +1,79 @@
+{
+  "label": "2026-04-17",
+  "date": "2026-04-17",
+  "generated_at": "2026-04-17T20:21:58",
+  "count": 5,
+  "papers": [
+    {
+      "paper_id": "202604/17/2604.15308v1-rad-2-scaling-reinforcement-learning-in-a-generator-discriminator-framework",
+      "section": "deep",
+      "title_en": "RAD-2: Scaling Reinforcement Learning in a Generator-Discriminator Framework",
+      "authors": "Hao Gao, Shaoyu Chen, Yifan Zhu, Yuehao Song, Wenyu Liu, Qian Zhang, Xinggang Wang",
+      "date": "2026-04-16",
+      "pdf": "https://arxiv.org/pdf/2604.15308v1",
+      "score": "9.0",
+      "evidence": "基于扩散模型的规划器，通过解耦的生成器-判别器设计对多模态未来不确定性建模",
+      "tldr": "针对自动驾驶运动规划中扩散模型存在的不稳定性和缺乏负反馈问题，本文提出RAD-2框架。该框架结合了扩散生成器与强化学习优化的判别器，通过解耦设计提升了优化稳定性。引入TC-GRPO算法解决信用分配问题，并利用OGO优化生成器分布。配合高效的BEV-Warp仿真环境，RAD-2显著降低了碰撞率，提升了复杂城市场景下的驾驶平顺性与安全性。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "High-level autonomous driving requires motion planners capable of modeling multimodal future uncertainties while remaining robust in closed-loop interactions. Although diffusion-based planners are effective at modeling complex trajectory distributions, they often suffer from stochastic instabilities and the lack of corrective negative feedback when trained purely with imitation learning. To address these issues, we propose RAD-2, a unified generator-discriminator framework for closed-loop planning. Specifically, a diffusion-based generator is used to produce diverse trajectory candidates, while an RL-optimized discriminator reranks these candidates according to their long-term driving quality. This decoupled design avoids directly applying sparse scalar rewards to the full high-dimensional trajectory space, thereby improving optimization stability. To further enhance reinforcement learning, we introduce Temporally Consistent Group Relative Policy Optimization, which exploits temporal coherence to alleviate the credit assignment problem. In addition, we propose On-policy Generator Optimization, which converts closed-loop feedback into structured longitudinal optimization signals and progressively shifts the generator toward high-reward trajectory manifolds. To support efficient large-scale training, we introduce BEV-Warp, a high-throughput simulation environment that performs closed-loop evaluation directly in Bird's-Eye View feature space via spatial warping. RAD-2 reduces the collision rate by 56% compared with strong diffusion-based planners. Real-world deployment further demonstrates improved perceived safety and driving smoothness in complex urban traffic.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/17/2604.15221v1-vision-based-safe-human-robot-collaboration-with-uncertainty-guarantees",
+      "section": "deep",
+      "title_en": "Vision-Based Safe Human-Robot Collaboration with Uncertainty Guarantees",
+      "authors": "Jakob Thumm, Marian Frei, Tianle Ni, Matthias Althoff, Marco Pavone",
+      "date": "2026-04-16",
+      "pdf": "https://arxiv.org/pdf/2604.15221v1",
+      "score": "8.0",
+      "evidence": "运动预测中的偶然不确定性估计",
+      "tldr": "本研究针对人机协作中的安全挑战，提出了一种基于视觉的人体姿态估计与运动预测框架。该框架通过结合偶然不确定性估计与离群检测（OOD）来提升概率置信度，并创新性地利用符合性预测（Conformal Prediction）生成具有可验证安全保证的运动预测集。该方法在录制数据和真实人机协作场景中均得到了验证，为实现高置信度的安全协作提供了新方案。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "We propose a framework for vision-based human pose estimation and motion prediction that gives conformal prediction guarantees for certifiably safe human-robot collaboration. Our framework combines aleatoric uncertainty estimation with OOD detection for high probabilistic confidence. To integrate our pipeline in certifiable safety frameworks, we propose conformal prediction sets for human motion predictions with high, valid confidence. We evaluate our pipeline on recorded human motion data and a real-world human-robot collaboration setting.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/17/2604.09462v1-adaptor-advancing-assistive-teleoperation-with-few-shot-learning-and-cross-operator-generalization",
+      "section": "quick",
+      "title_en": "Adaptor: Advancing Assistive Teleoperation with Few-Shot Learning and Cross-Operator Generalization",
+      "authors": "Yu Liu, Yihang Yin, Tianlv Huang, Fei Yan, Yuan Xu, Weinan Hong, Wei Han, Yue Cao, Xiangyu Chen, Zipei Fan, Xuan Song",
+      "date": "2026-04-10",
+      "pdf": "https://arxiv.org/pdf/2604.09462v1",
+      "score": "7.0",
+      "evidence": "通过合成轨迹扰动来建模意图不确定性",
+      "tldr": "针对辅助远程操作中因操作员习惯和专业程度差异导致的意图识别不稳定问题，本文提出了 Adaptor 框架。该框架利用少样本学习，通过预处理阶段的噪声注入和几何感知关键帧提取来建模意图不确定性，并结合意图专家与视觉语言模型上下文，由动作专家生成精准指令。实验证明，Adaptor 在跨操作员泛化方面表现优异，显著提升了任务成功率和操作效率。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "Assistive teleoperation enhances efficiency via shared control, yet inter-operator variability, stemming from diverse habits and expertise, induces highly heterogeneous trajectory distributions that undermine intent recognition stability. We present Adaptor, a few-shot framework for robust cross-operator intent recognition. The Adaptor bridges the domain gap through two stages: (i) preprocessing, which models intent uncertainty by synthesizing trajectory perturbations via noise injection and performs geometry-aware keyframe extraction; and (ii) policy learning, which encodes the processed trajectories with an Intention Expert and fuses them with the pre-trained vision-language model context to condition an Action Expert for action generation. Experiments on real-world and simulated benchmarks demonstrate that Adaptor achieves state-of-the-art performance, improving success rates and efficiency over baselines. Moreover, the method exhibits low variance across operators with varying expertise, demonstrating robust cross-operator generalization.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/17/2604.14818v1-cbf-based-probabilistic-safe-navigation-under-unknown-nonlinear-obstacle-dynamics",
+      "section": "quick",
+      "title_en": "CBF-based Probabilistic Safe Navigation under Unknown Nonlinear Obstacle Dynamics",
+      "authors": "Jiwon Lee, Hugo Matias, Daniel Silvestre, Thinh T. Doan",
+      "date": "2026-04-16",
+      "pdf": "https://arxiv.org/pdf/2604.14818v1",
+      "score": "7.0",
+      "evidence": "不确定性和未知动力学下的概率安全导航",
+      "tldr": "针对具有未知非线性动力学的动态障碍物环境，本文提出一种基于控制屏障函数（CBF）的概率安全导航框架。该方法利用数据驱动观测器生成障碍物状态的alpha置信集流，并将其转化为CBF约束，从而在考虑车辆几何形状和采样间隙不确定性的情况下，实现(1-alpha)概率安全保证，适用于任意相对阶的非线性车辆动力学。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "Safe navigation for an ego vehicle in uncertain environments characterized by dynamic obstacles with unknown nonlinear dynamics is a challenging problem of significant practical interest. Existing approaches in the literature either lack formal safety guarantees, require full model knowledge, or fail to account for the risk associated with the vehicle's exact body geometry and the temporal evolution of uncertainty between sampling instants. In this paper, we propose a data-driven observer for the unknown obstacle dynamics that generates an alpha-confidence set flow, which is exactly transformed into a Control Barrier Function (CBF) to enforce (1-alpha)-probability safety. The proposed framework accommodates nonlinear ego vehicle dynamics of arbitrary relative degree, as demonstrated through case studies involving first- and second-order dynamics of an unmanned surface vehicle.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/17/2604.14698v1-mean-flow-policy-optimization",
+      "section": "quick",
+      "title_en": "Mean Flow Policy Optimization",
+      "authors": "Xiaoyi Dong, Xi Sheryl Zhang, Jian Cheng",
+      "date": "2026-04-16",
+      "pdf": "https://arxiv.org/pdf/2604.14698v1",
+      "score": "6.0",
+      "evidence": "用于策略表示和动作生成的流式生成模型",
+      "tldr": "针对扩散模型在强化学习中训练和推理开销大的问题，本文提出了Mean Flow Policy Optimization (MFPO)。该方法采用少步流生成模型MeanFlow来表示策略，并在最大熵强化学习框架下通过软策略迭代进行优化。MFPO有效解决了动作似然评估和策略改进的难题，在保持高表达力的同时显著提升了效率。实验表明，MFPO在多个基准任务上达到了与扩散模型相当的性能，且大幅缩短了运行时间。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "Diffusion models have recently emerged as expressive policy representations for online reinforcement learning (RL). However, their iterative generative processes introduce substantial training and inference overhead. To overcome this limitation, we propose to represent policies using MeanFlow models, a class of few-step flow-based generative models, to improve training and inference efficiency over diffusion-based RL approaches. To promote exploration, we optimize MeanFlow policies under the maximum entropy RL framework via soft policy iteration, and address two key challenges specific to MeanFlow policies: action likelihood evaluation and soft policy improvement. Experiments on MuJoCo and DeepMind Control Suite benchmarks demonstrate that our method, Mean Flow Policy Optimization (MFPO), achieves performance comparable to or exceeding current diffusion-based baselines while considerably reducing training and inference time. Our code is available at https://github.com/MFPolicy/MFPO.",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
