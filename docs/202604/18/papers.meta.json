@@ -1,0 +1,65 @@
+{
+  "label": "2026-04-18",
+  "date": "2026-04-18",
+  "generated_at": "2026-04-18T19:29:05",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202604/18/2604.12590v1-situation-aware-feedback-predictive-control-framework-for-lane-less-dense-traffic",
+      "section": "quick",
+      "title_en": "Situation-Aware Feedback-Predictive Control Framework for Lane-Less Dense Traffic",
+      "authors": "Parthib Khound, Debraj Chakraborty",
+      "date": "2026-04-14",
+      "pdf": "https://arxiv.org/pdf/2604.12590v1",
+      "score": "7.0",
+      "evidence": "稠密交通环境下自动驾驶的预测控制框架",
+      "tldr": "针对无车道线、交通密集的复杂环境，本文提出一种情境感知反馈预测控制框架。该框架结合360度区域感知与双层控制策略，利用纵向反馈计算参考速度，通过横向反馈追踪虚拟最优车道，并结合预测规划器进行轨迹优化。仿真结果证明了该方法在混乱、非结构化交通场景中的鲁棒性与响应能力。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "Navigating dense, lane-less traffic remains one of the most challenging scenarios for autonomous vehicles, especially in emerging regions where road structure and driver behavior are highly unpredictable. This paper presents a hybrid control framework tailored for such environments, integrating a $360^\\circ$ zone-based perception module with a dual-layer control strategy that combines classical feedback and predictive optimization. The longitudinal feedback controller computes reference speed based on braking distance and steering dynamics, while the lateral controller tracks a virtual optimal lane derived from the spatial distribution of neighboring vehicles. The predictive planner samples control inputs over a time horizon and selects the most feasible trajectory using a multi-term cost function. Simulation results across diverse one-way traffic scenarios demonstrate the framework's robustness, responsiveness, and suitability for chaotic, unstructured traffic.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/18/2604.10974v1-robust-adversarial-policy-optimization-under-dynamics-uncertainty",
+      "section": "quick",
+      "title_en": "Robust Adversarial Policy Optimization Under Dynamics Uncertainty",
+      "authors": "Mintae Kim, Koushil Sreenath",
+      "date": "2026-04-13",
+      "pdf": "https://arxiv.org/pdf/2604.10974v1",
+      "score": "6.0",
+      "evidence": "轨迹层级动力学不确定性下的鲁棒策略优化",
+      "tldr": "针对强化学习在动力学不确定性下表现不佳的问题，本文提出RAPO框架。该方法通过对偶公式直接平衡鲁棒性与性能，在轨迹层面利用对抗网络生成最差情况下的rollout，在模型层面通过玻尔兹曼重采样关注不利环境。RAPO有效解决了现有方法的不稳定和过度保守问题，显著提升了策略在分布外动力学环境下的泛化能力和鲁棒性。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "Reinforcement learning (RL) policies often fail under dynamics that differ from training, a gap not fully addressed by domain randomization or existing adversarial RL methods. Distributionally robust RL provides a formal remedy but still relies on surrogate adversaries to approximate intractable primal problems, leaving blind spots that potentially cause instability and over-conservatism. We propose a dual formulation that directly exposes the robustness-performance trade-off. At the trajectory level, a temperature parameter from the dual problem is approximated with an adversarial network, yielding efficient and stable worst-case rollouts within a divergence bound. At the model level, we employ Boltzmann reweighting over dynamics ensembles, focusing on more adverse environments to the current policy rather than uniform sampling. The two components act independently and complement each other: trajectory-level steering ensures robust rollouts, while model-level sampling provides policy-sensitive coverage of adverse dynamics. The resulting framework, robust adversarial policy optimization (RAPO) outperforms robust RL baselines, improving resilience to uncertainty and generalization to out-of-distribution dynamics while maintaining dual tractability.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/18/2604.12565v1-scalable-trajectory-generation-for-whole-body-mobile-manipulation",
+      "section": "quick",
+      "title_en": "Scalable Trajectory Generation for Whole-Body Mobile Manipulation",
+      "authors": "Yida Niu, Xinhai Chang, Xin Liu, Ziyuan Jiao, Yixin Zhu",
+      "date": "2026-04-14",
+      "pdf": "https://arxiv.org/pdf/2604.12565v1",
+      "score": "6.0",
+      "evidence": "移动操作的可扩展轨迹生成",
+      "tldr": "针对移动操作机器人在非结构化环境中面临的数据获取难题，本文提出了AutoMoMa框架。该框架通过GPU加速和统一的AKR建模，实现了高效的并行轨迹优化，生成速度比传统方法快80倍。利用该框架生成的50万条高质量轨迹数据集，研究揭示了大规模数据对提升模仿学习策略成功率的关键作用，为实现通用的全身移动操作提供了重要的基础设施。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "Robots deployed in unstructured environments must coordinate whole-body motion -- simultaneously moving a mobile base and arm -- to interact with the physical world. This coupled mobility and dexterity yields a state space that grows combinatorially with scene and object diversity, demanding datasets far larger than those sufficient for fixed-base manipulation. Yet existing acquisition methods, including teleoperation and planning, are either labor-intensive or computationally prohibitive at scale. The core bottleneck is the lack of a scalable pipeline for generating large-scale, physically valid, coordinated trajectory data across diverse embodiments and environments. Here we introduce AutoMoMa, a GPU-accelerated framework that unifies AKR modeling, which consolidates base, arm, and object kinematics into a single chain, with parallelized trajectory optimization. AutoMoMa achieves 5,000 episodes per GPU-hour (over $80\\times$ faster than CPU-based baselines), producing a dataset of over 500k physically valid trajectories spanning 330 scenes, diverse articulated objects, and multiple robot embodiments. Prior datasets were forced to compromise on scale, diversity, or kinematic fidelity; AutoMoMa addresses all three simultaneously. Training downstream IL policies further reveals that even a single articulated-object task requires tens of thousands of demonstrations for SOTA methods to reach $\\approx 80\\%$ success, confirming that data scarcity -- not algorithmic limitations -- has been the binding constraint. AutoMoMa thus bridges high-performance planning and reliable IL-based control, providing the infrastructure previously missing for coordinated mobile manipulation research. By making large-scale, kinematically valid training data practical, AutoMoMa showcases generalizable whole-body robot policies capable of operating in the diverse, unstructured settings of the real world.",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/18/2604.13584v1-unrio-uncertainty-aware-velocity-learning-for-radar-inertial-odometry",
+      "section": "quick",
+      "title_en": "UNRIO: Uncertainty-Aware Velocity Learning for Radar-Inertial Odometry",
+      "authors": "Jui-Te Huang, Tinashu Huang, Anthony Rowe, Michael Kaess",
+      "date": "2026-04-15",
+      "pdf": "https://arxiv.org/pdf/2604.13584v1",
+      "score": "6.0",
+      "evidence": "里程计中感知不确定性的速度学习与校准",
+      "tldr": "本研究提出UNRIO，一种不确定性感知的雷达惯性里程计系统。该系统直接从原始毫米波雷达IQ信号（4D频谱）中学习速度，而非依赖传统的手工点云处理。通过基于Transformer的架构预测速度及其不确定性，并将其与IMU数据在滑动窗口位姿图中融合。实验表明，UNRIO在多种室内运动场景下表现优异，尤其解决了传统方法在侧向运动中因点云稀疏导致的精度下降问题。",
+      "tags": "query:diffusion-conf-uncertainty",
+      "abstract_en": "We present UNRIO, an uncertainty-aware radar-inertial odometry system that estimates ego-velocity directly from raw mmWave radar IQ signals rather than processed point clouds. Existing radar-inertial odometry methods rely on handcrafted signal processing pipelines that discard latent information in the raw spectrum and require careful parameter tuning. To address this, we propose a transformer-based neural network built on the GRT architecture that processes the full 4-D spectral cube to predict body-frame velocity in two modes: a direct linear velocity estimate and a per-anglebin Doppler velocity map. The network is trained in three stages: geometric pretraining on LiDAR-projected depth, velocity or Doppler fine-tuning, and uncertainty calibration via negative log-likelihood loss, enabling it to produce uncertainty estimates alongside its predictions. These uncertainty estimates are propagated into a sliding-window pose graph that fuses radar velocity factors with IMU preintegration measurements. We train and evaluate UNRIO on the IQ1M dataset across diverse indoor environments with both forward and lateral motion patterns unseen during training. Our method achieves the lowest relative pose error on the majority of sequences, with particularly strong gains over classical DSP baselines on Lateral-motion trajectories where sparse point clouds degrade conventional velocity estimators.",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
