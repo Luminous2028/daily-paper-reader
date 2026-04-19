@@ -1,0 +1,173 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-19T20:02:26.240298+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2604.10974v2",
+      "title": "Robust Adversarial Policy Optimization Under Dynamics Uncertainty",
+      "abstract": "Reinforcement learning (RL) policies often fail under dynamics that differ from training, a gap not fully addressed by domain randomization or existing adversarial RL methods. Distributionally robust RL provides a formal remedy but still relies on surrogate adversaries to approximate intractable primal problems, leaving blind spots that potentially cause instability and over-conservatism. We propose a dual formulation that directly exposes the robustness-performance trade-off. At the trajectory level, a temperature parameter from the dual problem is approximated with an adversarial network, yielding efficient and stable worst-case rollouts within a divergence bound. At the model level, we employ Boltzmann reweighting over dynamics ensembles, focusing on more adverse environments to the current policy rather than uniform sampling. The two components act independently and complement each other: trajectory-level steering ensures robust rollouts, while model-level sampling provides policy-sensitive coverage of adverse dynamics. The resulting framework, robust adversarial policy optimization (RAPO) outperforms robust RL baselines, improving resilience to uncertainty and generalization to out-of-distribution dynamics while maintaining dual tractability.",
+      "authors": [
+        "Mintae Kim",
+        "Koushil Sreenath"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-04-13T04:23:54+00:00",
+      "link": "https://arxiv.org/pdf/2604.10974v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Robust policy optimization under dynamics uncertainty using trajectory-level dual formulation",
+      "llm_evidence_cn": "在动力学不确定性下利用轨迹级对偶公式进行鲁棒策略优化",
+      "llm_evidence": "在动力学不确定性下利用轨迹级对偶公式进行鲁棒策略优化",
+      "canonical_evidence": "在动力学不确定性下利用轨迹级对偶公式进行鲁棒策略优化",
+      "llm_tldr_en": "Proposes a dual formulation for distributionally robust RL to handle dynamics uncertainty at the trajectory level.",
+      "llm_tldr_cn": "提出了一种分布鲁棒强化学习的对偶公式，用于处理轨迹级的动力学不确定性。",
+      "llm_tldr": "提出了一种分布鲁棒强化学习的对偶公式，用于处理轨迹级的动力学不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "estimating epistemic uncertainty in neural motion planners",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.12932v1",
+      "title": "Turbulent pair dispersion with Stochastic Generative Diffusion Models",
+      "abstract": "Recent advances in data-driven modeling have shown that diffusion models can successfully generate synthetic Lagrangian trajectories in turbulent flows. Building on this progress, we extend the method to the joint generation of pairs of Lagrangian velocity trajectories, enabling a fully data-driven representation of turbulent pair dispersion, a long-standing fundamental problem with broad relevance in fluid dynamics. We demonstrate that diffusion models accurately reproduce the evolution of particle-pair separation, including deviations from Richardson's classical scaling law, while simultaneously preserving all key single-particle statistical properties reported in previous studies. These findings underscore the potential of diffusion-based generative models to emulate high-dimensional, multi-scale turbulent dynamics, further establishing them as a powerful tool for scientific modeling and for future geophysical and astrophysical applications.",
+      "authors": [
+        "Andrei Pantea",
+        "Luca Biferale",
+        "Michele Buzzicotti",
+        "Guillaume Charpiat",
+        "Sergio Chibbaro",
+        "Tianyi Li"
+      ],
+      "primary_category": "physics.flu-dyn",
+      "categories": [
+        "physics.flu-dyn"
+      ],
+      "published": "2026-04-14T16:20:42+00:00",
+      "link": "https://arxiv.org/pdf/2604.12932v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Stochastic generative diffusion models for synthetic Lagrangian trajectories",
+      "llm_evidence_cn": "用于合成拉格朗日轨迹的随机生成扩散模型",
+      "llm_evidence": "用于合成拉格朗日轨迹的随机生成扩散模型",
+      "canonical_evidence": "用于合成拉格朗日轨迹的随机生成扩散模型",
+      "llm_tldr_en": "Applies diffusion models to generate synthetic trajectories in turbulent flows, preserving statistical properties.",
+      "llm_tldr_cn": "应用扩散模型生成湍流中的合成轨迹，并保持了统计特性。",
+      "llm_tldr": "应用扩散模型生成湍流中的合成轨迹，并保持了统计特性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.13708v1",
+      "title": "Homotopy-Guided Potential Games for Congestion-Aware Navigation",
+      "abstract": "We address the multi-agent motion planning problem where interactions, collisions, and congestion co-exist. Conventional game-theoretic planners capture interactions among agents but often converge to conservative, congested equilibria. Homotopy planners, on the other hand, can explore topologically distinct paths, but lack mechanisms to account for the interdependence of agents' future actions. We propose a unified framework that leverages homotopy classes as structured strategy sets within a receding-horizon setup. At each planning stage, a deterministic homotopy planner generates topologically distinct paths for each agent, conditioned on the joint configuration. To avoid intractable growth of candidate paths, we propose a simple heuristic filtering step that selects a top-$K$ subset of the most suitable congestion-free joint strategies to ensure computational tractability. These serve as initializations for a potential game that enforces homotopy-consistent constraints and yields a generalized open-loop Nash equilibrium (OLNE), with penalties discouraging abrupt strategy shifts in a receding-horizon setting. Simulations with three agents demonstrate improved efficiency (faster completion) and enhanced safety (greater inter-agent clearance, leading to reduced congestion) compared to a local baseline and NH-ORCA that do not reason about homotopies. Hardware trials with two robots and one human demonstrate robustness to irrational behaviors, where our method adapts by switching to alternative feasible equilibria while the baseline game fails.",
+      "authors": [
+        "Mohammed Irshadh Ismaaeel Sathyamangalam Imran",
+        "Lasse Peters",
+        "Michael Khayyat",
+        "Stefano Arrigoni",
+        "Francesco Braghin",
+        "Laura Ferranti"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-04-15T10:37:10+00:00",
+      "link": "https://arxiv.org/pdf/2604.13708v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "multi-agent motion planning and path generation",
+      "llm_evidence_cn": "多智能体运动规划与路径生成",
+      "llm_evidence": "多智能体运动规划与路径生成",
+      "canonical_evidence": "多智能体运动规划与路径生成",
+      "llm_tldr_en": "A framework for multi-agent motion planning that combines homotopy classes with potential games for navigation.",
+      "llm_tldr_cn": "该框架结合同伦类与势博弈，解决了多智能体导航中的运动规划与拥堵避让问题。",
+      "llm_tldr": "该框架结合同伦类与势博弈，解决了多智能体导航中的运动规划与拥堵避让问题。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.14986v1",
+      "title": "Momentum-constrained Hybrid Heuristic Trajectory Optimization Framework with Residual-enhanced DRL for Visually Impaired Scenarios",
+      "abstract": "Safe and efficient assistive planning for visually impaired scenarios remains challenging, since existing methods struggle with multi-objective optimization, generalization, and interpretability. In response, this paper proposes a Momentum-Constrained Hybrid Heuristic Trajectory Optimization Framework (MHHTOF). To balance multiple objectives of comfort and safety, the framework designs a Heuristic Trajectory Sampling Cluster (HTSC) with a Momentum-Constrained Trajectory Optimization (MTO), which suppresses abrupt velocity and acceleration changes. In addition, a novel residual-enhanced deep reinforcement learning (DRL) module refines candidate trajectories, advancing temporal modeling and policy generalization. Finally, a dual-stage cost modeling mechanism (DCMM) is introduced to regulate optimization, where costs in the Frenet space ensure consistency, and reward-driven adaptive weights in the Cartesian space integrate user preferences for interpretability and user-centric decision-making. Experimental results show that the proposed framework converges in nearly half the iterations of baselines and achieves lower and more stable costs. In complex dynamic scenarios, MHHTOF further demonstrates stable velocity and acceleration curves with reduced risk, confirming its advantages in robustness, safety, and efficiency.",
+      "authors": [
+        "Yuting Zeng",
+        "Zhiwen Zheng",
+        "Jingya Wang",
+        "You Zhou",
+        "JiaLing Xiao",
+        "Yongbin Yu",
+        "Manping Fan",
+        "Bo Gong",
+        "Liyong Ren"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-16T13:16:00+00:00",
+      "link": "https://arxiv.org/pdf/2604.14986v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Trajectory optimization framework for assistive planning",
+      "llm_evidence_cn": "用于辅助规划的轨迹优化框架",
+      "llm_evidence": "用于辅助规划的轨迹优化框架",
+      "canonical_evidence": "用于辅助规划的轨迹优化框架",
+      "llm_tldr_en": "Proposes a hybrid heuristic trajectory optimization framework with DRL for safe navigation in complex scenarios.",
+      "llm_tldr_cn": "提出一种结合深度强化学习的混合启发式轨迹优化框架，用于复杂场景下的安全导航。",
+      "llm_tldr": "提出一种结合深度强化学习的混合启发式轨迹优化框架，用于复杂场景下的安全导航。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
