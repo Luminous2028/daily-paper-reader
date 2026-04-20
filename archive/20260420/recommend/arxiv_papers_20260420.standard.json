@@ -1,0 +1,249 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-20T19:49:35.935602+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 6,
+    "quick_skim_target": 11,
+    "quick_selected": 6
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2604.15507v1",
+      "title": "Trajectory Planning for Safe Dual Control with Active Exploration",
+      "abstract": "Planning safe trajectories under model uncertainty is a fundamental challenge. Robust planning ensures safety by considering worst-case realizations, yet ignores uncertainty reduction and leads to overly conservative behavior. Actively reducing uncertainty on-the-fly during a nominal mission defines the dual control problem. Most approaches address this by adding a weighted exploration term to the cost, tuned to trade off the nominal objective and uncertainty reduction, but without formal consideration of when exploration is beneficial. Moreover, safety is enforced in some methods but not in others. We study a budget-constrained dual control problem, where uncertainty is reduced subject to safety and a mission-level cost budget that limits the allowable degradation in task performance due to exploration. In this work, we propose Dual-gatekeeper, a framework that integrates robust planning with active exploration under formal guarantees of safety and budget feasibility. The key idea is that exploration is pursued only when it provides a verifiable improvement without compromising safety or violating the budget, enabling the system to balance immediate task performance with long-term uncertainty reduction in a principled manner. We provide two implementations of the framework based on different safety mechanisms and demonstrate its performance on quadrotor navigation and autonomous car racing case studies under parametric uncertainty.",
+      "authors": [
+        "Kaleb Ben Naveed",
+        "Manveer Singh",
+        "Devansh R. Agrawal",
+        "Dimitra Panagou"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-16T20:31:52+00:00",
+      "link": "https://arxiv.org/pdf/2604.15507v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "trajectory planning under model uncertainty with active exploration",
+      "llm_evidence_cn": "模型不确定性下具有主动探索的轨迹规划",
+      "llm_evidence": "模型不确定性下具有主动探索的轨迹规划",
+      "canonical_evidence": "模型不确定性下具有主动探索的轨迹规划",
+      "llm_tldr_en": "Investigates safe trajectory planning that actively reduces model uncertainty during missions.",
+      "llm_tldr_cn": "研究在执行任务期间主动降低模型不确定性的安全轨迹规划方法。",
+      "llm_tldr": "研究在执行任务期间主动降低模型不确定性的安全轨迹规划方法。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.12245v1",
+      "title": "Socrates Loss: Unifying Confidence Calibration and Classification by Leveraging the Unknown",
+      "abstract": "Deep neural networks, despite their high accuracy, often exhibit poor confidence calibration, limiting their reliability in high-stakes applications. Current ad-hoc confidence calibration methods attempt to fix this during training but face a fundamental trade-off: two-phase training methods achieve strong classification performance at the cost of training instability and poorer confidence calibration, while single-loss methods are stable but underperform in classification. This paper addresses and mitigates this stability-performance trade-off. We propose Socrates Loss, a novel, unified loss function that explicitly leverages uncertainty by incorporating an auxiliary unknown class, whose predictions directly influence the loss function and a dynamic uncertainty penalty. This unified objective allows the model to be optimized for both classification and confidence calibration simultaneously, without the instability of complex, scheduled losses. We provide theoretical guarantees that our method regularizes the model to prevent miscalibration and overfitting. Across four benchmark datasets and multiple architectures, our comprehensive experiments demonstrate that Socrates Loss consistently improves training stability while achieving more favorable accuracy-calibration trade-off, often converging faster than existing methods.",
+      "authors": [
+        "Sandra Gómez-Gálvez",
+        "Tobias Olenyi",
+        "Gillian Dobbie",
+        "Katerina Taškova"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CV",
+        "cs.NE"
+      ],
+      "published": "2026-04-14T03:43:15+00:00",
+      "link": "https://arxiv.org/pdf/2604.12245v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "confidence calibration and uncertainty leveraging in deep neural networks",
+      "llm_evidence_cn": "深度神经网络中的置信度校准与不确定性利用",
+      "llm_evidence": "深度神经网络中的置信度校准与不确定性利用",
+      "canonical_evidence": "深度神经网络中的置信度校准与不确定性利用",
+      "llm_tldr_en": "Introduces Socrates Loss to unify confidence calibration and classification by explicitly leveraging uncertainty.",
+      "llm_tldr_cn": "引入 Socrates Loss，通过显式利用不确定性来统一置信度校准和分类。",
+      "llm_tldr": "引入 Socrates Loss，通过显式利用不确定性来统一置信度校准和分类。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "estimating epistemic uncertainty in neural motion planners",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.15067v1",
+      "title": "Capturing Aleatoric Uncertainty in Climate Models",
+      "abstract": "Internal climate variability arises from the climate system's inherently chaotic dynamics. Quantifying it is essential for climate science, as it enables risk-based decision-making and differentiates between externally forced change and internal fluctuations. In statistical terms, natural variability corresponds to aleatoric uncertainty, i.e., irreducible stochastic variability. Despite this close conceptual alignment, the link between internal climate variability and aleatoric uncertainty has not yet been formalized. We establish a theoretical link by showing that member-to-member differences in single-model large ensembles provide a direct representation of aleatoric uncertainty. To quantify the spatio-temporal structure of aleatoric uncertainty, we employ generalized additive models. The proposed framework is validated through comparison with ERA5-Land reanalysis data, demonstrating that ensemble-derived estimates reproduce key spatial and temporal patterns of real-world variability. Applied to the water balance over the Iberian Peninsula, our approach reveals coherent variability structures and pronounced regional heterogeneity. We find a decline in variability in drought-prone regions and seasons, a pattern that strengthens under +3 °C global warming, implying an increased risk of persistent summer drought conditions. Beyond this application, the framework is climate-model agnostic and transferable to other variables and spatial scales, providing a statistical basis for quantifying internal climate variability as aleatoric uncertainty.",
+      "authors": [
+        "Cornelia Gruber",
+        "Henri Funk",
+        "Magdalena Mittermeier",
+        "Helmut Küchenhoff",
+        "Göran Kauermann"
+      ],
+      "primary_category": "stat.AP",
+      "categories": [
+        "stat.AP",
+        "stat.ME"
+      ],
+      "published": "2026-04-16T14:30:52+00:00",
+      "link": "https://arxiv.org/pdf/2604.15067v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "capturing and quantifying aleatoric uncertainty in chaotic dynamics",
+      "llm_evidence_cn": "捕获并量化混沌动力学中的偶然不确定性",
+      "llm_evidence": "捕获并量化混沌动力学中的偶然不确定性",
+      "canonical_evidence": "捕获并量化混沌动力学中的偶然不确定性",
+      "llm_tldr_en": "Establishes a theoretical link to quantify aleatoric uncertainty in climate models.",
+      "llm_tldr_cn": "建立了理论联系，用于量化气候模型中的偶然不确定性。",
+      "llm_tldr": "建立了理论联系，用于量化气候模型中的偶然不确定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "modeling aleatoric uncertainty in autonomous driving scenarios",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.15524v1",
+      "title": "Safe and Energy-Aware Multi-Robot Density Control via PDE-Constrained Optimization for Long-Duration Autonomy",
+      "abstract": "This paper presents a novel density control framework for multi-robot systems with spatial safety and energy sustainability guarantees. Stochastic robot motion is encoded through the Fokker-Planck Partial Differential Equation (PDE) at the density level. Control Lyapunov and control barrier functions are integrated with PDEs to enforce target density tracking, obstacle region avoidance, and energy sufficiency over multiple charging cycles. The resulting quadratic program enables fast in-the-loop implementation that adjusts commands in real-time. Multi-robot experiment and extensive simulations were conducted to demonstrate the effectiveness of the controller under localization and motion uncertainties.",
+      "authors": [
+        "Longchen Niu",
+        "Andrew Nasif",
+        "Gennaro Notomista"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "cs.RO"
+      ],
+      "published": "2026-04-16T21:07:36+00:00",
+      "link": "https://arxiv.org/pdf/2604.15524v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "multi-robot density control under motion uncertainties",
+      "llm_evidence_cn": "运动不确定性下的多机器人密度控制",
+      "llm_evidence": "运动不确定性下的多机器人密度控制",
+      "canonical_evidence": "运动不确定性下的多机器人密度控制",
+      "llm_tldr_en": "A PDE-constrained optimization framework for safe multi-robot control under uncertainty.",
+      "llm_tldr_cn": "一种基于PDE约束优化的框架，用于不确定性下的多机器人安全控制。",
+      "llm_tldr": "一种基于PDE约束优化的框架，用于不确定性下的多机器人安全控制。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.15694v1",
+      "title": "Neural Continuous-Time Markov Chain: Discrete Diffusion via Decoupled Jump Timing and Direction",
+      "abstract": "Discrete diffusion models based on continuous-time Markov chains (CTMCs) have shown strong performance on language and discrete data generation, yet existing approaches typically parameterize the reverse rate matrix as a single object -- via concrete scores, clean-data predictions ($x_0$-parameterization), or denoising distributions -- rather than aligning the parameterization with the intrinsic CTMC decomposition into jump timing and jump direction. Since a CTMC is fundamentally a Poisson process fully determined by these two quantities, decomposing along this structure is closer to first principles and naturally leads to our formulation. We propose \\textbf{Neural CTMC}, which separately parameterizes the reverse process through an \\emph{exit rate} (when to jump) and a \\emph{jump distribution} (where to jump) using two dedicated network heads. We show that the evidence lower bound (ELBO) differs from a path-space KL divergence between the true and learned reverse processes by a $θ$-independent constant, so that the training objective is fully governed by the exit rate and jump distribution we parameterize. Moreover, this KL factorizes into a Poisson KL for timing and a categorical KL for direction. We further show that the tractable conditional surrogate preserves the gradients and minimizers of the corresponding marginal reverse-process objective under standard regularity assumptions. Our theoretical framework also covers masked and GIDD-style noise schedules. Empirically, while the uniform forward process has been explored in prior work, our model, to our best of the knowledge, is the first pure-uniform method to outperform mask-based methods on the OpenWebText dataset.To facilitate reproducibility, we release our pretrained weights at https://huggingface.co/Jiangxy1117/Neural-CTMC.",
+      "authors": [
+        "Jingyuan Li",
+        "Xiaoyi Jiang",
+        "Fukang Wen",
+        "Wei Liu",
+        "Renqian Luo",
+        "Yi Zhu",
+        "Zuoqiang Shi",
+        "Pipi Hu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "math.PR"
+      ],
+      "published": "2026-04-17T04:40:19+00:00",
+      "link": "https://arxiv.org/pdf/2604.15694v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "decoupling jump timing and direction in discrete diffusion",
+      "llm_evidence_cn": "离散扩散模型中跳跃时间和方向的解耦",
+      "llm_evidence": "离散扩散模型中跳跃时间和方向的解耦",
+      "canonical_evidence": "离散扩散模型中跳跃时间和方向的解耦",
+      "llm_tldr_en": "Proposes Neural CTMC to decouple jump timing and direction in discrete diffusion models.",
+      "llm_tldr_cn": "提出Neural CTMC，在离散扩散模型中实现了跳跃时间和方向的参数化解耦。",
+      "llm_tldr": "提出Neural CTMC，在离散扩散模型中实现了跳跃时间和方向的参数化解耦。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty decoupling in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.15938v1",
+      "title": "VADF: Vision-Adaptive Diffusion Policy Framework for Efficient Robotic Manipulation",
+      "abstract": "Diffusion policies are becoming mainstream in robotic manipulation but suffer from hard negative class imbalance due to uniform sampling and lack of sample difficulty awareness, leading to slow training convergence and frequent inference timeout failures. We propose VADF (Vision-Adaptive Diffusion Policy Framework), a vision-driven dual-adaptive framework that significantly reduces convergence steps and achieves early success in inference, with model-agnostic design enabling seamless integration into any diffusion policy architecture. During training, we introduce Adaptive Loss Network (ALN), a lightweight MLP-based loss predictor that quantifies per-step sample difficulty in real time. Guided by hard negative mining, it performs weighted sampling to prioritize high-loss regions, enabling adaptive weight updates and faster convergence. In inference, we design the Hierarchical Vision Task Segmenter (HVTS), which decomposes high-level task instructions into multi-stage low-level sub-instructions based on visual input. It adaptively segments action sequences into simple and complex subtasks by assigning shorter noise schedules with longer direct execution sequences to simple actions, and longer noise steps with shorter execution sequences to complex ones, thereby dramatically reducing computational overhead and significantly improving the early success rate.",
+      "authors": [
+        "Xinglei Yu",
+        "Zhenyang Liu",
+        "Shufeng Nan",
+        "Simo Wu",
+        "Yanwei Fu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-17T10:56:59+00:00",
+      "link": "https://arxiv.org/pdf/2604.15938v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "quantifies per-step sample difficulty in diffusion policy",
+      "llm_evidence_cn": "量化扩散策略中的每步样本难度",
+      "llm_evidence": "量化扩散策略中的每步样本难度",
+      "canonical_evidence": "量化扩散策略中的每步样本难度",
+      "llm_tldr_en": "Introduces an adaptive loss network to quantify sample difficulty in diffusion-based robotic manipulation.",
+      "llm_tldr_cn": "引入自适应损失网络来量化基于扩散的机器人操作中的样本难度。",
+      "llm_tldr": "引入自适应损失网络来量化基于扩散的机器人操作中的样本难度。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
