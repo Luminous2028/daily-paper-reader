@@ -1,0 +1,468 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-23T20:39:14.002566+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 17,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2604.19452v1",
+      "title": "Robust Nonlinear Trajectory Tracking Control for Autonomous Racing on Three-Dimensional Tracks",
+      "abstract": "We propose a robust nonlinear model predictive control (MPC) scheme for trajectory-tracking control of autonomous vehicles at the limits of handling on non-planar road surfaces. We derive the dynamics from first principles and selectively omit terms with negligible dynamic influence to maintain real-time capability. The resulting MPC with a three-dimensional (3D) dynamic single-track model integrates relevant dynamic effects directly into the prediction model and leverages them to improve prediction accuracy and therefore control performance. Even if the influence of terrain-induced vertical loads on the total acceleration potential is modeled, tire-road interactions are subject to uncertainty and disturbance. The uncertainty-aware constraint tightening scheme introduces a margin to constraint bounds to keep the vehicle controllable and stable in this environment. To validate our proposed approach, we perform high-fidelity dynamic double-track vehicle dynamics simulations on a model of a real circuit. We find that our algorithm can improve trajectory-tracking accuracy while maintaining low computation times.",
+      "authors": [
+        "Joscha F. Bongard",
+        "Georg Jank",
+        "Simon Sagmeister",
+        "Boris Lohmann"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-04-21T13:32:53+00:00",
+      "link": "https://arxiv.org/pdf/2604.19452v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "robust nonlinear trajectory tracking control for autonomous vehicles",
+      "llm_evidence_cn": "自动驾驶车辆的鲁棒非线性轨迹跟踪控制",
+      "llm_evidence": "自动驾驶车辆的鲁棒非线性轨迹跟踪控制",
+      "canonical_evidence": "自动驾驶车辆的鲁棒非线性轨迹跟踪控制",
+      "llm_tldr_en": "Proposes a robust MPC scheme for trajectory tracking in autonomous racing under uncertainty.",
+      "llm_tldr_cn": "提出了一种用于自动驾驶赛车在不确定性下进行轨迹跟踪的鲁棒MPC方案。",
+      "llm_tldr": "提出了一种用于自动驾驶赛车在不确定性下进行轨迹跟踪的鲁棒MPC方案。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.13325v1",
+      "title": "Boundary Sampling to Learn Predictive Safety Filters via Pontryagin's Maximum Principle",
+      "abstract": "Safety filters provide a practical approach for enforcing safety constraints in autonomous systems. While learning-based tools scale to high-dimensional systems, their performance depends on informative data that includes states likely to lead to constraint violation, which can be difficult to efficiently sample in complex, high-dimensional systems. In this work, we characterize trajectories that barely avoid safety violations using the Pontryagin Maximum Principle. These boundary trajectories are used to guide data collection for learned Hamilton-Jacobi Reachability, concentrating learning efforts near safety-critical states to improve efficiency. The learned Control Barrier Value Function is then used directly for safety filtering. Simulations and experimental validation on a shared-control automotive racing application demonstrate PMP sampling improves learning efficiency, yielding faster convergence, reduced failure rates, and improved safe set reconstruction, with wall times around 3ms.",
+      "authors": [
+        "James Dallas",
+        "Thomas Lew",
+        "John Talbot",
+        "Jonathan DeCastro",
+        "Somil Bansal",
+        "John Subosits"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-04-14T22:13:25+00:00",
+      "link": "https://arxiv.org/pdf/2604.13325v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "characterize trajectories for safety filters in autonomous systems",
+      "llm_evidence_cn": "表征自主系统安全过滤器的轨迹",
+      "llm_evidence": "表征自主系统安全过滤器的轨迹",
+      "canonical_evidence": "表征自主系统安全过滤器的轨迹",
+      "llm_tldr_en": "Uses boundary sampling and Pontryagin's Maximum Principle to learn predictive safety filters for autonomous systems.",
+      "llm_tldr_cn": "利用边界采样和庞特里亚金极大值原理学习自主系统的预测安全过滤器。",
+      "llm_tldr": "利用边界采样和庞特里亚金极大值原理学习自主系统的预测安全过滤器。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.19610v1",
+      "title": "ZODIAC: Zero-shot Offline Diffusion for Inferring Multi-xApps Conflicts in Open Radio Access Networks",
+      "abstract": "Open Radio Access Network (O-RAN) enables network control through multi-vendor xApps operating both within and across layers, subnets, and domains, whose concurrent execution can trigger conflicts that are latent during the development phase. Existing conflict management approaches rely heavily on joint-execution data, which is often unavailable in practice. To address this limitation, we formalize a novel problem termed conflict reasoning, which involves identifying conflict-inducing conditions given only marginal datasets from each individual xApp. We propose ZODIAC, a three-stage framework for zero-shot conflict condition inference that comprises uncertainty-aware surrogate model training, trajectory-level diffusion training, and compositional guided denoising for efficient, physics-constrained, and reliable condition search. We derive a theoretical lower confidence bound showing that the compositional reasoning in ZODIAC serves as a principled surrogate for true conflict severity, with the epistemic penalty directly controlling the approximation gap. We evaluate ZODIAC on both the lightweight Mobile-Env platform across all three O-RAN Alliance conflict types (direct, indirect, and implicit) and a realistic NS-O-RAN-Flexric simulator. ZODIAC consistently outperforms baseline condition search methods, achieving over 20% higher True Positive Rate at Top-20, substantially stronger Spearman rank correlation, greater scenario diversity, and competitive computational efficiency. Ablation studies confirm the necessity of each guidance component, with epistemic uncertainty penalties proving essential for filtering spurious conflicts. To the best of our knowledge, ZODIAC is the first framework in O-RAN that enables conflict reasoning from marginal offline data without requiring any joint-execution traces.",
+      "authors": [
+        "Zeyu Fang",
+        "Shu Hong",
+        "Huu Trung Thieu",
+        "Nakjung Choi",
+        "Tian Lan"
+      ],
+      "primary_category": "cs.NI",
+      "categories": [
+        "cs.NI"
+      ],
+      "published": "2026-04-21T15:58:21+00:00",
+      "link": "https://arxiv.org/pdf/2604.19610v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uncertainty-aware surrogate and trajectory-level diffusion for conflict reasoning",
+      "llm_evidence_cn": "用于冲突推理的不确定性感知代理模型与轨迹级扩散",
+      "llm_evidence": "用于冲突推理的不确定性感知代理模型与轨迹级扩散",
+      "canonical_evidence": "用于冲突推理的不确定性感知代理模型与轨迹级扩散",
+      "llm_tldr_en": "Uses uncertainty-aware diffusion for trajectory-level reasoning, matching the core theme of uncertainty in diffusion.",
+      "llm_tldr_cn": "利用不确定性感知扩散模型进行轨迹级推理，符合扩散模型不确定性的核心主题。",
+      "llm_tldr": "利用不确定性感知扩散模型进行轨迹级推理，符合扩散模型不确定性的核心主题。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty:composite"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty:composite",
+      "matched_query_text": "Papers central to 自动驾驶轨迹生成中利用扩散模型进行不确定性解耦、量化、追溯的论文检索, especially work that connects or combines: c; trajectory generation and path planning; autonomous driving motion planning and prediction; diffusion models for trajectory generation in autonomous driving; modeling aleatoric uncertainty in autonomous driving scenarios; estimating epistemic uncertainty in neural motion planners; diffusion models for uncertainty decoupling in autonomous driving trajectory generation; quantifying and tracing uncertainty in diffusion based motion planning; aleatoric and epistemic uncertainty decomposition in diffusion trajectory models; diffusion models for uncertainty estimation in autonomous driving trajectory generation.",
+      "matched_requirement_id": "req-composite-diffusion-conf-uncertainty",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.17566v1",
+      "title": "Target Parameterization in Diffusion Models for Nonlinear Spatiotemporal System Identification",
+      "abstract": "Machine learning is becoming increasingly important for nonlinear system identification, including dynamical systems with spatially distributed outputs. However, classical identification and forecasting approaches become markedly less reliable in turbulent-flow regimes, where the dynamics are high-dimensional, strongly nonlinear, and highly sensitive to compounding rollout errors. Diffusion-based models have recently shown improved robustness in this setting and offer probabilistic inference capabilities, but many current implementations inherit target parameterizations from image generation, most commonly noise or velocity prediction. In this work, we revisit this design choice in the context of nonlinear spatiotemporal system identification. We consider a simple, self-contained patch-based transformer that operates directly on physical fields and use turbulent flow simulation as a representative testbed. Our results show that clean-state prediction consistently improves rollout stability and reduces long-horizon error relative to velocity- and noise-based objectives, with the advantage becoming more pronounced as the per-token dimensionality increases. These findings identify target parameterization as a key modeling choice in diffusion-based identification of nonlinear systems with spatial outputs in turbulent regimes.",
+      "authors": [
+        "Achraf El Messaoudi",
+        "Noureddine Khaous",
+        "Karim Cherifi"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "cs.LG",
+        "physics.flu-dyn"
+      ],
+      "published": "2026-04-19T18:11:14+00:00",
+      "link": "https://arxiv.org/pdf/2604.17566v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion models for probabilistic inference in spatiotemporal systems",
+      "llm_evidence_cn": "用于时空系统概率推理的扩散模型",
+      "llm_evidence": "用于时空系统概率推理的扩散模型",
+      "canonical_evidence": "用于时空系统概率推理的扩散模型",
+      "llm_tldr_en": "Explores target parameterization in diffusion models for robust probabilistic system identification.",
+      "llm_tldr_cn": "探索扩散模型中的目标参数化，以实现鲁棒的概率系统辨识。",
+      "llm_tldr": "探索扩散模型中的目标参数化，以实现鲁棒的概率系统辨识。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.20246v1",
+      "title": "Cortex 2.0: Grounding World Models in Real-World Industrial Deployment",
+      "abstract": "Industrial robotic manipulation demands reliable long-horizon execution across embodiments, tasks, and changing object distributions. While Vision-Language-Action models have demonstrated strong generalization, they remain fundamentally reactive. By optimizing the next action given the current observation without evaluating potential futures, they are brittle to the compounding failure modes of long-horizon tasks. Cortex 2.0 shifts from reactive control to plan-and-act by generating candidate future trajectories in visual latent space, scoring them for expected success and efficiency, then committing only to the highest-scoring candidate. We evaluate Cortex 2.0 on a single-arm and dual-arm manipulation platform across four tasks of increasing complexity: pick and place, item and trash sorting, screw sorting, and shoebox unpacking. Cortex 2.0 consistently outperforms state-of-the-art Vision-Language-Action baselines, achieving the best results across all tasks. The system remains reliable in unstructured environments characterized by heavy clutter, frequent occlusions, and contact-rich manipulation, where reactive policies fail. These results demonstrate that world-model-based planning can operate reliably in complex industrial environments.",
+      "authors": [
+        "Adriana Aida",
+        "Walida Amer",
+        "Katarina Bankovic",
+        "Dhruv Behl",
+        "Fabian Busch",
+        "Annie Bhalla",
+        "Minh Duong",
+        "Florian Gienger",
+        "Rohan Godse",
+        "Denis Grachev",
+        "Ralf Gulde",
+        "Elisa Hagensieker",
+        "Junpeng Hu",
+        "Shivam Joshi",
+        "Tobias Knoblauch",
+        "Likith Kumar",
+        "Damien LaRocque",
+        "Keerthana Lokesh",
+        "Omar Moured",
+        "Khiem Nguyen",
+        "Christian Preyss",
+        "Ranjith Sriganesan",
+        "Vikram Singh",
+        "Carsten Sponner",
+        "Anh Tong",
+        "Dominik Tuscher",
+        "Marc Tuscher",
+        "Pavan Upputuri"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-04-22T06:49:12+00:00",
+      "link": "https://arxiv.org/pdf/2604.20246v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "generating candidate future trajectories in visual latent space",
+      "llm_evidence_cn": "在视觉潜空间中生成候选未来轨迹",
+      "llm_evidence": "在视觉潜空间中生成候选未来轨迹",
+      "canonical_evidence": "在视觉潜空间中生成候选未来轨迹",
+      "llm_tldr_en": "Shifts from reactive control to plan-and-act by generating and scoring future trajectories in latent space.",
+      "llm_tldr_cn": "通过在潜空间生成并评分未来轨迹，从反应式控制转向计划执行模式。",
+      "llm_tldr": "通过在潜空间生成并评分未来轨迹，从反应式控制转向计划执行模式。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.17651v1",
+      "title": "Infrastructure-Centric World Models: Bridging Temporal Depth and Spatial Breadth for Roadside Perception",
+      "abstract": "World models, generative AI systems that simulate how environments evolve, are transforming autonomous driving, yet all existing approaches adopt an ego-vehicle perspective, leaving the infrastructure viewpoint unexplored. We argue that infrastructure-centric world models offer a fundamentally complementary capability: the bird's-eye, multi-sensor, persistent viewpoint that roadside systems uniquely possess. Central to our thesis is a spatio-temporal complementarity: fixed roadside sensors excel at temporal depth, accumulating long-term behavioral distributions including rare safety-critical events, while vehicle-borne sensors excel at spatial breadth, sampling diverse scenes across large road networks. This paper presents a vision for Infrastructure-centric World Models (I-WM) in three phases: (I) generative scene understanding with quality-aware uncertainty propagation, (II) physics-informed predictive dynamics with multi-agent counterfactual reasoning, and (III) collaborative world models for V2X communication via latent space alignment. We propose a dual-layer architecture, annotation-free perception as a multi-modal data engine feeding end-to-end generative world models, with a phased sensor strategy from LiDAR through 4D radar and signal phase data to event cameras. We establish a taxonomy of driving world model paradigms, position I-WM relative to LeCun's JEPA, Li Fei-Fei's spatial intelligence, and VLA architectures, and introduce Infrastructure VLA (I-VLA) as a novel unification of roadside perception, language commands, and traffic control actions. Our vision builds upon existing multi-LiDAR pipelines and identifies open-source foundations for each phase, providing a path toward infrastructure that understands and anticipates traffic.",
+      "authors": [
+        "Siyuan Meng",
+        "Chengbo Ai"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-04-19T22:50:32+00:00",
+      "link": "https://arxiv.org/pdf/2604.17651v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "generative world models for autonomous driving and roadside perception",
+      "llm_evidence_cn": "用于自动驾驶和路侧感知的生成式世界模型",
+      "llm_evidence": "用于自动驾驶和路侧感知的生成式世界模型",
+      "canonical_evidence": "用于自动驾驶和路侧感知的生成式世界模型",
+      "llm_tldr_en": "Explores infrastructure-centric world models to simulate environment evolution for autonomous driving.",
+      "llm_tldr_cn": "探讨了用于模拟自动驾驶环境演变的基础设施中心世界模型。",
+      "llm_tldr": "探讨了用于模拟自动驾驶环境演变的基础设施中心世界模型。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.20289v1",
+      "title": "X-Cache: Cross-Chunk Block Caching for Few-Step Autoregressive World Models Inference",
+      "abstract": "Real-time world simulation is becoming a key infrastructure for scalable evaluation and online reinforcement learning of autonomous driving systems. Recent driving world models built on autoregressive video diffusion achieve high-fidelity, controllable multi-camera generation, but their inference cost remains a bottleneck for interactive deployment. However, existing diffusion caching methods are designed for offline video generation with multiple denoising steps, and do not transfer to this scenario. Few-step distilled models have no inter-step redundancy left for these methods to reuse, and sequence-level parallelization techniques require future conditioning that closed-loop interactive generation does not provide. We present X-Cache, a training-free acceleration method that caches along a different axis: across consecutive generation chunks rather than across denoising steps. X-Cache maintains per-block residual caches that persist across chunks, and applies a dual-metric gating mechanism over a structure- and action-aware block-input fingerprint to independently decide whether each block should recompute or reuse its cached residual. To prevent approximation errors from permanently contaminating the autoregressive KV cache, X-Cache identifies KV update chunks (the forward passes that write clean keys and values into the persistent cache) and unconditionally forces full computation on these chunks, cutting off error propagation. We implement X-Cache on X-world, a production multi-camera action-conditioned driving world model built on multi-block causal DiT with few-step denoising and rolling KV cache. X-Cache achieves 71% block skip rate with 2.6x wall-clock speedup while maintaining minimum degradation.",
+      "authors": [
+        "Yixiao Zeng",
+        "Jianlei Zheng",
+        "Chaoda Zheng",
+        "Shijia Chen",
+        "Mingdian Liu",
+        "Tongping Liu",
+        "Tengwei Luo",
+        "Yu Zhang",
+        "Boyang Wang",
+        "Linkun Xu",
+        "Siyuan Lu",
+        "Bo Tian",
+        "Xianming Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-22T07:36:59+00:00",
+      "link": "https://arxiv.org/pdf/2604.20289v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "autoregressive video diffusion for autonomous driving world models",
+      "llm_evidence_cn": "用于自动驾驶世界模型的自回归视频扩散",
+      "llm_evidence": "用于自动驾驶世界模型的自回归视频扩散",
+      "canonical_evidence": "用于自动驾驶世界模型的自回归视频扩散",
+      "llm_tldr_en": "Proposes X-Cache to accelerate inference of autoregressive video diffusion models for autonomous driving simulation.",
+      "llm_tldr_cn": "提出 X-Cache 以加速用于自动驾驶模拟的自回归视频扩散模型的推理过程。",
+      "llm_tldr": "提出 X-Cache 以加速用于自动驾驶模拟的自回归视频扩散模型的推理过程。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.18918v1",
+      "title": "From Particles to Perils: SVGD-Based Hazardous Scenario Generation for Autonomous Driving Systems Testing",
+      "abstract": "Simulation-based testing of autonomous driving systems (ADS) must uncover realistic and diverse failures in dense, heterogeneous traffic. However, existing search-based seeding methods (e.g., genetic algorithms) struggle in high-dimensional spaces, often collapsing to limited modes and missing many failure scenarios. We present PtoP, a framework that combines adaptive random seed generation with Stein Variational Gradient Descent (SVGD) to produce diverse, failure-inducing initial conditions. SVGD balances attraction toward high-risk regions and repulsion among particles, yielding risk-seeking yet well-distributed seeds across multiple failure modes. PtoP is plug-and-play and enhances existing online testing methods (e.g., reinforcement learning--based testers) by providing principled seeds. Evaluation in CARLA on two industry-grade ADS (Apollo, Autoware) and a native end-to-end system shows that PtoP improves safety violation rate (up to 27.68%), scenario diversity (9.6%), and map coverage (16.78%) over baselines.",
+      "authors": [
+        "Linfeng Liang",
+        "Xiao Cheng",
+        "Tsong Yueh Chen",
+        "Xi Zheng"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.LG"
+      ],
+      "published": "2026-04-20T23:49:45+00:00",
+      "link": "https://arxiv.org/pdf/2604.18918v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "hazardous scenario generation for autonomous driving systems testing",
+      "llm_evidence_cn": "自动驾驶系统测试的危险场景生成",
+      "llm_evidence": "自动驾驶系统测试的危险场景生成",
+      "canonical_evidence": "自动驾驶系统测试的危险场景生成",
+      "llm_tldr_en": "Presents a framework using SVGD to generate diverse, high-risk scenarios for testing autonomous driving systems.",
+      "llm_tldr_cn": "提出一个利用SVGD生成多样化高风险场景的框架，用于测试自动驾驶系统。",
+      "llm_tldr": "提出一个利用SVGD生成多样化高风险场景的框架，用于测试自动驾驶系统。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.20428v1",
+      "title": "Lexicographic Minimum-Violation Motion Planning using Signal Temporal Logic",
+      "abstract": "Motion planning for autonomous vehicles often requires satisfying multiple conditionally conflicting specifications. In situations where not all specifications can be met simultaneously, minimum-violation motion planning maintains system operation by minimizing violations of specifications in accordance with their priorities. Signal temporal logic (STL) provides a formal language for rigorously defining these specifications and enables the quantitative evaluation of their violations. However, a total ordering of specifications yields a lexicographic optimization problem, which is typically computationally expensive to solve using standard methods. We address this problem by transforming the multi-objective lexicographic optimization problem into a single-objective scalar optimization problem using non-uniform quantization and bit-shifting. Specifically, we extend a deterministic model predictive path integral (MPPI) solver to efficiently solve optimization problems without quadratic input cost. Additionally, a novel predicate-robustness measure that combines spatial and temporal violations is introduced. Our results show that the proposed method offers an interpretable and scalable solution for lexicographic STL minimum-violation motion planning within a single-objective solver framework.",
+      "authors": [
+        "Patrick Halder",
+        "Lothar Kiltz",
+        "Hannes Homburger",
+        "Johannes Reuter",
+        "Matthias Althoff"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-22T10:49:09+00:00",
+      "link": "https://arxiv.org/pdf/2604.20428v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "motion planning for autonomous vehicles with conflicting specifications",
+      "llm_evidence_cn": "具有冲突规范的自动驾驶车辆运动规划",
+      "llm_evidence": "具有冲突规范的自动驾驶车辆运动规划",
+      "canonical_evidence": "具有冲突规范的自动驾驶车辆运动规划",
+      "llm_tldr_en": "Addresses minimum-violation motion planning for autonomous vehicles using Signal Temporal Logic.",
+      "llm_tldr_cn": "利用信号时序逻辑解决自动驾驶车辆的最小违规运动规划问题。",
+      "llm_tldr": "利用信号时序逻辑解决自动驾驶车辆的最小违规运动规划问题。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.18993v1",
+      "title": "AutoAWG: Adverse Weather Generation with Adaptive Multi-Controls for Automotive Videos",
+      "abstract": "Perception robustness under adverse weather remains a critical challenge for autonomous driving, with the core bottleneck being the scarcity of real-world video data in adverse weather. Existing weather generation approaches struggle to balance visual quality and annotation reusability. We present AutoAWG, a controllable Adverse Weather video Generation framework for Autonomous driving. Our method employs a semantics-guided adaptive fusion of multiple controls to balance strong weather stylization with high-fidelity preservation of safety-critical targets; leverages a vanishing point-anchored temporal synthesis strategy to construct training sequences from static images, thereby reducing reliance on synthetic data; and adopts masked training to enhance long-horizon generation stability. On the nuScenes validation set, AutoAWG significantly outperforms prior state-of-the-art methods: without first-frame conditioning, FID and FVD are relatively reduced by 50.0% and 16.1%; with first-frame conditioning, they are further reduced by 8.7% and 7.2%, respectively. Extensive qualitative and quantitative results demonstrate advantages in style fidelity, temporal consistency, and semantic--structural integrity, underscoring the practical value of AutoAWG for improving downstream perception in autonomous driving. Our code is available at: https://github.com/higherhu/AutoAWG",
+      "authors": [
+        "Jiagao Hu",
+        "Daiguo Zhou",
+        "Danzhen Fu",
+        "Fuhao Li",
+        "Zepeng Wang",
+        "Fei Wang",
+        "Wenhua Liao",
+        "Jiayi Xie",
+        "Haiyang Sun"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.MM"
+      ],
+      "published": "2026-04-21T02:24:49+00:00",
+      "link": "https://arxiv.org/pdf/2604.18993v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "controllable video generation for autonomous driving perception",
+      "llm_evidence_cn": "用于自动驾驶感知的可控视频生成",
+      "llm_evidence": "用于自动驾驶感知的可控视频生成",
+      "canonical_evidence": "用于自动驾驶感知的可控视频生成",
+      "llm_tldr_en": "Develops AutoAWG for generating adverse weather videos to improve autonomous driving perception robustness.",
+      "llm_tldr_cn": "开发 AutoAWG 生成恶劣天气视频，以提高自动驾驶感知的鲁棒性。",
+      "llm_tldr": "开发 AutoAWG 生成恶劣天气视频，以提高自动驾驶感知的鲁棒性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.19639v1",
+      "title": "Safety-Critical Contextual Control via Online Riemannian Optimization with World Models",
+      "abstract": "Modern world models are becoming too complex to admit explicit dynamical descriptions. We study safety-critical contextual control, where a Planner must optimize a task objective using only feasibility samples from a black-box Simulator, conditioned on a context signal $ξ_t$. We develop a sample-based Penalized Predictive Control (PPC) framework grounded in online Riemannian optimization, in which the Simulator compresses the feasibility manifold into a score-based density $\\hat{p}(u \\mid ξ_t)$ that endows the action space with a Riemannian geometry guiding the Planner's gradient descent. The barrier curvature $κ(ξ_t)$, the minimum curvature of the conditional log-density $-\\ln\\hat{p}(\\cdot\\midξ_t)$, governs both convergence rate and safety margin, replacing the Lipschitz constant of the unknown dynamics. Our main result is a contextual safety bound showing that the distance from the true feasibility manifold is controlled by the score estimation error and a ratio that depends on $κ(ξ_t)$, both of which improve with richer context. Simulations on a dynamic navigation task confirm that contextual PPC substantially outperforms marginal and frozen density models, with the advantage growing after environment shifts.",
+      "authors": [
+        "Tongxin Li"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "cs.AI"
+      ],
+      "published": "2026-04-21T16:28:36+00:00",
+      "link": "https://arxiv.org/pdf/2604.19639v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "score-based density for safety-critical control and world models",
+      "llm_evidence_cn": "用于安全关键控制和世界模型的基于得分的密度",
+      "llm_evidence": "用于安全关键控制和世界模型的基于得分的密度",
+      "canonical_evidence": "用于安全关键控制和世界模型的基于得分的密度",
+      "llm_tldr_en": "Uses score-based densities in world models to guide safety-critical control via Riemannian optimization.",
+      "llm_tldr_cn": "在世界模型中使用基于得分的密度，通过黎曼优化引导安全关键控制。",
+      "llm_tldr": "在世界模型中使用基于得分的密度，通过黎曼优化引导安全关键控制。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty:composite"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty:composite",
+      "matched_query_text": "Papers central to 自动驾驶轨迹生成中利用扩散模型进行不确定性解耦、量化、追溯的论文检索, especially work that connects or combines: c; trajectory generation and path planning; autonomous driving motion planning and prediction; diffusion models for trajectory generation in autonomous driving; modeling aleatoric uncertainty in autonomous driving scenarios; estimating epistemic uncertainty in neural motion planners; diffusion models for uncertainty decoupling in autonomous driving trajectory generation; quantifying and tracing uncertainty in diffusion based motion planning; aleatoric and epistemic uncertainty decomposition in diffusion trajectory models; diffusion models for uncertainty estimation in autonomous driving trajectory generation.",
+      "matched_requirement_id": "req-composite-diffusion-conf-uncertainty",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

@@ -6,64 +6,56 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-22
-- 运行时间：2026-04-22 20:36:36 UTC
+- 最新运行日期：2026-04-23
+- 运行时间：2026-04-23 20:40:06 UTC
 - 运行状态：成功
-- 本次总论文数：14
-- 精读区：3
+- 本次总论文数：11
+- 精读区：0
 - 速读区：11
 
 ### 今日简报（AI）
-今日聚焦 14 篇机器人前沿进展，深度解析扩散策略加速与具身感知导航。
-重点关注 Sobolev 训练对轨迹优化的显著提速，以及多模态 Transformer 如何赋予机器人更强的具身导航能力。
-建议深入探索物理可行性与 VLA 模型的结合，以提升自动驾驶等复杂任务在现实场景中的实操精度。
-- 详情：[/202604/22/README](/202604/22/README)
+今日速览 11 篇前沿成果，涵盖 3D 赛道自动驾驶控制、工业级世界模型及 5G 网络冲突检测。
+重点关注 Cortex 2.0 在真实工业场景的落地，以及利用扩散模型实现 Open RAN 冲突的零样本推理。
+建议深入了解 AI 模型如何从实验室走向复杂的 3D 竞速与工业部署实战。
+- 详情：[/202604/23/README](/202604/23/README)
 
 ### 精读区论文标签
-1. [Accelerating trajectory optimization with Sobolev-trained diffusion policies](/202604/22/2604.19011v1-accelerating-trajectory-optimization-with-sobolev-trained-diffusion-policies)  
-   标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：用于热启动轨迹优化的扩散策略
-2. [Multimodal embodiment-aware navigation transformer](/202604/22/2604.19267v1-multimodal-embodiment-aware-navigation-transformer)  
-   标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：扩散模型为地面机器人生成导航轨迹
-3. [SpanVLA: Efficient Action Bridging and Learning from Negative-Recovery Samples for Vision-Language-Action Model](/202604/22/2604.19710v1-spanvla-efficient-action-bridging-and-learning-from-negative-recovery-samples-for-vision-language-action-model)  
-   标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：用于自动驾驶轨迹规划的流匹配动作专家模型
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [NaviFormer: A Deep Reinforcement Learning Transformer-like Model to Holistically Solve the Navigation Problem](/202604/22/2604.16967v1-naviformer-a-deep-reinforcement-learning-transformer-like-model-to-holistically-solve-the-navigation-problem)  
+1. [Robust Nonlinear Trajectory Tracking Control for Autonomous Racing on Three-Dimensional Tracks](/202604/23/2604.19452v1-robust-nonlinear-trajectory-tracking-control-for-autonomous-racing-on-three-dimensional-tracks)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：预测高层路线和底层轨迹
-2. [Can Explicit Physical Feasibility Benefit VLA Learning? An Empirical Study](/202604/22/2604.17896v1-can-explicit-physical-feasibility-benefit-vla-learning-an-empirical-study)  
+   evidence：自动驾驶车辆的鲁棒非线性轨迹跟踪控制
+2. [ZODIAC: Zero-shot Offline Diffusion for Inferring Multi-xApps Conflicts in Open Radio Access Networks](/202604/23/2604.19610v1-zodiac-zero-shot-offline-diffusion-for-inferring-multi-xapps-conflicts-in-open-radio-access-networks)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：基于扩散的 VLA 策略用于避障和可行性
-3. [OneDrive: Unified Multi-Paradigm Driving with Vision-Language-Action Models](/202604/22/2604.17915v1-onedrive-unified-multi-paradigm-driving-with-vision-language-action-models)  
+   evidence：用于冲突推理的不确定性感知代理模型与轨迹级扩散
+3. [Cortex 2.0: Grounding World Models in Real-World Industrial Deployment](/202604/23/2604.20246v1-cortex-20-grounding-world-models-in-real-world-industrial-deployment)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：用于轨迹回归的统一自动驾驶框架
-4. [Chatting about Conditional Trajectory Prediction](/202604/22/2604.18126v1-chatting-about-conditional-trajectory-prediction)  
+   evidence：在视觉潜空间中生成候选未来轨迹
+4. [X-Cache: Cross-Chunk Block Caching for Few-Step Autoregressive World Models Inference](/202604/23/2604.20289v1-x-cache-cross-chunk-block-caching-for-few-step-autoregressive-world-models-inference)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：人机交互中的条件轨迹预测与路径规划
-5. [OneVL: One-Step Latent Reasoning and Planning with Vision-Language Explanation](/202604/22/2604.18486v1-onevl-one-step-latent-reasoning-and-planning-with-vision-language-explanation)  
+   evidence：用于自动驾驶世界模型的自回归视频扩散
+5. [Lexicographic Minimum-Violation Motion Planning using Signal Temporal Logic](/202604/23/2604.20428v1-lexicographic-minimum-violation-motion-planning-using-signal-temporal-logic)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：基于VLA的自动驾驶轨迹预测
-6. [EgoMotion: Hierarchical Reasoning and Diffusion for Egocentric Vision-Language Motion Generation](/202604/22/2604.19105v1-egomotion-hierarchical-reasoning-and-diffusion-for-egocentric-vision-language-motion-generation)  
-   标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：用于第一人称视觉语言运动生成的扩散模型
-7. [Diffusion Crossover: Defining Evolutionary Recombination in Diffusion Models via Noise Sequence Interpolation](/202604/22/2604.14790v1-diffusion-crossover-defining-evolutionary-recombination-in-diffusion-models-via-noise-sequence-interpolation)  
+   evidence：具有冲突规范的自动驾驶车辆运动规划
+6. [Boundary Sampling to Learn Predictive Safety Filters via Pontryagin's Maximum Principle](/202604/23/2604.13325v1-boundary-sampling-to-learn-predictive-safety-filters-via-pontryagins-maximum-principle)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：在扩散模型中定义交叉和噪声序列插值
-8. [Reasoning on the Manifold: Bidirectional Consistency for Self-Verification in Diffusion Language Models](/202604/22/2604.16565v1-reasoning-on-the-manifold-bidirectional-consistency-for-self-verification-in-diffusion-language-models)  
+   evidence：表征自主系统安全过滤器的轨迹
+7. [Target Parameterization in Diffusion Models for Nonlinear Spatiotemporal System Identification](/202604/23/2604.17566v1-target-parameterization-in-diffusion-models-for-nonlinear-spatiotemporal-system-identification)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：量化扩散模型中生成轨迹的稳定性和有效性
-9. [Complementing Self-Consistency with Cross-Model Disagreement for Uncertainty Quantification](/202604/22/2604.17112v1-complementing-self-consistency-with-cross-model-disagreement-for-uncertainty-quantification)  
+   evidence：用于时空系统概率推理的扩散模型
+8. [Infrastructure-Centric World Models: Bridging Temporal Depth and Spatial Breadth for Roadside Perception](/202604/23/2604.17651v1-infrastructure-centric-world-models-bridging-temporal-depth-and-spatial-breadth-for-roadside-perception)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：估计生成模型中的偶然和认知不确定性
-10. [Learning Whole-Body Humanoid Locomotion via Motion Generation and Motion Tracking](/202604/22/2604.17335v1-learning-whole-body-humanoid-locomotion-via-motion-generation-and-motion-tracking)  
+   evidence：用于自动驾驶和路侧感知的生成式世界模型
+9. [From Particles to Perils: SVGD-Based Hazardous Scenario Generation for Autonomous Driving Systems Testing](/202604/23/2604.18918v1-from-particles-to-perils-svgd-based-hazardous-scenario-generation-for-autonomous-driving-systems-testing)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：机器人运动生成的扩散模型
-11. [Multi-Step Gaussian Process Propagation for Adaptive Path Planning](/202604/22/2604.19148v1-multi-step-gaussian-process-propagation-for-adaptive-path-planning)  
+   evidence：自动驾驶系统测试的危险场景生成
+10. [AutoAWG: Adverse Weather Generation with Adaptive Multi-Controls for Automotive Videos](/202604/23/2604.18993v1-autoawg-adverse-weather-generation-with-adaptive-multi-controls-for-automotive-videos)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：基于高斯路径规划以捕捉信念中的不确定性
+   evidence：用于自动驾驶感知的可控视频生成
+11. [Safety-Critical Contextual Control via Online Riemannian Optimization with World Models](/202604/23/2604.19639v1-safety-critical-contextual-control-via-online-riemannian-optimization-with-world-models)  
+   标签：评分：6.0/10、query:diffusion-conf-uncertainty
+   evidence：用于安全关键控制和世界模型的基于得分的密度
 
 
 <div class="dpr-home-promo-card">

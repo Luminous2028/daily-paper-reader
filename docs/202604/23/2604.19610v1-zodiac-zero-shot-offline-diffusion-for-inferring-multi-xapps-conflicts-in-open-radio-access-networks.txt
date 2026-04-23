@@ -1,0 +1,1024 @@
+Title: ZODIAC: Zero-shot Offline Diffusion for Inferring Multi-xApps Conflicts in Open Radio Access Networks
+
+URL Source: https://arxiv.org/pdf/2604.19610v1
+
+Published Time: Wed, 22 Apr 2026 01:18:25 GMT
+
+Number of Pages: 12
+
+Markdown Content:
+# ZODIAC: Zero-shot Offline Diffusion for Inferring Multi-xApps Conflicts in Open Radio Access Networks 
+
+# Zeyu Fang 
+
+joey.fang@gwu.edu George Washington University Washington, D.C., USA 
+
+# Shu Hong 
+
+shu.hong@gwu.edu George Washington University Washington, D.C., USA 
+
+# Huu Trung Thieu 
+
+huu_trung.thieu@nokia-bell-labs.com Nokia Bell Labs Murray Hill, NJ, USA 
+
+# Nakjung Choi 
+
+nakjung.choi@nokia-bell-labs.com Nokia Bell Labs Murray Hill, NJ, USA 
+
+# Tian Lan 
+
+tlan@gwu.edu George Washington University Washington, D.C., USA 
+
+## Abstract 
+
+Open Radio Access Network (O-RAN) enables network control through multi-vendor xApps operating both within and across lay-ers, subnets, and domains, whose concurrent execution can trigger conflicts that are latent during the development phase. Existing con-flict management approaches rely heavily on joint-execution data, which is often unavailable in practice. To address this limitation, we formalize a novel problem termed conflict reasoning, which in-volves identifying conflict-inducing conditions given only marginal datasets from each individual xApp. We propose ZODIAC, a three-stage framework for zero-shot conflict condition inference that comprises uncertainty-aware surrogate model training, trajectory-level diffusion training, and compositional guided denoising for efficient, physics-constrained, and reliable condition search. We derive a theoretical lower confidence bound showing that the com-positional reasoning in ZODIAC serves as a principled surrogate for true conflict severity, with the epistemic penalty directly con-trolling the approximation gap. We evaluate ZODIAC on both the lightweight Mobile-Env platform across all three O-RAN Alliance conflict types (direct, indirect, and implicit) and a realistic NS-O-RAN-Flexric simulator. ZODIAC consistently outperforms baseline condition search methods, achieving over 20% higher True Positive Rate at Top-20, substantially stronger Spearman rank correlation, greater scenario diversity, and competitive computational efficiency. Ablation studies confirm the necessity of each guidance component, with epistemic uncertainty penalties proving essential for filtering spurious conflicts. To the best of our knowledge, ZODIAC is the first framework in O-RAN that enables conflict reasoning from marginal offline data without requiring any joint-execution traces. 
+
+## Keywords 
+
+Conflict Reasoning, O-RAN, Multi-Agent, Offline Inference  
+
+> Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page. Copyrights for components of this work owned by others than the author(s) must be honored. Abstracting with credit is permitted. To copy otherwise, or republish, to post on servers or to redistribute to lists, requires prior specific permission and/or a fee. Request permissions from permissions@acm.org.
+> Conference’17, Washington, DC, USA
+> ©2026 Copyright held by the owner/author(s). Publication rights licensed to ACM. ACM ISBN 978-x-xxxx-xxxx-x/YYYY/MM https://doi.org/10.1145/nnnnnnn.nnnnnnn
+
+ACM Reference Format: 
+
+Zeyu Fang, Shu Hong, Huu Trung Thieu, Nakjung Choi, and Tian Lan. 2026. ZODIAC: Zero-shot Offline Diffusion for Inferring Multi-xApps Conflicts in Open Radio Access Networks. In . ACM, New York, NY, USA, 12 pages. https://doi.org/10.1145/nnnnnnn.nnnnnnn 
+
+## 1 Introduction 
+
+Open Radio Access Network (O-RAN) is reshaping next-generation wireless systems by disaggregating the RAN into open, interoper-able components and exposing standardized interfaces for pro-grammable control [ 20 ]. At the center of this architecture, the Near-Real-Time RAN Intelligent Controller (Near-RT RIC) hosts third-party applications known as xApps, each optimizing specific network functions such as load balancing, power control, or quality-of-experience (QoE) management. As illustrated in Figure 1, these xApps are typically developed in isolation by different vendors and deployed across overlapping or coupled network layers, functional-ities, and domains. Each xApp observes shared Key Performance Indicators (KPIs) through the E2 interface and issues control actions over parameters that may be shared with or physically coupled to those of other xApps. Because xApps are typically designed, trained, and validated in isolation, their collective behavior under concurrent deployment is typically unknown prior to execution. This architecture introduces a structural challenge: xApps do not guarantee amicable collective behavior. The concurrent execu-tion of such xApps can trigger (latent) conflicts that manifest in multiple forms. The O-RAN Alliance categorizes these into three types [ 19 ]: (i) direct conflicts , where multiple xApps issue divergent commands over the same control parameter, (ii) indirect conflicts ,where xApps controlling different but physically coupled parame-ters drive a shared KPI in opposite directions, causing unexpected performance degradation, and (iii) implicit conflicts , where each xApp individually satisfies local constraints, yet their combined actions violate a hidden system-level constraint that only surfaces under joint deployment. These conflicts can compromise network stability, efficiency, and reliability [ 1], and their severity grows as fu-ture networks host an increasing number of autonomous, AI-driven xApps within or across layers, subnets, and domains. Existing conflict management methods rely on extensive joint-execution data: conflicts are first identified by analyzing xApp         
+
+> arXiv:2604.19610v1 [cs.NI] 21 Apr 2026 Conference’17, July 2017, Washington, DC, USA Fang et al. Non-RT RIC
+> Near-RT RIC
+> Network Slicing Coverage & Capacity
+> Load Balancing Cell Scheduling Power Control
+> UE–BS association
+> RB / scheduling allocation
+> Transmit power
+> Throughput / data rate
+> Per-cell load / # connected UEs
+> Total power consumption
+> A1 Interface
+> E2 Interface
+> Vendor D Vendor E
+> Vendor A Vendor B Vendor C
+> Subnet / domain scope Minutes–hours timescale
+> Per-cell / cross-cell 10 ms–1 s timescale
+> Control
+> Parameters
+> Shared
+> KPIs
+> KPIs are shared across agents, coupling independently controlled parameters
+> Control action KPI feedback
+
+Figure 1: O-RAN architecture with independently developed xApps across Non-RT and Near-RT RIC layers. Three conflict types can arise that manifest only after joint deployment due to isolated development of xApps: (i) direct, when xApps issue divergent commands to the same parameter (e.g., Load Balancing and Cell Scheduling both writing to RB allocation) (ii) indirect, when disjoint parameters affect shared KPIs, so one xApp’s action degrades another’s objective (e.g., transmit power changes altering the throughput that Load Balancing observes) (iii) implicit, when each xApp individually satisfies a system constraint yet their combined actions violate it. 
+
+interactions from joint-execution data collected by running mul-tiple xApps simultaneously in a digital twin or live network, and then resolved through prioritization, whitelisting, or policy coor-dination [ 7, 13 , 25 ]. However, the assumption of extensive joint-execution data may not hold in practice. xApps from different vendors are rarely co-tested prior to development; constructing a high-fidelity digital twin that captures the collective behavior of any combinatorial subsets of xApps is costly, and evaluating untested xApp combinations on live networks risks unpredictable service degradation. Moreover, latent conflicts may manifest only under specific conditions (e.g., specific mobility patterns or traffic loads), making brute-force data collection inefficient. The black-box nature of neural-network-based xApps further precludes deriving conflict-inducing conditions through purely logical or analytical reasoning. To the best of our knowledge, no existing method ad-dresses the problem of inferring conflict-inducing conditions from xApps’ individual behavioral data without joint-execution traces. To address this gap, we consider a novel problem termed conflict reasoning, formulated as zero-shot conflict condition inference. We consider access to only datasets that are collected from individual deployment, capturing marginal trajectories under a single active xApp. Given these marginal datasets and a known conflict criterion, the objective is to reason about the conflict-inducing conditions ( i.e. ,the initial network state and the exogenous variable sequence, such as user mobility) that are most likely to trigger conflicts with joint deployment. The inferred conditions can then be replayed in a sim-ulator or testbed to reproduce validation and worst-case analysis, enabling targeted diagnosis and downstream mitigation before real deployment. This problem is challenging for three reasons. First, the trajectories under concurrent xApp execution are never ob-served, as the available data contains only marginal behaviors from isolated execution/testing. Second, the xApps are treated as black-box policies, and their interactions cannot be derived from their opaque internal logic. Third, naively stitching together indepen-dently learned marginal models can produce physically implausible trajectories, leading to spurious conflict discoveries that are artifacts of model error rather than genuine cross-xApp interaction. Our key insight is that, although joint xApp behavior is unob-servable, the space of physically feasible network trajectories is highly structured (e.g., due to physical rules and interaction laws) and can be learned from marginal data. By modeling this structure as a trajectory distribution and combining it with independently learned policy likelihoods and conflict objectives, we can construct a principled surrogate for the unobserved joint-conflict distribution, enabling effective search for conflict-inducing scenarios without requiring joint execution data. Building on this insight, we propose 
+
+ZODIAC (Zero-shot Offline Diffusion for Inferring multi-x Apps 
+
+Conflicts), a three-stage framework for efficient conflict reasoning: (1) Surrogate model training from marginal data. We train differ-entiable neural-network ensembles on the marginal data to simulate each xApp’s policy and the network state-transition dynamics. Ensemble disagreement provides calibrated un-certainty estimates that quantify prediction reliability. (2) Trajectory diffusion prior. Single-step surrogate models incur compound errors over long horizons, making autoregressive rollouts unreliable and prone to producing physically im-plausible trajectories. We build an unconditional diffusion model to learn a distributional prior that captures tempo-ral coherence, valid feature correlations, and macro-level physical constraints of the network environment. (3) Compositional guided search. We steer the reverse diffusion process with scale-free compositional guidance that com-bines a conflict-maximizing objective with physical consis-tency and epistemic uncertainty penalties. This enables effi-cient search over the high-dimensional space of conditions while filtering out spurious conflicts due to model fault. A guaranty derived in Theorem 5.3 shows that the compositional guidance is a principled surrogate for a lower confidence bound on the true conflict severity, with the epistemic penalty controlling the approximation gap. Our main contributions are summarized as: 
+
+• Problem formalization. We formalize conflict reasoning as a zero-shot condition inference problem, rigorously defin-ing the assumptions on marginal data and the optimization objective. To our knowledge, this is the first formalization of the conflict reasoning problem, applicable to O-RAN and shared architectures with co-existing agents, i.e., xApps. 
+
+• ZODIAC framework. We propose ZODIAC, a three-stage framework that combines uncertainty-aware surrogate model training, trajectory-level diffusion priors, and compositional guidance to discover conflict-inducing conditions from only marginal datasets. A theoretical lower bound on confidence is derived to support the proposed framework. 
+
+• Comprehensive evaluation. Experiments on both Mobile-Env (covering all three conflict types) and the realistic NS-O-RAN-FlexRIC simulator show that ZODIAC outperforms ZODIAC: Zero-shot Offline Diffusion for Inferring Multi-xApps Conflicts in Open Radio Access Networks Conference’17, July 2017, Washington, DC, USA 
+
+Random Search, Backpropagation Through Time, and the Cross-Entropy Method baselines, achieving over 20% higher True Positive Rate at Top-20, substantially stronger Spear-man rank correlation ( 𝜌 ≈ 0.48 vs. ≤ 0.34 ), and greater scenario diversity. Ablation studies further verified the ef-fectiveness of the compositional guidance. 
+
+## 2 Related Works 
+
+Conflict Management in O-RAN. Existing works on O-RAN conflict management are dominated by the detection-mitigation framework [ 19 ], with approaches detecting and classifying conflicts by evaluating xApps in the digital twins and resolving them through prioritization or whitelisting [ 7 , 13 ]. More recent methods improve this by modeling dependencies among xApps, parameters, and KPIs as graphs [ 3 , 27 , 30 ]. The adoption of game theory [ 26 ] and gradient optimization [ 6 ] has enhanced mitigation performance in a theoretical example scenario. A second line of work focuses on mitigation through AI-based methods, including reinforcement learning [ 5, 25 ], policy distillation [ 12 ], and explainable AI [ 24 ]. However, these methods ignore the inherent difficulties involved in obtaining joint datasets in the first place. Another closely-related work [ 8 ] adopts a distinct approach to model the policy of xApps from their separate offline profiles and predict the extent of conflict impacts given a specific scenario. Different from that, ZODIAC proposed in our work generates possible conflict scenarios that maximize the probability of conflicts, which can be used for worst-case analysis and targeted mitigation. 
+
+Adversarial Scenario Generation and Falsification. A growing body of work in machine learning studies how to uncover rare but safety-critical failures. A representative line is AST [ 17 ], which for-mulates failure discovery as a Markov Decision Process (MDP) and solves it with reinforcement learning. More recent methods extend this idea with gradient-based or planning-based searches [ 11 ]. A follow-up work in autonomous driving trains adversarial agents specifically to induce failures [ 16 ]. A parallel work uses learned priors, including diffusion-based models, to synthesize realistic yet adversarial traffic scenes for evaluation [ 28 ]. Most of these share a common limitation: the search procedure relies on either offline data or a simulator repeatedly queried for interaction. But in the O-RAN, the joint execution data of multiple xApps can be unavailable, and an exhaustive simulator search is computationally prohibi-tive. Besides, the characteristics of network control, such as hybrid discrete-continuous state spaces, hard physical constraints, and multiple temporal scales, pose additional challenges. 
+
+Diffusion Models for Trajectory Generation. Diffusion models generate the entire predicted trajectory through denoising, thus avoiding the compound errors induced by traditional models. A representative example is Diffuser [ 15 ], which shows that denois-ing can be interpreted as planning and that guidance can steer generated rollouts toward specific behavior patterns. Follow-up work [ 2] extends this idea to show that conditional diffusion mod-els can generate trajectories toward high-scoring regions. Parallel to this trend, compositional diffusion models provide a principled mechanism for satisfying multiple conditions simultaneously [ 9 ]. Early compositional diffusion work showed that independently learned conditional scores can be used to generate combinations 𝑒 ! 𝑒 " 𝑒 #$"                                 
+
+> ...
+> Conflict Conditions System Model (inaccessible,
+> inferred from the offline dataset)
+> Environmental Dynamics
+> 𝑠 !"#∼𝑃 ⋅𝑠 !,𝑎 !
+> $,𝑎 !
+> %,𝑒 !)
+> Policy A
+> (e.g. ES xApp )
+> 𝑠 %𝑠 %𝑎 %
+> &𝑎 %
+> '
+> ... Trajectory 𝜏 =(𝑠 !,𝑎 !
+> &,𝑎 !
+> ',𝑠 ",…,𝑠 #)
+> Policy B
+> (e.g. LB xApp )
+> Conflict Evaluation
+> 𝐽 𝜏 =∑𝐶 (𝑠 %,𝑎 %
+> &,𝑎 %
+> ')%
+> 𝑠 !
+> Optimize
+> Initial State Exogenous variables
+> (e.g. User Movement, Traffic)
+
+Figure 2: An illustration of the conflict reasoning problem. Without true joint-execution data, we infer a surrogate sys-tem model entirely from offline marginal datasets. By simu-lating joint trajectories 𝜏 driven by input conflict conditions 
+
+(𝑠 0, 𝑒 0: 𝑇 −1), the system iteratively optimizes the inputs to max-imize the expected conflict severity 𝐽 (𝜏 ).
+
+not seen during training [ 18 ]. More recent extensions [ 21 ] transfer this idea to constrained planning. Systems such as TrajDiffuser [ 4]demonstrate that long-horizon trajectories can be generated concur-rently while composing constraints with improved data efficiency. Inspired by these, we introduce a compositional diffusion model, which to the best of our knowledge marks the first such application in the field of network conflict management. 
+
+## 3 System Model and Formulation 
+
+In this section, we introduce the system model and formulate the conflict reasoning problem. As illustrated in Figure 2, we consider the general problem in which multiple policies operate concurrently within a system, optimizing different objectives. Such architectures arise naturally in modern network systems such as O-RAN. 
+
+## 3.1 System Model 
+
+Let 𝑠 𝑡 ∈ S denote the system state at time 𝑡 , which refers to all the parameters and KPIs determining the current status of the net-work, such as base station load, user association, quality indicators, and resource allocation. The states evolve over discrete time steps according to the inherent environmental dynamics of the system: 
+
+𝑠 𝑡 +1 ∼ 𝑃 (· | 𝑠 𝑡 , 𝑎 𝐴 𝑡 , 𝑎 𝐵 𝑡 , 𝑒 𝑡 ), (1) where 𝑎 𝐴 𝑡 and 𝑎 𝐵 𝑡 are control actions produced by two independent control policies 𝜋 𝐴 and 𝜋 𝐵 , and 𝑒 𝑡 ∈ E denotes exogenous variables. These variables capture factors independent of the environmental states and dynamics while driving the evolution of the system, such as traffic arrivals and user mobility patterns. We focus on two representative control policies, which iteratively sample an action given the current state at each time step, similarly to MDP: 
+
+𝑎 𝐴 𝑡 ∼ 𝜋 𝐴 (· | 𝑠 𝑡 ), 𝑎 𝐵 𝑡 ∼ 𝜋 𝐵 (· | 𝑠 𝑡 ), (2) These policies may correspond, for example, to energy-saving (ES) and load-balancing (LB) xApps in a cellular network. The two poli-cies can act on both overlapping and non-overlapping configuration parameters, interacting through the shared network state. Given an initial state 𝑠 0 and a sequence of exogenous variables 
+
+𝑒 0: 𝑇 −1, the joint execution of 𝜋 𝐴 and 𝜋 𝐵 within the system model Conference’17, July 2017, Washington, DC, USA Fang et al. 
+
+induces a trajectory with a step length 𝑇 :
+
+𝜏 = (𝑠 0, 𝑒 0, 𝑎 𝐴  
+
+> 0
+
+, 𝑎 𝐵  
+
+> 0
+
+, 𝑠 1, . . . , 𝑠 𝑇 ). (3) 
+
+## 3.2 Problem Formulation 
+
+Given the system model, our objective is to identify the conditions that trigger conflict outbreaks within a foreseeable time horizon 
+
+𝑇 when multiple policies operate concurrently. Let condition 𝑢 =
+
+(𝑠 0, 𝑒 0: 𝑇 −1) be defined as the combination of the initial state and the sequence of exogenous variables. Considering a scenario with two independent control policies, the joint execution under these conditions induces a trajectory distribution: 
+
+𝜏 ∼ 𝑃 𝐴,𝐵 𝜏 (· | 𝑢 ) = 𝑃 𝜏 (· | 𝑎 𝐴 𝑡 ∼ 𝜋 𝐴 , 𝑎 𝐵 𝑡 ∼ 𝜋 𝐵 , 𝑠 0, 𝑒 0: 𝑇 −1). (4) To define the conflict outbreak, we assume that the extent of a conflict can be evaluated using a single-step conflict metric, denoted as 𝜙 𝑐 (𝑠 𝑡 , 𝑎 𝐴 𝑡 , 𝑎 𝐵 𝑡 ) ≥ 0. Consequently, the cumulative conflict over a given trajectory is defined as 𝐽 (𝜏 ) = Í𝑇 −1 
+
+> 𝑡 =0
+
+𝜙 𝑐 (𝑠 𝑡 , 𝑎 𝐴 𝑡 , 𝑎 𝐵 𝑡 ).
+
+Following the framework established by the O-RAN Alliance, the single-step conflict metric encompasses three distinct categories of policy interference. (i) Direct conflict occurs when multiple policies attempt to control the exact same parameters but generate diver-gent action instructions; (ii) Indirect conflict arises when policies control different parameters that are physically coupled through a shared KPI, which can be driven in opposite directions, thus resulting in unexpected values; (iii) Implicit conflict describes a more subtle phenomenon beyond these two. One typical scenario is where independent actions satisfy local requirements, but the joint execution of these actions violates a hidden capacity constraint of the system. Besides, the conflict metric 𝜙 𝑐 should be carefully de-signed to isolate performance drops caused by specific inter-policy conflicts from those caused by inherent environmental adversity. Ultimately, our objective is to discover the condition that maxi-mizes the expected conflict severity: 
+
+𝑢 ∗ = arg max  
+
+> 𝑢
+
+E𝜏 ∼𝑃 𝐴,𝐵 𝜏 (· | 𝑢 )
+
+𝐽 (𝜏 ) . (5) However, solving this optimization problem presents a signifi-cant challenge when the joint-execution data is unavailable. For-mally, for a given deployment environment, we assume the offline data only consists of two marginal sets: D𝐴 = {𝜏 | 𝑎 𝐴 𝑡 ∼ 𝜋 𝐴 (· | 
+
+𝑠 ), 𝑎 𝐵 𝑡 ∼ 𝜋 0 
+
+> 𝐵
+
+(· | 𝑠 )} and D𝐵 = {𝜏 | 𝑎 𝐴 𝑡 ∼ 𝜋 0 
+
+> 𝐴
+
+(· | 𝑠 ), 𝑎 𝐵 𝑡 ∼ 𝜋 𝐵 (· | 𝑠 )} . In these definitions, 𝜋 𝐴 and 𝜋 𝐵 represent the unknown target policies controlling actions 𝑎 𝐴 𝑡 and 𝑎 𝐵 𝑡 , respectively, while 𝜋 0 
+
+> 𝐴
+
+and 𝜋 0 
+
+> 𝐵
+
+denote default policies executed through simple heuristics or fixed configu-rations. Because these sets exclusively capture the system dynamics under individual policy interventions, the joint trajectory distribu-tion under concurrent execution remains strictly unobserved in the training data. Therefore, the problem is not standard conflict de-tection from observed joint traces, but zero-shot conflict condition inference from marginal offline data. 
+
+## 4 The Framework of ZODIAC 
+
+In this section, we present ZODIAC, a three-stage framework that decomposes the conflict reasoning problem into trainable compo-nents and composes them at inference time. Stage 1 trains differ-entiable surrogate models of each xApp’s policy and the shared network dynamics from the marginal datasets. Stage 2 learns a trajectory-level diffusion prior, capturing temporal coherence and physical constraints. Stage 3 steers the reverse diffusion process with compositional guidance that maximizes conflict severity, en-forces dynamic consistency, and penalizes high-uncertainty regions. 
+
+## 4.1 Uncertainty-Aware Model Training from Marginal Offline Data 
+
+In the first stage, we train uncertainty-aware models to approxi-mate single-step policy behaviors and environmental transitions from the marginal datasets D𝐴 and D𝐵 . Both are implemented as differentiable neural network ensembles, which provide gradients for guided searching and epistemic uncertainty estimates to prevent out-of-distribution (OOD) exploitation. For the policy models, we use behavioral cloning to approximate the marginal policies 𝜋 𝐴 (𝑎 𝐴 | 𝑠 ) and 𝜋 𝐵 (𝑎 𝐵 | 𝑠 ). Each policy is rep-resented by an ensemble of 𝑁 independently initialized networks, whose prediction variance serves as an uncertainty estimate 𝑈 𝜋 (𝑠 )
+
+that quantifies the model’s confidence in a given state: 
+
+𝑈 𝜋 (𝑠 ) = 1
+
+𝑁 
+
+> 𝑁
+
+∑︁ 
+
+> 𝑛 =1
+
+∥ ˆ𝑎 (𝑛 ) − ¯𝑎 ∥22, (6) where ˆ𝑎 (𝑛 ) is the action predicted by the 𝑛 -th ensemble component and ¯𝑎 is the mean. For the dynamics, we train an ensemble of net-works {𝑇 𝜙 𝑚 }𝑀 𝑚 =1 to predict the next state 𝑠 𝑡 +1 given the current state 
+
+𝑠 𝑡 , exogenous variable 𝑒 𝑡 , and joint actions (𝑎 𝐴 𝑡 , 𝑎 𝐵 𝑡 ). The dynamics uncertainty is similarly estimated by the ensemble variance: 
+
+𝑈 dyn (𝑠 𝑡 , 𝑒 𝑡 , 𝑎 𝐴 , 𝑎 𝐵 ) = 1
+
+𝑀 
+
+> 𝑀
+
+∑︁ 
+
+> 𝑚 =1
+
+∥ ˆ𝑠 (𝑚 )  
+
+> 𝑡 +1
+
+− ¯𝑇 𝜙 ∥22, (7) where ¯𝑇 𝜙 is the mean prediction. We use cross-entropy loss for all action spaces, which are discrete. For the dynamics model, mean squared error (MSE) is adopted for continuous state features such as UE positions, while cross-entropy handles discrete features. Together, these two models act as surrogate simulators during zero-shot inference, enabling single-step prediction without access to the true environment. The uncertainty estimates 𝑈 𝜋 and 𝑈 dyn 
+
+play a critical role here. Without them, gradient-based guidance during diffusion would steer the sampled conditions toward re-gions where the surrogate models are unreliable, causing model approximation errors to be falsely attributed to policy conflicts. 
+
+## 4.2 Trajectory Diffusion Prior 
+
+Single-step surrogate models trained in the last stage can suffer from compounding errors over long horizons, making autoregres-sive rollouts unreliable. To address this, we train an unconditional diffusion model over complete trajectories sampled from the mar-ginal datasets. Rather than predicting one step at a time, this model learns a distributional prior over entire sequences, capturing tem-poral coherence, valid feature correlations, and the macro-level physical constraints of the environment. The resulting prior de-fines an in-distribution manifold that prevents the guided search in the next stage from producing physically implausible scenarios. Let a full trajectory form be 𝜏 as defined in Eq. (3) . We train an un-conditional Denoising Diffusion Probabilistic Model (DDPM) [ 14 ], parameterized as a noise predictor 𝜖 𝜃 (𝜏 𝑘 , 𝑘 ), on trajectories pooled ZODIAC: Zero-shot Offline Diffusion for Inferring Multi-xApps Conflicts in Open Radio Access Networks Conference’17, July 2017, Washington, DC, USA 
+
+from D𝐴 ∪ D 𝐵 . The forward process progressively corrupts a clean trajectory 𝜏 0 into isotropic Gaussian noise 𝜏 𝐾 over 𝐾 diffusion steps, and the model is trained to reverse this corruption by minimizing the standard denoising objective: 
+
+Ldiffusion = E𝜏 0,𝑘,𝜖 
+
+∥𝜖 − 𝜖 𝜃 (𝜏 𝑘 , 𝑘 )∥ 22
+
+ , (8) where 𝑘 ∼ Uniform (1, 𝐾 ) and 𝜖 ∼ N ( 0, 𝐼 ). During inference, the reverse process iteratively denoises a sample from 𝜏 𝐾 ∼ N ( 0, 𝐼 )
+
+back toward the learned data distribution. A practical challenge in O-RAN is that state and action spaces often contain discrete features, while standard Gaussian diffusion operates in continuous space. We handle this through continuous relaxation: during preprocessing, discrete variables are mapped into 
+
+R𝑑 via learned embedding layers, and categorical actions are relaxed using the Gumbel-Softmax reparameterization. The diffusion model then operates entirely within this continuous latent representation. At the last few denoising steps, a hard projection operator ΠE maps the continuous outputs back to valid discrete parameters, enforcing feasibility constraints such as legal resource block assignments. This projection is also applied in inference steps. 
+
+## 4.3 Compositional Energy Guided Search 
+
+A generative model trained on D𝐴 ∪ D 𝐵 merely simulates a mixture of marginal trajectory distributions with normal denoising steps and cannot represent the coupled dynamics that emerge under joint execution or be used to discover plausible trajectories with high conflict probabilities. To overcome this, ZODIAC steers the reverse diffusion process at inference time to sample from the unobserved joint conflict distribution 𝑝 (𝜏 | 𝜋 𝐴 , 𝜋 𝐵 , 𝜙 𝑐 ). By Bayes’ theorem, the score of this target distribution decomposes into the unconditional diffusion prior and a composite energy function Jguide (𝜏 ) that en-codes policy likelihoods and conflict objectives. Since the intermediate diffusion iterates 𝜏 𝑘 are corrupted by Gaussian noise, evaluating the surrogate models directly on 𝜏 𝑘 
+
+produces invalid and numerically unstable gradients. We address this with Tweedie’s formula [ 10 ], which provides a closed-form estimate of the clean trajectory ˆ𝜏 0 from any noisy iterate at step 𝑘 :
+
+ˆ𝜏 0 = 𝜏 𝑘 − √1 − ¯𝛼 𝑘 𝜖 𝜃 (𝜏 𝑘 , 𝑘 )√ ¯𝛼 𝑘 
+
+. (9) All subsequent gradient computations are performed on this de-noised estimate. We define three energy functions over ˆ𝜏 0, each serving a distinct role in the guided search. The target energy Etarget drives the trajectory toward high-conflict regions while ensuring that the actions remain consistent with the learned marginal policies: 
+
+Etarget = 
+
+> 𝑇 −1
+
+∑︁ 
+
+> 𝑡 =0
+
+  log 𝜋 𝐴 ( ˆ𝑎 𝐴 𝑡 | ˆ𝑠 𝑡 ) + log 𝜋 𝐵 ( ˆ𝑎 𝐵 𝑡 | ˆ𝑠 𝑡 ) + 𝜙 𝑐 ( ˆ𝑠 𝑡 , ˆ𝑎 𝐴 𝑡 , ˆ𝑎 𝐵 𝑡 ),
+
+(10) where 𝜙 𝑐 is instantiated according to the target conflict. For direct conflicts, this corresponds to the KL divergence between policy ac-tion distributions; for indirect or implicit conflicts, it takes the form of continuous penalty functions measuring performance degrada-tion or constraint violations directly caused by the joint policy. The physics energy Ephysics enforces dynamic consistency by penalizing deviations between the generated state sequence and the predictions of the surrogate transition model: 
+
+Ephysics = − 
+
+> 𝑇 −1
+
+∑︁  
+
+> 𝑡 =0
+
+∥ ˆ𝑠 𝑡 +1 − ¯𝑇 𝜙 ( ˆ𝑠 𝑡 , ˆ𝑒 𝑡 , ˆ𝑎 𝐴 𝑡 , ˆ𝑎 𝐵 𝑡 )∥ 22. (11) The epistemic energy Eepistemic discourages the search from ex-ploiting regions where the surrogate models are unreliable, penal-izing trajectories that pass through high-uncertainty states: 
+
+Eepistemic = − 
+
+> 𝑇 −1
+
+∑︁  
+
+> 𝑡 =0
+
+ 𝑈 dyn ( ˆ𝑠 𝑡 , ˆ𝑒 𝑡 , ˆ𝑎 𝐴 𝑡 , ˆ𝑎 𝐵 𝑡 ) + 𝑈 𝜋 ( ˆ𝑠 𝑡 ). (12) A common failure mode in multi-objective guided diffusion is gradient domination, where one energy term overwhelms the oth-ers due to differences in numerical scale, causing the trajectory to collapse into physically impossible states. To prevent this, we normalize the gradient of each energy component to unit 𝐿 2 norm, yielding scale-free direction vectors 𝑔 target , 𝑔 physics , and 𝑔 epistemic .Specifically, let ˜𝑔 𝑖 = ∇ˆ𝜏 0 E𝑖 denote the raw gradient of each energy component with respect to the denoised trajectory estimate. The scale-free direction vectors are obtained by 𝐿 2 normalization: 
+
+𝑔 𝑖 = ˜𝑔 𝑖 
+
+∥ ˜𝑔 𝑖 ∥2 + 𝛿 , 𝑖 ∈ { target , physics , epistemic }, (13) where 𝛿 is a small constant for numerical stability. The composite guidance direction is then: 
+
+𝑑 guide = 𝛾 · 𝑔 target + ( 1 − 𝛾 ) · 𝑔 physics + 𝑔 epistemic 
+
+2 , (14) where 𝛾 ∈ [ 0, 1] governs the trade-off between conflict intensity and physical plausibility. The guided denoising step takes the form: 
+
+𝜏 𝑘 −1 = DDPM_Step  𝜏 𝑘 , 𝜖 𝜃 − 𝜂 √︁ 1 − ¯𝛼 𝑘 · 𝑑 guide 
+
+. (15) 
+
+## 5 Theoretical Analysis 
+
+We analyze ZODIAC along two axes: (i) we expose the structural obstruction that makes joint conflict reasoning from marginal data fundamentally hard, and (ii) we show that the compositional guid-ance of Section 4 is a tractable surrogate for a Lower Confidence Bound (LCB) on the true conflict severity. Throughout this section, we work under a set of mild regularity conditions (A1)–(A4) that cap-ture bounded cross-policy coupling , Lipschitz dynamics, policies and conflict metric , and calibrated ensemble uncertainty . Their precise statements, together with all proofs, are deferred to Appendix A. To make the source of difficulty explicit, we adopt the canonical decomposition of the joint dynamics in Eq. (1): 
+
+𝑠 𝑡 +1 = 𝑓 0 (𝑠 𝑡 , 𝑒 𝑡 ) + 𝑓 𝐴 (𝑠 𝑡 , 𝑒 𝑡 , 𝑎 𝐴 𝑡 ) + 𝑓 𝐵 (𝑠 𝑡 , 𝑒 𝑡 , 𝑎 𝐵 𝑡 )+ 𝑓 𝐴𝐵 (𝑠 𝑡 , 𝑒 𝑡 , 𝑎 𝐴 𝑡 , 𝑎 𝐵 𝑡 ) + 𝜉 𝑡 , (16) where 𝑓 0 encodes the baseline-only response, 𝑓 𝐴 and 𝑓 𝐵 isolate the marginal effects of each policy relative to their corresponding de-fault opposite policy 𝜋 0 
+
+> 𝐵
+
+or 𝜋 0
+
+> 𝐴
+
+, and 𝑓 𝐴𝐵 is the residual coupling that vanishes whenever either action equals the default action. Under this decomposition, the marginal datasets D𝐴 , D𝐵 of Section 3.2 reveal 𝑓 0, 𝑓 𝐴 , 𝑓 𝐵 but provide no signal about 𝑓 𝐴𝐵 .
+
+Non-identifiability of the coupling term. The first result for-malizes the data-collection bottleneck. Conference’17, July 2017, Washington, DC, USA Fang et al. 
+
+Lemma 5.1 (Non-identifiability of 𝑓 𝐴𝐵 ). Under the boundary condition on 𝑓 𝐴𝐵 , the trajectory distributions induced on D𝐴 ∪ D 𝐵 
+
+by any two choices of the coupling term 𝑓 𝐴𝐵 , ˜𝑓 𝐴𝐵 are identical. Con-sequently, 𝑓 𝐴𝐵 cannot be uniquely recovered from marginal data regardless of dataset size. 
+
+Lemma 5.1 has two implications for ZODIAC’s design. First, the bounded-coupling assumption (A1) is necessary : without a priori bound on 𝑓 𝐴𝐵 , no finite-sample guarantee on the joint conflict can exist. Second, any point-estimate surrogate trained on marginal data implicitly sets 𝑓 𝐴𝐵 ≡ 0, which is one feasible explanation among infinitely many; the epistemic energy in Eq. (14) is precisely the term that penalizes regions where this aliasing dominates. Let ˆ𝐹 := ¯𝑇 𝜙 denote the surrogate joint dynamics ensemble, and let ˆ𝜏 and 𝜏 denote the surrogate rollout (under ˆ𝐹 with the policy ensembles ˆ𝜋 𝐴 , ˆ𝜋 𝐵 ) and the true joint trajectory under condition 
+
+𝑢 = (𝑠 0, 𝑒 0: 𝑇 −1), respectively. Define the per-step uncertainty radius 
+
+𝑟 𝑘 (𝑢 ) := 𝛽 𝑇 √︃ 𝑈 (𝑘 ) 
+
+> 𝑑𝑦𝑛
+
++ 2𝐿 𝑎 𝛽 𝜋 √︃ 𝑈 (𝑘 ) 
+
+> 𝜋
+
++ 𝐿 𝐴𝐵 + 𝜎 𝜉 , (17) and the closed-loop contraction constant 𝐿 ′ := 𝐿 𝐹 + 2𝐿 𝑎 𝐿 𝜋 , where the Lipschitz constants 𝐿 𝐹 , 𝐿 𝑎 , 𝐿 𝜋 , the coupling bound 𝐿 𝐴𝐵 , the cali-bration constants 𝛽 𝑇 , 𝛽 𝜋 , and the noise scale 𝜎 𝜉 are all introduced in Appendix A. 𝑈 𝑑𝑦𝑛 and 𝑈 𝜋 are the epistemic uncertainties of the dynamics and policy models, which are estimated by the ensembles using Equation (6) and (7). 
+
+Theorem 5.2 (Trajectory mismatch). Under (A1)–(A4), with probability at least 1 − 2𝑇 𝛿 ,
+
+E∥ ˆ𝑠 𝑡 − 𝑠 𝑡 ∥2 ≤ 
+
+> 𝑡 −1
+
+∑︁ 
+
+> 𝑘 =0
+
+(𝐿 ′) 𝑡 −1−𝑘 𝑟 𝑘 (𝑢 ), ∀𝑡 ≤ 𝑇 . (18) The bound separates the rollout error into (a) the model epistemic terms 𝛽 𝑇 √︁ 𝑈 𝑑𝑦𝑛 and 𝛽 𝜋 
+
+√𝑈 𝜋 , which ZODIAC’s epistemic penalty defined in Eq. (12) directly suppresses; (b) the irreducible coupling bias 𝐿 𝐴𝐵 that no amount of marginal data can shrink (Lemma 5.1); and (c) the aleatoric floor 𝜎 𝜉 . The geometric factor (𝐿 ′)𝑡 −1−𝑘 is the standard worst case for step-by-step autoregressive surrogates; ZODIAC blunts it because the diffusion generates entire trajec-tories simultaneously, and the physics energy defined in Eq. (11) keeps generated states on the surrogate’s reliable manifold where (A4) applies. Lifting the per-state bound to the scalar conflict via Lipschitzness of 𝜙 𝑐 yields our main guarantee. Let 𝐽 ∗ (𝑢 ) := E𝜏 ∼𝑃 𝐴,𝐵 𝜏 (· | 𝑢 ) [𝐽 (𝜏 )] denote the true expected cumu-lative conflict and ˆ𝐽 (𝑢 ) := Í𝑇 −1 
+
+> 𝑡 =0
+
+𝜙 𝑐 ( ˆ𝑠 𝑡 , ˆ𝑎 𝐴 𝑡 , ˆ𝑎 𝐵 𝑡 ) its surrogate. 
+
+Theorem 5.3 (Conflict Lower Confidence Bound). Under (A1)–(A4), define 
+
+𝑅 (𝑢 ) := 𝐿 𝑐 𝑇 −1∑︁ 
+
+> 𝑡 =0
+
+h
+
+2𝛽 𝜋 √︃ 𝑈 (𝑡 ) 
+
+> 𝜋
+
++ ( 1+2𝐿 𝜋 ) 
+
+> 𝑡 −1
+
+∑︁ 
+
+> 𝑘 =0
+
+(𝐿 ′)𝑡 −1−𝑘 𝑟 𝑘 (𝑢 )
+
+i
+
+.
+
+Then with probability at least 1 − 2𝑇 𝛿 ,
+
+𝐽 ∗ (𝑢 ) ≥ ˆ𝐽 (𝑢 ) − 𝑅 (𝑢 ). (19) 
+
+Corollary 5.4 (Justification of compositional guidance). 
+
+Up to scale-free normalization (Eq. 15), ZODIAC’s composite guidance is a first-order surrogate for the LCB ˆ𝐽 (𝑢 )− 𝜆𝑅 (𝑢 ): Etarget ascends ˆ𝐽 (𝑢 ),
+
+Eepistemic descends the ensemble-disagreement portion of 𝑅 (𝑢 ), and 
+
+Ephysics together with the diffusion prior keeps the search inside the manifold where (A4) is informative. Hence any condition 𝑢 ★ returned by ZODIAC satisfies, with probability at least 1 − 2𝑇 𝛿 ,
+
+𝐽 ∗ (𝑢 ★) ≥ ˆ𝐽 (𝑢 ★) − 𝑅 (𝑢 ★), (20) 
+
+i.e., the discovered conflict is non-trivial whenever ˆ𝐽 (𝑢 ★) > 𝑅 (𝑢 ★).
+
+Eq. (20) also predicts the ablation results observed in the experi-ments: removing 𝑈 𝑑𝑦𝑛 or 𝑈 𝜋 inflates 𝑅 (𝑢 ) relative to ˆ𝐽 (𝑢 ), so the surrogate ranking ceases to lower-bound the true conflict, thus causing the True Positive Rate to collapse. 
+
+## 6 Experiments 
+
+To demonstrate the effectiveness of ZODIAC, we conducted exten-sive experiments across multiple scenarios in both lightweight and realistic simulated environments. We first detail the configurations, including environment settings, conflict scenario design, evalua-tion metrics, and baselines. We then present the main experimental results and ablation studies to validate our framework design. 
+
+## 6.1 Environment Preparation 
+
+Our experiments are conducted on two platforms of different fidelity levels. The first is Mobile-Env [ 23 ], a lightweight, open-source en-vironment for wireless mobile networks. Mobile-Env models User Equipment (UE) moving in a two-dimensional area and connect-ing to Base Stations (BS). With a similar scenario set, the second environment is built on NS-O-RAN-Flexric [ 29 ], a high-fidelity 5G O-RAN simulator that enables the deployment of xApps. Both plat-forms are adjusted to support the joint execution of multiple xApps and to record the necessary interfaces required by our framework. 
+
+6.1.1 Mobile-Env Scenario Design. Within the Mobile-Env, we con-struct three distinct scenarios, each corresponding to one of the conflict types. All three scenarios share a common network topol-ogy consisting of 3 BSs and 5 mobile UEs. Each UE is limited to connect to at most one BS at any time step. The default Okumura-Hata channel model and log-based Shannon utility functions are adopted. The scenarios differ in policy objectives, action spaces, and conflict definitions, as illustrated in Figure 3 and described below. 
+
+Direct Conflict Scenario. Both xApps control the same param-eter set as the UE-BS association, i.e. , they share the same action space A𝐴 = A𝐵 but optimize distinct objectives/KPIs: 
+
+𝑎 𝐴 , 𝑎 𝐵 ∈ { disconnect , BS 0, BS 1, BS 2 } ∀ 𝑢, (21) where 𝑢 is any one of the 5 UEs. Specifically, 𝜋 𝐴 is the policy of a Load Balancing (LB) xApp that minimizes the maximum per-BS UE count and therefore tends to route UEs to lightly-loaded BSs. 
+
+𝜋 𝐵 (QoE Maximization xApp) maximizes the aggregate data rate by concentrating UEs on the BS with the highest SINR, which is typically the nearest one. Because both xApps issue connection commands to the same UEs, their instructions are likely to be con-tradictory. The training procedures for these two policies are con-ducted independently in separate environments, using the classic RL algorithm PPO with different reward functions. The same proce-dures are applied for training the xApps in other scenarios. These initial policies are only used for data generation and real conflict verification, which are inaccessible to the ZODIAC framework. To ZODIAC: Zero-shot Offline Diffusion for Inferring Multi-xApps Conflicts in Open Radio Access Networks Conference’17, July 2017, Washington, DC, USA 0                 
+
+> 20
+> 40
+> 60
+> 80
+> KL Div.  dir  (%)
+> Joint
+> Random
+> Threshold
+> 04812 16
+> Time step t
+> 0
+> 1
+> 2
+> 3
+> 4
+> 5
+> 6
+> # UE conn.
+> (a) Direct Conflict
+> UEs on BS-1
+> UEs on BS-2
+> none
+> BS0
+> BS1
+> BS2
+> xApp1 action
+> (target BS)
+> UE0 UE1 UE2 UE3 UE4
+> 048
+> Time step t
+> 25
+> 30
+> 35
+> xApp2 action
+> (power(dBm))
+> conflict!
+> (b) Indirect Conflict
+> BS0
+> BS1
+> BS2
+> 04812 16
+> Time step t
+> 50
+> 60
+> 70
+> 80
+> 90
+> 100
+> Total Power of BSs (dBm)
+> (c) Implicit Conflict
+> Joint
+> xApp2 alone
+> Random scenario
+> Pmax =75 dBm
+> Constraint violation
+
+Figure 3: Visualization of the conflict cases for three different types in Mobile-Env environment. (a) The direct conflict occurs when the LB xApp and QoE xApp have distinct commands within the same time step, estimated by the KL Divergence between policy models. (b) The indirect conflict is defined as high-power BS with no connected UE, which can happen due to suboptimal cooperation between the UE-BS association xApp and Power control xApp. (c) The implicit conflict is defined as a violation of constraint (limited total power) due to the two xApps, which will not happen when running either xApp alone. 
+
+clarify, the simulated policy ensembles in ZODIAC are another model trained to infer these true policies from their offline datasets. The conflict 𝜙 𝑑𝑖𝑟 in this scenario is defined as the inconsistency of actions from two policies within the same time step. The system process will continue with a priority for LB xApp over QoE xApp. To provide continuous conflict metrics estimates ˆ𝜙 𝑑𝑖𝑟 for guidance, given the trained policy ensembles { ˆ𝜋 𝐴 (· | 𝑠 ), ˆ𝜋 𝐵 (· | 𝑠 )} , we define: 
+
+ˆ𝜙 dir (𝑠 𝑡 , ˆ𝜋 𝐴 , ˆ𝜋 𝐵 ) = 1
+
+𝑁 UE 
+
+> 𝑁 UE
+
+∑︁ 
+
+> 𝑢 =1
+
+𝐷 KL 
+
+  ˆ𝜋 𝐴 (· | 𝑠 𝑡 , 𝑢 ) ∥ ˆ𝜋 𝐵 (· | 𝑠 𝑡 , 𝑢 ), (22) In which 𝑁 𝑈 𝐸 is the number of UEs. Therefore, a high KL divergence indicates that the two xApps are more likely to give conflicting commands for the UE-BS assignment under the same network state. 
+
+Indirect Conflict Scenario. The two xApps control disjoint parameter sets, i.e. , A𝐴 ∩ A 𝐵 = ∅. However, their joint actions can impact the shared dynamics with a combined effect, leading to performance degradation. More specifically, 𝜋 𝐴 controls per-BS transmit power, while 𝜋 𝐵 controls UE-BS association: 
+
+𝑎 𝐴, (𝑏 ) 
+
+> 𝑡
+
+∈ { 20 (low) , 30 (med) , 40 (high) }( dBm ), ∀𝑏 (23) 
+
+𝑎 𝐵, (𝑢 ) 
+
+> 𝑡
+
+∈ { disconnect , BS 0, BS 1, BS 2 }, ∀𝑢. (24) Typically 𝜋 𝐴 reduces the power levels of BSs with few connec-tions to conserve energy. Under the OkumuraHata channel model, this could cause the received SNR at cell-edge UEs to drop below the service threshold. Meanwhile, 𝜋 𝐵 maximizes the QoS while mini-mizing handover overhead. Therefore, in some cases, the joint effect could trap UEs on low-power BSs, severely degrading their utility, which is a conflict that is hard to infer from marginal observations. The per-BS indirect conflict definition 𝜙 𝑏  
+
+> ind
+
+is based on a directly observable pattern: a BS operating at minimum power while still serving a disproportionate number of UEs: 
+
+𝜙 𝑏  
+
+> ind
+
+(𝑠 𝑡 , 𝑎 𝐴 𝑡 , 𝑎 𝐵 𝑡 ) = I
+
+h
+
+𝑎 𝐴, (𝑏 ) 
+
+> 𝑡
+
+= 𝑙𝑜𝑤 
+
+i
+
+· I
+
+hÍ𝑢 I[𝑎 𝐵, (𝑢 ) 
+
+> 𝑡
+
+= 𝑏 ] ≥ 𝜃 𝑐 
+
+i
+
+, (25) with threshold 𝜃 𝑐 = 2. The overall conflict metric is defined as 
+
+𝜙 𝑖𝑛𝑑 (𝑠 𝑡 , 𝑎 𝐴 𝑡 , 𝑎 𝐵 𝑡 ) = Í𝑏 𝜙 𝑏 𝑖𝑛𝑑 (𝑠 𝑡 , 𝑎 𝐴 𝑡 , 𝑎 𝐵 𝑡 ). The physical interpretation of this definition is clear: BS 𝑏 operates at its minimum power level while 𝜃 𝑐 or more UEs remain associated with it. This pattern emerges precisely when one xApp lowers power while the other simultaneously refuses to reroute the affected UEs. 
+
+Implicit Conflict Scenario. The action spaces of two xApps are the same as in the indirect scenario, but the conflict is hidden: it only manifests under joint deployment because each policy individually obeys a constraint, yet their combined actions could exceed it. In isolation, each xApp is trained to maximize the QoE while satisfying the total transmit-power budget 𝑃 max :
+
+> 3
+
+∑︁ 
+
+> 𝑏 =1
+
+𝑝 (𝑘 ) 
+
+> 𝑏
+
+(𝑡 ) ≤ 𝑃 max , 𝑘 ∈ { 𝐴, 𝐵 }, (26) where 𝑝 𝑏 ∈ { 20 , 30 , 40 } dBm is mapped to {0, 1, 2} W for summation. Under joint deployment, 𝜋 𝐴 can steer more UEs toward a particular BS, while Policy 𝐵 responds by boosting the power of that BS to satisfy the QoE. Their combined effect can cause unpredictable results, leading to exceeding 𝑃 max . Therefore, we define the conflict metric based on the constraint violation: 
+
+𝜙 imp (𝑠 𝑡 , 𝑎 𝐴 𝑡 , 𝑎 𝐵 𝑡 ) = max 
+
+
+
+0,
+
+> 3
+
+∑︁ 
+
+> 𝑏 =1
+
+𝑝 𝑏 (𝑡 ) − 𝑃 max 
+
+
+
+. (27) This function is strictly zero when the power budget is respected and increases proportionally with the severity of the violation. Since each individual policy satisfies the budget during marginal training, a nonzero 𝜙 imp unambiguously signals a conflict that arises exclusively from joint deployment. Conference’17, July 2017, Washington, DC, USA Fang et al. 
+
+6.1.2 NS-O-RAN-FlexRIC Scenario. To validate ZODIAC in a high-fidelity O-RAN setting, we establish an environment on NS-O-RAN-FlexRIC, which integrates the FlexRIC Near-RT RIC with the ns-3 mmWave module and the 5G-LENA NR module, providing a Non-Standalone 5G network with standardized E2 interfaces. The simulation features one LTE eNB and 5 mmWave gNBs, with 10 UEs moving in the area and being served through dual connectivity. We deploy two xApps analogous to the direct conflict scenario: an LB xApp that distributes UEs across gNBs to equalize cell uti-lization and an Energy Saving xApp that reduces cell power or deactivates lightly-loaded cells to minimize energy consumption. Their concurrent execution on the same set of handover control parameters creates a direct conflict, which manifests as oscillatory handover decisions and degraded user throughput. The KPIs are collected through the standardized KPM v3 indication messages exchanged over the E2 interface, and the control actions are issued via RC v1.03 control requests. A major difference in NS-O-RAN-FlexRIC compared with Mobile-Env is that the xApps now have delayed decision-making and action execution: their actions are made based on a moving window average and network status over consecutive time intervals, while the transfer action is done by sending the signals first and is carried out by other modules. To deal with this, we integrate 10 time steps into one and merge all the corresponding UE movements and actions taken by the two xApps. 
+
+6.1.3 Data Collection. For each scenario, the data collection pro-cess follows the marginal deployment protocol established in Sec-tion 3. After training both xApps, offline datasets D𝐴 and D𝐵 are collected by rolling out each policy for a fixed number of episodes. Specifically, for indirect and implicit conflict scenarios, since the ac-tions of the two xApps do not overlap, a marginal policy is required to cover the action that would have been taken by the other xApp. In this setting, for the data collection process concerning the "UE-BS Association Control xApp," the marginal policy is configured to maintain a fixed power level; conversely, for the "Power Control xApp," the marginal policy employs a "most recently assigned" rule. During each episode, the initial UE positions and moving direc-tions are randomly sampled, and UE speed is held constant. The environment is reset with a new random configuration at the start of each episode. Each trajectory record contains the exogenous variables 𝑒 𝑡 (UE moving directions), the system state 𝑠 𝑡 , and the actions of both the active policy and the marginal policy. Crucially, no joint deployment data is collected at any point since the two xApps have never co-existed during data collection. 
+
+## 6.2 Evaluation Metrics and Baselines 
+
+Our evaluation verifies true conflicts by applying the conditions to the ground-truth simulator. We adopt the following metrics: 
+
+True Positive Rate at Top-K (TPR@K). The generated scenar-ios ˆ𝜏 are ranked by their estimated conflict energy 𝐽 ( ˆ𝜏 ) in descend-ing order. The conflict conditions of the top-𝐾 scenarios are then extracted and verified. A condition is counted as a true positive if its conflict metric 𝜙 𝑐 exceeds a predefined threshold. TPR@ 𝐾 
+
+reports the fraction of true positives among them. 
+
+Spearman 𝜌 . Beyond TPR@K, we measure whether the en-ergy of the simulated trajectory correctly ranks scenarios by their true conflict severity. Spearman’s rank correlation coefficient is Method TPR@10 TPR@20 TPR@50 Spearman 𝜌 
+
+ZODIAC-d 100.0 ±0.0 91.0 ±5.5 52.4 ±6.3 0.53 ±0.03 
+
+CEM-d 95.0 ±7.1 82.0 ±8.4 41.6 ±5.2 0.34 ±0.06 
+
+BPTT-d 100.0 ±0.0 85.5 ±9.2 53.2 ±5.9 0.25 ±0.04 
+
+Random-d 12.0 ±8.4 11.5 ±6.3 15.8 ±4.9 0.03 ±0.07 
+
+ZODIAC-ind 97.0 ±4.8 82.5 ±7.2 44.6 ±7.1 0.50 ±0.03 
+
+CEM-ind 88.0 ±11.4 74.0 ±9.9 33.0 ±4.6 0.31 ±0.07 
+
+BPTT-ind 91.0 ±11.0 77.5 ±11.8 35.8 ±4.8 0.21 ±0.05 
+
+Random-ind 15.0 ±10.8 12.0 ±7.9 13.2 ±5.7 0.04 ±0.08 
+
+ZODIAC-imp 93.0 ±8.2 78.0 ±9.1 38.2 ±8.5 0.46 ±0.04 
+
+CEM-imp 82.0 ±13.0 68.5 ±11.7 28.4 ±6.1 0.28 ±0.08 
+
+BPTT-imp 86.0 ±12.4 71.0 ±13.2 30.6 ±7.0 0.19 ±0.06 
+
+Random-imp 8.0 ±7.6 7.5 ±6.1 9.8 ±5.2 0.01 ±0.06 
+
+ZODIAC-ns3 90.0 ±9.4 75.0 ±10.3 36.8 ±9.2 0.43 ±0.05 
+
+CEM-ns3 78.0 ±14.3 65.0 ±12.5 26.2 ±6.8 0.26 ±0.07 
+
+BPTT-ns3 83.0 ±12.8 68.5 ±14.0 29.0 ±7.4 0.17 ±0.06 
+
+Random-ns3 6.0 ±6.5 5.5 ±4.8 8.4 ±4.3 −0.01 ±0.08 
+
+Table 1: TPR@Top-K results for each conflict scenario. Bold values indicate the best performance. 
+
+computed between the offline energy 𝐽 ( ˆ𝜏 ) and the corresponding simulator-verified conflict metric 𝐽 (𝜏 |𝑠 0 = ˆ𝑠 0, 𝑒 0: 𝑇 −1 = ˆ𝑒 0: 𝑇 −1). A high 𝜌 indicates that the method not only finds conflicts but also correctly reasons about them and predicts the scenario. 
+
+Computational Efficiency. We report the wall-clock time re-quired by each method to generate its full set of candidate scenarios. 
+
+Diversity. To ensure that the method discovers a broad range of conditions rather than being confined to a few failure modes, we report the distribution of conflict severity across all generated scenarios and examine the diversity of discovered conflict patterns. We compare ZODIAC against three baselines that represent different paradigms for failure mode searching: 
+
+Random Search (RS). Exogenous condition sequences 𝑒 0: 𝑇 −1
+
+and initial states 𝑠 0 are sampled uniformly at random. This base-line establishes the base rate of conflict occurrence under natural conditions and serves as a lower bound on search effectiveness. 
+
+Backpropagation Through Time (BPTT). This baseline di-rectly backpropagates gradients through the surrogate model across all time steps to optimize the conditions. Starting from a randomly initialized condition, BPTT performs iterative gradient ascent on 
+
+𝜙 c. While conceptually straightforward, BPTT is susceptible to vanishing and exploding gradients over long horizons. 
+
+Cross-Entropy Method (CEM). CEM [ 22 ] is a representative gradient-free genetic algorithm. It maintains a parametric distri-bution over the condition space and iteratively fits it to the top-performing samples. At each generation, a population of candidate conditions is sampled, evaluated through the surrogate model, and the elite fraction is used to update the distribution parameters. All baselines use the same trained surrogate models. The key differentiator is how each method navigates the high-dimensional condition space: RS explores blindly, CEM uses population-based op-timization, BPTT uses first-order gradients, and ZODIAC leverages the diffusion prior with compositional energy-guided denoising. ZODIAC: Zero-shot Offline Diffusion for Inferring Multi-xApps Conflicts in Open Radio Access Networks Conference’17, July 2017, Washington, DC, USA 
+
+## 6.3 Main Experimental Results and Analysis 
+
+We conducted the experiment over 5 random seeds and present the TPR as the main result in Table 1. For each scenario, there are 1000 initial states evaluated. Several key observations emerge from these results. First, all optimization-based methods substantially outper-form RS, confirming that active search over the condition space is essential for reliably discovering conflict-inducing scenarios. It is noteworthy that the conflict-related hyperparameters are specif-ically tuned to maintain about 10% TPR@10 for random search, reflecting the low base rate of conflicts under natural conditions. While CEM and BPTT achieve comparable TPR scores to ZO-DIAC at Top-10 and Top-20, the critical differentiator is the Spear-man rank correlation. ZODIAC achieves an average 𝜌 = 0.48 , which is substantially higher than CEM and BPTT. This indicates that the energy produced by ZODIAC’s compositional guidance not only identifies conflict scenarios but also reasons about these conflicts, thereby ensuring that the generated scenarios align with the phys-ical environment; in contrast, while CEM and BPTT are indeed capable of discovering conflict conditions, the correlation between their estimated scenarios and the ground truth remains notably weak, mainly due to the cumulative error. 10 2 10 3
+
+> Wall-Clock Time (s)
+> 0
+> 20
+> 40
+> 60
+> 80
+> 100
+> TPR@20 (%)
+> 31s
+> 83s
+> 92s
+> 860s
+> CEM 9× slower
+> Random Search
+> BPTT
+> ZODIAC
+> CEM
+
+Figure 4: The average efficiency over all environments. 0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Conflict Severity
+> 0.0
+> 0.1
+> 0.2
+> 0.3
+> 0.4
+> 0.5
+> Distribution of Scenarios  std=0.216
+> std=0.059
+> ZODIAC
+> CEM
+
+Figure 5: Diversity comparison for indirect conflict case. 1 5 10 20 50 
+
+K (Top-K)    
+
+> 0
+> 20
+> 40
+> 60
+> 80
+> 100
+> True Positive Rate (%)
+> ZODIAC
+> w/o Udyn
+> w/o U
+> w/o Udyn +U
+> w/o Guidance
+
+Figure 6: Visualization of the conflict cases for three different types in Mobile-Env environment. 
+
+Furthermore, we analyze and report the comparison of methods in efficiency and diversity. As demonstrated in Figure 4 and Figure 5, ZODIAC shows competitive efficiency compared to BPTT, while both run significantly faster than CEM. As for diversity, we checked the distribution of the severity of all identified conflicts, defined as the proportion of conflict-manifesting time in the indirect conflict case. The results imply that CEM tends to fall into several modes, while ZODIAC can generate more diversified scenarios. 
+
+## 6.4 Ablation Studies 
+
+To validate the contribution of each component in the compositional guidance of ZODIAC, we conduct ablation studies by systematically removing individual guidance terms and measuring the resulting degradation in performance. We consider the following variants: 
+
+• w/o 𝑈 dyn : The dynamics uncertainty penalty Edyn is removed, and the guided search is now free to exploit regions where the dynamics model produces unreliable predictions. 
+
+• w/o 𝑈 𝜋 : The policy uncertainty penalty E𝜋 is removed, with-out which the inferred actions in highly out-of-distribution states become unreliable. 
+
+• w/o 𝑈 dyn + 𝑈 𝜋 : Remove both penalties. 
+
+• w/o Guidance : The entire guidance mechanism is disabled, and the diffusion model generates trajectories purely from its learned unconditional prior 𝑝 𝜃 (𝜏 ). However, as the rank-ing mechanism through simulated conflict metrics is still functioning, it’s still better than random sampling. The results shown in Figure 6 and Figure 7 reveal a clear hierar-chy of component importance. The most significant degradation occurs when the entire guidance mechanism is removed (with-out Guidance), with TPR@10 dropping to about 70% and TPR@20 dropping to about 50%. This confirms that the compositional energy-guided search is the primary driver of ZODIAC’s conflict discovery capability. Removing both uncertainty penalties simultaneously (w/o 𝑈 dyn + 𝑈 𝜋 ) causes a notable decline, indicating that the epis-temic uncertainty components collectively play a substantial role in filtering out spurious conflicts. Individually, removing 𝑈 dyn has a slightly larger impact than removing 𝑈 𝜋 , suggesting that dynam-ics model reliability is more critical than policy confidence in this scenario. This aligns with the intuition that the indirect conflict mechanism relies heavily on accurate state transition predictions. Conference’17, July 2017, Washington, DC, USA Fang et al. ZODIAC      
+
+> w/o Udyn
+> w/o U
+> w/o Udyn +U
+> w/o Guidance
+> 0
+> 20
+> 40
+> 60
+> 80
+> 100
+> TPR (%)
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> Spearman
+> TPR@10 (%) TPR@20 (%) Spearman
+
+Figure 7: Visualization of the conflict cases for three different types in Mobile-Env environment. 
+
+## 7 Conclusion 
+
+In this paper, we formalized the zero-shot multi-policy conflict rea-soning problem for O-RAN and proposed ZODIAC, a framework that discovers conflict-inducing conditions from only marginal of-fline datasets without any joint execution data. ZODIAC combines uncertainty-aware surrogate model training, trajectory-level dif-fusion priors, and compositional guidance to generate physically plausible conflict scenarios given a specific conflict criterion. Exper-iments on both Mobile-Env and NS-O-RAN-FlexRIC demonstrate that ZODIAC consistently outperforms the RS, CEM, and BPTT baselines, achieving the highest TPR@K and a notably superior Spearman rank correlation (average 𝜌 = 0.48 vs ≤ 0.34 ), indicating that ZODIAC not only identifies conflicts but also correctly ranks their severity. Ablation studies confirm the necessity of each guid-ance component, with the uncertainty penalties proving essential for filtering out spurious conflicts caused by model errors. By enabling conflict reasoning prior to joint deployment, ZO-DIAC provides a practical tool for safety auditing in multi-vendor O-RAN ecosystems and complements existing detection-mitigation pipelines. Future work includes extending the framework to support large-scale multi-xApp concurrent environments, incorporating temporal credit assignment to pinpoint the onset of conflicts within long trajectories, and validating it on operational network traces. 
+
+## References 
+
+[1] Cezary Adamczyk. 2023. Challenges for conflict mitigation in O-RAN’s RAN intelligent controllers. In 2023 International Conference on Software, Telecommu-nications and Computer Networks (SoftCOM) . IEEE, 1–6. [2] Anurag Ajay, Yilun Du, Abhi Gupta, Joshua Tenenbaum, Tommi Jaakkola, and Pulkit Agrawal. 2022. Is conditional generative modeling all you need for decision-making? arXiv preprint arXiv:2211.15657 (2022). [3] Sihem Bakri, Indrakshi Dey, Harun Siljak, Marco Ruffini, and Nicola Marchetti. 2025. Mitigating xApp conflicts for efficient network slicing in 6G O-RAN: a graph convolutional-based attention network approach. arXiv preprint arXiv:2504.17590 
+
+(2025). [4] Julia Briden, Yilun Du, Enrico M Zucchelli, and Richard Linares. 2025. Composi-tional diffusion models for powered descent trajectory generation with flexible constraints. In 2025 IEEE Aerospace Conference . IEEE, 1–19. [5] Idris Cinemre, Toktam Mahmoodi, and Amirmohammad Farzaneh. 2025. xApp Conflict Mitigation with Scheduler. arXiv preprint arXiv:2504.06867 (2025). [6] Idris Cinemre, Kashif Mehmood, Katina Kralevska, and Toktam Mahmoodi. 2024. Gradient-based optimization for intent conflict resolution. Electronics 13, 5 (2024), 864. [7] Pietro Brach del Prever, Salvatore D’Oro, Leonardo Bonati, Michele Polese, Maria Tsampazi, Heiko Lehmann, and Tommaso Melodia. 2025. Pacifista: Conflict evaluation and management in open ran. IEEE Transactions on Mobile Computing 
+
+(2025). [8] Pietro Brach del Prever, Niloofar Mohamadi, Salvatore D’Oro, Leonardo Bonati, Michele Polese, Łukasz Kułacz, Piotr Jaworski, Adrian Kliks, Heiko Lehmann, and Tommaso Melodia. 2026. Predicting Conflict Impact on Performance in O-RAN. 
+
+arXiv preprint arXiv:2603.08685 (2026). [9] Yilun Du, Conor Durkan, Robin Strudel, Joshua B Tenenbaum, Sander Dieleman, Rob Fergus, Jascha Sohl-Dickstein, Arnaud Doucet, and Will Sussman Grathwohl. 2023. Reduce, reuse, recycle: Compositional generation with energy-based diffu-sion models and mcmc. In International conference on machine learning . PMLR, 8489–8510. [10] Bradley Efron. 2011. Tweedie’s formula and selection bias. J. Amer. Statist. Assoc. 
+
+106, 496 (2011), 1602–1614. [11] Khen Elimelech, Morteza Lahijanian, Lydia E Kavraki, and Moshe Y Vardi. 2024. Falsification of Autonomous Systems in Rich Environments. ACM Transactions on Cyber-Physical Systems (2024). [12] Hakan Erdol, Xiaoyang Wang, Robert Piechocki, George Oikonomou, and Ar-jun Parekh. 2025. xapp distillation: Ai-based conflict mitigation in b5g o-ran. 
+
+Computer Networks (2025), 111848. [13] Anastasios Giannopoulos, Sotirios Spantideas, George Levis, Alexandros Kalafatelis, and Panagiotis Trakadas. 2025. COMIX: Generalized Conflict Man-agement in O-RAN xApps-Architecture, Workflow, and a Power Control case. 
+
+IEEE Access (2025). [14] Jonathan Ho, Ajay Jain, and Pieter Abbeel. 2020. Denoising diffusion probabilistic models. Advances in neural information processing systems 33 (2020), 6840–6851. [15] Michael Janner, Yilun Du, Joshua Tenenbaum, and Sergey Levine. 2022. Planning with Diffusion for Flexible Behavior Synthesis. In International Conference on Machine Learning . PMLR, 9902–9915. [16] Amar Kulkarni, Shangtong Zhang, and Madhur Behl. 2024. CRASH: Challenging reinforcement-learning based adversarial scenarios for safety hardening. arXiv preprint arXiv:2411.16996 (2024). [17] Ritchie Lee, Ole J Mengshoel, Anshu Saksena, Ryan W Gardner, Daniel Genin, Joshua Silbermann, Michael Owen, and Mykel J Kochenderfer. 2020. Adaptive stress testing: Finding likely failure events with reinforcement learning. Journal of Artificial Intelligence Research 69 (2020), 1165–1201. [18] Nan Liu, Shuang Li, Yilun Du, Antonio Torralba, and Joshua B Tenenbaum. 2022. Compositional visual generation with composable diffusion models. In European conference on computer vision . Springer, 423–439. [19] O-RAN Working Group 3. 2024. Conflict Mitigation . Technical Specification O-RAN.WG3.TR.ConMit-R004-v01.00. O-RAN Alliance. [20] Michele Polese, Leonardo Bonati, Salvatore D’oro, Stefano Basagni, and Tommaso Melodia. 2023. Understanding O-RAN: Architecture, interfaces, algorithms, security, and research challenges. IEEE Communications Surveys & Tutorials 25, 2 (2023), 1376–1411. [21] Thomas Power, Rana Soltani-Zarrin, Soshi Iba, and Dmitry Berenson. 2023. Sam-pling constrained trajectories using composable diffusion models. In IROS 2023 Workshop on Differentiable Probabilistic Robotics: Emerging Perspectives on Robot Learning .[22] Reuven Rubinstein. 1999. The cross-entropy method for combinatorial and continuous optimization. Methodology and computing in applied probability 1, 2 (1999), 127–190. [23] Stefan Balthasar Schneider, Stefan Werner, Ramin Khalili, Artur Hecker, and Holger Karl. 2022. mobile-env: An open platform for reinforcement learning in wireless mobile networks. In IEEE/IFIP Network Operations and Management Symposium (NOMS) .[24] Nancy Varshney, Corrado Puligheddu, Ahmed Badawy, and Carla Fabiana Chi-asserini. 2025. Explainable Artificial Intelligence for Conflict Management: XAI4C for Conflict Detection and Mitigation in O-RAN Near-RT RIC. IEEE Vehicular Technology Magazine (2025). [25] Abdul Wadud, Nima Afraz, and Fatemeh Golpayegani. 2026. AI-Powered Conflict Management in Open RAN: Detection, Classification, and Mitigation. arXiv preprint arXiv:2602.19758 (2026). [26] Abdul Wadud, Fatemeh Golpayegani, and Nima Afraz. 2023. Conflict manage-ment in the near-rt-ric of open ran: A game theoretic approach. In 2023 IEEE International Conferences on Internet of Things (iThings) and IEEE Green Comput-ing & Communications (GreenCom) and IEEE Cyber, Physical & Social Computing (CPSCom) and IEEE Smart Data (SmartData) and IEEE Congress on Cybermatics (Cybermatics) . IEEE, 479–486. [27] Abdul Wadud, Fatemeh Golpayegani, and Nima Afraz. 2025. xApp-Level Conflict Mitigation in O-RAN, a Mobility Driven Energy Saving Case. In IEEE INFO-COM 2025-IEEE Conference on Computer Communications Workshops (INFOCOM WKSHPS) . IEEE, 1–6. [28] Yuting Xie, Xianda Guo, Cong Wang, Kunhua Liu, and Long Chen. 2024. Advdif-fuser: Generating adversarial safety-critical driving scenarios via guided diffusion. In 2024 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) .IEEE, 9983–9989. [29] Mina Yonan, Mostafa Ashraf, Kamil Kociszewski, Adrian Oziębło, Abdelrhman Soliman, Aya Kamal, Bartosz Rak, and Andrzej Denisiewicz. 2025. ns-o-ran-flexric, RIC TaaP: RIC Testing as a Platform. https://github.com/Orange-OpenSource/ns-O-RAN-flexric?tab=readme-ov-file. Online Resource, accessed Oct. 2025. [30] Arshia Zolghadr, Joao F Santos, Luiz A DaSilva, and Jacek Kibilda. 2025. Learning and reconstructing conflicts in o-ran: A graph neural network approach. In 2025 IEEE Wireless Communications and Networking Conference (WCNC) . IEEE, 01–06. ZODIAC: Zero-shot Offline Diffusion for Inferring Multi-xApps Conflicts in Open Radio Access Networks Conference’17, July 2017, Washington, DC, USA 
+
+## A Assumptions and Proofs of Section 5 A.1 Canonical Decomposition and Boundary Condition 
+
+In the decomposition (16) we set 𝑓 0 (𝑠, 𝑒 ) := 𝐹 ∗ (𝑠, 𝑒, 𝜋 0 
+
+> 𝐴
+
+(𝑠 ), 𝜋 0 
+
+> 𝐵
+
+(𝑠 )) ,
+
+𝑓 𝐴 (𝑠, 𝑒, 𝑎 𝐴 ) := 𝐹 ∗ (𝑠, 𝑒, 𝑎 𝐴 , 𝜋 0 
+
+> 𝐵
+
+(𝑠 )) − 𝑓 0 (𝑠, 𝑒 ), 𝑓 𝐵 analogously, and the interaction residual 𝑓 𝐴𝐵 is fixed by (16) as an identity. By construc-tion, 𝑓 𝐴𝐵 vanishes whenever either action equals its baseline: 
+
+𝑓 𝐴𝐵 (𝑠, 𝑒, 𝜋 0 
+
+> 𝐴
+
+(𝑠 ), 𝑎 𝐵 ) = 𝑓 𝐴𝐵 (𝑠, 𝑒, 𝑎 𝐴 , 𝜋 0 
+
+> 𝐵
+
+(𝑠 )) = 0. (28) 
+
+## A.2 Assumptions 
+
+(A1) Bounded coupling. There exists 𝐿 𝐴𝐵 < ∞ such that 
+
+∥𝑓 𝐴𝐵 (𝑠, 𝑒, 𝑎 𝐴 , 𝑎 𝐵 )∥ 2 ≤ 𝐿 𝐴𝐵 for all (𝑠, 𝑒, 𝑎 𝐴 , 𝑎 𝐵 ).
+
+(A2) Lipschitz dynamics and policies. The true joint dynamics 
+
+𝐹 ∗ is 𝐿 𝐹 -Lipschitz in 𝑠 and 𝐿 𝑎 -Lipschitz in (𝑎 𝐴 , 𝑎 𝐵 ); the target policies 𝜋 𝐴 , 𝜋 𝐵 are 𝐿 𝜋 -Lipschitz in 𝑠 .
+
+(A3) Lipschitz conflict. The single-step conflict metric 𝜙 𝑐 is 𝐿 𝑐 -Lipschitz in (𝑠, 𝑎 𝐴 , 𝑎 𝐵 ) and bounded by |𝜙 𝑐 | ≤ 𝜙 max .
+
+(A4) Calibrated ensembles. With probability at least 1 − 𝛿 , the marginal-mean prediction errors of the dynamics and policy ensembles at any in-distribution query are bounded by 
+
+∥ ˆ𝐹 (𝑠, 𝑒, 𝑎 𝐴 , 𝑎 𝐵 ) − ( 𝑓 0 + 𝑓 𝐴 + 𝑓 𝐵 )( 𝑠, 𝑒, 𝑎 𝐴 , 𝑎 𝐵 )∥ 2 ≤ 𝛽 𝑇 √︁ 𝑈 𝑑𝑦𝑛 
+
+and ∥ ˆ𝜋 𝑘 (𝑠 ) − 𝜋 𝑘 (𝑠 )∥ 2 ≤ 𝛽 𝜋 
+
+√𝑈 𝜋 for 𝑘 ∈ { 𝐴, 𝐵 }.(A1) is the only non-statistical assumption.(A2)–(A3) are standard regularity conditions. (A4) is a mild concentration property rou-tinely adopted for deep ensembles. The aleatoric noise 𝜉 𝑡 in (16) has E∥𝜉 𝑡 ∥2 ≤ 𝜎 𝜉 . For the purpose of the theoretical analysis, we assume the policies output deterministic expected action vectors, such that 𝑎 𝐴 𝑡 = 𝜋 𝐴 (𝑠 𝑡 ), allowing the application of standard 𝐿 2
+
+Lipschitz bounds. 
+
+## A.3 Proof of Lemma 5.1 
+
+A trajectory in D𝐴 is generated under 𝑎 𝐴 𝑡 ∼ 𝜋 𝐴 (·| 𝑠 𝑡 ) and 𝑎 𝐵 𝑡 ∼
+
+𝜋 0 
+
+> 𝐵
+
+(·| 𝑠 𝑡 ). Substituting into Eq. (16), 
+
+𝑠 𝑡 +1 = 𝑓 0 (𝑠 𝑡 , 𝑒 𝑡 ) + 𝑓 𝐴 (𝑠 𝑡 , 𝑒 𝑡 , 𝑎 𝐴 𝑡 ) + 𝑓 𝐵 (𝑠 𝑡 , 𝑒 𝑡 , 𝜋 0 
+
+> 𝐵
+
+(𝑠 𝑡 )) + 𝑓 𝐴𝐵 (𝑠 𝑡 , 𝑒 𝑡 , 𝑎 𝐴 𝑡 , 𝜋 0 
+
+> 𝐵
+
+(𝑠 𝑡 )) + 𝜉 𝑡 
+
+= 𝑓 0 (𝑠 𝑡 , 𝑒 𝑡 ) + 𝑓 𝐴 (𝑠 𝑡 , 𝑒 𝑡 , 𝑎 𝐴 𝑡 ) + 0 + 0 + 𝜉 𝑡 ,
+
+where the two zeros follow respectively from the definition of 
+
+𝑓 𝐵 at the baseline ( 𝑓 𝐵 (𝑠, 𝑒, 𝜋 0 
+
+> 𝐵
+
+(𝑠 )) = 𝐹 ∗ (𝑠, 𝑒, 𝜋 0 
+
+> 𝐴
+
+(𝑠 ), 𝜋 0 
+
+> 𝐵
+
+(𝑠 )) − 𝑓 0 = 0)and from (28) . The expression depends on neither 𝑓 𝐴𝐵 nor ˜𝑓 𝐴𝐵 , so replacing one by the other induces the identical conditional law. Iterating over 𝑡 = 0, . . . ,𝑇 − 1 shows that the trajectory distribution on D𝐴 is invariant under 𝑓 𝐴𝐵 → ˜𝑓 𝐴𝐵 . The same argument applies to D𝐵 , establishing non-identifiability. □
+
+## A.4 Proof of Theorem 5.2 
+
+Let Δ𝑡 := ˆ𝑠 𝑡 − 𝑠 𝑡 with Δ0 = 0. The composed surrogate is ˆ𝐹 =
+
+𝑓 0 + 𝑓 𝐴 + 𝑓 𝐵 (it implicitly sets 𝑓 𝐴𝐵 ≡ 0). Using (16), 
+
+Δ𝑡 +1 = ˆ𝐹 ( ˆ𝑠 𝑡 , 𝑒 𝑡 , ˆ𝑎 𝐴 𝑡 , ˆ𝑎 𝐵 𝑡 ) − 𝐹 ∗ (𝑠 𝑡 , 𝑒 𝑡 , 𝑎 𝐴 𝑡 , 𝑎 𝐵 𝑡 ) − 𝜉 𝑡 
+
+= [ ˆ𝐹 ( ˆ𝑠 𝑡 , 𝑒 𝑡 , ˆ𝑎 𝐴 𝑡 , ˆ𝑎 𝐵 𝑡 ) − ˆ𝐹 (𝑠 𝑡 , 𝑒 𝑡 , 𝑎 𝐴 𝑡 , 𝑎 𝐵 𝑡 )] 
+
+| {z }  
+
+> (𝐼 )Lipschitz drift
+
++ [ ˆ𝐹 (𝑠 𝑡 , 𝑒 𝑡 , 𝑎 𝐴 𝑡 , 𝑎 𝐵 𝑡 ) − 𝐹 ∗ (𝑠 𝑡 , 𝑒 𝑡 , 𝑎 𝐴 𝑡 , 𝑎 𝐵 𝑡 )] 
+
+| {z }  
+
+> (𝐼 𝐼 )model bias
+
+−𝜉 𝑡 . (29) 
+
+Term (II): model bias. Add and subtract the true marginal-sum 
+
+𝑓 0 + 𝑓 𝐴 + 𝑓 𝐵 :
+
+(𝐼𝐼 ) = [ ˆ𝐹 − ( 𝑓 0+𝑓 𝐴 +𝑓 𝐵 )] 
+
+| {z }   
+
+> =:𝑒 𝑇 (𝑡 )
+
++ [( 𝑓 0+𝑓 𝐴 +𝑓 𝐵 ) − 𝐹 ∗]
+
+| {z }  
+
+> =−𝑓 𝐴𝐵
+
+.
+
+By (A4), ∥𝑒 𝑇 (𝑡 )∥ 2 ≤ 𝛽 𝑇 √︃ 𝑈 (𝑡 ) 
+
+> 𝑑𝑦𝑛
+
+with probability 1 − 𝛿 . By (A1), 
+
+∥𝑓 𝐴𝐵 ∥2 ≤ 𝐿 𝐴𝐵 . Hence 
+
+∥( 𝐼𝐼 )∥ 2 ≤ 𝛽 𝑇 √︃ 𝑈 (𝑡 ) 
+
+> 𝑑𝑦𝑛
+
++ 𝐿 𝐴𝐵 . (30) 
+
+Term (I): Lipschitz drift. By (A2), 
+
+∥( 𝐼 )∥ 2 ≤ 𝐿 𝐹 ∥Δ𝑡 ∥2 + 𝐿 𝑎 (∥ ˆ𝑎 𝐴 𝑡 − 𝑎 𝐴 𝑡 ∥2 + ∥ ˆ𝑎 𝐵 𝑡 − 𝑎 𝐵 𝑡 ∥2).
+
+For each action discrepancy, add and subtract 𝜋 𝐴 ( ˆ𝑠 𝑡 ):
+
+∥ ˆ𝑎 𝐴 𝑡 − 𝑎 𝐴 𝑡 ∥2 ≤ ∥ ˆ𝑎 𝐴 𝑡 − 𝜋 𝐴 ( ˆ𝑠 𝑡 )∥ 2 + ∥ 𝜋 𝐴 ( ˆ𝑠 𝑡 ) − 𝜋 𝐴 (𝑠 𝑡 )∥ 2
+
+≤ 𝛽 𝜋 √︃ 𝑈 (𝑡 ) 
+
+> 𝜋
+
++ 𝐿 𝜋 ∥Δ𝑡 ∥2,
+
+where the first term is the policy-ensemble error (A4) and the second is the policy Lipschitz property (A2). The same bound holds for ˆ𝑎 𝐵 𝑡 .Substituting, 
+
+∥( 𝐼 )∥ 2 ≤ ( 𝐿 𝐹 + 2𝐿 𝑎 𝐿 𝜋 )∥ Δ𝑡 ∥2 + 2𝐿 𝑎 𝛽 𝜋 √︃ 𝑈 (𝑡 ) 
+
+> 𝜋
+
+. (31) 
+
+Recursion. Combining (31) , (30) , and E∥𝜉 𝑡 ∥2 ≤ 𝜎 𝜉 in (29) , with 
+
+𝐿 ′ := 𝐿 𝐹 + 2𝐿 𝑎 𝐿 𝜋 and 𝑟 𝑡 (𝑢 ) as in (17), 
+
+E∥Δ𝑡 +1 ∥2 ≤ 𝐿 ′ E∥Δ𝑡 ∥2 + 𝑟 𝑡 (𝑢 ).
+
+Unrolling with Δ0 = 0:
+
+E∥Δ𝑡 ∥2 ≤ 
+
+> 𝑡 −1
+
+∑︁ 
+
+> 𝑘 =0
+
+(𝐿 ′)𝑡 −1−𝑘 𝑟 𝑘 (𝑢 ).
+
+A union bound over 𝑡 = 1, . . . ,𝑇 steps and the two ensemble error sources (dynamics and policy) yields the stated probability 1 −
+
+2𝑇 𝛿 . □
+
+## A.5 Proof of Theorem 5.3 
+
+By (A3) and the triangle inequality, 
+
+| ˆ𝐽 (𝑢 ) − 𝐽 ∗ (𝑢 )| ≤  
+
+> 𝑇 −1
+
+∑︁ 
+
+> 𝑡 =0
+
+|𝜙 𝑐 ( ˆ𝑠 𝑡 , ˆ𝑎 𝐴 𝑡 , ˆ𝑎 𝐵 𝑡 ) − 𝜙 𝑐 (𝑠 𝑡 , 𝑎 𝐴 𝑡 , 𝑎 𝐵 𝑡 )| ≤ 𝐿 𝑐 𝑇 −1∑︁  
+
+> 𝑡 =0
+
+ ∥Δ𝑡 ∥2 + ∥ ˆ𝑎 𝐴 𝑡 − 𝑎 𝐴 𝑡 ∥2 + ∥ ˆ𝑎 𝐵 𝑡 − 𝑎 𝐵 𝑡 ∥2
+
+.Conference’17, July 2017, Washington, DC, USA Fang et al. 
+
+Reusing the action-discrepancy bound from the proof of Theo-rem 5.2, 
+
+∥ ˆ𝑎 𝐴 𝑡 − 𝑎 𝐴 𝑡 ∥2 + ∥ ˆ𝑎 𝐵 𝑡 − 𝑎 𝐵 𝑡 ∥2 ≤ 2𝛽 𝜋 √︃ 𝑈 (𝑡 ) 
+
+> 𝜋
+
++ 2𝐿 𝜋 ∥Δ𝑡 ∥2,
+
+hence 
+
+| ˆ𝐽 − 𝐽 ∗ | ≤ 𝐿 𝑐 𝑇 −1∑︁ 
+
+> 𝑡 =0
+
+(1+2𝐿 𝜋 )∥ Δ𝑡 ∥2 + 2𝛽 𝜋 √︃ 𝑈 (𝑡 )
+
+> 𝜋
+
+ .
+
+Substituting the bound on ∥Δ𝑡 ∥2 from Theorem 5.2 produces the closed form 
+
+| ˆ𝐽 − 𝐽 ∗ | ≤ 𝐿 𝑐 𝑇 −1∑︁ 
+
+> 𝑡 =0
+
+h
+
+2𝛽 𝜋 √︃ 𝑈 (𝑡 ) 
+
+> 𝜋
+
++ ( 1+2𝐿 𝜋 ) 
+
+> 𝑡 −1
+
+∑︁ 
+
+> 𝑘 =0
+
+(𝐿 ′)𝑡 −1−𝑘 𝑟 𝑘 (𝑢 )
+
+i
+
+= 𝑅 (𝑢 ).
+
+The lower bound 𝐽 ∗ (𝑢 ) ≥ ˆ𝐽 (𝑢 ) − 𝑅 (𝑢 ) follows immediately. The 
+
+1 − 2𝑇 𝛿 probability is inherited from Theorem 5.2. □
+
+## A.6 Discussion of Corollary 5.4 
+
+The composite guidance vector 𝑑 guide in Eq. (16) ascends a weighted combination of the three energies. Identifying this ascent with the gradient of an implicit objective 
+
+J ( 𝑢 ) := Etarget (𝑢 ) − 1−𝛼 𝛼 
+
+−E physics (𝑢 ) − E epistemic (𝑢 ),
+
+we observe that: (1) Etarget contains Í𝑡 𝜙 𝑐 ( ˆ𝑠 𝑡 , ˆ𝑎 𝐴 𝑡 , ˆ𝑎 𝐵 𝑡 ) = ˆ𝐽 (𝑢 ) together with the policy log-likelihoods that constrain ˆ𝑎 𝐴 𝑡 , ˆ𝑎 𝐵 𝑡 to the marginal action manifold; (2) Eepistemic accumulates 𝑈 (𝑡 ) 
+
+> 𝑑𝑦𝑛
+
++ 𝑈 (𝑡 ) 
+
+> 𝜋
+
+, the only variable compo-nent of 𝑅 (𝑢 ) (the Lipschitz constants and 𝐿 𝐴𝐵 are fixed by the problem); (3) Ephysics enforces self-consistency of the generated trajectory with the surrogate dynamics, which is a necessary condition for (A4) to remain informative along the rollout. The mapping is first-order: 𝑅 (𝑢 ) uses √𝑈 while ZODIAC penalizes 
+
+𝑈 directly, but both are monotone and both vanish on the same in-distribution manifold, so the maximizer of ˆ𝐽 (𝑢 ) − 𝜆𝑅 (𝑢 ) and that of J ( 𝑢 ) coincide up to the choice of 𝜆 (controlled by 𝛼 in Eq. 16). Substituting any 𝑢 ★ returned by the diffusion sampler into (19) yields the certificate (20). □
