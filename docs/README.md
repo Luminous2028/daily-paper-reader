@@ -6,56 +6,64 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-23
-- 运行时间：2026-04-23 20:40:06 UTC
+- 最新运行日期：2026-04-26
+- 运行时间：2026-04-26 19:48:03 UTC
 - 运行状态：成功
-- 本次总论文数：11
-- 精读区：0
+- 本次总论文数：14
+- 精读区：3
 - 速读区：11
 
 ### 今日简报（AI）
-今日速览 11 篇前沿成果，涵盖 3D 赛道自动驾驶控制、工业级世界模型及 5G 网络冲突检测。
-重点关注 Cortex 2.0 在真实工业场景的落地，以及利用扩散模型实现 Open RAN 冲突的零样本推理。
-建议深入了解 AI 模型如何从实验室走向复杂的 3D 竞速与工业部署实战。
-- 详情：[/202604/23/README](/202604/23/README)
+今日精选 14 篇前沿论文，重点攻克高吞吐运动规划与视觉-语言-动作（VLA）模型的性能瓶颈。
+推荐关注 MISTY 架构实现的单步漂移高效规划，以及通过时序差分校准提升 VLA 模型在序列任务中的执行精度。
+建议深入探索具身智能中生成式动作头的空间约束优化，以应对更复杂的物理交互场景。
+- 详情：[/202604/26/README](/202604/26/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [MISTY: High-Throughput Motion Planning via Mixer-based Single-step Drifting](/202604/26/2604.21489v1-misty-high-throughput-motion-planning-via-mixer-based-single-step-drifting)  
+   标签：评分：9.0/10、query:diffusion-conf-uncertainty
+   evidence：用于自动驾驶的基于扩散的生成式运动规划器
+2. [Temporal Difference Calibration in Sequential Tasks: Application to Vision-Language-Action Models](/202604/26/2604.20472v1-temporal-difference-calibration-in-sequential-tasks-application-to-vision-language-action-models)  
+   标签：评分：8.0/10、query:diffusion-conf-uncertainty
+   evidence：VLA模型在序列任务中的可靠不确定性量化与校准
+3. [From Noise to Intent: Anchoring Generative VLA Policies with Residual Bridges](/202604/26/2604.21391v1-from-noise-to-intent-anchoring-generative-vla-policies-with-residual-bridges)  
+   标签：评分：8.0/10、query:diffusion-conf-uncertainty
+   evidence：将控制解耦为确定性锚点和随机动力学
 
 ### 速读区论文标签
-1. [Robust Nonlinear Trajectory Tracking Control for Autonomous Racing on Three-Dimensional Tracks](/202604/23/2604.19452v1-robust-nonlinear-trajectory-tracking-control-for-autonomous-racing-on-three-dimensional-tracks)  
+1. [Uncertainty Quantification in PINNs for Turbulent Flows: Bayesian Inference and Repulsive Ensembles](/202604/26/2604.17156v1-uncertainty-quantification-in-pinns-for-turbulent-flows-bayesian-inference-and-repulsive-ensembles)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶车辆的鲁棒非线性轨迹跟踪控制
-2. [ZODIAC: Zero-shot Offline Diffusion for Inferring Multi-xApps Conflicts in Open Radio Access Networks](/202604/23/2604.19610v1-zodiac-zero-shot-offline-diffusion-for-inferring-multi-xapps-conflicts-in-open-radio-access-networks)  
+   evidence：神经网络中认知不确定性的量化
+2. [Learning to Credit the Right Steps: Objective-aware Process Optimization for Visual Generation](/202604/26/2604.19234v1-learning-to-credit-the-right-steps-objective-aware-process-optimization-for-visual-generation)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：用于冲突推理的不确定性感知代理模型与轨迹级扩散
-3. [Cortex 2.0: Grounding World Models in Real-World Industrial Deployment](/202604/23/2604.20246v1-cortex-20-grounding-world-models-in-real-world-industrial-deployment)  
+   evidence：扩散轨迹中去噪步骤的阶段性作用
+3. [CorridorVLA: Explicit Spatial Constraints for Generative Action Heads via Sparse Anchors](/202604/26/2604.21241v1-corridorvla-explicit-spatial-constraints-for-generative-action-heads-via-sparse-anchors)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：在视觉潜空间中生成候选未来轨迹
-4. [X-Cache: Cross-Chunk Block Caching for Few-Step Autoregressive World Models Inference](/202604/23/2604.20289v1-x-cache-cross-chunk-block-caching-for-few-step-autoregressive-world-models-inference)  
+   evidence：带有空间约束的轨迹生成流匹配动作头
+4. [Reasoning About Traversability: Language-Guided Off-Road 3D Trajectory Planning](/202604/26/2604.21249v1-reasoning-about-traversability-language-guided-off-road-3d-trajectory-planning)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：用于自动驾驶世界模型的自回归视频扩散
-5. [Lexicographic Minimum-Violation Motion Planning using Signal Temporal Logic](/202604/23/2604.20428v1-lexicographic-minimum-violation-motion-planning-using-signal-temporal-logic)  
+   evidence：自动驾驶的3D未来轨迹规划
+5. [Frozen LLMs as Map-Aware Spatio-Temporal Reasoners for Vehicle Trajectory Prediction](/202604/26/2604.21479v1-frozen-llms-as-map-aware-spatio-temporal-reasoners-for-vehicle-trajectory-prediction)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：具有冲突规范的自动驾驶车辆运动规划
-6. [Boundary Sampling to Learn Predictive Safety Filters via Pontryagin's Maximum Principle](/202604/23/2604.13325v1-boundary-sampling-to-learn-predictive-safety-filters-via-pontryagins-maximum-principle)  
+   evidence：自动驾驶中的车辆轨迹预测
+6. [Noise-Adaptive Diffusion Sampling for Inverse Problems Without Task-Specific Tuning](/202604/26/2604.16919v1-noise-adaptive-diffusion-sampling-for-inverse-problems-without-task-specific-tuning)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：表征自主系统安全过滤器的轨迹
-7. [Target Parameterization in Diffusion Models for Nonlinear Spatiotemporal System Identification](/202604/23/2604.17566v1-target-parameterization-in-diffusion-models-for-nonlinear-spatiotemporal-system-identification)  
+   evidence：扩散模型中的后验采样以探索解空间
+7. [Marrying Text-to-Motion Generation with Skeleton-Based Action Recognition](/202604/26/2604.17090v1-marrying-text-to-motion-generation-with-skeleton-based-action-recognition)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于时空系统概率推理的扩散模型
-8. [Infrastructure-Centric World Models: Bridging Temporal Depth and Spatial Breadth for Roadside Perception](/202604/23/2604.17651v1-infrastructure-centric-world-models-bridging-temporal-depth-and-spatial-breadth-for-roadside-perception)  
+   evidence：用于合成运动轨迹的自回归运动扩散模型
+8. [Interpolating Discrete Diffusion Models with Controllable Resampling](/202604/26/2604.17310v1-interpolating-discrete-diffusion-models-with-controllable-resampling)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于自动驾驶和路侧感知的生成式世界模型
-9. [From Particles to Perils: SVGD-Based Hazardous Scenario Generation for Autonomous Driving Systems Testing](/202604/23/2604.18918v1-from-particles-to-perils-svgd-based-hazardous-scenario-generation-for-autonomous-driving-systems-testing)  
+   evidence：通过可控重采样改进离散扩散模型
+9. [A Hamilton-Jacobi Reachability-Guided Search Framework for Efficient and Safe Indoor Planar Robot Navigation](/202604/26/2604.17679v1-a-hamilton-jacobi-reachability-guided-search-framework-for-efficient-and-safe-indoor-planar-robot-navigation)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶系统测试的危险场景生成
-10. [AutoAWG: Adverse Weather Generation with Adaptive Multi-Controls for Automotive Videos](/202604/23/2604.18993v1-autoawg-adverse-weather-generation-with-adaptive-multi-controls-for-automotive-videos)  
+   evidence：动态环境下的机器人安全导航与轨迹规划
+10. [WebUncertainty: Dual-Level Uncertainty Driven Planning and Reasoning For Autonomous Web Agent](/202604/26/2604.17821v2-webuncertainty-dual-level-uncertainty-driven-planning-and-reasoning-for-autonomous-web-agent)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于自动驾驶感知的可控视频生成
-11. [Safety-Critical Contextual Control via Online Riemannian Optimization with World Models](/202604/23/2604.19639v1-safety-critical-contextual-control-via-online-riemannian-optimization-with-world-models)  
+   evidence：自主智能体的双层不确定性驱动规划
+11. [Active Inference-Enabled Agentic Closed-Loop ISAC with Long-Horizon Planning](/202604/26/2604.19599v1-active-inference-enabled-agentic-closed-loop-isac-with-long-horizon-planning)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于安全关键控制和世界模型的基于得分的密度
+   evidence：用于规划的不确定性感知状态推理和生成模型
 
 
 <div class="dpr-home-promo-card">
