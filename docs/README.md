@@ -6,64 +6,56 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-26
-- 运行时间：2026-04-26 19:48:03 UTC
+- 最新运行日期：2026-04-27
+- 运行时间：2026-04-27 19:59:02 UTC
 - 运行状态：成功
-- 本次总论文数：14
-- 精读区：3
+- 本次总论文数：11
+- 精读区：0
 - 速读区：11
 
 ### 今日简报（AI）
-今日精选 14 篇前沿论文，重点攻克高吞吐运动规划与视觉-语言-动作（VLA）模型的性能瓶颈。
-推荐关注 MISTY 架构实现的单步漂移高效规划，以及通过时序差分校准提升 VLA 模型在序列任务中的执行精度。
-建议深入探索具身智能中生成式动作头的空间约束优化，以应对更复杂的物理交互场景。
-- 详情：[/202604/26/README](/202604/26/README)
+今日速览 11 篇前沿成果，深度聚焦机器人鲁棒策略学习与复杂环境下的不确定性建模。
+重点推荐 Mask 世界模型对机器人策略的优化，以及扩散模型在时空超分辨率数据同化中的创新应用。
+建议关注“不确定性消减”如何成为解决自动驾驶冲突与提升预测精度的跨领域核心逻辑。
+- 详情：[/202604/27/README](/202604/27/README)
 
 ### 精读区论文标签
-1. [MISTY: High-Throughput Motion Planning via Mixer-based Single-step Drifting](/202604/26/2604.21489v1-misty-high-throughput-motion-planning-via-mixer-based-single-step-drifting)  
-   标签：评分：9.0/10、query:diffusion-conf-uncertainty
-   evidence：用于自动驾驶的基于扩散的生成式运动规划器
-2. [Temporal Difference Calibration in Sequential Tasks: Application to Vision-Language-Action Models](/202604/26/2604.20472v1-temporal-difference-calibration-in-sequential-tasks-application-to-vision-language-action-models)  
-   标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：VLA模型在序列任务中的可靠不确定性量化与校准
-3. [From Noise to Intent: Anchoring Generative VLA Policies with Residual Bridges](/202604/26/2604.21391v1-from-noise-to-intent-anchoring-generative-vla-policies-with-residual-bridges)  
-   标签：评分：8.0/10、query:diffusion-conf-uncertainty
-   evidence：将控制解耦为确定性锚点和随机动力学
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Uncertainty Quantification in PINNs for Turbulent Flows: Bayesian Inference and Repulsive Ensembles](/202604/26/2604.17156v1-uncertainty-quantification-in-pinns-for-turbulent-flows-bayesian-inference-and-repulsive-ensembles)  
+1. [Mask World Model: Predicting What Matters for Robust Robot Policy Learning](/202604/27/2604.19683v1-mask-world-model-predicting-what-matters-for-robust-robot-policy-learning)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：神经网络中认知不确定性的量化
-2. [Learning to Credit the Right Steps: Objective-aware Process Optimization for Visual Generation](/202604/26/2604.19234v1-learning-to-credit-the-right-steps-objective-aware-process-optimization-for-visual-generation)  
+   evidence：用于机器人策略中语义掩码预测的视频扩散架构
+2. [Resolving space-sharing conflicts in road user interactions through uncertainty reduction: An active inference-based computational model](/202604/27/2604.19838v1-resolving-space-sharing-conflicts-in-road-user-interactions-through-uncertainty-reduction-an-active-inference-based-computational-model)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：扩散轨迹中去噪步骤的阶段性作用
-3. [CorridorVLA: Explicit Spatial Constraints for Generative Action Heads via Sparse Anchors](/202604/26/2604.21241v1-corridorvla-explicit-spatial-constraints-for-generative-action-heads-via-sparse-anchors)  
+   evidence：道路用户交互中的不确定性减少
+3. [Uncertainty-Aware Spatiotemporal Super-Resolution Data Assimilation with Diffusion Models](/202604/27/2604.21180v1-uncertainty-aware-spatiotemporal-super-resolution-data-assimilation-with-diffusion-models)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：带有空间约束的轨迹生成流匹配动作头
-4. [Reasoning About Traversability: Language-Guided Off-Road 3D Trajectory Planning](/202604/26/2604.21249v1-reasoning-about-traversability-language-guided-off-road-3d-trajectory-planning)  
+   evidence：利用扩散模型进行不确定性感知的时空数据同化
+4. [OccDirector: Language-Guided Behavior and Interaction Generation in 4D Occupancy Space](/202604/27/2604.22240v1-occdirector-language-guided-behavior-and-interaction-generation-in-4d-occupancy-space)  
    标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶的3D未来轨迹规划
-5. [Frozen LLMs as Map-Aware Spatio-Temporal Reasoners for Vehicle Trajectory Prediction](/202604/26/2604.21479v1-frozen-llms-as-map-aware-spatio-temporal-reasoners-for-vehicle-trajectory-prediction)  
-   标签：评分：7.0/10、query:diffusion-conf-uncertainty
-   evidence：自动驾驶中的车辆轨迹预测
-6. [Noise-Adaptive Diffusion Sampling for Inverse Problems Without Task-Specific Tuning](/202604/26/2604.16919v1-noise-adaptive-diffusion-sampling-for-inverse-problems-without-task-specific-tuning)  
+   evidence：用于自动驾驶模拟的4D占据动力学
+5. [DAG-STL: A Hierarchical Framework for Zero-Shot Trajectory Planning under Signal Temporal Logic Specifications](/202604/27/2604.18343v1-dag-stl-a-hierarchical-framework-for-zero-shot-trajectory-planning-under-signal-temporal-logic-specifications)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：扩散模型中的后验采样以探索解空间
-7. [Marrying Text-to-Motion Generation with Skeleton-Based Action Recognition](/202604/26/2604.17090v1-marrying-text-to-motion-generation-with-skeleton-based-action-recognition)  
+   evidence：时序逻辑规范下的轨迹规划
+6. [Geometric Decoupling: Diagnosing the Structural Instability of Latent](/202604/27/2604.18804v1-geometric-decoupling-diagnosing-the-structural-instability-of-latent)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于合成运动轨迹的自回归运动扩散模型
-8. [Interpolating Discrete Diffusion Models with Controllable Resampling](/202604/26/2604.17310v1-interpolating-discrete-diffusion-models-with-controllable-resampling)  
+   evidence：潜扩散模型中的几何解耦
+7. [Mask World Model: Predicting What Matters for Robust Robot Policy Learning](/202604/27/2604.19683v2-mask-world-model-predicting-what-matters-for-robust-robot-policy-learning)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：通过可控重采样改进离散扩散模型
-9. [A Hamilton-Jacobi Reachability-Guided Search Framework for Efficient and Safe Indoor Planar Robot Navigation](/202604/26/2604.17679v1-a-hamilton-jacobi-reachability-guided-search-framework-for-efficient-and-safe-indoor-planar-robot-navigation)  
+   evidence：用于机器人策略学习和物理动力学的视频扩散架构
+8. [Interval POMDP Shielding for Imperfect-Perception Agents](/202604/27/2604.20728v1-interval-pomdp-shielding-for-imperfect-perception-agents)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：动态环境下的机器人安全导航与轨迹规划
-10. [WebUncertainty: Dual-Level Uncertainty Driven Planning and Reasoning For Autonomous Web Agent](/202604/26/2604.17821v2-webuncertainty-dual-level-uncertainty-driven-planning-and-reasoning-for-autonomous-web-agent)  
+   evidence：从有限数据中估计感知不确定性
+9. [Navigating the Clutter: Waypoint-Based Bi-Level Planning for Multi-Robot Systems](/202604/27/2604.21138v1-navigating-the-clutter-waypoint-based-bi-level-planning-for-multi-robot-systems)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：自主智能体的双层不确定性驱动规划
-11. [Active Inference-Enabled Agentic Closed-Loop ISAC with Long-Horizon Planning](/202604/26/2604.19599v1-active-inference-enabled-agentic-closed-loop-isac-with-long-horizon-planning)  
+   evidence：多机器人系统任务与运动规划的联合优化
+10. [Tempered Sequential Monte Carlo for Trajectory and Policy Optimization with Differentiable Dynamics](/202604/27/2604.21456v1-tempered-sequential-monte-carlo-for-trajectory-and-policy-optimization-with-differentiable-dynamics)  
    标签：评分：6.0/10、query:diffusion-conf-uncertainty
-   evidence：用于规划的不确定性感知状态推理和生成模型
+   evidence：微分动力学下的轨迹和策略优化
+11. [Frozen LLMs as Map-Aware Spatio-Temporal Reasoners for Vehicle Trajectory Prediction](/202604/27/2604.21479v2-frozen-llms-as-map-aware-spatio-temporal-reasoners-for-vehicle-trajectory-prediction)  
+   标签：评分：6.0/10、query:diffusion-conf-uncertainty
+   evidence：使用大语言模型进行车辆轨迹预测
 
 
 <div class="dpr-home-promo-card">

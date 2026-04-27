@@ -1,0 +1,451 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-27T19:58:08.577577+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 17,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2604.19683v1",
+      "title": "Mask World Model: Predicting What Matters for Robust Robot Policy Learning",
+      "abstract": "World models derived from large-scale video generative pre-training have emerged as a promising paradigm for generalist robot policy learning. However, standard approaches often focus on high-fidelity RGB video prediction, this can result in overfitting to irrelevant factors, such as dynamic backgrounds and illumination changes. These distractions reduce the model's ability to generalize, ultimately leading to unreliable and fragile control policies. To address this, we introduce the Mask World Model (MWM), which leverages video diffusion architectures to predict the evolution of semantic masks instead of pixels. This shift imposes a geometric information bottleneck, forcing the model to capture essential physical dynamics and contact relations while filtering out visual noise. We seamlessly integrate this mask dynamics backbone with a diffusion-based policy head to enable robust end-to-end control. Extensive evaluations demonstrate the superiority of MWM on the LIBERO and RLBench simulation benchmarks, significantly outperforming the state-of-the-art RGB-based world models. Furthermore, real-world experiments and robustness evaluation (via random token pruning) reveal that MWM exhibits superior generalization capabilities and robust resilience to texture information loss.",
+      "authors": [
+        "Yunfan Lou",
+        "Xiaowei Chi",
+        "Xiaojie Zhang",
+        "Zezhong Qian",
+        "Chengxuan Li",
+        "Rongyu Zhang",
+        "Yaoxu Lyu",
+        "Guoyu Song",
+        "Chuyao Fu",
+        "Haoxuan Xu",
+        "Pengwei Wang",
+        "Shanghang Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-21T17:05:37+00:00",
+      "link": "https://arxiv.org/pdf/2604.19683v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "video diffusion architectures for predicting semantic masks in robot policy",
+      "llm_evidence_cn": "用于机器人策略中语义掩码预测的视频扩散架构",
+      "llm_evidence": "用于机器人策略中语义掩码预测的视频扩散架构",
+      "canonical_evidence": "用于机器人策略中语义掩码预测的视频扩散架构",
+      "llm_tldr_en": "Uses diffusion to predict semantic masks, capturing physical dynamics for robust robot control.",
+      "llm_tldr_cn": "利用扩散模型预测语义掩码，捕捉物理动力学以实现鲁棒的机器人控制。",
+      "llm_tldr": "利用扩散模型预测语义掩码，捕捉物理动力学以实现鲁棒的机器人控制。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.18343v1",
+      "title": "DAG-STL: A Hierarchical Framework for Zero-Shot Trajectory Planning under Signal Temporal Logic Specifications",
+      "abstract": "Signal Temporal Logic (STL) is a powerful language for specifying temporally structured robotic tasks. Planning executable trajectories under STL constraints remains difficult when system dynamics and environment structure are not analytically available. Existing methods typically either assume explicit models or learn task-specific behaviors, limiting zero-shot generalization to unseen STL tasks. In this work, we study offline STL planning under unknown dynamics using only task-agnostic trajectory data. Our central design philosophy is to separate logical reasoning from trajectory realization. We instantiate this idea in DAG-STL, a hierarchical framework that converts long-horizon STL planning into three stages. It first decomposes an STL formula into reachability and invariance progress conditions linked by shared timing constraints. It then allocates timed waypoints using learned reachability-time estimates. Finally, it synthesizes trajectories between these waypoints with a diffusion-based generator. This decomposition--allocation--generation pipeline reduces global planning to shorter, better-supported subproblems. To bridge the gap between planning-level correctness and execution-level feasibility, we further introduce a rollout-free dynamic consistency metric, an anytime refinement search procedure for improving multiple allocation hypotheses under finite budgets, and a hierarchical online replanning mechanism for execution-time recovery. Experiments in Maze2D, OGBench AntMaze, and the Cube domain show that DAG-STL substantially outperforms direct robustness-guided diffusion on complex long-horizon STL tasks and generalizes across navigation and manipulation settings. In a custom environment with an optimization-based reference, DAG-STL recovers most model-solvable tasks while retaining a clear computational advantage over direct optimization based on the explicit system model.",
+      "authors": [
+        "Ruijia Liu",
+        "Ancheng Hou",
+        "Xiao Yu",
+        "Xiang Yin"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-04-20T14:41:37+00:00",
+      "link": "https://arxiv.org/pdf/2604.18343v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "trajectory planning under temporal logic specifications",
+      "llm_evidence_cn": "时序逻辑规范下的轨迹规划",
+      "llm_evidence": "时序逻辑规范下的轨迹规划",
+      "canonical_evidence": "时序逻辑规范下的轨迹规划",
+      "llm_tldr_en": "A hierarchical framework for zero-shot trajectory planning using task-agnostic data and logical reasoning.",
+      "llm_tldr_cn": "一种利用任务无关数据和逻辑推理进行零样本轨迹规划的分层框架。",
+      "llm_tldr": "一种利用任务无关数据和逻辑推理进行零样本轨迹规划的分层框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.19838v1",
+      "title": "Resolving space-sharing conflicts in road user interactions through uncertainty reduction: An active inference-based computational model",
+      "abstract": "Understanding how road users resolve space-sharing conflicts is important both for traffic safety and the safe deployment of autonomous vehicles. While existing models have captured specific aspects of such interactions (e.g., explicit communication), a theoretically-grounded computational framework has been lacking. In this paper, we extend a previously developed active inference-based driver behavior model to simulate interactive behavior of two agents. Our model captures three complementary mechanisms for uncertainty reduction in interaction: (i) implicit communication via direct behavioral coupling, (ii) reliance on normative expectations (stop signs, priority rules, etc.), and (iii) explicit communication. In a simplified intersection scenario, we show that normative and explicit communication cues can increase the likelihood of a successful conflict resolution. However, this relies on agents acting as expected. In situations where another agent (intentionally or unintentionally) violates normative expectations or communicates misleading information, reliance on these cues may induce collisions. These findings illustrate how active inference can provide a novel framework for modeling road user interactions which is also applicable in other fields.",
+      "authors": [
+        "Julian F. Schumann",
+        "Johan Engström",
+        "Ran Wei",
+        "Shu-Yuan Liu",
+        "Jens Kober",
+        "Arkady Zgonnikov"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-04-21T08:42:47+00:00",
+      "link": "https://arxiv.org/pdf/2604.19838v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uncertainty reduction in road user interactions",
+      "llm_evidence_cn": "道路用户交互中的不确定性减少",
+      "llm_evidence": "道路用户交互中的不确定性减少",
+      "canonical_evidence": "道路用户交互中的不确定性减少",
+      "llm_tldr_en": "An active inference model for resolving space-sharing conflicts in autonomous driving via uncertainty reduction.",
+      "llm_tldr_cn": "一种基于主动推理的模型，通过减少不确定性来解决自动驾驶中的空间共享冲突。",
+      "llm_tldr": "一种基于主动推理的模型，通过减少不确定性来解决自动驾驶中的空间共享冲突。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "modeling aleatoric uncertainty in autonomous driving scenarios",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.18804v1",
+      "title": "Geometric Decoupling: Diagnosing the Structural Instability of Latent",
+      "abstract": "Latent Diffusion Models (LDMs) achieve high-fidelity synthesis but suffer from latent space brittleness, causing discontinuous semantic jumps during editing. We introduce a Riemannian framework to diagnose this instability by analyzing the generative Jacobian, decomposing geometry into \\textit{Local Scaling} (capacity) and \\textit{Local Complexity} (curvature). Our study uncovers a \\textbf{``Geometric Decoupling\"}: while curvature in normal generation functionally encodes image detail, OOD generation exhibits a functional decoupling where extreme curvature is wasted on unstable semantic boundaries rather than perceptible details. This geometric misallocation identifies ``Geometric Hotspots\" as the structural root of instability, providing a robust intrinsic metric for diagnosing generative reliability.",
+      "authors": [
+        "Yuanbang Liang",
+        "Zhengwen Chen",
+        "Yu-Kun Lai"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-04-20T20:22:27+00:00",
+      "link": "https://arxiv.org/pdf/2604.18804v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "geometric decoupling in latent diffusion models",
+      "llm_evidence_cn": "潜扩散模型中的几何解耦",
+      "llm_evidence": "潜扩散模型中的几何解耦",
+      "canonical_evidence": "潜扩散模型中的几何解耦",
+      "llm_tldr_en": "Introduces a Riemannian framework to diagnose instability in latent diffusion models via geometric decoupling.",
+      "llm_tldr_cn": "引入黎曼框架，通过几何解耦诊断潜扩散模型的不稳定性。",
+      "llm_tldr": "引入黎曼框架，通过几何解耦诊断潜扩散模型的不稳定性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty decoupling in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.21180v1",
+      "title": "Uncertainty-Aware Spatiotemporal Super-Resolution Data Assimilation with Diffusion Models",
+      "abstract": "Data assimilation (DA) improves prediction of chaotic systems by combining model forecasts with sparse, noisy observations. Many DA methods are inherently probabilistic, but accurate probabilistic DA is often computationally expensive because it requires repeated high-resolution (HR) forecasts and large ensembles. In this study, we develop DiffSRDA, a probabilistic spatiotemporal super-resolution data assimilation framework based on denoising diffusion models, and evaluate it on an idealized barotropic ocean jet instability testbed. DiffSRDA is trained offline to generate short HR analysis windows conditioned on (i) a time series of low-resolution (LR) forecast frames and (ii) sparse HR observations. Repeated reverse diffusion sampling then produces an ensemble of HR analyses, providing both point estimates and uncertainty information. Despite relying only on low-cost LR forecasts, DiffSRDA achieves reconstruction quality close to that of an Ensemble Kalman Filter (EnKF) driven by HR forecasts, while improving over deterministic CNN-based SRDA baselines. The sampled ensemble also yields physically meaningful uncertainty patterns, with spread concentrated in dynamically active regions similarly to EnKF. A key practical result is that accurate base DiffSRDA cycling does not require long reverse chains: most of the full-chain accuracy is retained with only a few reverse steps, making diffusion-based SRDA practical for repeated cycling. Finally, by exploiting the score-based structure of diffusion sampling, we demonstrate training-free observation-consistency guidance for deployment-time sensor-layout shifts, enabling improved use of changed observation configurations without retraining. Overall, diffusion models provide a practical, uncertainty-aware, and computationally efficient approach for spatiotemporal SRDA in chaotic fluid flows.",
+      "authors": [
+        "Aditya Sai Pranith Ayapilla",
+        "Kazuya Miyashita",
+        "Yuki Yasuda",
+        "Ryo Onishi"
+      ],
+      "primary_category": "physics.flu-dyn",
+      "categories": [
+        "physics.flu-dyn",
+        "physics.ao-ph",
+        "physics.comp-ph"
+      ],
+      "published": "2026-04-23T00:56:25+00:00",
+      "link": "https://arxiv.org/pdf/2604.21180v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uncertainty-aware spatiotemporal data assimilation with diffusion models",
+      "llm_evidence_cn": "利用扩散模型进行不确定性感知的时空数据同化",
+      "llm_evidence": "利用扩散模型进行不确定性感知的时空数据同化",
+      "canonical_evidence": "利用扩散模型进行不确定性感知的时空数据同化",
+      "llm_tldr_en": "Develops a diffusion-based framework for probabilistic data assimilation and uncertainty estimation.",
+      "llm_tldr_cn": "开发了一个基于扩散模型的概率数据同化和不确定性估计框架。",
+      "llm_tldr": "开发了一个基于扩散模型的概率数据同化和不确定性估计框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty estimation in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.19683v2",
+      "title": "Mask World Model: Predicting What Matters for Robust Robot Policy Learning",
+      "abstract": "World models derived from large-scale video generative pre-training have emerged as a promising paradigm for generalist robot policy learning. However, standard approaches often focus on high-fidelity RGB video prediction, this can result in overfitting to irrelevant factors, such as dynamic backgrounds and illumination changes. These distractions reduce the model's ability to generalize, ultimately leading to unreliable and fragile control policies. To address this, we introduce the Mask World Model (MWM), which leverages video diffusion architectures to predict the evolution of semantic masks instead of pixels. This shift imposes a geometric information bottleneck, forcing the model to capture essential physical dynamics and contact relations while filtering out visual noise. We seamlessly integrate this mask dynamics backbone with a diffusion-based policy head to enable robust end-to-end control. Extensive evaluations demonstrate the superiority of MWM on the LIBERO and RLBench simulation benchmarks, significantly outperforming the state-of-the-art RGB-based world models. Furthermore, real-world experiments and robustness evaluation (via random token pruning) reveal that MWM exhibits superior generalization capabilities and robust resilience to texture information loss.",
+      "authors": [
+        "Yunfan Lou",
+        "Xiaowei Chi",
+        "Xiaojie Zhang",
+        "Zezhong Qian",
+        "Chengxuan Li",
+        "Rongyu Zhang",
+        "Yaoxu Lyu",
+        "Guoyu Song",
+        "Chuyao Fu",
+        "Haoxuan Xu",
+        "Pengwei Wang",
+        "Shanghang Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-21T17:05:37+00:00",
+      "link": "https://arxiv.org/pdf/2604.19683v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "video diffusion architectures for robot policy learning and physical dynamics",
+      "llm_evidence_cn": "用于机器人策略学习和物理动力学的视频扩散架构",
+      "llm_evidence": "用于机器人策略学习和物理动力学的视频扩散架构",
+      "canonical_evidence": "用于机器人策略学习和物理动力学的视频扩散架构",
+      "llm_tldr_en": "Uses video diffusion to predict semantic masks for robust robot policy learning and physical dynamics modeling.",
+      "llm_tldr_cn": "利用视频扩散预测语义掩码，以实现鲁棒的机器人策略学习和物理动力学建模。",
+      "llm_tldr": "利用视频扩散预测语义掩码，以实现鲁棒的机器人策略学习和物理动力学建模。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.22240v1",
+      "title": "OccDirector: Language-Guided Behavior and Interaction Generation in 4D Occupancy Space",
+      "abstract": "Generative world models increasingly rely on 4D occupancy for realistic autonomous driving simulation. However, existing generation frameworks depend on rigid geometric conditions (e.g., explicit trajectories) or simplistic attribute-level text, failing to orchestrate complex, sequential multi-agent interactions. To address this semantic-spatiotemporal gap, we propose OccDirector, a pioneering framework that generates 4D occupancy dynamics conditioned solely on natural language. Operating as a ``scenario director'', OccDirector maps natural language scripts into physically plausible voxel dynamics without requiring geometric priors. Technically, it employs a VLM-driven Spatio-Temporal MMDiT equipped with a history-prefix anchoring strategy to ensure long-horizon interaction consistency. Furthermore, we introduce OccInteract-85k, a novel dataset uniquely annotated with multi-level language instructions: ranging from static layouts to intricate multi-agent behaviors, alongside a novel VLM-based evaluation benchmark. Extensive experiments demonstrate that OccDirector achieves state-of-the-art generation quality and unprecedented instruction-following capabilities, successfully shifting the paradigm from appearance synthesis to language-driven behavior orchestration.",
+      "authors": [
+        "Zhuding Liang",
+        "Tianyi Yan",
+        "Dubing Chen",
+        "Jiasen Zheng",
+        "Huan Zheng",
+        "Cheng-zhong Xu",
+        "Yida Wang",
+        "Kun Zhan",
+        "Jianbing Shen"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-24T05:30:35+00:00",
+      "link": "https://arxiv.org/pdf/2604.22240v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "4D occupancy dynamics for autonomous driving simulation",
+      "llm_evidence_cn": "用于自动驾驶模拟的4D占据动力学",
+      "llm_evidence": "用于自动驾驶模拟的4D占据动力学",
+      "canonical_evidence": "用于自动驾驶模拟的4D占据动力学",
+      "llm_tldr_en": "Generates 4D occupancy dynamics for autonomous driving simulation using language-guided spatio-temporal models.",
+      "llm_tldr_cn": "利用语言引导的时空模型生成用于自动驾驶模拟的4D占据动力学。",
+      "llm_tldr": "利用语言引导的时空模型生成用于自动驾驶模拟的4D占据动力学。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.20728v1",
+      "title": "Interval POMDP Shielding for Imperfect-Perception Agents",
+      "abstract": "Autonomous systems that rely on learned perception can make unsafe decisions when sensor readings are misclassified. We study shielding for this setting: given a proposed action, a shield blocks actions that could violate safety. We consider the common case where system dynamics are known but perception uncertainty must be estimated from finite labeled data. From these data we build confidence intervals for the probabilities of perception outcomes and use them to model the system as a finite Interval Partially Observable Markov Decision Process with discrete states and actions. We then propose an algorithm to compute a conservative set of beliefs over the underlying state that is consistent with the observations seen so far.   This enables us to construct a runtime shield that comes with a finite-horizon guarantee: with high probability over the training data, if the true perception uncertainty rates lie within the learned intervals, then every action admitted by the shield satisfies a stated lower bound on safety. Experiments on four case studies show that our shielding approach (and variants derived from it) improves the safety of the system over state-of-the-art baselines.",
+      "authors": [
+        "William Scarbro",
+        "Ravi Mangal"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "eess.SY"
+      ],
+      "published": "2026-04-22T16:12:37+00:00",
+      "link": "https://arxiv.org/pdf/2604.20728v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "estimating perception uncertainty from finite data",
+      "llm_evidence_cn": "从有限数据中估计感知不确定性",
+      "llm_evidence": "从有限数据中估计感知不确定性",
+      "canonical_evidence": "从有限数据中估计感知不确定性",
+      "llm_tldr_en": "Proposes shielding for agents with imperfect perception by estimating uncertainty intervals from labeled data.",
+      "llm_tldr_cn": "通过从标注数据中估计不确定性区间，为感知不完善的智能体提出屏蔽机制。",
+      "llm_tldr": "通过从标注数据中估计不确定性区间，为感知不完善的智能体提出屏蔽机制。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "estimating epistemic uncertainty in neural motion planners",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.21138v1",
+      "title": "Navigating the Clutter: Waypoint-Based Bi-Level Planning for Multi-Robot Systems",
+      "abstract": "Multi-robot control in cluttered environments is a challenging problem that involves complex physical constraints, including robot-robot collisions, robot-obstacle collisions, and unreachable motions. Successful planning in such settings requires joint optimization over high-level task planning and low-level motion planning, as violations of physical constraints may arise from failures at either level. However, jointly optimizing task and motion planning is difficult due to the complex parameterization of low-level motion trajectories and the ambiguity of credit assignment across the two planning levels. In this paper, we propose a hybrid multi-robot control framework that jointly optimizes task and motion planning. To enable effective parameterization of low-level planning, we introduce waypoints, a simple yet expressive representation for motion trajectories. To address the credit assignment challenge, we adopt a curriculum-based training strategy with a modified RLVR algorithm that propagates motion feasibility feedback from the motion planner to the task planner. Experiments on BoxNet3D-OBS, a challenging multi-robot benchmark with dense obstacles and up to nine robots, show that our approach consistently improves task success over motion-agnostic and VLA-based baselines. Our code is available at https://github.com/UCSB-NLP-Chang/navigate-cluster",
+      "authors": [
+        "Jiabao Ji",
+        "Yongchao Chen",
+        "Yang Zhang",
+        "Ramana Rao Kompella",
+        "Chuchu Fan",
+        "Gaowen Liu",
+        "Shiyu Chang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-04-22T22:58:47+00:00",
+      "link": "https://arxiv.org/pdf/2604.21138v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "joint optimization of task and motion planning for multi-robot systems",
+      "llm_evidence_cn": "多机器人系统任务与运动规划的联合优化",
+      "llm_evidence": "多机器人系统任务与运动规划的联合优化",
+      "canonical_evidence": "多机器人系统任务与运动规划的联合优化",
+      "llm_tldr_en": "Proposes a bi-level framework to jointly optimize high-level tasks and low-level motion trajectories.",
+      "llm_tldr_cn": "提出一个双层框架，联合优化高层任务和底层运动轨迹。",
+      "llm_tldr": "提出一个双层框架，联合优化高层任务和底层运动轨迹。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.21456v1",
+      "title": "Tempered Sequential Monte Carlo for Trajectory and Policy Optimization with Differentiable Dynamics",
+      "abstract": "We propose a sampling-based framework for finite-horizon trajectory and policy optimization under differentiable dynamics by casting controller design as inference. Specifically, we minimize a KL-regularized expected trajectory cost, which yields an optimal \"Boltzmann-tilted\" distribution over controller parameters that concentrates on low-cost solutions as temperature decreases. To sample efficiently from this sharp, potentially multimodal target, we introduce tempered sequential Monte Carlo (TSMC): an annealing scheme that adaptively reweights and resamples particles along a tempering path from a prior to the target distribution, while using Hamiltonian Monte Carlo rejuvenation to maintain diversity and exploit exact gradients obtained by differentiating through trajectory rollouts. For policy optimization, we extend TSMC via (i) a deterministic empirical approximation of the initial-state distribution and (ii) an extended-space construction that treats rollout randomness as auxiliary variables. Experiments across trajectory- and policy-optimization benchmarks show that TSMC is broadly applicable and compares favorably to state-of-the-art baselines.",
+      "authors": [
+        "Heng Yang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-04-23T09:13:59+00:00",
+      "link": "https://arxiv.org/pdf/2604.21456v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "trajectory and policy optimization under differentiable dynamics",
+      "llm_evidence_cn": "微分动力学下的轨迹和策略优化",
+      "llm_evidence": "微分动力学下的轨迹和策略优化",
+      "canonical_evidence": "微分动力学下的轨迹和策略优化",
+      "llm_tldr_en": "Proposes a sampling-based framework for trajectory optimization using tempered sequential Monte Carlo.",
+      "llm_tldr_cn": "提出了一种基于采样和回火顺序蒙特卡罗的轨迹优化框架。",
+      "llm_tldr": "提出了一种基于采样和回火顺序蒙特卡罗的轨迹优化框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.21479v2",
+      "title": "Frozen LLMs as Map-Aware Spatio-Temporal Reasoners for Vehicle Trajectory Prediction",
+      "abstract": "Large language models (LLMs) have recently demonstrated strong reasoning capabilities and attracted increasing research attention in the field of autonomous driving (AD). However, safe application of LLMs on AD perception and prediction still requires a thorough understanding of both the dynamic traffic agents and the static road infrastructure. To this end, this study introduces a framework to evaluate the capability of LLMs in understanding the behaviors of dynamic traffic agents and the topology of road networks. The framework leverages frozen LLMs as the reasoning engine, employing a traffic encoder to extract spatial-level scene features from observed trajectories of agents, while a lightweight Convolutional Neural Network (CNN) encodes the local high-definition (HD) maps. To assess the intrinsic reasoning ability of LLMs, the extracted scene features are then transformed into LLM-compatible tokens via a reprogramming adapter. By residing the prediction burden with the LLMs, a simpler linear decoder is applied to output future trajectories. The framework enables a quantitative analysis of the influence of multi-modal information, especially the impact of map semantics on trajectory prediction accuracy, and allows seamless integration of frozen LLMs with minimal adaptation, thereby demonstrating strong generalizability across diverse LLM architectures and providing a unified platform for model evaluation.",
+      "authors": [
+        "Yanjiao Liu",
+        "Jiawei Liu",
+        "Xun Gong",
+        "Zifei Nie"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-23T09:39:51+00:00",
+      "link": "https://arxiv.org/pdf/2604.21479v2",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "vehicle trajectory prediction using LLMs",
+      "llm_evidence_cn": "使用大语言模型进行车辆轨迹预测",
+      "llm_evidence": "使用大语言模型进行车辆轨迹预测",
+      "canonical_evidence": "使用大语言模型进行车辆轨迹预测",
+      "llm_tldr_en": "Evaluates LLMs as spatio-temporal reasoners for understanding traffic agent behaviors and trajectory prediction.",
+      "llm_tldr_cn": "评估大语言模型作为时空推理引擎在理解交通主体行为和轨迹预测方面的能力。",
+      "llm_tldr": "评估大语言模型作为时空推理引擎在理解交通主体行为和轨迹预测方面的能力。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
