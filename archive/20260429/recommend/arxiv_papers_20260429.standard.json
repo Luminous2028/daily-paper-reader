@@ -1,0 +1,379 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-29T21:02:11.500553+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 9,
+    "quick_skim_target": 11,
+    "quick_selected": 9
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2604.19741v1",
+      "title": "CityRAG: Stepping Into a City via Spatially-Grounded Video Generation",
+      "abstract": "We address the problem of generating a 3D-consistent, navigable environment that is spatially grounded: a simulation of a real location. Existing video generative models can produce a plausible sequence that is consistent with a text (T2V) or image (I2V) prompt. However, the capability to reconstruct the real world under arbitrary weather conditions and dynamic object configurations is essential for downstream applications including autonomous driving and robotics simulation. To this end, we present CityRAG, a video generative model that leverages large corpora of geo-registered data as context to ground generation to the physical scene, while maintaining learned priors for complex motion and appearance changes. CityRAG relies on temporally unaligned training data, which teaches the model to semantically disentangle the underlying scene from its transient attributes. Our experiments demonstrate that CityRAG can generate coherent minutes-long, physically grounded video sequences, maintain weather and lighting conditions over thousands of frames, achieve loop closure, and navigate complex trajectories to reconstruct real-world geography.",
+      "authors": [
+        "Gene Chou",
+        "Charles Herrmann",
+        "Kyle Genova",
+        "Boyang Deng",
+        "Songyou Peng",
+        "Bharath Hariharan",
+        "Jason Y. Zhang",
+        "Noah Snavely",
+        "Philipp Henzler"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-21T17:59:03+00:00",
+      "link": "https://arxiv.org/pdf/2604.19741v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "video generative model for autonomous driving simulation",
+      "llm_evidence_cn": "用于自动驾驶模拟的视频生成模型",
+      "llm_evidence": "用于自动驾驶模拟的视频生成模型",
+      "canonical_evidence": "用于自动驾驶模拟的视频生成模型",
+      "llm_tldr_en": "A spatially-grounded video diffusion model for simulating realistic autonomous driving environments.",
+      "llm_tldr_cn": "一种用于模拟真实自动驾驶环境的空间接地视频扩散模型。",
+      "llm_tldr": "一种用于模拟真实自动驾驶环境的空间接地视频扩散模型。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.22901v1",
+      "title": "Accelerating Frequency Domain Diffusion Models with Error-Feedback Event-Driven Caching",
+      "abstract": "Diffusion models achieve remarkable success in time series generation. However, slow inference limits their practical deployment. We propose E$^2$-CRF (Error-Feedback Event-Driven Cumulative Residual Feature caching) to accelerate frequency domain diffusion models. Our method exploits two structural properties: (1) spectral localization, where signal energy concentrates in low frequencies, and (2) mirror symmetry, which halves the effective frequency dimension. E$^2$-CRF uses a closed-loop error-feedback system that adaptively caches transformer KV features across diffusion steps. We trigger recomputation using event-driven residual dynamics instead of fixed schedules. Our method selectively recomputes high-energy or rapidly-changing tokens while reusing cached features for stable high-frequency components. E$^2$-CRF achieves ~2.2 speedup while maintaining sample quality. We demonstrate effectiveness on 5 datasets. Our caching strategy naturally aligns with the diffusion process's structure-to-detail progression. We include sufficient-condition error and complexity bounds under standard regularity assumptions (Appendix), alongside empirical validation. Our code is available at https://github.com/NoakLiu/FastFourierDiffusion and is also integrated in https://github.com/NoakLiu/FastCache-xDiT.",
+      "authors": [
+        "Dong Liu",
+        "Haisheng Wang",
+        "Yanxuan Yu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-24T13:56:55+00:00",
+      "link": "https://arxiv.org/pdf/2604.22901v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "accelerating diffusion models for time series generation",
+      "llm_evidence_cn": "加速用于时间序列生成的扩散模型",
+      "llm_evidence": "加速用于时间序列生成的扩散模型",
+      "canonical_evidence": "加速用于时间序列生成的扩散模型",
+      "llm_tldr_en": "Proposes a method to accelerate diffusion models, which is a key bottleneck in real-time trajectory generation.",
+      "llm_tldr_cn": "提出一种加速扩散模型的方法，解决了实时轨迹生成的关键瓶颈。",
+      "llm_tldr": "提出一种加速扩散模型的方法，解决了实时轨迹生成的关键瓶颈。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for trajectory generation in autonomous driving",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.25329v1",
+      "title": "ProDrive: Proactive Planning for Autonomous Driving via Ego-Environment Co-Evolution",
+      "abstract": "End-to-end autonomous driving planners typically generate trajectories from current observations alone. However, real-world driving is highly dynamic, and such reactive planning cannot anticipate future scene evolution, often leading to myopic decisions and safety-critical failures. We propose ProDrive, a world-model-based proactive planning framework that enables ego-environment co-evolution for autonomous driving. ProDrive jointly trains a query-centric trajectory planner and a bird's-eye-view (BEV) world model end-to-end: the planner generates diverse candidate trajectories and planning-aware ego tokens, while the world model predicts future scene evolution conditioned on them. By injecting planner features into the world model and evaluating all candidates in parallel, ProDrive preserves end-to-end gradient flow and allows future outcome assessment to directly shape planning. This bidirectional coupling enables proactive planning beyond current-observation-driven decision-making. Experiments on NAVSIM v1 show that ProDrive outperforms strong baselines in both safety and planning efficiency, while ablations validate the effectiveness of the proposed ego-environment coupling design.",
+      "authors": [
+        "Chuyao Fu",
+        "Shengzhe Gan",
+        "Zhuoli Ouyang",
+        "Yuhan Rui",
+        "Xiaowei Chi",
+        "Sirui Han",
+        "Jiankun Wang",
+        "Hong Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-04-28T07:46:30+00:00",
+      "link": "https://arxiv.org/pdf/2604.25329v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "autonomous driving planner generating diverse candidate trajectories",
+      "llm_evidence_cn": "自动驾驶规划器生成多样化候选轨迹",
+      "llm_evidence": "自动驾驶规划器生成多样化候选轨迹",
+      "canonical_evidence": "自动驾驶规划器生成多样化候选轨迹",
+      "llm_tldr_en": "Proposes a proactive planning framework for autonomous driving using world models and trajectory generation.",
+      "llm_tldr_cn": "提出了一种结合世界模型和轨迹生成的自动驾驶主动规划框架。",
+      "llm_tldr": "提出了一种结合世界模型和轨迹生成的自动驾驶主动规划框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "autonomous driving motion planning and prediction",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.23576v1",
+      "title": "CAPSULE: Control-Theoretic Action Perturbations for Safe Uncertainty-Aware Reinforcement Learning",
+      "abstract": "Ensuring safe exploration in high-dimensional systems with unknown dynamics remains a significant challenge. Existing safe reinforcement learning methods often provide safety guarantees only in expectation, which can still lead to safety violations. Control-theoretic approaches, in contrast, offer hard constraint-based safety guarantees but typically assume access to known system dynamics or require accurate estimation of control-affine models. In this paper, we propose a safe reinforcement learning framework that learns a probabilistic control-affine dynamics model in an offline setting. The learned model is leveraged to explicitly construct control barrier functions (CBFs) that incorporate model uncertainty to provide conservative safety constraints. These CBF constraints are enforced through an online constraint-based action correction mechanism, enabling safe exploration without overly restricting task performance. Empirical evaluations on nonlinear, complex continuous-control benchmarks demonstrate that our approach achieves returns comparable to those of existing baselines while significantly reducing safety violations.",
+      "authors": [
+        "Rahul Narava",
+        "Siddharth Verma",
+        "Ojas Jain",
+        "Shashi Shekhar Jha",
+        "Mayank Shekhar Jha"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-26T07:31:30+00:00",
+      "link": "https://arxiv.org/pdf/2604.23576v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "incorporate model uncertainty to provide safety guarantees in reinforcement learning",
+      "llm_evidence_cn": "在强化学习中结合模型不确定性以提供安全保障",
+      "llm_evidence": "在强化学习中结合模型不确定性以提供安全保障",
+      "canonical_evidence": "在强化学习中结合模型不确定性以提供安全保障",
+      "llm_tldr_en": "CAPSULE uses probabilistic dynamics models and CBFs to ensure safe exploration under uncertainty.",
+      "llm_tldr_cn": "CAPSULE 利用概率动力学模型和控制屏障函数确保不确定性下的安全探索。",
+      "llm_tldr": "CAPSULE 利用概率动力学模型和控制屏障函数确保不确定性下的安全探索。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "estimating epistemic uncertainty in neural motion planners",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.25416v1",
+      "title": "Biased Dreams: Limitations to Epistemic Uncertainty Quantification in Latent Space Models",
+      "abstract": "Model-Based Reinforcement Learning distinguishes between physical dynamics models operating on proprioceptive inputs and latent dynamics models operating on high-dimensional image observations. A prominent latent approach is the Recurrent State Space Model used in the Dreamer family. While epistemic uncertainty quantification to inform exploration and mitigate model exploitation is well established for physical dynamics models, its transfer to latent dynamics models has received limited scrutiny. We empirically demonstrate that latent transitions are biased toward well-represented regions of latent space, exhibiting an attractor behavior that can deviate from true environment dynamics. As a result, discrepancies in environment dynamics may not manifest in latent space, undermining the reliability of epistemic uncertainty estimates. Because these attractors often lie in high-reward regions, latent rollouts systematically overestimate predicted rewards. Our findings highlight key limitations of epistemic uncertainty estimation in latent dynamics models and motivate more critical evaluation of this method.",
+      "authors": [
+        "Julia Berger",
+        "Bernd Frauenknecht",
+        "Sebastian Trimpe",
+        "Bastian Leibe"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-28T09:27:01+00:00",
+      "link": "https://arxiv.org/pdf/2604.25416v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "epistemic uncertainty quantification in latent space models",
+      "llm_evidence_cn": "潜空间模型中的认知不确定性量化",
+      "llm_evidence": "潜空间模型中的认知不确定性量化",
+      "canonical_evidence": "潜空间模型中的认知不确定性量化",
+      "llm_tldr_en": "Analyzes limitations of epistemic uncertainty quantification in latent dynamics models for reinforcement learning.",
+      "llm_tldr_cn": "分析了强化学习潜动力学模型中认知不确定性量化的局限性。",
+      "llm_tldr": "分析了强化学习潜动力学模型中认知不确定性量化的局限性。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "estimating epistemic uncertainty in neural motion planners",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.24238v1",
+      "title": "GeoEdit: Local Frames for Fast, Training-Free On-Manifold Editing in Diffusion Models",
+      "abstract": "Diffusion models are a leading paradigm for data generation, but training-free editing typically re-runs the full denoising trajectory for every edit strength, making iterative refinement expensive. To address this issue, we instead edit near the data manifold, where small local updates can replace repeated re-synthesis. To enable this, we estimate a local manifold tangent space directly from perturbed samples and prove that this sample-based estimator closely approximates the true tangent. Building on this guarantee, we devise a Jacobian-free algorithm that constructs a tangent frame via small perturbations to the initial noise and alternates small tangent moves with diffusion-based projections. Updates within this frame follow principled on-manifold directions while suppressing off-manifold drift, enabling fine-grained edits without full re-diffusion or additional training. Edit strength is controlled by the number of steps for rapid, continuous adjustments that preserve fidelity and plug into existing samplers. Empirically, the resulting tangent directions yield smooth, semantic unsupervised traversals and effective CLIP-guided optimization, demonstrating practical interactive continuous editing.",
+      "authors": [
+        "Yiming Zhang",
+        "Sitong Liu",
+        "Ke Li",
+        "Zhihong Wu",
+        "Alex Cloninger",
+        "Melvin Leok"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-27T09:47:02+00:00",
+      "link": "https://arxiv.org/pdf/2604.24238v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "estimating local manifold tangent space in diffusion models",
+      "llm_evidence_cn": "扩散模型中估计局部流形切空间",
+      "llm_evidence": "扩散模型中估计局部流形切空间",
+      "canonical_evidence": "扩散模型中估计局部流形切空间",
+      "llm_tldr_en": "A training-free method for editing diffusion models by estimating local manifold tangent spaces for fast refinement.",
+      "llm_tldr_cn": "一种通过估计局部流形切空间进行扩散模型编辑的免训练方法，可实现快速迭代优化。",
+      "llm_tldr": "一种通过估计局部流形切空间进行扩散模型编辑的免训练方法，可实现快速迭代优化。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "quantifying and tracing uncertainty in diffusion based motion planning",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.24351v1",
+      "title": "Diffusion Templates: A Unified Plugin Framework for Controllable Diffusion",
+      "abstract": "Controllable diffusion methods have substantially expanded the practical utility of diffusion models, but they are typically developed as isolated, backbone-specific systems with incompatible training pipelines, parameter formats, and runtime hooks. This fragmentation makes it difficult to reuse infrastructure across tasks, transfer capabilities across backbones, or compose multiple controls within a single generation pipeline. We present Diffusion Templates, a unified and open plugin framework that decouples base-model inference from controllable capability injection. The framework is organized around three components: Template models that map arbitrary task-specific inputs to an intermediate capability representation, a Template cache that functions as a standardized interface for capability injection, and a Template pipeline that loads, merges, and injects one or more Template caches into the base diffusion runtime. Because the interface is defined at the systems level rather than tied to a specific control architecture, heterogeneous capability carriers such as KV-Cache and LoRA can be supported under the same abstraction. Based on this design, we build a diverse model zoo spanning structural control, brightness adjustment, color adjustment, image editing, super-resolution, sharpness enhancement, aesthetic alignment, content reference, local inpainting, and age control. These case studies show that Diffusion Templates can unify a broad range of controllable generation tasks while preserving modularity, composability, and practical extensibility across rapidly evolving diffusion backbones. All resources will be open sourced, including code, models, and datasets.",
+      "authors": [
+        "Zhongjie Duan",
+        "Hong Zhang",
+        "Yingda Chen"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CV",
+        "cs.SE"
+      ],
+      "published": "2026-04-27T11:44:45+00:00",
+      "link": "https://arxiv.org/pdf/2604.24351v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "decouples base-model inference from controllable capability injection in diffusion",
+      "llm_evidence_cn": "在扩散模型中解耦基础模型推理与可控能力注入",
+      "llm_evidence": "在扩散模型中解耦基础模型推理与可控能力注入",
+      "canonical_evidence": "在扩散模型中解耦基础模型推理与可控能力注入",
+      "llm_tldr_en": "A unified framework to decouple and control diffusion model capabilities across different tasks.",
+      "llm_tldr_cn": "一个用于在不同任务中解耦和控制扩散模型能力的统一框架。",
+      "llm_tldr": "一个用于在不同任务中解耦和控制扩散模型能力的统一框架。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "diffusion models for uncertainty decoupling in autonomous driving trajectory generation",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.24833v1",
+      "title": "MotionBricks: Scalable Real-Time Motions with Modular Latent Generative Model and Smart Primitives",
+      "abstract": "Despite transformative advances in generative motion synthesis, real-time interactive motion control remains dominated by traditional techniques. In this work, we identify two key challenges in bridging research and production: 1) Real-time scalability: Industry applications demand real-time generation of a vast repertoire of motion skills, while generative methods exhibit significant degradation in quality and scalability under real-time computation constraints, and 2) Integration: Industry applications demand fine-grained multi-modal control involving velocity commands, style selection, and precise keyframes, a need largely unmet by existing text- or tag-driven models. To overcome these limitations, we introduce MotionBricks: a large-scale, real-time generative framework with a two-fold solution. First, we propose a large-scale modular latent generative backbone tailored for robust real-time motion generation, effectively modeling a dataset of over 350,000 motion clips with a single model. Second, we introduce smart primitives that provide a unified, robust, and intuitive interface for authoring both navigation and object interaction. Applications can be designed in a plug-and-play manner like assembling bricks without expert animation knowledge. Quantitatively, we show that MotionBricks produces state-of-the-art motion quality on open-source and proprietary datasets of various scales, while also achieving a real-time throughput of 15,000 FPS with 2ms latency. We demonstrate the flexibility and robustness of MotionBricks in a complete production-level animation demo, covering navigation and object-scene interaction across various styles with a unified model. To showcase our framework's application beyond animation, we deploy MotionBricks on the Unitree G1 humanoid robot to demonstrate its flexibility and generalization for real-time robotic control.",
+      "authors": [
+        "Tingwu Wang",
+        "Olivier Dionne",
+        "Michael De Ruyter",
+        "David Minor",
+        "Davis Rempe",
+        "Kaifeng Zhao",
+        "Mathis Petrovich",
+        "Ye Yuan",
+        "Chenran Li",
+        "Zhengyi Luo",
+        "Brian Robison",
+        "Xavier Blackwell",
+        "Bernardo Antoniazzi",
+        "Xue Bin Peng",
+        "Yuke Zhu",
+        "Simon Yuen"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.GR",
+        "cs.LG"
+      ],
+      "published": "2026-04-27T17:58:23+00:00",
+      "link": "https://arxiv.org/pdf/2604.24833v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "generative motion synthesis and real-time motion control",
+      "llm_evidence_cn": "生成式运动合成与实时运动控制",
+      "llm_evidence": "生成式运动合成与实时运动控制",
+      "canonical_evidence": "生成式运动合成与实时运动控制",
+      "llm_tldr_en": "Introduces MotionBricks for scalable real-time motion generation using modular latent generative models.",
+      "llm_tldr_cn": "引入 MotionBricks，利用模块化潜变量生成模型实现可扩展的实时运动生成。",
+      "llm_tldr": "引入 MotionBricks，利用模块化潜变量生成模型实现可扩展的实时运动生成。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "trajectory generation and path planning",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.25142v1",
+      "title": "UnIte: Uncertainty-based Iterative Document Sampling for Domain Adaptation in Information Retrieval",
+      "abstract": "Unsupervised domain adaptation generalizes neural retrievers to an unseen domain by generating pseudo queries on target domain documents. The quality and efficiency of this adaptation critically depend on which documents are selected for pseudo query generation. The existing document sampling method focuses on diversity but fails to capture model uncertainty. In contrast, we propose **Un**certainty-based **Ite**rative Document Sampling (UnIte) addressing these limitations by (1) filtering documents with high aleatoric uncertainty and (2) prioritizing those with high epistemic uncertainty, maximizing the learning utility of the current model. We conducted extensive experiments on a large corpus of BEIR with small and large models, showing significant gains of +2.45 and +3.49 nDCG@10 with a smaller training sample size, 4k on average.",
+      "authors": [
+        "Jongyoon Kim",
+        "Minseong Hwang",
+        "Seung-won Hwang"
+      ],
+      "primary_category": "cs.IR",
+      "categories": [
+        "cs.IR",
+        "cs.AI"
+      ],
+      "published": "2026-04-28T02:43:03+00:00",
+      "link": "https://arxiv.org/pdf/2604.25142v1",
+      "tags": [
+        "keyword:diffusion&conf&uncertainty",
+        "query:diffusion&conf&uncertainty"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "filtering aleatoric uncertainty and prioritizing epistemic uncertainty",
+      "llm_evidence_cn": "过滤偶然不确定性并优先考虑认知不确定性",
+      "llm_evidence": "过滤偶然不确定性并优先考虑认知不确定性",
+      "canonical_evidence": "过滤偶然不确定性并优先考虑认知不确定性",
+      "llm_tldr_en": "Proposes an iterative sampling method that decouples aleatoric and epistemic uncertainty for domain adaptation.",
+      "llm_tldr_cn": "提出了一种迭代采样方法，通过解耦偶然和认知不确定性来优化领域自适应中的文档选择。",
+      "llm_tldr": "提出了一种迭代采样方法，通过解耦偶然和认知不确定性来优化领域自适应中的文档选择。",
+      "llm_tags": [
+        "query:diffusion-conf-uncertainty"
+      ],
+      "matched_query_tag": "query:diffusion-conf-uncertainty",
+      "matched_query_text": "aleatoric and epistemic uncertainty decomposition in diffusion trajectory models",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
